@@ -59,8 +59,9 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   shared.uSat.value = p.sat;
   shared.uHazeColor.value.copy(linear(p.haze.color));
   // lookdev "diorama": depth reads in layers (aerial haze starts nearer and goes further).
-  shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.4, 6) : p.haze.start;
-  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.85, p.haze.amount * 1.8 + 0.22) : p.haze.amount;
+  // A+B: haze starts behind a subject at telephoto range (the diorama test washed out Chad at ~10 m with start 6 m).
+  shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.6, 14) : p.haze.start;
+  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.75, p.haze.amount * 1.4 + 0.12) : p.haze.amount;
   shared.uCharTint.value.set(...p.char.tint);
   shared.uCharShade.value = p.char.shade;
   shared.uCharInk.value.copy(linear(p.charInk ?? INK));

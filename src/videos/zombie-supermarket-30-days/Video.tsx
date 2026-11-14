@@ -33,10 +33,11 @@ const SHADOW = { ext: { center: at(32, 0), size: 44 }, int: { center: IN(3, 0), 
  * "you"; the lantern's amber at night); other hues lose a third of their saturation. Wides get a gentler pool.
  */
 const WORLD_LOOK: Record<S["w"], ShotLook> = {
-  "int-day": { pool: [0.5, 0.58, 0.22, 0.32], accent: [0.045, 0.3] },
-  "int-night": { pool: [0.5, 0.56, 0.22, 0.3], accent: [0.08, 0.35] }, // .45 crushed 6-8 % of the frame (QA CRUSH)
-  "ext-day": { pool: [0.5, 0.58, 0.24, 0.26], accent: [0.045, 0.35] },
-  "ext-dawn": { pool: [0.5, 0.58, 0.22, 0.3], accent: [0.045, 0.3] },
+  // R14 measured bar: mean luma .40-.50 (pilot r3 .36); the pool keeps the subject brighter by value, gently.
+  "int-day": { pool: [0.5, 0.58, 0.26, 0.2], accent: [0.045, 0.28] },
+  "int-night": { pool: [0.5, 0.56, 0.24, 0.24], accent: [0.08, 0.32] },
+  "ext-day": { pool: [0.5, 0.58, 0.3, 0.14], accent: [0.045, 0.3] },
+  "ext-dawn": { pool: [0.5, 0.58, 0.28, 0.18], accent: [0.045, 0.28] },
 };
 const lookOf = (s: S): ShotLook => {
   const l = s.look ?? WORLD_LOOK[s.w];

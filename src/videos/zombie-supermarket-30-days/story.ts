@@ -37,6 +37,11 @@ const W_ = {
   eating: wordsStart("eating", 0), winning: wordsStart("winning", 0), cart: wordsStart("cart", 0), daveAsks: wordsStart("dave", 3),
   onDay30: wordsStart("on", 5), youSee: wordsStart("you", 8), thirty: wordsStart("30", 1),
 };
+/** Expression-ladder steps land on words (QA "Reaction timing"): the start of the first word at or after F. */
+const onWord = (F: number) => {
+  const w = words.find((x) => Math.round(x.start * FPS) >= F);
+  return w ? Math.round(w.start * FPS) : F;
+};
 const wordEnd = (t: string, n: number) => {
   const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9']/g, "");
   return Math.round(words.filter((x) => norm(x.text) === t)[n].end * FPS);
@@ -64,8 +69,9 @@ const H = (look: Look) => headHeight(look) + 0.17;
 /** frameOn with the character's own head height (frameOn handles characters standing above the ground). */
 const fo = (pos: Vector3, from: Vector3, size: ShotSize, look: Look = youLook, o: Parameters<typeof frameOn>[3] = {}) => frameOn(pos, from, size, { head: H(look), ...o });
 /** A hold: a barely-there push (refs hold still on beats, then move fast). */
-const creep = (p: { pos: Vector3; look: Vector3; fov: number }, frames: number, k = 0.05) =>
-  shot(p, [pushIn(k * p.pos.distanceTo(p.look)), drift(0.03 * p.pos.distanceTo(p.look))], frames);
+// R14 measured bar: refs keep the camera travelling (still frames 7-8 %, ours were 12.9 %): every hold pushes >= 10 %.
+const creep = (p: { pos: Vector3; look: Vector3; fov: number }, frames: number, k = 0.1) =>
+  shot(p, [pushIn(Math.max(k, 0.1) * p.pos.distanceTo(p.look)), drift(0.03 * p.pos.distanceTo(p.look))], frames);
 const tele = (from: Vector3, who: Vector3, look: Look, span: number) => telephoto(from, who, H(look), span);
 type Role = { name: string; look: Look; at: (F: number) => Vector3; state: (F: number) => CharState };
 const inShot = (from: number, roles: Role[]): CastSpec[] => roles.map((r) => ({ name: r.name, look: r.look, at: (f) => r.at(f + from), state: (f) => r.state(f + from) }));
@@ -79,7 +85,7 @@ const shake = impact;
 const youHeap: Role = {
   name: "you", look: youLook, at: still(HEAP),
   state: (F) => {
-    const e = exprAt([[0, "determined"], [W_.batteries, "smirk"], [BEAT.laughs, "angry"]], F);
+    const e = exprAt([[0, "determined"], [W_.batteries, "smirk"], [onWord(W_.batteries + 10), "sneaky"], [BEAT.laughs, "confused"], [onWord(BEAT.laughs + 6), "angry"]], F);
     return st(withSquash(posed("hold", F / FPS, 0.2), e.squash), e.expr, F, 1);
   },
 };
@@ -110,7 +116,7 @@ const YOU_SHUTTER = at(CHAD.s + 0.95, FRONT - 0.75, 0.02);
 const youKnock: Role = {
   name: "you", look: youLook, at: still(YOU_SHUTTER),
   state: (F) => {
-    const e = exprAt([[0, "relieved"], [BEAT.members, "confused"], [BEAT.only, "shocked"]], F);
+    const e = exprAt([[0, "relieved"], [BEAT.members, "confused"], [BEAT.only, "shocked"], [onWord(BEAT.only + 6), "scared"], [onWord(BEAT.so + 4), "deadpan"]], F);
     const knocking = F >= BEAT.knocked - LEAD && F < W_.he - 4;
     const pose = knocking ? actionPose("knock", F / FPS, -0.6) : posed("idle", F / FPS, -0.6);
     // On "only" the slam blows your fringe back: a big squash, ring eyes, the "!" pop.
@@ -148,7 +154,7 @@ const YOU_WIN = WINDOW_SPOT.clone().add(new Vector3(-1.3, 0, -0.6)), DAVE_WIN = 
 const daveWindow: Role = {
   name: "dave", look: daveLook, at: still(DAVE_WIN),
   state: (F) => {
-    const e = exprAt([[0, "worried"], [BEAT.daveMight, "sad"], [BEAT.asks, "confused"]], F);
+    const e = exprAt([[0, "worried"], [BEAT.daveMight, "sad"], [onWord(BEAT.daveMight + 8), "worried"], [BEAT.asks, "confused"]], F);
     return st(withSquash(posed("hold", F / FPS, F < BEAT.right ? 0.8 : -0.7), e.squash), e.expr, F, 4, { prop: "can" });
   },
 };
@@ -177,7 +183,7 @@ const daveTorch: Role = { name: "dave", look: daveLook, at: still(DAVE_DINO), st
 const chadWake: Role = {
   name: "chad", look: chadPyjamas, at: still(CHAD_DOOR),
   state: (F) => {
-    const e = exprAt([[0, "tired"], [BEAT.up, "shocked"]], F);
+    const e = exprAt([[0, "tired"], [onWord(BEAT.up - 16), "confused"], [BEAT.up, "shocked"], [onWord(BEAT.up + 8), "scared"]], F);
     return st(withSquash(posed(F < BEAT.up - LEAD ? "hold" : "panic", F / FPS, 0), e.squash), e.expr, F, 7, { fx: F >= BEAT.up - LEAD ? { ringEyes: true, bang: F - BEAT.up + LEAD, sweat: 0.6 } : {} });
   },
 };
@@ -274,7 +280,8 @@ const shots: S[] = [
   sh("B05-chad-flex", BEAT.hardware - 2, BEAT.on1 - 4, "ext-day", (() => {
     const F0 = BEAT.hardware - 2, m = BEAT.megaphone - F0;
     const mcu = { pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 13 };
-    const front = creep({ pos: at(CHAD.s - 1.2, FRONT - 7.5, 2.0), look: at(CHAD.s, FRONT, 3.4), fov: 62 }, 90, 0.08);
+    // R14: a three-quarter storefront (it receded nowhere flat-on), the roofline leading to Chad.
+    const front = creep({ pos: at(CHAD.s - 4.8, FRONT - 6.8, 1.7), look: at(CHAD.s + 0.6, FRONT, 3.4), fov: 60 }, 90, 0.1);
     return { pose: reframe(front, mcu, m - 16, m + 2), whips: [[m - 16, m + 2]] as [number, number][], cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
   })()),
   // Line 4. Day 1: you knock on his shutter.
