@@ -35,7 +35,14 @@ export const DustWipe: React.FC<{ frames?: number; peak?: number; color?: string
         {puffs.map((p, i) => {
           const g = grow((f - p.delay) / (peak - p.delay + 2));
           const cx = (origin[0] + p.dx * g) * W, cy = (origin[1] + p.dy * g - (f > peak ? (f - peak) * 0.012 : 0)) * H;
-          return <circle key={i} cx={cx} cy={cy} r={p.size * g * H * (1 + (f > peak ? (f - peak) * 0.02 : 0))} fill={`url(#dw${seed}_${i})`} opacity={fade * Math.min(1, p.shade)} />;
+          const rr = p.size * g * H * (1 + (f > peak ? (f - peak) * 0.02 : 0)) * 0.48;
+          // House style (R14 QA: a blank tan screen): painted puffs with an ink rim, never fully covering the frame.
+          return (
+            <g key={i} opacity={fade * 0.82 * Math.min(1, p.shade)}>
+              <circle cx={cx} cy={cy} r={rr} fill={`url(#dw${seed}_${i})`} />
+              <circle cx={cx} cy={cy} r={rr * 0.62} fill="none" stroke="#3a2a1e" strokeOpacity={0.55} strokeWidth={H * 0.004} />
+            </g>
+          );
         })}
       </svg>
     </AbsoluteFill>

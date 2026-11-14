@@ -19,3 +19,4 @@ public/*/mix.wav
 # third-party screenshots, local reference only (see vendor/cartoon-3d-short/README.md)
 vendor/cartoon-3d-short/references/frames/
 vendor/cartoon-3d-short/references/sheets/
+.claude/settings.local.json

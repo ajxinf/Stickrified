@@ -241,8 +241,9 @@ const whipOut = (pose: S["pose"], frames: number, dir = 1): S["pose"] => (f) => 
   return yawed(pose(f), -dir * 0.75 * t * t);
 };
 const whipIn = (pose: S["pose"], dir = 1): S["pose"] => (f) => {
-  const t = Math.min(Math.max(1 - f / WHIP, 0), 1);
-  return yawed(pose(f), dir * 0.75 * t * t);
+  // Frame 0 of a shot has no motion blur (no previous frame): start mid-swing, not at full yaw (R14 QA f706 flash).
+  const t = Math.min(Math.max(1 - (f + 1) / (WHIP + 1), 0), 1);
+  return yawed(pose(f), dir * 0.45 * t * t);
 };
 let T = 0;
 const sh = (id: string, from: number, to: number, w: World, rest: Omit<S, "id" | "from" | "frames" | "w">): S => ((T = to), { id: `zombie/${id}`, from, frames: to - from, w, ...rest });
@@ -262,6 +263,7 @@ const shots: S[] = [
       return { ...p, pos: p.pos.clone().add(new Vector3(0, k * 0.5, -k)) };
     },
     whips: [[0, 30]], crowd: true, wide: true, dof: POST.dof,
+    cast: inShot(BEAT.because - 2, [chadMock]), // R14 QA: Chad vanished on the cut from B03 (f163 -> f164)
   }),
   // "That guy is Chad": up the fortress: sandbags, MEMBERS ONLY, steel, barbed wire, to Chad on the roof.
   sh("B04-fortress", 262, BEAT.hardware - 2, "ext-day", {
@@ -334,7 +336,7 @@ const shots: S[] = [
   sh("B22-gently", BEAT.very - 4, W_.onDay30 - 6, "int-night", {
     pose: whipOut(creep(fo(YOU_DINO, YOU_DINO.clone().add(new Vector3(-2.4, 0, 0.6)), "mcu", youLook), 60, 0.2), W_.onDay30 - 6 - (BEAT.very - 4)),
     whips: [[W_.onDay30 - 6 - (BEAT.very - 4) - WHIP, W_.onDay30 - 6 - (BEAT.very - 4)]],
-    cast: inShot(BEAT.very - 4, [youDino]), subject: "you", dof: DOF.closeup(1.2),
+    cast: inShot(BEAT.very - 4, [youDino]), subject: "you", dof: DOF.closeup(1.2), motes: motes(YOU_DINO, "#c8c0ff"), // R14 QA f1527: same air as B21
   }),
   // Line 14. Dawn, day 30: the generator coughs a smoke ring...
   sh("B23-coughs", W_.onDay30 - 6, BEAT.dies - 4, "ext-dawn", { pose: whipIn(creep({ pos: GENERATOR.clone().add(new Vector3(-3.6, 0.85, -2.9)), look: GENERATOR.clone().add(new Vector3(0.3, 0.95, 0.9)), fov: 50 }, 80, 0.4)), whips: [[0, WHIP]], dof: POST.dof }),

@@ -360,7 +360,12 @@ const grillSmoke: MovingProp = {
   name: "grill smoke",
   make: () => {
     const g = new Group();
-    for (let i = 0; i < 4; i++) g.add(new Mesh(new SphereGeometry(0.12, 10, 8), new MeshBasicMaterial({ color: "#e8e4e0", transparent: true, opacity: 0.6, depthWrite: false })));
+    // NOINK: the ink pass drew a faded puff's silhouette as a floating outline in the sky (R14 QA f924-974).
+    for (let i = 0; i < 4; i++) {
+      const m = new Mesh(new SphereGeometry(0.12, 10, 8), new MeshBasicMaterial({ color: "#e8e4e0", transparent: true, opacity: 0.6, depthWrite: false }));
+      m.layers.set(NOINK);
+      g.add(m);
+    }
     return g;
   },
   pose: (o, F) => {
@@ -380,7 +385,7 @@ export const propsFor = (s: S): MovingProp[] => {
   const out: MovingProp[] = ext ? [...floods(), ...cans(), shutterProp] : [];
   switch (id) {
     case "B01": out.push(youHeapToy(s), poppedBattery(s), quackBubble(s)); break;
-    case "B03": case "B04": case "B05": out.push(megaProp(s, () => false)); break;
+    case "B03": case "B03b": case "B04": case "B05": out.push(megaProp(s, () => false)); break;
     case "B11": out.push(megaProp(s, (F) => F >= BEAT.grabs + 6), soundRings(s, [BEAT.morning - 2, BEAT.boy - 4])); break;
     case "B12": out.push(megaProp(s, () => false)); break;
     case "B13": out.push(spatulaProp(s), grillSmoke); break;
