@@ -35,7 +35,9 @@ Fixes: `fixes.md`. Report: `report.md`. Authorities the critics judge against (t
    `layer1.md`, `out/qa/<name>/report.md`, `QA.md`). Script only: run
    `python .claude/skills/stickrified-script/check_script.py videos/<slug>/script.json` instead and say QA layers
    1-3 were not possible. Score: see "Scores".
-3. **Three critics, independently.** Each critic is a fresh agent (Opus, no `model` override needed) given ONLY: its
+3. **Three critics, independently.** Each critic is a fresh agent on the latest Sonnet (pass `model: "sonnet"`; user rule
+   2026-11-14, critics never run on Opus; Sonnet samples sheets unless told: round 2 critics read 14-24 of
+   75, so the prompt says "open every sheet in order, list the ones you opened") given ONLY: its
    critic file, `pack.md`, the paths of the assets marked present, and the authorities above. No critic sees
    another's report or any earlier score. Run the three in parallel. Each writes
    `out/<slug>/review/r<N>-<critic>.md` in the format its file sets. (If agents are unavailable, run them one at a
