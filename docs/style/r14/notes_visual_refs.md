@@ -81,3 +81,68 @@
 - 31.7 dissolve into a VERTICAL STACK of cards that the camera pans down (the numbers grids repeating) = a "every card" montage done as one camera move over objects, not cuts.
 ## ref2 07 (33.6-38.3 s)
 - A data visualisation done ON the prop: the numbers on the card grids light up in colours as they are counted (2-3 times = coloured glows spreading across the grid), then fade to leave only the few singletons glowing amber. The camera stays locked on the grids for ~5 s; the motion is entirely in the glowing digits. In-world, lit, readable at phone size.
+## ref2 08 (38.4-43.1 s)
+- The amber singleton digits are joined by a YELLOW PENCIL drawing a line through "19 08 24" (a hand-drawn stroke appears in the world), the camera pushes in to it; the scratch with the badge reveals the winning symbols matching; dissolve back to him in the card-tiled room. The method is SHOWN step by step on props, never told with a graphic overlay.
+## ref2 09 (43.2-47.9 s)
+- In the room he stands still, then a raised arm + ring eyes + sparkles (cracked it), a happy hop.
+- 45.0 dissolve to a TOP-DOWN STATE ROAD MAP on a desk (towns, highways, gas-pump icons), a pointer stick taps gas stations one by one, each lights up as it is tapped (in-world UI); then coins RAIN onto every station and a red circle is drawn round the state. Map inserts as a physical prop under desk light.
+## ref2 10 (48.0-52.7 s)
+- Phone call staged as a MATCH TRANSITION: he lifts a corded phone to the lens until its earpiece fills the frame (49.9), which dissolves into the HEADSET earpiece of the lottery official (same circle, same position) = a sound-object match cut between two places.
+- The official: bright clean blue-white office (window grid, sky, framed cheques, basketball hoop on the wall = character detail), headset, lip sync, bubble gum. The colour script flips warm-dark (caller) -> cool-bright (bureaucrat).
+- He tosses the card over his shoulder dismissively (a prop throw with arc), pops a bubble (secondary gag).
+## ref2 11 (52.8-57.5 s)
+- The hero walks INTO the official's office from behind his chair (enters in depth, back -> front), carrying the box; the official's expressions ladder through shock -> glare.
+- A slow push-in toward the hero over the official's shoulder (the official's head becomes the fg mass on the left), the box in the fg bottom shows the sorted winning cards with a plant; deadpan -> closed-eye smile on "winners". Static-ish but always pushing.
+## ref2 12-13 (57.6-63.3 s) ending
+- The camera keeps a slow arc around the desk while he deals cards out of the box onto the desk in a row (prop action on "losers"), the official's expression ladder (smug -> sweat -> ring-eye shock on "90% of them right").
+- 60.1 dissolve to the convenience store: "GAME CLOSED" sign taped on the lottery machine; a clerk peels tape with a tape gun (prop + sound); the hero walks out past the queue toward the lens carrying his box, smug half-smile, and the video ENDS on that walk-out mid-motion (no outro, no hold). Last frame = hero, box, deadpan smile.
+## ref3 00 (0-4.7 s) cannonball / pirates, bright day
+- Saturated sunny palette (sky blue, sea turquoise, warm planks, red), detailed 3D props (iron cannon on a wooden carriage, rope coils, buckets, rigging), stylised sandstone sea stacks with waterfalls in the distance = a rich layered world.
+- HOOK = an object-follow: the camera swings around the cannon as it FIRES (muzzle flash + orange smoke ball), then rides with the cannonball over the sea (motion streaks on the water), to the enemy ship, into the hull (cracks), and THROUGH it into the dark lower deck where a pirate is drinking: one continuous trajectory carries us between two locations.
+- The ball stops in the air in front of the pirate; his mug gets hit and sprays beer in an arc; the mug flies spinning (physics). Ring eyes then a grin.
+- 4.0 whip-tilt up through the deck and sails (motion blur) = transition by camera move.
+## ref3 01 (4.8-9.5 s)
+- Wide: navy ship fires a broadside (multi-flash + rolling smoke clouds along the hull, light flicker), cannonball streak; the camera dives to deck level as the ball smashes through the bulwark: an explosion of SPLINTERS (hundreds of wooden shards flying, tumbling, staying in the air for 2 s), pirates duck and shield their faces, flinch poses. Splinters are 3D shards with motion, not a 2D burst.
+- Low-angle camera on the deck (planks converge to a vanishing point), characters in fg/mid/bg at three depths reacting at different times.
+## ref3 02 (9.6-14.3 s)
+- Splinters keep falling and LANDING on the deck (stuck shards stay as set dressing afterwards: continuity of damage). Characters peek out from behind barrels, flinch, then relax (reaction carried through the beat).
+- Smoke from the impact drifts across the background for seconds.
+- 12.4 cut: the captain (tricorn) opens a "SHOT" crate; a pair of EYES peeks out of the empty dark crate (a gag hidden in a prop); the camera then slides along the cannon (dolly along the barrel) to the gunner loading junk.
+## ref3 03 (14.4-19.1 s)
+- Loading "langrage" shown concretely: he stuffs junk (nails, a boot) into the barrel; then the camera pushes into a barrel label "LANGRAGE" which gets a paper label "GARBAGE" slapped over it (the joke typeset IN the world, no overlay).
+- The cannon fires: a cartoon smoke cloud (flat painted puffs with ink edges) fills the whole frame = SMOKE WIPE transition into the next scene (open sea), out of which an old boot tumbles toward the navy ship. The smoke is drawn in the house style (lit top, shaded underside), not a realistic sim.
+- Ship CU: a long dolly along the navy hull (gun ports), parallax with the sea.
+## ref3 04 (19.2-23.9 s)
+- An aerial fly-in from the sea to an island fort (sea stacks, palms, a brick "HOT SHOT" furnace with a chimney smoking, a flag waving): one long crane down from establishing to medium, no cut.
+- A character walks past the camera close in the fg (big body crossing the frame) = a natural wipe; another shovels cannonballs (an action loop: anticipation, swing, follow-through).
+- The camera pushes INTO the furnace door: a tunnel of glowing coals, embers rising, cannonballs heating from black to red (a colour change on the object = time/heat shown). Emissive light on everything inside.
+## ref3 05 (24.0-28.7 s)
+- Tongs carry a glowing ball out: POV dolly backward along the tongs; then an over-the-cannon view (cannon barrel as the dark foreground mass framing the crew), the ball dropped into the muzzle with a glow.
+- The camera DIVES INTO THE MUZZLE (the dark bore fills the frame, a transition into an x-ray-like CUTAWAY of the barrel: a soaking wet wad with drips, a sack of gunpowder that grows a FACE and side-eyes = props become characters for a beat), a glow ring as the hot ball comes.
+## ref3 06 (28.8-33.5 s)
+- The powder sack's face: worried -> sweat -> ring eyes -> relieved -> ring eyes again, then the hot ball arrives and the frame blooms ORANGE (light from above floods the sack): emotion carried by an object + a light change.
+- Ball flies to the pirate hull and BURIES itself glowing in the planks (sparks, a glowing hot spot that pulses = an emissive, light-casting effect on the wood), a thin smoke wisp rises; a slow pull back to a wide of the ship with the glow visible as a tiny point.
+## ref3 07 (33.6-38.3 s)
+- TIME-LAPSE BY LIGHT in a locked wide: "a few minutes later" the sky shifts day -> dusk purple and the ship glows from inside, brighter and brighter until it shines like a lantern (the hull and sails lit from within; reflections on the water). The camera barely moves; the lighting change carries 5 s. This is lighting as storytelling.
+- 37.2 dissolve to a crate "CARCASS · KEEP FROM FLAME" (text gag), pirates' legs framing it (fg cropped bodies).
+## ref3 08 (38.4-43.1 s)
+- Dusk palette now (purple sky, warm sun low): the LIGHTING CONTINUITY of the time-lapse is held in all following shots, both ships.
+- A hand lifts a holey ball out of the straw-filled crate; the camera tilts up the arm to the captain's smug face (prop -> face tilt link). A star glint on the ball. A pirate pours glowing burning tar from a pot: the tar is an emissive light that lights both faces orange from below; they squint and flinch from the heat as it flares (characters respond to light/heat physically).
+## ref3 09 (43.2-47.9 s)
+- The ball fires: a fireball muzzle flash with sparks, a smoke puff that keeps drifting across the next 2 s; a glowing streak arcs to the navy ship in the far background, which catches fire: flames grow over 2 s (animated fire sprites with ink outlines, black smoke column), lighting the sea orange. The pirates in the fg turn and grin; the camera slowly pushes over their shoulders toward the fire (a fg-to-bg relationship: cause in fg, effect in bg, one frame).
+## ref3 10 (48.0-52.7 s)
+- The burning-ship wide holds 1.5 s with smoke billowing and flames flickering (always moving), dissolve back to DAYLIGHT for "eventually" (time skip shown by light flip).
+- TRANSFORMATION ON SCREEN: a low angle on a wooden hull; iron plates SLAM onto it one by one ("from wood to iron"), rivets, then the camera cranes up to the deck. The change is performed, not cut to.
+- Fireballs hit the iron and BOUNCE off with sparks and fall into the sea with a splash puff: cause/effect shown at small scale in a wide.
+## ref3 11 (52.8-57.5 s)
+- A navy officer (moustache, kepi) beside a huge Rodman gun with a pyramid of balls and a "U.S." crate; the camera pulls back and arcs to reveal the gun's full size against him (scale by comparison), then cranes to a wooden tripod hoist lifting a single huge ball on a rope: the ball swings slightly (pendulum secondary motion).
+## ref3 12-13 (57.6-63.5 s) ending
+- The officer hauls the rope: anticipation (crouch), strain, he gets LIFTED off the ground by the counterweight (comedy of weight: the 1000 lb ball wins), legs dangling, faces cycle.
+- The gun fires: a FLAT PAINTED SMOKE CLOUD fills the frame (an iris-shaped smoke wipe that opens into the next shot), the ball skims the water (wake spray), punches the iron hull (crack lines radiate as glowing ink strokes), then a huge cartoon explosion (layered flat-painted orange/yellow puffs with ink edges, timber and a barrel thrown in arcs), cooling to dark brown smoke rising as a mushroom; the ship sinks; the two pirates bob in a barrel in the fg as the last image (the punchline's victims), a tiny splash. Ends on motion, no outro.
+- The explosions and smoke are drawn in the SAME style as the world (painted volumes + ink lines), never photoreal particles.
+
+# Cross-reference summary (all 4)
+- Shot length median: ours 1.83 s vs refs 0.03-0.37 s (refs use many 1-frame dissolves/"cuts" inside long continuous moves, mean 2.3-3.4 s); refs hold the longest continuous moves 14-40 s with the camera always travelling.
+- Still frames: ours 12.9 %, refs 7.1-8.4 %.  Median motion: ours .012, refs .017-.036.
+- Colourfulness: refs .26-.34 (two pilots that are deliberately warm-low: std .21), ours .23: refs commit to a strong palette per scene and flip it between scenes (warm office / cool night / bright factory).
+- Luma: refs .42-.52; ours .36 (too dark overall).
