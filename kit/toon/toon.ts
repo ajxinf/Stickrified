@@ -351,5 +351,42 @@ export const makeCanvas = () => {
     fn(ctx);
     texture.needsUpdate = true;
   };
-  return { texture, draw };
+  return { texture, draw, canvas };
+};
+
+/**
+ * Smooth "height" of a card's inked shapes (lookdev "lit"): the drawing at 1/8 scale, ink and transparency removed,
+ * blurred, so every shape between ink lines bulges softly (head, hair, torso each separately). Rebuilt on redraw.
+ */
+export const makeHeight = (src: HTMLCanvasElement) => {
+  const W = 150, H = 250;
+  const tmp = document.createElement("canvas");
+  tmp.width = W;
+  tmp.height = H;
+  const tctx = tmp.getContext("2d", { willReadFrequently: true })!;
+  const out = document.createElement("canvas");
+  out.width = W;
+  out.height = H;
+  const octx = out.getContext("2d")!;
+  const texture = new CanvasTexture(out);
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  const update = () => {
+    tctx.clearRect(0, 0, W, H);
+    tctx.drawImage(src, 0, 0, W, H);
+    const img = tctx.getImageData(0, 0, W, H), d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const ink = Math.max(d[i], d[i + 1], d[i + 2]) < 40;
+      const a = ink ? 0 : d[i + 3];
+      d[i] = d[i + 1] = d[i + 2] = 255;
+      d[i + 3] = a;
+    }
+    tctx.putImageData(img, 0, 0);
+    octx.clearRect(0, 0, W, H);
+    octx.filter = "blur(11px)";
+    octx.drawImage(tmp, 0, 0);
+    octx.filter = "none";
+    texture.needsUpdate = true;
+  };
+  return { texture, update };
 };

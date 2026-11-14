@@ -1,3 +1,5 @@
+import { LOOK_FEATURES } from "./lookdev";
+import { shared } from "./shade";
 import { Color, Matrix4, ShaderMaterial, Vector2 } from "three";
 
 /** Layer for character cards: drawn, but never inked by this pass (they carry their own plum ink). */
@@ -36,7 +38,8 @@ uniform mat4 uProjInv;
 uniform vec2 uTexel;
 uniform float uPx, uNearPx, uNearM, uFarPx, uFarM, uCrease, uJump, uFogTint, uSkyMax, uFogNear, uFogFar;
 uniform float uCreaseScale, uContact, uContactScale, uFarOpacity;
-uniform vec3 uInk, uFog;
+uniform vec3 uInk, uFog, uLit, uShade;
+uniform float uAO, uAORad;
 varying vec2 vUv;
 
 vec3 viewPos(vec2 uv, float d) {
@@ -72,6 +75,23 @@ float edgeAt(vec3 pc, vec3 nc, float zc, bool skyC, vec2 uv, out float zn, out f
   return 0.0;
 }
 
+// Painted occlusion (lookdev "diorama"): corners, bases and the ground around feet sink into the scene's own coloured
+// shade (never grey), soft and wide like a painter's darks, not a thin SSAO halo.
+float paintedAO(vec3 pc, vec3 nc, float zc) {
+  float occ = 0.0;
+  float rpx = clamp(uAORad / max(-pc.z, 0.1) / uTexel.y * 0.5, 6.0, 90.0);
+  for (int k = 0; k < 16; k++) {
+    float a = float(k) * 2.39996, t = (float(k) + 0.5) / 16.0;
+    vec2 uv = vUv + vec2(cos(a), sin(a)) * sqrt(t) * rpx * uTexel;
+    float dq = texture2D(tDepth, uv).x;
+    if (dq >= 1.0) continue;
+    vec3 v = viewPos(uv, dq) - pc;
+    float l = length(v);
+    occ += max(dot(nc, v / max(l, 1e-4)) - 0.15, 0.0) * (1.0 - smoothstep(0.3 * uAORad, uAORad, l));
+  }
+  return clamp(occ / 16.0 * 3.0, 0.0, 1.0);
+}
+
 void main() {
   vec3 col = texture2D(tColor, vUv).rgb;
   vec4 nc4 = texture2D(tNormal, vUv);
@@ -80,6 +100,10 @@ void main() {
   vec3 pc = viewPos(vUv, dc);
   vec3 nc = normalize(nc4.xyz * 2.0 - 1.0);
   float zc = skyC ? 1e9 : length(pc);
+  if (uAO > 0.0 && nc4.a > 0.5 && !skyC) {
+    vec3 ratio = min(uShade / max(uLit, vec3(1e-3)), vec3(1.0));
+    col *= mix(vec3(1.0), ratio, uAO * paintedAO(pc, nc, zc));
+  }
 
   float rMax = 0.5 * widthAt(uNearM);
   float cover = 0.0;
@@ -142,5 +166,9 @@ export const inkMaterial = (size: Vector2) =>
       uFogFar: { value: 2e9 },
       uInk: { value: new Color(INK.color) },
       uFog: { value: new Color() },
+      uAO: { value: LOOK_FEATURES.ao ? 1.0 : 0 },
+      uAORad: { value: 1.3 },
+      uLit: shared.uLit,
+      uShade: shared.uShade,
     },
   });

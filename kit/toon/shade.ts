@@ -1,3 +1,4 @@
+import { LOOK_FEATURES } from "./lookdev";
 import { Color, Group, PointLight, ShaderMaterial, Texture, UniformsLib, UniformsUtils, Vector2, Vector3 } from "three";
 import { GRADE, gradeState } from "./grade";
 import { LightPreset, linear } from "./lights";
@@ -57,8 +58,9 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   shared.uLift.value.set(...p.lift);
   shared.uSat.value = p.sat;
   shared.uHazeColor.value.copy(linear(p.haze.color));
-  shared.uHazeStart.value = p.haze.start;
-  shared.uHazeAmount.value = p.haze.amount;
+  // lookdev "diorama": depth reads in layers (aerial haze starts nearer and goes further).
+  shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.4, 6) : p.haze.start;
+  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.85, p.haze.amount * 1.8 + 0.22) : p.haze.amount;
   shared.uCharTint.value.set(...p.char.tint);
   shared.uCharShade.value = p.char.shade;
   shared.uCharInk.value.copy(linear(p.charInk ?? INK));

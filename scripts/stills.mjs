@@ -9,6 +9,9 @@ const args = process.argv.slice(2);
 // --draft: still run QA layer 1 and print its failures, but render anyway (mid-fix look checks; renders keep the gate).
 const draft = args.includes("--draft");
 if (draft) args.splice(args.indexOf("--draft"), 1);
+// --props '{"lookdev":"lit"}': extra input props (look-development lab, kit/toon/lookdev.ts).
+const pi = args.indexOf("--props");
+const extraProps = pi >= 0 ? JSON.parse(args.splice(pi, 2)[1]) : {};
 const si = args.indexOf("--starts");
 const starts = si >= 0 ? args.splice(si, 2)[1].split(",").map(Number) : [0];
 const [id, prefix, framesArg = "0", scaleArg = "0.5"] = args;
@@ -19,13 +22,13 @@ if (!id || !prefix) {
 const frames = framesArg.split(",").map(Number);
 fs.mkdirSync(path.dirname(prefix), { recursive: true });
 const serveUrl = await bundleOnce();
-const composition = await pick(serveUrl, id).catch((e) => fail(id, e));
+const composition = await pick(serveUrl, id, extraProps).catch((e) => fail(id, e));
 if (!(await guardPass(serveUrl, composition, starts))) {
   if (draft) console.log("DRAFT: QA layer 1 failed (above); rendering anyway, not for sign-off");
   else fail(id, "QA layer 1: failures above");
 }
 for (const frame of frames) {
   const output = `${prefix}${String(frame).padStart(4, "0")}.png`;
-  await renderStill({ composition, serveUrl, output, frame, scale: Number(scaleArg), chromiumOptions: CHROMIUM, ...(draft ? { inputProps: { ...composition.props, qa: "collect" } } : {}) }).catch((e) => fail(`${id} frame ${frame}`, e));
+  await renderStill({ composition, serveUrl, output, frame, scale: Number(scaleArg), chromiumOptions: CHROMIUM, inputProps: { ...composition.props, ...extraProps, ...(draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
   console.log(output);
 }

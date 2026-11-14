@@ -1,5 +1,6 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { createElement, useMemo } from "react";
+import { LOOK_FEATURES } from "./lookdev";
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, ShaderMaterial, Vector3 } from "three";
 import { CARD_LOOK, cardMaterial, contactMaterial, lampShadowMaterial } from "./cardshade";
 import { drawPerson, handsOf, headHeight } from "./figure";
@@ -8,7 +9,7 @@ import { CASTER, NOINK, SKY } from "./ink";
 import { rng } from "./paint";
 import { youLook } from "./protagonist";
 import { practicals, shared } from "./shade";
-import { DESIGN, Pen, makeCanvas } from "./toon";
+import { DESIGN, Pen, makeCanvas, makeHeight } from "./toon";
 import type { Pose } from "./poses";
 
 export type { CharState, Look } from "./figure";
@@ -57,7 +58,19 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
     const w = DESIGN.W / DESIGN.PX_PER_M, h = DESIGN.H / DESIGN.PX_PER_M;
     const geo = new PlaneGeometry(w, h);
     geo.translate(0, h / 2 - (DESIGN.H - DESIGN.SOLE) / DESIGN.PX_PER_M, 0);
-    const card = new Mesh(geo, cardMaterial(cv.texture));
+    if (LOOK_FEATURES.paper) {
+      // lookdev "paper": the card curls back a little at its edges, like a cut-out standing on its tab.
+      const pos = geo.attributes.position;
+      geo.dispose();
+      const curl = new PlaneGeometry(w, h, 16, 1);
+      curl.translate(0, h / 2 - (DESIGN.H - DESIGN.SOLE) / DESIGN.PX_PER_M, 0);
+      const cp = curl.attributes.position;
+      for (let i = 0; i < cp.count; i++) cp.setZ(i, -0.06 * (cp.getX(i) / (w / 2)) ** 2);
+      geo.copy(curl);
+      void pos;
+    }
+    const height = LOOK_FEATURES.litCards ? makeHeight(cv.canvas) : null;
+    const card = new Mesh(geo, cardMaterial(cv.texture, false, height?.texture));
     card.layers.set(NOINK);
     card.receiveShadow = true;
     // Shadow caster: never drawn (no colour, no depth), only seen by the key light's shadow camera.
@@ -76,8 +89,15 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
     contact.userData.contact = true;
     contact.layers.set(SKY);
     const group = new Group().add(card, caster, lampCast, contact);
+    if (LOOK_FEATURES.paper) {
+      const border = new Mesh(geo, cardMaterial(cv.texture, true));
+      border.layers.set(NOINK);
+      border.receiveShadow = true;
+      border.position.z = -0.012;
+      card.add(border);
+    }
     group.userData.character = true;
-    return { cv, card, caster, lampCast, contact, group, key: "", headUp: headHeight(look) };
+    return { cv, card, caster, lampCast, contact, group, height, key: "", headUp: headHeight(look) };
   }, [look]);
 
   useFrame(() => {
@@ -114,6 +134,7 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
     if (key !== p.key) {
       p.key = key;
       p.cv.draw((ctx) => drawPerson(new Pen(ctx, ang), look, state));
+      p.height?.update();
     }
   });
 
