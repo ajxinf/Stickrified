@@ -69,9 +69,9 @@ const H = (look: Look) => headHeight(look) + 0.17;
 /** frameOn with the character's own head height (frameOn handles characters standing above the ground). */
 const fo = (pos: Vector3, from: Vector3, size: ShotSize, look: Look = youLook, o: Parameters<typeof frameOn>[3] = {}) => frameOn(pos, from, size, { head: H(look), ...o });
 /** A hold: a barely-there push (refs hold still on beats, then move fast). */
-// R14 measured bar: refs keep the camera travelling (still frames 7-8 %, ours were 12.9 %): every hold pushes >= 10 %.
-const creep = (p: { pos: Vector3; look: Vector3; fov: number }, frames: number, k = 0.1) =>
-  shot(p, [pushIn(Math.max(k, 0.1) * p.pos.distanceTo(p.look)), drift(0.03 * p.pos.distanceTo(p.look))], frames);
+// R14 measured bar: refs keep the camera travelling (still frames 7-8 %, ours were 12.9 %): every hold pushes >= 22 % (10 % moved the measured still share only 12.9 -> 11.8 %).
+const creep = (p: { pos: Vector3; look: Vector3; fov: number }, frames: number, k = 0.1, exact = false) =>
+  shot(p, [pushIn((exact ? k : Math.max(k, 0.22)) * p.pos.distanceTo(p.look)), drift(0.03 * p.pos.distanceTo(p.look))], frames);
 const tele = (from: Vector3, who: Vector3, look: Look, span: number) => telephoto(from, who, H(look), span);
 type Role = { name: string; look: Look; at: (F: number) => Vector3; state: (F: number) => CharState };
 const inShot = (from: number, roles: Role[]): CastSpec[] => roles.map((r) => ({ name: r.name, look: r.look, at: (f) => r.at(f + from), state: (f) => r.state(f + from) }));
@@ -253,7 +253,7 @@ const shots: S[] = [
   // "212 talking toys": a low macro dolly along the pile.
   sh("B02-toys", W_.talking - 6, BEAT.street, "int-day", { pose: shot({ pos: HEAP.clone().add(new Vector3(-1.9, 0.42, 1.0)), look: HEAP.clone().add(new Vector3(-0.2, 0.25, -0.4)), fov: 44 }, [drift(1.1), pushIn(0.3)], 60), dof: DOF.closeup(1.2) }),
   // "the guy across the street laughs at you": Chad close on a long lens, laughing at you.
-  sh("B03-chad-laughs", BEAT.street, BEAT.because - 2, "ext-day", { pose: creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.3), 50, 0.04), cast: inShot(BEAT.street, [chadMock]), subject: "chad", crowd: true, dof: POST.dof }),
+  sh("B03-chad-laughs", BEAT.street, BEAT.because - 2, "ext-day", { pose: creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.3), 50, 0.04, true), cast: inShot(BEAT.street, [chadMock]), subject: "chad", crowd: true, dof: POST.dof }),
   // "Because outside, 400 zombies hunt by sound": a fast pull-out and crane up over the horde (whip, blurred).
   sh("B03b-horde", BEAT.because - 2, 270, "ext-day", {
     pose: (f) => {
@@ -292,7 +292,7 @@ const shots: S[] = [
     kicks: [[BEAT.only - (W_.he - 2), BEAT.only - (W_.he - 2) + 7]], dof: DOF.closeup(1.0),
   }),
   // Your face: the slam blows your fringe back.
-  sh("B08-slammed", BEAT.only + 4, BEAT.so, "ext-day", { pose: whipOut(creep(fo(YOU_SHUTTER, at(CHAD.s + 2.2, -1.5), "cu", youLook, { side: -0.2 }), 25, 0.05), BEAT.so - BEAT.only - 4), whips: [[BEAT.so - BEAT.only - 4 - WHIP, BEAT.so - BEAT.only - 4]], cast: inShot(BEAT.only + 4, [youKnock]), subject: "you", dof: DOF.closeup(1.4) }),
+  sh("B08-slammed", BEAT.only + 4, BEAT.so, "ext-day", { pose: whipOut(creep(fo(YOU_SHUTTER, at(CHAD.s + 2.2, -1.5), "cu", youLook, { side: -0.2 }), 25, 0.05, true), BEAT.so - BEAT.only - 4), whips: [[BEAT.so - BEAT.only - 4 - WHIP, BEAT.so - BEAT.only - 4]], cast: inShot(BEAT.only + 4, [youKnock]), subject: "you", dof: DOF.closeup(1.4) }),
   // Line 5. Night: you and Dave on the pallet, a battery lantern between you.
   sh("B09-pallet", BEAT.so, W_.eating - 2, "int-night", { whips: [[0, WHIP]], pose: whipIn(shot({ pos: PALLET.clone().add(new Vector3(-0.15, 1.25, 4.6)), look: PALLET.clone().add(new Vector3(-0.55, 1.1, 1.2)), fov: 48 }, [drift(-0.2), pushIn(0.4)], 80)), cast: inShot(BEAT.so, [youBeans, daveBeans]), subject: "you", dof: DOF.medium(3.3), motes: motes(PALLET, "#ffc98a") }),
   // "eating cold beans in total silence": CU, beans off your pinky.
@@ -302,7 +302,7 @@ const shots: S[] = [
   // Line 7. The horde surges, bangs, gives up (high crane).
   sh("B12-horde-bangs", BEAT.heads - 20, BEAT.dave - 2, "ext-dawn", { pose: shot({ pos: at(22, -3.5, 15), look: at(32.5, 3.2, 1), fov: 48 }, [arc(-12, 0.6), pushIn(2.5)], 110), cast: inShot(BEAT.heads - 20, [chadMorning]), crowd: true, dof: POST.dof }),
   // Line 8. "Dave thinks Chad is winning": Chad on his roof flipping a steak, floodlights on.
-  sh("B13-steak", BEAT.dave - 2, BEAT.daveMight - 4, "ext-dawn", { pose: creep({ pos: at(CHAD.s + 1.3, FRONT - 2.9, ROOF_Y + 1.75), look: CHAD_GRILL.clone().add(new Vector3(0.1, 1.0, 0.35)), fov: 42 }, 60, 0.08), cast: inShot(BEAT.dave - 2, [chadGrill]), subject: "chad", dof: DOF.medium(3.2) }),
+  sh("B13-steak", BEAT.dave - 2, BEAT.daveMight - 4, "ext-dawn", { pose: creep({ pos: at(CHAD.s + 1.3, FRONT - 2.9, ROOF_Y + 1.75), look: CHAD_GRILL.clone().add(new Vector3(0.1, 1.0, 0.35)), fov: 42 }, 60, 0.08, true), cast: inShot(BEAT.dave - 2, [chadGrill]), subject: "chad", dof: DOF.medium(3.2) }),
   // "Dave might be right": Dave with his cold can, the street (and Chad's shop) through the window.
   sh("B14-dave", BEAT.daveMight - 4, BEAT.then - 2, "int-day", { pose: creep(fo(DAVE_WIN, IN(1.0, 5.6), "mcu", daveLook), 50, 0.08), cast: inShot(BEAT.daveMight - 4, [daveWindow]), subject: "dave", dof: DOF.medium(2.4) }),
   // Line 9. Taping toys onto the cart (the arm pulls strips across).

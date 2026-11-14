@@ -40,11 +40,11 @@ const DEEP_CURVE = { y: [0.03, 0.075, 0.17, 0.46, 0.83, 0.96, 1], m: [0.4, 0.5, 
 // vignette + top darkening up (refs .77-.86 corner/centre, ours .95-.98), grain and halation on every preset.
 const FILM = { grain: 0.022, halation: 0.35 };
 export const GRADE: Record<GradeName, Grade> = {
-  day: { ...S_CURVE, ...FILM, exposure: 1.05, sat: [1.15, 1.3, 1.15], tint: { s: [8, 0, 2], m: [0, 0, 4], h: [0, 0, 2] }, vig: [0.22, 0.4], top: 0, amount: 1 },
-  golden: { ...S_CURVE, ...FILM, exposure: 1.8, sat: [1.2, 1.38, 1.2], tint: { s: [8, -1, 6], m: [2, 0, 2], h: [3, 0, -4] }, vig: [0.36, 0.35], top: 0.1, amount: 1 },
+  day: { ...S_CURVE, ...FILM, exposure: 1.22, sat: [1.15, 1.3, 1.15], tint: { s: [8, 0, 2], m: [0, 0, 4], h: [0, 0, 2] }, vig: [0.22, 0.4], top: 0, amount: 1 },
+  golden: { ...S_CURVE, ...FILM, exposure: 2.08, sat: [1.2, 1.38, 1.2], tint: { s: [8, -1, 6], m: [2, 0, 2], h: [3, 0, -4] }, vig: [0.36, 0.35], top: 0.1, amount: 1 },
   // R14: refs keep night readable (navy, not black; ref1/ref2 night rooms luma ~.3); the pilot night aisle measured .16.
-  night: { ...DEEP_CURVE, ...FILM, exposure: 1.65, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
-  interior: { ...DEEP_CURVE, ...FILM, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },
+  night: { ...DEEP_CURVE, ...FILM, exposure: 1.85, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
+  interior: { ...DEEP_CURVE, ...FILM, exposure: 1.2, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },
 };
 
 /** The grade the Composer applies; set by applyLight() from the shot's light preset. */

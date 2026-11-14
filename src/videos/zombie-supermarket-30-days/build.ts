@@ -108,10 +108,35 @@ const chadStore = () => {
   k.box(concrete, R, 0.04, SW, R / 2, 0.02, 0); // shop floor
   // Inside the recess: pegboard back wall full of tools, a counter, a stack of paint tins.
   k.box(MAT.color("#c8a878"), 0.06, SH, SW, R - 0.04, SH / 2, 0);
-  const tool = [MAT.color("#c8302e"), MAT.color("#3a6aa8"), MAT.color("#e2b23a"), MAT.metal()];
-  const r = rng(77);
-  for (let i = 0; i < 26; i++) k.box(tool[i % 4], 0.05, 0.2 + r() * 0.3, 0.08 + r() * 0.2, R - 0.1, 1.0 + r() * 2.1, -SW / 2 + 0.4 + r() * (SW - 0.8));
-  k.box(MAT.wood(), 0.7, 1.0, 1.8, R - 0.6, 0.5, 1.3);
+  // R14 (environment read as abstract blocks): hanging tools you can name at a glance, in rows on the pegboard:
+  // hammers (wood handle + steel head), wrenches (steel bar + jaw), hand saws (blade + red grip), with paint-tin
+  // shelves below and a TOOLS sign above.
+  const r = rng(77), wood = MAT.wood(), steel = MAT.metal(), grip = MAT.color("#c8302e"), blue = MAT.color("#3a6aa8");
+  const x = R - 0.09;
+  for (let row = 0; row < 3; row++) {
+    const y = 1.3 + row * 0.62;
+    for (let i = 0; i < 9; i++) {
+      const z = -SW / 2 + 0.45 + i * ((SW - 0.9) / 8), kind = (i + row) % 3, j = (r() - 0.5) * 0.04;
+      if (kind === 0) {
+        k.box(wood, 0.035, 0.34, 0.045, x, y + j, z); // hammer handle
+        k.box(steel, 0.05, 0.07, 0.17, x, y + 0.2 + j, z); // head
+      } else if (kind === 1) {
+        k.box(steel, 0.03, 0.36, 0.04, x, y + j, z); // wrench bar
+        k.box(steel, 0.035, 0.07, 0.11, x, y + 0.2 + j, z); // jaw
+      } else {
+        k.box(MAT.color("#b8bcc4"), 0.015, 0.14, 0.3, x, y + j, z); // saw blade
+        k.box(i % 2 ? grip : blue, 0.04, 0.12, 0.08, x, y + j, z + 0.17); // grip
+      }
+    }
+  }
+  for (const y of [0.35, 0.75]) {
+    k.box(wood, 0.32, 0.03, SW - 0.6, R - 0.22, y, 0); // shelf
+    for (let i = 0; i < 10; i++) k.add([grip, blue, MAT.color("#e2b23a"), MAT.color("#4e8a54")][(i + (y > 0.5 ? 1 : 0)) % 4], new CylinderGeometry(0.09, 0.09, 0.18, 12), R - 0.24, y + 0.105, -SW / 2 + 0.55 + i * ((SW - 1.1) / 9));
+  }
+  const toolSign = new Mesh(new PlaneGeometry(1.1, 0.28), M("toolsSign", () => new MeshBasicMaterial({ map: signTex("TOOLS", "#e2b23a", "#1e1a24") })));
+  toolSign.position.set(x - 0.02, SH - 0.32, 0);
+  toolSign.rotation.y = -Math.PI / 2;
+  k.box(wood, 0.7, 1.0, 1.8, R - 0.6, 0.5, 1.3);
   // Roof: coping along the front, roof hatch, the generator, fuel cans are props (story counts them down).
   k.box(trim, 0.25, 0.18, L, 0.12, H + 0.09, 0);
   // Fortress dressing (pilot critique: "never shown as a fortress"): barbed wire along the roof edge, sandbags by the
@@ -151,7 +176,7 @@ const chadStore = () => {
   const members = scrawl(["CHAD'S.", "MEMBERS ONLY"], "#efe6d2", "#b0202a", 2.3, 1.45);
   members.position.set(-0.04, 2.35, -(SW / 2 + 1.35));
   members.rotation.y = -Math.PI / 2;
-  g.add(sign, members);
+  g.add(sign, members, toolSign);
   return g;
 };
 
