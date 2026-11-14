@@ -23,6 +23,7 @@ SR = 48000
 MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -6, 16
 AMB_DB, AMB_DUCK_DB = -9, 13  # R13: a continuous scene bed under everything, ducked less than the music
 MIN_GAP_DB = 15
+MAX_SFX_DB = -6  # no effect within 6 dB of the narrator (user 2026-11-14: effects way too loud)
 FFMPEG = os.path.abspath("node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe")  # bundled with Remotion
 db = lambda x: 10 ** (x / 20)
 
@@ -115,6 +116,7 @@ def main(d):
     mid, side = mix.mean(1), (mix[:, 0] - mix[:, 1]) / 2
     mix = np.stack([mid + 0.45 * side, mid - 0.45 * side], 1)  # R13 width: side about -25 dB under mid
     gap = voice_gap(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
+    gap.update(sfx_check(voice, db(SFX_DB) * sfx.mean(1), json.load(open(f"{d}/voice/words.json"))))
     pre = f"{d}/audio/premaster.wav"
     wavfile.write(pre, SR, mix.astype(np.float32))
 
@@ -138,10 +140,22 @@ def main(d):
     print(f"mix.wav: {n / SR:.3f} s stereo, {i:.1f} LUFS integrated, true peak {tp:.1f} dBTP (premaster {m['input_i']} LUFS, {m['input_tp']} dBTP)")
     print(f"voice vs music+ambience in speech: {gap['voice_music_gap_db']:.1f} dB (lowest word {gap['voice_music_gap_min_word_db']:.1f} dB on {gap['worst_word']}); "
           f"voice vs button on the last word: {gap['voice_button_gap_db']:.1f} dB")
+    print(f"loudest SFX moment: {gap['sfx_loudest_vs_voice_db']:+.1f} dB vs the narrator at {gap['sfx_loudest_at_s']} s (max {MAX_SFX_DB})")
+    assert gap["sfx_loudest_vs_voice_db"] <= MAX_SFX_DB, f"FAIL: SFX {gap['sfx_loudest_vs_voice_db']:+.1f} dB vs the voice at {gap['sfx_loudest_at_s']} s (max {MAX_SFX_DB}): lower that event"
     assert abs(i + 14) <= 0.5 and tp <= -1.0, "master outside -14 +-0.5 LUFS / -1 dBTP"
     assert gap["voice_music_gap_db"] >= MIN_GAP_DB, f"FAIL: voice only {gap['voice_music_gap_db']:.1f} dB over the music (needs >= {MIN_GAP_DB})"
     # The toon skill's rule (15 dB); this only checked > 0, so the pilot shipped at 3.3 dB (review H4).
     assert gap["voice_button_gap_db"] >= MIN_GAP_DB, f"FAIL: button only {gap['voice_button_gap_db']:.1f} dB under the last word (needs >= {MIN_GAP_DB}): lower music.button_db"
+
+
+def sfx_check(voice, sfx, words, w=0.4):
+    """Loudest 400 ms of the SFX stem vs the narrator's median word (both as mixed)."""
+    r = lambda z: 20 * np.log10(np.sqrt(np.mean(z ** 2)) + 1e-12)
+    vref = float(np.median([r(voice[int(x["start"] * SR):int(x["end"] * SR)]) for x in words if x["end"] - x["start"] > 0.15]))
+    n, hop = int(w * SR), int(w * SR) // 4
+    lv = np.array([r(sfx[i:i + n]) for i in range(0, len(sfx) - n, hop)])
+    k = int(lv.argmax())
+    return {"sfx_loudest_vs_voice_db": round(float(lv[k] - vref), 1), "sfx_loudest_at_s": round(k * hop / SR, 2)}
 
 
 def voice_gap(voice, mus, words):

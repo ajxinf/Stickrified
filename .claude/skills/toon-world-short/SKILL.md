@@ -160,6 +160,10 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      "loop"}}`): write a specific prompt (material, action, size, "no music"), reuse library entries across videos.
      `python scripts/audio/eleven_sfx.py videos/<slug>` generates only missing/changed entries (they cost credits)
      into `assets/sfx/eleven/`. Aim for ~9 strong hits per 10 s (R13), each a layered real sound, not 15 pops.
+     **Levels are by loudness, under the narrator** (user 2026-11-14: "way too loud, especially the generator"):
+     each sound's loudest 400 ms lands 10 dB (hits) or 15 dB (sounds >= 1.5 s: engines, crowds, rattles) under the
+     narrator's median word; a library entry's `"level"` overrides. `mix.py` FAILS any mix with an effect within 6 dB
+     of the voice.
      Per event: `"pan"` -1..1 (where it is on screen), `"gain_db"`.
      `"ambience": {"<scene tag>": "<library loop>"}` lays a continuous bed per scene (from `shots.json` scene tags,
      10-frame crossfades): the mix is never silent between lines. `"space": {"<scene tag>": RT60 s}` puts the

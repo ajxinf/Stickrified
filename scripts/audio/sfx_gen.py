@@ -171,6 +171,22 @@ def scenes(d, n_frames):
     return tag
 
 
+SFX_DB = -6  # mix.py's SFX stem gain (kept in sync: mix.SFX_DB)
+VOICE_REF = -20.0
+
+
+def rms_db(z):
+    return 20 * np.log10(np.sqrt(np.mean(z ** 2)) + 1e-12)
+
+
+def loud(s):
+    """Loudest 400 ms RMS (dBFS) of a (stereo) sound: what the ear hears as its level."""
+    m, w = s.mean(1), int(0.4 * SR)
+    if len(m) <= w:
+        return rms_db(m)
+    return max(rms_db(m[i:i + w]) for i in range(0, len(m) - w, w // 4))
+
+
 def reverb_ir(decay):
     """Synthetic stereo room: decorrelated noise with an exponential tail (RT60 = decay s), darkened."""
     n = int(decay * SR)
@@ -212,6 +228,12 @@ def main(d):
     out, wet = np.zeros((n, 2)), {}
     check_air(cfg["events"], fps, frames / fps)
     tag = scenes(d, frames)
+    lib = json.load(open(eleven.LIB, encoding="utf-8"))
+    voice = read_st(f"{d}/voice/voice.wav").mean(1)
+    voice = voice / (np.iinfo(np.int16).max + 1) if np.abs(voice).max() > 2 else voice
+    words = json.load(open(f"{d}/voice/words.json", encoding="utf-8"))
+    global VOICE_REF
+    VOICE_REF = float(np.median([rms_db(voice[int(w["start"] * SR):int(w["end"] * SR)]) for w in words if w["end"] - w["start"] > 0.15]))
     space = cfg.get("space", {})
     for e in cfg["events"]:
         if e["sfx"] in SOUNDS:
@@ -219,7 +241,12 @@ def main(d):
             s = np.stack([s, s], 1)
         else:  # ElevenLabs library sound (scripts/audio/eleven_sfx.py)
             s = read_st(os.path.join(eleven.CACHE, f"{e['sfx']}.wav"))
-        s = pan(s / np.max(np.abs(s)) * 10 ** ((-3 + LEVEL_DB.get(e["sfx"], 0) + e.get("gain_db", 0)) / 20), e.get("pan", 0))
+        # Loudness, not peak (user 2026-11-14: "way too loud, especially the generator"): peak-normalising a steady
+        # engine made it as loud as the narrator. The sound's loudest 400 ms sits `level` dB under the narrator's
+        # median word in the final mix: hits -10, long/steady sounds (>= 1.5 s) -15, library "level" overrides.
+        spec = lib.get(e["sfx"], {})
+        level = spec.get("level", -15 if len(s) >= 1.5 * SR else -10) + LEVEL_DB.get(e["sfx"], 0) + e.get("gain_db", 0)
+        s = pan(s * 10 ** ((VOICE_REF + level - SFX_DB - loud(s)) / 20), e.get("pan", 0))
         at = round(e["f"] / fps * SR) - (len(s) // 2 if e["sfx"] in CENTRED else 0)
         a, b = max(at, 0), min(at + len(s), n)
         out[a:b] += s[a - at:b - at]
