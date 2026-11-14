@@ -212,3 +212,89 @@ Applied the same day: grade.ts (sat, exposure, vignette, top darkening, grain, h
 indoors), lights.ts/shade.ts (darker fill, stronger, wider lamps), cardshade.ts (lamp falls off across the card),
 Composer DOF (stronger background, foreground blur), camera.ts (tighter SHOT_SIZE, low default angle), street.tsx
 (props every 3 m), guard (holds up to 60 f), Insert.tsx, measure.py targets. Scored on `_stress-test` v3.
+
+## R13 quality-gap study vs the zombie pilot (2026-11-14)
+`assets/video-standard.mp4` (private, git-ignored; same rules as above: craft only, never its story, jokes, characters
+or shots). 61.1 s, 1080x1920, 30 fps, stereo, -14.1 LUFS / -1.7 dBTP, LRA 2.4 LU, ~230 words (~3.8 words/s).
+Every 3rd frame was read on 21 contact sheets; the per-second notes are in the session record. Measurements were made
+with one script on both videos (the pilot is the round-3 `final.mp4`).
+
+| measured | R13 | zombie pilot |
+|---|---|---|
+| length / words per s | 61 s / ~3.8 | 81 s / 3.1 |
+| mean frame-to-frame motion (luma diff) | .039 | .026 (R13 has 1.5x more motion) |
+| median motion | .028 | .013 (2.2x) |
+| near-still frames | 7.6 % | 12.3 % |
+| saturation / colourfulness (hue spread) | .54 / .21 | .46 / .29 (R13: richer but fewer hues per scene) |
+| luma p5-p95 | .10-.81 | .09-.85 |
+| stereo side vs mid | -26 dB (real stereo) | mono |
+| band energy sub <60 / 60-250 / 250-1k / 1-4k / 4-8k / 8k+ (dB re total) | -19.5 / -3.2 / -4.1 / -12.2 / -14.1 / -17.6 | -32.7 / -6.3 / -2.0 / -9.4 / -18.8 / -24.5 |
+| short-term loudness p10-p90 | -20.4 to -14.5 dB | -25.8 to -14.4 dB (deep dips between lines) |
+| strong transients per 10 s | 9.3 | 14.6 (ours: many short isolated hits) |
+
+### What R13 does better, and what it would take here
+**World and light** (biggest gap)
+1. Physically lit world: realistic PBR materials (rock, wood grain, brass, steel, water) under ONE motivated key per
+   scene (a ceiling lamp, a lantern, the sun) with AO, soft GI-like falloff and deep shadow around a pool of light. The
+   pilot is evenly lit, so every frame is the same brightness edge to edge. Needs: CC0 PBR texture sets (Poly Haven,
+   ambientCG), HDRI or baked light, SSAO, a key light per shot that leaves 40-60 % of the frame in shadow.
+2. Volumetric atmosphere: light cones with dust motes (0.0 s), haze between camera and subject (3-6 s), god rays
+   through settling dust (56 s). Pilot: dust particles only. Fake it in three.js with additive cone meshes + depth fog
+   + the existing Dust.
+3. A limited palette per scene: amber/brown plus ONE accent (red cart, green cash, gold). The pilot puts 5-6 saturated
+   hues in every street frame (purple road, yellow, red, green, orange), which reads as a mobile game.
+4. Detailed hero props as real 3D models in the cards' hands (shotgun, pickaxe, knife, dynamite, briefcase, car)
+   next to flat 2D characters: the mix of simple characters and rich props reads as premium. Pilot props are mostly
+   low-detail primitives.
+5. Characters cast real, soft, directional shadows on the floor (36-39 s) and take the scene's colour. Pilot: contact
+   blobs only, cards lit flat.
+6. Set dressing that tells the story and the period: labelled crates ("CANDLES"), a gold price board, a 1909 calendar,
+   an ironic mine sign, brands on props, "10 FT" scratched in the dirt. Text lives IN the world; there are no stamp
+   cards or overlays at all.
+
+**Animation and acting**
+7. Lip sync: talking characters move their mouths per syllable (6-9 s, 34-43 s), and the script uses short character
+   lines in their own voices. Pilot: narration only, mouths only swap expressions.
+8. Full-body acting with overlapping action: a laugh with a knee lift and a bouncing hat (36 s), a hat crushed on a
+   beam (21.6 s), an anticipation-swing-impact pickaxe (26 s), runs at the lens (54 s). Pilot: mostly pose and face
+   swaps on still bodies.
+9. Hands always busy in holds: sipping coffee, biting bread, twirling dynamite (48-51 s), so no hold is dead even
+   without camera motion.
+10. Secondary motion and physics: bills flutter and keep falling across a cut (45-46 s), a hat flies off, swinging
+    lanterns, the dynamite bounces off a cart (52.8 s), water slops.
+11. Visual state continuity: the suit goes soot-grey after the blast (57 s), the gold dust keeps trickling from the
+    barrel (9.2 s).
+
+**Camera and editing**
+12. Object-led camera: the camera follows the thing the sentence is about (gold into the barrel -> rides the bullet
+    -> into the wall, 0-3 s; rides the thrown dynamite, 52 s). The picture performs the sentence word by word.
+13. Transitions made of the world, not of overlays: a camera fly-through a magnifying glass (32 s), a dust cloud
+    that fills the frame and clears into the next scene (55.7 s), a lateral whip-truck (40.3 s), a round-object
+    bloom (18.9 s), a body walking into the lens (54.6 s). Pilot: 10-frame dissolves and cuts.
+14. Macro inserts for every process verb (load, swirl, flakes, flat, light the fuse), each with its own motion
+    (orbit, push) and shallow depth of field.
+15. Depth layering: an out-of-focus foreground layer (rocks, a gold pan, a lantern) in most wides.
+
+**VFX**
+16. In-world effects that light the scene: fuse sparks, a match flame, a fireball, glowing gold veins and sparkles.
+    The pilot's effects (sound rings, rainbow trail, stamps) are mostly flat overlays that light nothing.
+
+**Captions**
+17. One or two words per caption, white with a black outline, smaller, no colour highlight, at ~0.70 H. The pilot
+    shows 2-4 words with an orange key word. Fewer words = faster reading rhythm. (A taste call: test both.)
+
+**Sound** (measured, not heard)
+18. A continuous bed: room tone or ambience plus music fill every gap, so loudness barely moves (LRA 2.4, p10
+    -20 dB). The pilot drops to near-silence between lines (p10 -26 dB): it sounds empty.
+19. Real stereo: ambience and music are wide, effects sit where they are on screen. The pilot is mono.
+20. A fuller spectrum: about 3 dB more low end (60-250 Hz), 13 dB more sub, 7 dB more "air" (8 kHz+), and less
+    boxy 250 Hz-1 kHz. The pilot's mix is mid-heavy and thin: synthesized blips have little low end or air.
+21. Fewer, richer effects: 9 strong hits per 10 s against our 15, each a layered, real-sounding foley event (metal,
+    wood, dirt, cloth, a fuse hiss) blended into the bed instead of isolated synthetic pops.
+22. Space: effects sit in the room's reverb (a mine tunnel sounds like a tunnel).
+
+**Story and pacing**
+23. Tighter: 61 s at ~3.8 words/s against our 81 s at 3.1. Every second carries a new picture.
+24. Two turns, not one (the scam, then the buyer's real knowledge), each shown by a prop reveal (the dynamite in the
+    jacket lining, the gold vein), and the last frame calls back to the first character (his hat on the pickaxe).
+25. True detail used as texture (mine salting, the 1909 gold price), shown, never lectured.
