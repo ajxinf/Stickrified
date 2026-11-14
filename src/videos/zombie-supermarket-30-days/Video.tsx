@@ -40,13 +40,14 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
   const moving = useMemo(() => propsFor(s), [s]);
   const extras = useMemo(() => (ext ? [] : INT_EXTRAS(s.w === "int-night")), [ext, s.w]);
   const shotWithProps = useMemo(() => ({ ...s, moving }), [s, moving]);
+  const avoid = useMemo(() => ({ from: s.from, frames: s.frames, lens: (F: number) => s.pose(F - s.from).pos }), [s]);
   return (
     <ThreeCanvas width={width} height={height}>
       <ShotCamera {...shotWithProps} />
       <ToonWorld preset={light} sunDir={W.sun} shadow={ext ? SHADOW.ext : SHADOW.int} />
       <Street preset={preset} light={light} opts={ext ? EXT_OPTS : INT_OPTS} />
       {extras.map((o, i) => <primitive key={i} object={o} />)}
-      {s.crowd && <Crowd spec={HORDE} f={f} avoid={s.pose(lf).pos} keepOff={[{ pos: cartAt(f), r: 1.0 }]} />}
+      {s.crowd && <Crowd spec={HORDE} f={f} avoid={avoid} keepOff={[{ pos: cartAt(f), r: 1.0 }]} />}
       {s.motes && <Dust center={s.motes.center} size={s.motes.size} color={s.motes.color} strength={0.9} count={260} />}
       {ext && <Dust center={at(32, 0, 3)} size={new Vector3(16, 6, 30)} color={s.w === "ext-dawn" ? "#ffd8a8" : "#fff4dc"} strength={0.8} count={420} />}
       {moving.map((p) => <Moving key={p.name} prop={p} f={f} />)}

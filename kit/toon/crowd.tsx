@@ -94,7 +94,9 @@ void main() {
   vec3 fwd = normalize(toCam + vec3(1e-4, 0.0, 0.0));
   vec3 right = vec3(fwd.z, 0.0, -fwd.x);
   float s = length(instanceMatrix[0].xyz);
-  vec3 w = c + (right * position.x + vec3(0.0, 1.0, 0.0) * position.y) * s;
+  // Coplanar cards (a pile row, a doorway queue) z-fought into see-through "ghosts" (pilot review r2): each instance sits
+  // a fixed 0-5 cm nearer the lens, so overlapping cards always have a clear front-to-back order.
+  vec3 w = c + fwd * (0.05 * fract(float(gl_InstanceID) * 0.618034)) + (right * position.x + vec3(0.0, 1.0, 0.0) * position.y) * s;
   vUv = (aCell + uv) / uGrid;
   vec4 mvPosition = viewMatrix * vec4(w, 1.0);
   vView = mvPosition.xyz;
@@ -150,14 +152,18 @@ void main() {
 
 const tmp = new Object3D(), HIDE = new Matrix4().makeScale(0, 0, 0);
 
-/** `avoid`: the lens position; extras within `clear` m of it (on the ground plane) are hidden, never a face in the lens. */
+/**
+ * `avoid`: the shot's lens path (composition frames `from` .. `from + frames`). An extra that comes within `clear` m of
+ * the lens (ground plane) at ANY frame of the shot is hidden for the whole shot: never a face in the lens, and never a
+ * pop (pilot review r2: hiding per frame made runners blink in and out as they crossed the radius).
+ */
 /**
  * `keepOff`: moving things the crowd must stand clear of (a cart, a hero): instances inside a radius are pushed to its
  * edge. Props are automatic: every ground collider with a footprint under 6 m (cars, benches, bins, lamp posts) pushes
  * instances out of its footprint (pilot defect 2026-11-14: zombies stood inside a parked car). Buildings are not
  * obstacles here (crowds may enter doorways); keep `place` out of walls yourself.
  */
-export const Crowd: React.FC<{ spec: CrowdSpec; f: number; avoid?: Vector3; clear?: number; keepOff?: { pos: Vector3; r: number }[] }> = ({ spec, f, avoid, clear = 3, keepOff }) => {
+export const Crowd: React.FC<{ spec: CrowdSpec; f: number; avoid?: { from: number; frames: number; lens: (f: number) => Vector3 }; clear?: number; keepOff?: { pos: Vector3; r: number }[] }> = ({ spec, f, avoid, clear = 3, keepOff }) => {
   const scene = useThree((s) => s.scene);
   const rects = useRef<{ x0: number; x1: number; z0: number; z1: number; top: number }[] | null>(null);
   const p = useMemo(() => {
@@ -196,6 +202,19 @@ export const Crowd: React.FC<{ spec: CrowdSpec; f: number; avoid?: Vector3; clea
     const g = new Group().add(cards, blobs);
     return { g, cards, blobs, cell, cols };
   }, [spec]);
+  const hidden = useMemo(() => {
+    const out = new Set<number>();
+    if (!avoid) return out;
+    for (let k = 0; k <= avoid.frames; k += 2) {
+      const F = avoid.from + Math.min(k, avoid.frames - 1), L = avoid.lens(F);
+      for (let i = 0; i < spec.count; i++) {
+        if (out.has(i)) continue;
+        const q = spec.place(i, F);
+        if (!q.hidden && Math.hypot(q.pos.x - L.x, q.pos.z - L.z) < clear) out.add(i);
+      }
+    }
+    return out;
+  }, [spec, avoid, clear]);
   useLayoutEffect(() => {
     p.cards.layers.set(NOINK);
     p.blobs.layers.set(SKY);
@@ -233,7 +252,7 @@ export const Crowd: React.FC<{ spec: CrowdSpec; f: number; avoid?: Vector3; clea
           }
         }
       }
-      if (q.hidden || (avoid && Math.hypot(q.pos.x - avoid.x, q.pos.z - avoid.z) < clear)) {
+      if (q.hidden || hidden.has(i)) {
         p.cards.setMatrixAt(i, HIDE);
         p.blobs.setMatrixAt(i, HIDE);
         continue;
