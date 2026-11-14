@@ -10,12 +10,12 @@ the `video-qa` skill's job. This skill adds whether the video is worth watching.
 
 | Module | File | Question it answers |
 |---|---|---|
-| 1. Technical QA | `.claude/skills/video-qa/SKILL.md` (unchanged) | Is anything broken? |
+| 1. Technical QA (Opus) | `.claude/skills/video-qa/SKILL.md` (unchanged) | Is anything broken? |
 | 2. Cold Viewer | `critics/cold-viewer.md` | Would a stranger scrolling past stop and stay? |
 | 3. Regular Viewer | `critics/regular-viewer.md` | Is this a good episode of *our* channel, and not a repeat? |
 | 4. Content Manager | `critics/content-manager.md` | Can it compete, grow the channel and earn money? |
 
-Fixes: `fixes.md`. Report: `report.md`. Authorities the critics judge against (they never invent their own):
+Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evidence, self-check). Fixes: `fixes.md`. Report: `report.md`. Authorities the critics judge against (they never invent their own):
 `CLAUDE.md`, `docs/STYLE.md`, `docs/style/LOOK_SPEC.md`, the `stickrified-script` and `toon-world-short` skills.
 
 ## Modes (pick from the request)
@@ -32,16 +32,21 @@ Fixes: `fixes.md`. Report: `report.md`. Authorities the critics judge against (t
    sfx), pacing numbers and the channel catalogue. If `final.mp4` exists but `out/<slug>/qa/frames/` does not, run
    `python scripts/frames.py out/<slug>/final.mp4 out/<slug>/shots.json videos/<slug>` so critics see exact frames.
 2. **Technical QA.** Rendered video: run the `video-qa` skill as written (it is module 1, reuse its outputs:
-   `layer1.md`, `out/qa/<name>/report.md`, `QA.md`). Script only: run
+   `layer1.md`, `out/qa/<name>/report.md`, `QA.md`). Layer 3's eye pass is a fresh agent on **Opus** (pass
+   `model: "opus"`; user rule 2026-11-14) that reads all sheets, pulls frames of any insert that is on no sheet
+   straight from `final.mp4`, re-checks every open item from the previous round's findings (fixed / still there,
+   with frames), explains or fails each layer-2 flag, and writes `r<N>-qa-layer3.md`. Script only: run
    `python .claude/skills/stickrified-script/check_script.py videos/<slug>/script.json` instead and say QA layers
    1-3 were not possible. Score: see "Scores".
-3. **Three critics, independently.** Each critic is a fresh agent on the latest Sonnet (pass `model: "sonnet"`; user rule
-   2026-11-14, critics never run on Opus; Sonnet samples sheets unless told: round 2 critics read 14-24 of
-   75, so the prompt says "open every sheet in order, list the ones you opened") given ONLY: its
-   critic file, `pack.md`, the paths of the assets marked present, and the authorities above. No critic sees
-   another's report or any earlier score. Run the three in parallel. Each writes
-   `out/<slug>/review/r<N>-<critic>.md` in the format its file sets. (If agents are unavailable, run them one at a
-   time yourself and write each report before reading the next critic file.)
+3. **Three critics, independently.** Each critic is a fresh agent on the latest **Sonnet** (pass
+   `model: "sonnet"`; user rule 2026-11-14: critics never run on Opus) given ONLY: `critics/_protocol.md`, its
+   critic file, `pack.md`, the paths of the assets marked present, and the authorities above. The prompt repeats
+   the protocol's coverage rule ("open every sheet in order and start with the coverage line"): Sonnet samples
+   otherwise (round 2: 14-24 of 75 sheets). No critic sees another's report or any earlier score. Run the three
+   in parallel. Each writes `out/<slug>/review/r<N>/r<N>-<critic>.md` in the format its file sets. A report whose
+   coverage line shows sampling, or with problems lacking frames, is sent back once to the same agent. (If
+   agents are unavailable, run them one at a time yourself and write each report before reading the next critic
+   file.)
 4. **Consolidate** (you, not a critic) into `out/<slug>/review/r<N>-findings.md`: one row per problem, merged
    across critics. Columns: id, severity, critics who raised it, evidence (time / frame / line / shot), fix, owner
    file. Severity:
