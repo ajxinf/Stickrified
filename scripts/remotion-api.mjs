@@ -57,7 +57,7 @@ export const guardPass = async (serveUrl, composition, starts = [0]) => {
   // short_qa.py's own format: shots [{id, a, b}], xfade [[a, b]], flash [a, b] (one span).
   if (plan) {
     const { shots: sh, xfade, flash, kicks, whips } = plan.plan;
-    fs.writeFileSync(path.join(dir, "shots.json"), JSON.stringify({ shots: sh.map((x) => ({ id: x.id, a: x.from, b: x.from + x.frames - 1 })), xfade, planned: [...kicks, ...whips], ...(flash.length ? { flash: flash[0] } : {}) }));
+    fs.writeFileSync(path.join(dir, "shots.json"), JSON.stringify({ shots: sh.map((x) => ({ id: x.id, a: x.from, b: x.from + x.frames - 1, scene: x.scene })), xfade, planned: [...kicks, ...whips], ...(flash.length ? { flash: flash[0] } : {}) }));
   }
 
   const real = fails.filter((x) => !x.intended);

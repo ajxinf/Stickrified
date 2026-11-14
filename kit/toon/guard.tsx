@@ -484,7 +484,7 @@ const planChecks = (plan: Plan, fps: number, aspect: number) => {
     if (subj) {
       r.ran.add("Subject in frame");
       cams.forEach((cam, f) => {
-        if (f < (shot.subjectFrom ?? 0)) return;
+        if (f < (shot.subjectFrom ?? 0) || inSpans(f, shot.whips, 0)) return; // a whip-pan swings the subject out on purpose
         const b = headBox(subj, f, cam);
         if (!b.front || b.x0 < SAFE_X[0] || b.x1 > SAFE_X[1] || b.y0 < 0 || b.y1 > 1)
           r.add("Subject in frame", shot, f, `"${subj.name}" head`, `head box x ${b.x0.toFixed(2)}-${b.x1.toFixed(2)}, y ${b.y0.toFixed(2)}-${b.y1.toFixed(2)} (needs x in ${SAFE_X.join("-")}, y in 0-1)`);
@@ -610,7 +610,7 @@ export const exportPlan = (plan: Plan) => {
   for (const [a, b] of plan.inserts ?? []) cuts.push(a, b);
   cuts.sort((x, y) => x - y);
   const abs = (k: "whips" | "kicks" | "flash") => shots.flatMap((s) => (s[k] ?? []).map(([a, b]) => [a + (s.from ?? 0), b + (s.from ?? 0)] as Span));
-  return { cuts, xfade, flash: abs("flash"), kicks: abs("kicks"), whips: abs("whips"), shots: shots.map((s) => ({ id: s.id, from: s.from ?? 0, frames: s.frames })) };
+  return { cuts, xfade, flash: abs("flash"), kicks: abs("kicks"), whips: abs("whips"), shots: shots.map((s) => ({ id: s.id, from: s.from ?? 0, frames: s.frames, scene: s.scene })) };
 };
 
 /** Mount once at the composition root: runs the plan checks for every shot and publishes the plan. */

@@ -23,7 +23,8 @@ import {
   WebGLRenderTarget,
 } from "three";
 import { CARD_PASS } from "./cardshade";
-import { GRADE_GLSL, gradeState, setGradeUniforms } from "./grade";
+import { GRADE_GLSL, gradeState, setGradeUniforms, setLookUniforms } from "./grade";
+import type { Look as ShotLook } from "./grade";
 import { NOINK, inkMaterial } from "./ink";
 import { shared } from "./shade";
 
@@ -164,7 +165,7 @@ export const DOF = {
   closeup: (d: number): Dof => ({ maxPx: 11, near: d + 0.7, far: d + 5, fgPx: 22, fgNear: d * 0.3, fgFar: d * 0.65 }),
 };
 
-export const Composer: React.FC<{ dof?: Dof }> = ({ dof = POST.dof }) => {
+export const Composer: React.FC<{ dof?: Dof; look?: ShotLook }> = ({ dof = POST.dof, look }) => {
   const { gl, scene, camera } = useThree();
   const frame = useCurrentFrame();
 
@@ -230,6 +231,8 @@ export const Composer: React.FC<{ dof?: Dof }> = ({ dof = POST.dof }) => {
       uGrain: { value: 0 },
       uHalation: { value: 0 },
       uFrame: { value: 0 },
+      uPool: { value: [0.5, 0.5, 1, 0] },
+      uAccent: { value: [0, 0] },
       uGAmount: { value: 1 },
       uExposure: { value: 1 },
     });
@@ -331,6 +334,7 @@ export const Composer: React.FC<{ dof?: Dof }> = ({ dof = POST.dof }) => {
       draw(p.upM, p.up[i]);
     }
     setGradeUniforms(p.fin.uniforms, gradeState.current);
+    setLookUniforms(p.fin.uniforms, look);
     p.fin.uniforms.uFrame.value = frame % 997;
     draw(p.fin, null);
   }, 1);

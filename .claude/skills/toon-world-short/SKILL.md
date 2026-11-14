@@ -28,8 +28,8 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
   `zfc8CJQpe8Kqyl0vvCzo`, every video): a fast, energetic storyteller, deadpan only on single punchlines.
 - **Scripts: follow the `stickrified-script` skill** (`.claude/skills/stickrified-script/SKILL.md`): pillars,
   formulas, entertainment and exaggeration rules, Eleven v4 tags, length (200-270 words), `script.json` format.
-- Captions (measured + identity): the one key word per sentence (number, twist, punchline) is rust-orange
-  `#ff8a3d` and scales up 8 % for 4 frames; mark it with `*word*` in `script.json`. Otherwise: 1-2 words at a time from `words.json`, white `#ffffff` bold rounded sans (e.g. Nunito Black or
+- Captions (R13 restyle, user decision 2026-11-14: no coloured key word, no pop; `*word*` marks stay in `script.json`
+  for the audio tags and are stripped from the captions): at most 2 words at a time from `words.json`, all white `#ffffff` bold rounded sans (e.g. Nunito Black or
   Poppins ExtraBold, bundled locally), dark outline `#141014` ~0.006 W plus a soft drop shadow (offset 0.003 W, blur
   0.006 W, 60 % black), centred horizontally at y = 0.70 H, font size 0.055 W (~60 px at 1080 wide), punctuation kept,
   no pop or bounce: each group appears instantly on its first word and holds until the next (median 10 f). Never over
@@ -155,10 +155,28 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      Sync cues to words, not typed frames: `{"word": "laughs", "n": 0, "lead": 2, "sfx": "pop"}`, music
      `button`/`stop` the same way, `"frames": "auto"` (`scripts/audio/events.py` resolves them), so a new voice
      take moves every cue. A whoosh on a whip keeps its shot-plan frame.
-   - `python scripts/audio/sfx_gen.py videos/<slug>` -> `sfx.wav`.
+   - **R13 sound (2026-11-14, user decision): real foley over synth blips.** Any `sfx` name that is not a synth sound
+     is an ElevenLabs effect from the shared library `assets/sfx/library.json` (`{"name": {"prompt", "dur" 0.5-30,
+     "loop"}}`): write a specific prompt (material, action, size, "no music"), reuse library entries across videos.
+     `python scripts/audio/eleven_sfx.py videos/<slug>` generates only missing/changed entries (they cost credits)
+     into `assets/sfx/eleven/`. Aim for ~9 strong hits per 10 s (R13), each a layered real sound, not 15 pops.
+     Per event: `"pan"` -1..1 (where it is on screen), `"gain_db"`.
+     `"ambience": {"<scene tag>": "<library loop>"}` lays a continuous bed per scene (from `shots.json` scene tags,
+     10-frame crossfades): the mix is never silent between lines. `"space": {"<scene tag>": RT60 s}` puts the
+     effects in that room (interiors ~1.1, streets ~0.45).
+   - `python scripts/audio/sfx_gen.py videos/<slug>` -> `sfx.wav` (stereo) + `amb.wav` (the beds). `shots.json` must
+     carry scene tags (any stills/render pass writes them).
    - `python scripts/audio/music.py videos/<slug>` -> `music.wav` (bed) + `button.wav`.
    - `python scripts/audio/mix.py videos/<slug>` -> `mix.wav` (48 kHz, exact length), `loudness.json` (LUFS, true
      peak, voice-vs-music gap), and `public/<slug>/mix.wav`, which `Video.tsx` mounts with `<Audio>` in Studio only.
+   - Stereo master (`mix.py`): voice centre, score widened and warmed (+3 dB below 160 Hz), beds at -9 dB ducked 13 dB
+     under speech (and 18 dB inside music `stop(s)` for whispers), master tilt (+4.5 dB low shelf 250 Hz, +5.5 dB
+     high shelf 4 kHz, 35 Hz high-pass) and width (side ~-20 dB under mid). Measured against R13 with the band
+     table in `docs/style/REFERENCE_NOTES.md`.
+   - Lip sync: `python scripts/audio/mouth.py videos/<slug>` -> `voice/mouth.json` (per frame open + o/a/e shape).
+     A character speaks on screen with `fx: { talk: talkAt(MOUTH, F, spans) }` (`kit/toon/face.ts`; spans = the
+     words it says, e.g. a quoted line); `laughFlap` for a laugh. Write characters' quoted lines into scripts so
+     they get to talk (R13: characters talk; dialogue holds run on the mouth).
    - Write `cues.md` (frame, time, sound, what it is synced to).
 9. **Look checks**: `node scripts/stills.mjs <Comp> out/<slug>/x_ 100,400 0.5` (QA layer 1 first: every check of the
    video-qa skill on every frame of every shot; a failure stops with the shot id, frame and object); side-by-sides against
@@ -214,6 +232,22 @@ The look values below make a frame pretty; these rules make the frames tell the 
 - **Device POV** through a circular mask (binoculars, a window slot, a telescope) for spying on the rival.
 - **Rough stills before the build**: block each shot as a quick still (`scripts/stills.mjs`) and check it reads
   with the sound off: who wants what, and what just changed.
+
+## R13 craft (2026-11-14 study of a stronger reference; numbers in docs/style/REFERENCE_NOTES.md "R13")
+- **One key, one pool.** Every shot reads as lit by one source: `Composer look.pool` [x, y(uv, up), r, k] darkens away
+  from the subject (defaults per world in the video's `WORLD_LOOK`: k .26-.45, wides half). Leave 40-60 % of the
+  frame in shadow at night and inside.
+- **One accent per scene.** `look.accent` [hue, mute]: hues away from the scene's accent lose saturation (rust .045
+  = "you"; a lantern's amber at night). No frame with 5-6 loud hues.
+- **Busy hands.** `fidget()` (`kit/toon/poses.ts`, applied in the video's `st()`): a free hanging hand does a chin
+  rub, head scratch or hand-to-hip for ~0.8 s every ~2.5 s. Better still, give holds a prop action (sip, bite, twirl).
+- **Transitions made of the world.** Scene changes cut on a whip-pan (`whipOut` on the last 6 frames, `whipIn` on
+  the next shot's first 6, both declared in `whips`), an impact's dust fills the frame (`kit/toon/DustWipe.tsx` in a
+  Sequence starting ~10 f before the cut), a body walks into the lens, or the camera flies through an object.
+  Dissolves only for time passing inside one place.
+- **Characters talk** (lip sync, sound step) and **the camera follows the object of the sentence** (ride the thrown
+  thing, the bullet, the cart). **Macro inserts for every process verb**, each with its own motion.
+- **Text lives in the world**: labels on crates, signs that joke, a calendar, marks scratched in the dirt.
 
 ## Shoot the gag (zombie pilot critique, 2026-11-13: "half the gags never reach the screen")
 The first pilot showed the PLACE where each gag would happen, wide and small, and the voice told the joke alone. Rules:

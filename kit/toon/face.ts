@@ -52,7 +52,18 @@ export type Effects = {
   ringEyes?: boolean;
   /** "!" pop, frames since it appeared. */
   bang?: number;
+  /** Lip sync (scripts/audio/mouth.py): while open > 0 the mouth talks (o = round, a = open, e = wide teeth) instead
+   * of the expression's mouth; eyes and brows keep the expression. */
+  talk?: { open: number; shape: "o" | "a" | "e" };
 };
+
+export type MouthFrame = { open: number; shape: "o" | "a" | "e" };
+/** The lip-sync frame for composition frame F when F is inside one of the character's spoken spans [from, to). */
+export const talkAt = (track: MouthFrame[], F: number, spans: [number, number][]): MouthFrame | undefined =>
+  spans.some(([a, b]) => F >= a && F < b) ? track[Math.min(Math.max(F, 0), track.length - 1)] : undefined;
+/** A laugh with the mouth flapping ("ha-ha-ha") for `frames` from `from`. */
+export const laughFlap = (F: number, from: number, frames = 24): MouthFrame | undefined =>
+  F >= from && F < from + frames ? { open: 0.35 + 0.65 * Math.abs(Math.sin(((F - from) / 30) * Math.PI * 4.5)), shape: "a" } : undefined;
 
 /** Colour-fill gag (drawn between the head fill and its ink ring, so the outline stays whole). */
 export const drawFill = (p: Pen, h: Head, fx: Effects) => {
@@ -102,6 +113,16 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
     if (tongue) p.clip([[mx - rx, y], [mx + rx, y], [mx + rx, y + ry], [mx - rx, y + ry]], () => p.ell(mx + 2 * u, y + 0.75 * ry, 0.45 * rx, 0.32 * ry, TONGUE));
     p.ell(mx, y, rx, ry, null, 3 * u, 0, 180);
   };
+  const t = o.fx.talk;
+  if (t && t.open > 0) {
+    const k = 0.35 + 0.65 * t.open;
+    if (t.shape === "o") p.ell(mx, my + 2 * u, 6.5 * u, 9 * u * k, MOUTH, 3.2 * u);
+    else if (t.shape === "e") {
+      dmouth(13 * u, 7 * u * k, my - 2 * u);
+    } else dmouth(11 * u, 11 * u * k, my - u, k > 0.7);
+    drawEffects(p, h, o.fx);
+    return;
+  }
   switch (F.mouth) {
     case "dash":
       p.stroke([[mx - 5.5 * u, my], [mx + 5.5 * u, my - 0.8 * u]], mw);

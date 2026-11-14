@@ -53,7 +53,15 @@ export const gradeState = { current: GRADE.day };
 export const GRADE_GLSL = /* glsl */ `
 uniform float uKy[7], uKm[7], uGAmount, uTop, uGrain, uFrame;
 uniform vec3 uGSat, uTintS, uTintM, uTintH;
-uniform vec2 uVig;
+uniform vec2 uVig, uAccent;
+uniform vec4 uPool;
+vec3 rgb2hsv(vec3 c) {
+  vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+  vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+  vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+  float d = q.x - min(q.w, q.y);
+  return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + 1e-10)), d / (q.x + 1e-10), q.x);
+}
 float grainHash(vec3 p) { p = fract(p * 0.1031); p += dot(p, p.zyx + 31.32); return fract((p.x + p.y) * p.z); }
 float gradeCurve(float x) {
   float xs[7];
@@ -75,6 +83,16 @@ vec3 grade(vec3 src, vec2 uv) {
   float s = uGSat.y + (uGSat.x - uGSat.y) * wS + (uGSat.z - uGSat.y) * wH;
   c = vec3(y) + s * (c - vec3(y));
   c += wS * uTintS + wM * uTintM + wH * uTintH;
+  // R13 one-accent palette: hues far from the scene's accent lose saturation (x = accent hue 0-1, y = how much).
+  if (uAccent.y > 0.0) {
+    vec3 hsv = rgb2hsv(clamp(c, 0.0, 1.0));
+    float dh = abs(fract(hsv.x - uAccent.x + 0.5) - 0.5);
+    float keep = 1.0 - smoothstep(0.05, 0.14, dh);
+    float ya = dot(c, vec3(0.2126, 0.7152, 0.0722));
+    c = vec3(ya) + mix(1.0 - uAccent.y, 1.0, keep) * (c - vec3(ya));
+  }
+  // R13 one-key pool of light: darken away from the subject (xy = centre in uv, z = radius kept lit, w = depth).
+  if (uPool.w > 0.0) c *= 1.0 - uPool.w * smoothstep(uPool.z, uPool.z + 0.6, length((uv - uPool.xy) * vec2(0.5625, 1.0)));
   float r = length(uv * 2.0 - 1.0) * 0.70710678;
   c *= 1.0 - uVig.x * smoothstep(uVig.y, 1.0, r);
   c *= 1.0 - uTop * smoothstep(0.6, 1.0, uv.y);
@@ -85,6 +103,13 @@ vec3 grade(vec3 src, vec2 uv) {
   c += (grainHash(vec3(gl_FragCoord.xy, uFrame + 17.0)) - 0.5) / 255.0;
   return mix(src, clamp(c, 0.0, 1.0), uGAmount);
 }`;
+
+/** Per-shot look (R13): `pool` [x, y, r, k] in uv (y up), `accent` [hue 0-1, mute 0-1]. */
+export type Look = { pool?: [number, number, number, number]; accent?: [number, number] };
+export const setLookUniforms = (u: Record<string, { value: unknown }>, l: Look = {}) => {
+  u.uPool.value = l.pool ?? [0.5, 0.5, 1, 0];
+  u.uAccent.value = l.accent ?? [0, 0];
+};
 
 /** Copy a grade into the shader's uniforms. */
 export const setGradeUniforms = (u: Record<string, { value: unknown }>, g: Grade) => {

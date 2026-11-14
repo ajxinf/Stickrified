@@ -106,8 +106,8 @@ section of the vendored report and port it into `kit/toon/`; do not copy their c
    cast new characters every time; we build one face people recognise.
 2. **Rust-orange signature accent** `#c8582c`: the protagonist's hoodie plus one story prop per video. Keep other
    large surfaces away from this hue so it always points at "you".
-3. **Captions with a key word**: the standard white-and-outline caption, but the one key word per sentence (the
-   number, the twist, the punchline) is rust-orange `#ff8a3d` and scales up 8 % for 4 frames. Nobody else does it.
+3. **Captions**: at most 2 words at a time, all white with a thick dark outline, no colour highlight (R13 restyle,
+   user decision 2026-11-14; the old orange key word is retired).
 4. **Scenario counter stamp**: in the scenario pillar, "DAY 3", "HOUR 12" etc. appear as a chunky stamped card in
    the upper third with a thump SFX. It becomes the series' visual signature.
 5. **POV shots**: at least one over-the-shoulder or first-person shot per video ("you look down the aisle...").

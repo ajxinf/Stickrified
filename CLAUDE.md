@@ -11,14 +11,15 @@ Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work 
 - Remotion + `@remotion/three` (React Three Fiber). Every motion (characters, camera, shaders) must be driven by `useCurrentFrame()`, never by clocks or `useFrame` time.
 - ElevenLabs **Eleven v4** TTS (one narrator voice, audio tags only on beats). API key in `.env` as `ELEVENLABS_API_KEY` (never commit it).
 - Assets: CC0 only (Kenney, Quaternius, similar); fonts may be SIL OFL 1.1 (approved 2026-11-14: Nunito for captions). Record each asset's source + license in `assets/CREDITS.md`.
-- Sound: synthesized SFX + original score (Python scripts). No commercial music.
+- Sound: ElevenLabs sound effects and ambience beds (approved 2026-11-14; shared library `assets/sfx/library.json`), synthesized SFX, and an original score (Python scripts). Stereo mix with a continuous scene bed under every shot. No commercial music.
+- Lip sync: on-screen characters move their mouths on the words they speak (`scripts/audio/mouth.py`, approved 2026-11-14).
 
 ## Pipeline (audio-first)
 Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, the user edits) → voice + word timings → shot plan timed to words → world, cast, captions → sound → look checks → render, mux, QA. Details in the skill.
 
 ## Formats
 - Shorts: 61–90 s, 1080×1920 composition, 30 fps, final export 1080×1920 (default since 2026-11-13; 2K 1440×2560 only on request).
-- Shorts: word-by-word burned-in captions (see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
+- Shorts: burned-in captions, at most 2 white words at a time, no colour highlight (R13 restyle, 2026-11-14; see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
 
 ## Content rules
 - Advertiser-friendly, evergreen. No graphic true crime; violence stays off-screen.

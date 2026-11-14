@@ -157,3 +157,33 @@ export const poseAt = (keys: [number, PoseName][], f: number, ease = 4, look?: n
   if (i === 0 || f - keys[i][0] >= ease) return cur;
   return blendPose(posed(keys[i - 1][1], f / 30, look), cur, (f - keys[i][0]) / ease);
 };
+
+const GESTURES: Arm[] = [
+  { at: [-0.12, -0.32], grip: "point", layer: "front" }, // rubs the chin
+  { at: [0.3, -0.82], grip: "mitt" }, // scratches the head
+  { at: [0.2, 0.58], grip: "fist" }, // hand to the hip
+];
+/**
+ * Busy hands (R13 study: no dead holds; hands always do something). Every ~2.5 s a FREE hand (hanging, empty) does a
+ * short gesture: chin rub, head scratch or hand to hip, ~0.8 s with eased in/out. `seed` staggers characters. Hands
+ * that are posed (holding, pointing, waving) are never touched, so staged action keeps priority.
+ */
+export const fidget = (p: Pose, F: number, seed: number, hasProp = false): Pose => {
+  const period = 75 + (seed % 4) * 9, len = 24, k = (F + seed * 37) % period;
+  if (k >= len) return p;
+  if (hasProp) {
+    // Holding something: both hands lift it toward the face and back (a sip, a closer look), ~0.8 s.
+    const t = Math.min(k / 6, 1, (len - k) / 6), e = t * t * (3 - 2 * t);
+    return { ...p, arms: p.arms.map((a) => ({ ...a, at: [a.at[0] - 0.06 * e, a.at[1] - 0.32 * e] })) as [Arm, Arm], tilt: (p.tilt ?? 0) - 4 * e };
+  }
+  const side = (Math.floor((F + seed * 37) / period) + seed) % 2;
+  const a = p.arms[side];
+  if (Math.abs(a.at[0] - 0.2) > 0.05 || a.at[1] < 0.85 || a.grip) return p; // not hanging free
+  const g = GESTURES[(Math.floor((F + seed * 37) / period) + seed) % GESTURES.length];
+  const t = Math.min(k / 6, 1, (len - k) / 6), e = t * t * (3 - 2 * t);
+  const wob = g.at[1] < -0.5 ? 0.04 * Math.sin(F * 1.4) : 0; // the scratch scratches
+  const arm: Arm = { ...g, at: [lerp(a.at[0], g.at[0] + wob, e), lerp(a.at[1], g.at[1], e)], grip: e > 0.5 ? g.grip : a.grip };
+  const arms = [...p.arms] as [Arm, Arm];
+  arms[side] = arm;
+  return { ...p, arms };
+};

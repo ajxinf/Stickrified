@@ -7,8 +7,10 @@ import { Street } from "../../../kit/toon/build/street";
 import { CAPTION_FONT, Captions } from "../../../kit/toon/Captions";
 import { Character } from "../../../kit/toon/cast";
 import { Composer } from "../../../kit/toon/Composer";
+import type { Look as ShotLook } from "../../../kit/toon/grade";
 import { Crowd } from "../../../kit/toon/crowd";
 import { Dust } from "../../../kit/toon/dust";
+import { DustWipe } from "../../../kit/toon/DustWipe";
 import { MovingProp, QAPlan, ShotCamera } from "../../../kit/toon/guard";
 import { Insert } from "../../../kit/toon/Insert";
 import { LIGHTS } from "../../../kit/toon/lights";
@@ -25,6 +27,21 @@ import { FRAMES, INSERT, PLAN, S, SHOTS, WORLD } from "./story";
 export const ZOMBIE_FRAMES = FRAMES;
 const INT_OPTS = { seed: 30 };
 const SHADOW = { ext: { center: at(32, 0), size: 44 }, int: { center: IN(3, 0), size: 30 } };
+
+/**
+ * R13 look per world: one pool of key light around the subject (darker edges), and one accent hue per scene (rust =
+ * "you"; the lantern's amber at night); other hues lose a third of their saturation. Wides get a gentler pool.
+ */
+const WORLD_LOOK: Record<S["w"], ShotLook> = {
+  "int-day": { pool: [0.5, 0.58, 0.22, 0.32], accent: [0.045, 0.3] },
+  "int-night": { pool: [0.5, 0.56, 0.22, 0.3], accent: [0.08, 0.35] }, // .45 crushed 6-8 % of the frame (QA CRUSH)
+  "ext-day": { pool: [0.5, 0.58, 0.24, 0.26], accent: [0.045, 0.35] },
+  "ext-dawn": { pool: [0.5, 0.58, 0.22, 0.3], accent: [0.045, 0.3] },
+};
+const lookOf = (s: S): ShotLook => {
+  const l = s.look ?? WORLD_LOOK[s.w];
+  return s.wide && l.pool ? { ...l, pool: [l.pool[0], l.pool[1], l.pool[2] + 0.12, l.pool[3] * 0.5] } : l;
+};
 
 const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
   const o = useMemo(prop.make, [prop]);
@@ -52,7 +69,7 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       {ext && <Dust center={at(32, 0, 3)} size={new Vector3(16, 6, 30)} color={s.w === "ext-dawn" ? "#ffd8a8" : "#fff4dc"} strength={0.8} count={420} />}
       {moving.map((p) => <Moving key={p.name} prop={p} f={f} />)}
       {s.cast?.map((c) => <Character key={c.name} position={c.at(lf)} state={c.state(lf)} look={c.look} />)}
-      <Composer dof={s.dof} />
+      <Composer dof={s.dof} look={lookOf(s)} />
     </ThreeCanvas>
   );
 };
@@ -119,6 +136,10 @@ export const ZombieSupermarket: React.FC = () => (
     ))}
     <Sequence from={INSERT.from} durationInFrames={INSERT.to - INSERT.from}>
       <Insert kind="xray" title="X-RAY" readout="SHAKEN: LOUD"><ToyXRay /></Insert>
+    </Sequence>
+    {/* R13: the crash's dust cloud fills the frame and clears onto Chad on his roof (in-world transition) */}
+    <Sequence from={BEAT.chadRoof - 10} durationInFrames={28}>
+      <DustWipe frames={28} peak={10} />
     </Sequence>
     <Stamp text="DAY 1" at={0} hold={40} top="7%" />
     <Stamp text="DAY 29" at={BEAT.day29 - 2} hold={50} />

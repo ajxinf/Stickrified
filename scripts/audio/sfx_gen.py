@@ -15,11 +15,13 @@ camera move (a whip, a fly-through) or an object flying past the lens.
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import events
+import eleven_sfx as eleven
 import json
 import sys
 
 import numpy as np
 from scipy.io import wavfile
+from scipy.ndimage import uniform_filter1d
 from scipy.signal import butter, sosfilt
 
 SR = 48000
@@ -148,19 +150,106 @@ SOUNDS = {"groan": groan, "crash": crash, "step": step, "whoosh": whoosh, "swish
 CENTRED = {"whoosh"}
 
 
+def read_st(path):
+    sr, x = wavfile.read(path)
+    assert sr == SR, f"{path}: {sr} Hz"
+    x = x.astype(np.float64)
+    return np.stack([x, x], 1) if x.ndim == 1 else x[:, :2]
+
+
+def scenes(d, n_frames):
+    """Per composition frame: the scene tag of the shot on screen (out/<slug>/shots.json, written by the QA pass)."""
+    slug = os.path.basename(os.path.normpath(d))
+    sj = json.load(open(os.path.join("out", slug, "shots.json"), encoding="utf-8"))["shots"]
+    assert all("scene" in x for x in sj), "shots.json has no scene tags: run stills.mjs or render.mjs once (QA pass)"
+    tag = [None] * n_frames
+    for x in sj:  # later shots win over the dissolve overlap
+        for f in range(max(x["a"], 0), min(x["b"] + 1, n_frames)):
+            tag[f] = x["scene"]
+    for f in range(1, n_frames):
+        tag[f] = tag[f] or tag[f - 1]
+    return tag
+
+
+def reverb_ir(decay):
+    """Synthetic stereo room: decorrelated noise with an exponential tail (RT60 = decay s), darkened."""
+    n = int(decay * SR)
+    t = np.arange(n) / SR
+    ir = rng.standard_normal((n, 2)) * np.exp(-6.9 * t / decay)[:, None]
+    ir = np.stack([low(ir[:, 0], 5000), low(ir[:, 1], 5000)], 1)
+    ir[: int(0.012 * SR)] = 0  # pre-delay
+    return ir / np.sqrt((ir ** 2).sum(0).mean())
+
+
+def pan(x, p):
+    """Equal-power balance of a stereo sound, p -1 (left) .. 1 (right)."""
+    a = (p + 1) * np.pi / 4
+    return x * np.array([np.cos(a), np.sin(a)]) * np.sqrt(2)
+
+
+def bed(name, length):
+    """Tile a loop bed to `length` samples with 0.5 s crossfades; RMS normalised to -20 dBFS."""
+    x = read_st(os.path.join(eleven.CACHE, f"{name}.wav"))
+    x = x / (np.sqrt((x ** 2).mean()) + 1e-12) * 10 ** (-20 / 20)
+    xf = int(0.5 * SR)
+    out = np.zeros((length + len(x), 2))
+    ramp = np.linspace(0, 1, xf)[:, None]
+    at = 0
+    while at < length:
+        seg = x.copy()
+        if at > 0:
+            seg[:xf] *= ramp
+        seg[-xf:] *= ramp[::-1]
+        out[at:at + len(seg)] += seg
+        at += len(seg) - xf
+    return out[:length]
+
+
 def main(d):
     cfg = events.load(d)  # word-anchored cues resolved (scripts/audio/events.py)
-    n = round(cfg["frames"] / cfg["fps"] * SR)
-    out = np.zeros(n)
-    check_air(cfg["events"], cfg["fps"], cfg["frames"] / cfg["fps"])
+    fps, frames = cfg["fps"], cfg["frames"]
+    n = round(frames / fps * SR)
+    out, wet = np.zeros((n, 2)), {}
+    check_air(cfg["events"], fps, frames / fps)
+    tag = scenes(d, frames)
+    space = cfg.get("space", {})
     for e in cfg["events"]:
-        s = SOUNDS[e["sfx"]]()
-        s = s / np.max(np.abs(s)) * 10 ** ((-3 + LEVEL_DB.get(e["sfx"], 0)) / 20)  # hits peak at -3 dBFS; air sounds lower
-        at = round(e["f"] / cfg["fps"] * SR) - (len(s) // 2 if e["sfx"] in CENTRED else 0)
+        if e["sfx"] in SOUNDS:
+            s = SOUNDS[e["sfx"]]()
+            s = np.stack([s, s], 1)
+        else:  # ElevenLabs library sound (scripts/audio/eleven_sfx.py)
+            s = read_st(os.path.join(eleven.CACHE, f"{e['sfx']}.wav"))
+        s = pan(s / np.max(np.abs(s)) * 10 ** ((-3 + LEVEL_DB.get(e["sfx"], 0) + e.get("gain_db", 0)) / 20), e.get("pan", 0))
+        at = round(e["f"] / fps * SR) - (len(s) // 2 if e["sfx"] in CENTRED else 0)
         a, b = max(at, 0), min(at + len(s), n)
         out[a:b] += s[a - at:b - at]
+        sc = tag[min(max(e["f"], 0), frames - 1)]
+        if space.get(sc):
+            wet.setdefault(sc, np.zeros((n, 2)))[a:b] += s[a - at:b - at]
+    from scipy.signal import fftconvolve
+    for sc, w in wet.items():  # the room the sound happens in (R13: a tunnel sounds like a tunnel)
+        ir = reverb_ir(space[sc])
+        out += 0.22 * np.stack([fftconvolve(w[:, c], ir[:, c])[:n] for c in range(2)], 1)
     wavfile.write(f"{d}/audio/sfx.wav", SR, out.astype(np.float32))
-    print(f"sfx.wav: {len(cfg['events'])} events, {n / SR:.3f} s")
+    print(f"sfx.wav: {len(cfg['events'])} events, {n / SR:.3f} s, stereo, rooms: {', '.join(f'{k} {v}s' for k, v in space.items())}")
+    amb = cfg.get("ambience")
+    if amb:  # continuous bed per scene, 10-frame crossfades at scene changes (R13: never silent between lines)
+        spf = SR / fps
+        A = np.zeros((n, 2))
+        cache = {}
+        for name in set(amb.values()):
+            cache[name] = bed(name, n)
+        w = {name: np.zeros(n) for name in cache}
+        for f in range(frames):
+            name = amb.get(tag[f])
+            if name:
+                w[name][int(f * spf):int((f + 1) * spf)] = 1
+        k = int(10 * spf)
+        for name in cache:
+            g = uniform_filter1d(w[name], k)
+            A += cache[name] * g[:, None]
+        wavfile.write(f"{d}/audio/amb.wav", SR, A.astype(np.float32))
+        print(f"amb.wav: beds {', '.join(sorted(set(amb.values())))}")
 
 
 if __name__ == "__main__":

@@ -21,6 +21,7 @@ from scipy.io import wavfile
 
 SR = 48000
 MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -6, 16
+AMB_DB, AMB_DUCK_DB = -9, 13  # R13: a continuous scene bed under everything, ducked less than the music
 MIN_GAP_DB = 15
 FFMPEG = os.path.abspath("node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe")  # bundled with Remotion
 db = lambda x: 10 ** (x / 20)
@@ -51,19 +52,69 @@ def loudness(path):
     return m
 
 
+def read_st(p):
+    sr, x = wavfile.read(p)
+    assert sr == SR, f"{p}: {sr} Hz"
+    x = x / float(np.iinfo(x.dtype).max + 1) if x.dtype.kind == "i" else x.astype(np.float64)
+    return np.stack([x, x], 1) if x.ndim == 1 else x[:, :2]
+
+
+def shelf(x, f0, gain_db, high):
+    """RBJ shelving biquad (S = 1) on every channel."""
+    from scipy.signal import lfilter
+    A, w = 10 ** (gain_db / 40), 2 * np.pi * f0 / SR
+    al, c = np.sin(w) / 2 * np.sqrt(2), np.cos(w)
+    sq = 2 * np.sqrt(A) * al
+    if high:
+        b = [A * ((A + 1) + (A - 1) * c + sq), -2 * A * ((A - 1) + (A + 1) * c), A * ((A + 1) + (A - 1) * c - sq)]
+        a = [(A + 1) - (A - 1) * c + sq, 2 * ((A - 1) - (A + 1) * c), (A + 1) - (A - 1) * c - sq]
+    else:
+        b = [A * ((A + 1) - (A - 1) * c + sq), 2 * A * ((A - 1) - (A + 1) * c), A * ((A + 1) - (A - 1) * c - sq)]
+        a = [(A + 1) + (A - 1) * c + sq, -2 * ((A - 1) + (A + 1) * c), (A + 1) + (A - 1) * c - sq]
+    return lfilter(np.array(b) / a[0], np.array(a) / a[0], x, axis=0)
+
+
+def widen(m, ms=11):
+    """Mono -> stereo: the right channel a few ms late (Haas), so a mono stem fills the stereo field."""
+    d = int(ms / 1000 * SR)
+    late = np.concatenate([np.zeros(d), m[:-d]])
+    return np.stack([m, 0.5 * (m + late)], 1)  # half-wet: R13 sits at about -26 dB side vs mid, not ultra-wide
+
+
 def main(d):
-    voice, sfx, music = read(f"{d}/voice/voice.wav"), read(f"{d}/audio/sfx.wav"), read(f"{d}/audio/music.wav")
+    voice, music = read(f"{d}/voice/voice.wav"), read(f"{d}/audio/music.wav")
+    sfx = read_st(f"{d}/audio/sfx.wav")
     n = len(sfx)  # sfx/music are written at the exact video length
     voice = np.pad(voice, (0, max(0, n - len(voice))))[:n]
     button = read(f"{d}/audio/button.wav")[:n]
+    amb = read_st(f"{d}/audio/amb.wav")[:n] if os.path.exists(f"{d}/audio/amb.wav") else np.zeros((n, 2))
     # Duck the bed: gain falls DUCK_DB where the voice envelope is above -40 dBFS (full depth 6 dB above that).
     ev = envelope(voice, 0.03, 0.25)
-    duck = db(-DUCK_DB * np.clip((20 * np.log10(ev + 1e-9) + 40) / 6, 0, 1))
+    k = np.clip((20 * np.log10(ev + 1e-9) + 40) / 6, 0, 1)
+    ka = np.clip((20 * np.log10(ev + 1e-9) + 52) / 8, 0, 1)  # the bed also ducks under whispers (pilot: "Very, very gently")
+    duck, aduck = db(-DUCK_DB * k), db(-AMB_DUCK_DB * ka)
+    # Where the score drops out for a whisper or a beat ("music": "stop"/"stops"), the bed dips 18 dB too.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import events as _ev
+    mcfg = _ev.load(d).get("music", {})
+    hole = np.zeros(n)
+    for a, b in ([mcfg["stop"]] if mcfg.get("stop") else []) + mcfg.get("stops", []):
+        hole[int(a / 30 * SR):int(b / 30 * SR)] = 1
+    from scipy.ndimage import uniform_filter1d as _uf
+    aduck = aduck * db(-18 * _uf(hole, int(0.15 * SR)))
     # Per video: "music": {"button_db": -12} when the last word is quiet (a deadpan line) and the button would bury it.
     button_db = json.load(open(f"{d}/audio/events.json"))["music"].get("button_db", BUTTON_DB)
-    mus = db(MUSIC_DB) * music[:n] * duck + db(button_db) * button
-    mix = voice + mus + db(SFX_DB) * sfx
-    gap = voice_gap(voice, mus, json.load(open(f"{d}/voice/words.json")))
+    bedm = shelf(widen(music[:n]), 160, 3, False)  # R13: warmer, wider score
+    mus = db(MUSIC_DB) * bedm * duck[:, None] + db(button_db) * widen(button)
+    ambm = db(AMB_DB) * amb * aduck[:, None]
+    mix = np.stack([voice, voice], 1) + mus + ambm + db(SFX_DB) * sfx
+    # Master tone (R13 band study): more low end and air, a little less boxy low-mid.
+    from scipy.signal import butter as _b, sosfilt as _sf
+    mix = _sf(_b(2, 35, "highpass", fs=SR, output="sos"), mix, axis=0)  # no rumble under the sub
+    mix = shelf(shelf(mix, 250, 4.5, False), 4000, 5.5, True)
+    mid, side = mix.mean(1), (mix[:, 0] - mix[:, 1]) / 2
+    mix = np.stack([mid + 0.45 * side, mid - 0.45 * side], 1)  # R13 width: side about -25 dB under mid
+    gap = voice_gap(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
     pre = f"{d}/audio/premaster.wav"
     wavfile.write(pre, SR, mix.astype(np.float32))
 
@@ -77,15 +128,15 @@ def main(d):
     wavfile.write(out, SR, x.astype(np.float32))
     fin = loudness(out)
     i, tp = float(fin["input_i"]), float(fin["input_tp"])
-    rep = {"integrated_lufs": i, "true_peak_dbtp": tp, "samples": n, "seconds": n / SR,
+    rep = {"integrated_lufs": i, "true_peak_dbtp": tp, "samples": n, "seconds": n / SR, "channels": 2,
            "premaster": {"lufs": float(m["input_i"]), "dbtp": float(m["input_tp"])},
-           "levels_db": {"voice": 0, "music_bed": MUSIC_DB, "button": button_db, "sfx": SFX_DB, "duck": -DUCK_DB}, **gap}
+           "levels_db": {"voice": 0, "music_bed": MUSIC_DB, "button": button_db, "sfx": SFX_DB, "duck": -DUCK_DB, "ambience": AMB_DB, "amb_duck": -AMB_DUCK_DB}, **gap}
     json.dump(rep, open(f"{d}/audio/loudness.json", "w"), indent=1)
     slug = os.path.basename(os.path.normpath(d))
     os.makedirs(f"public/{slug}", exist_ok=True)  # Studio preview: Video.tsx mounts it (16-bit keeps public/ small)
     wavfile.write(f"public/{slug}/mix.wav", SR, (np.clip(x, -1, 1) * 32767).astype(np.int16))
-    print(f"mix.wav: {n / SR:.3f} s, {i:.1f} LUFS integrated, true peak {tp:.1f} dBTP (premaster {m['input_i']} LUFS, {m['input_tp']} dBTP)")
-    print(f"voice vs music in speech: {gap['voice_music_gap_db']:.1f} dB (lowest word {gap['voice_music_gap_min_word_db']:.1f} dB on {gap['worst_word']}); "
+    print(f"mix.wav: {n / SR:.3f} s stereo, {i:.1f} LUFS integrated, true peak {tp:.1f} dBTP (premaster {m['input_i']} LUFS, {m['input_tp']} dBTP)")
+    print(f"voice vs music+ambience in speech: {gap['voice_music_gap_db']:.1f} dB (lowest word {gap['voice_music_gap_min_word_db']:.1f} dB on {gap['worst_word']}); "
           f"voice vs button on the last word: {gap['voice_button_gap_db']:.1f} dB")
     assert abs(i + 14) <= 0.5 and tp <= -1.0, "master outside -14 +-0.5 LUFS / -1 dBTP"
     assert gap["voice_music_gap_db"] >= MIN_GAP_DB, f"FAIL: voice only {gap['voice_music_gap_db']:.1f} dB over the music (needs >= {MIN_GAP_DB})"
@@ -122,7 +173,8 @@ def limit(x, ceiling_db, look=0.002, release=0.06):
     before each peak and recovers with a `release` s one-pole."""
     from scipy.ndimage import minimum_filter1d, uniform_filter1d
     from scipy.signal import resample_poly
-    peak = np.abs(resample_poly(x, 4, 1))[: len(x) * 4].reshape(-1, 4).max(axis=1)
+    xs = x if x.ndim == 2 else x[:, None]
+    peak = np.abs(resample_poly(xs, 4, 1, axis=0))[: len(x) * 4].max(axis=1).reshape(-1, 4).max(axis=1)
     need = np.minimum(1, db(ceiling_db) / np.maximum(peak, 1e-9))
     L = int(look * SR)
     need = uniform_filter1d(minimum_filter1d(need, 2 * L + 1), L)
@@ -132,7 +184,7 @@ def limit(x, ceiling_db, look=0.002, release=0.06):
     for k, v in enumerate(need):
         cur = v if v < cur else r * cur + (1 - r) * v
         g[k] = cur
-    return x * g
+    return x * (g[:, None] if x.ndim == 2 else g)
 
 
 if __name__ == "__main__":
