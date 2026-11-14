@@ -40,8 +40,13 @@ const youHeapToy = (s: S): MovingProp => ({
   make: duckToy,
   pose: (o, F) => {
     o.position.copy(handOf(s, "you", "both", F, 0.1));
+    // Plant for "shaken toys talk" (review r2/r3 C4): the duck jiggles in your hands while it quacks, still once the
+    // battery is out.
+    const shaking = F < Math.round(0.52 * 30);
+    if (shaking) o.position.addScaledVector(rightOf(s, F), 0.035 * Math.sin(F * 2.2)).add(new Vector3(0, 0.02 * Math.abs(Math.sin(F * 2.2)), 0));
     faceCam(o, s, F);
     o.rotateY(Math.PI / 2);
+    if (shaking) o.rotateX(0.18 * Math.sin(F * 2.2));
   },
   heldBy: "you",
   hand: "both",
@@ -319,9 +324,9 @@ const quackBubble = (s: S): MovingProp => ({
   pose: (o, F) => {
     const t0 = Math.round(0.52 * 30) - 4; // pops just before the battery flies
     if (F > t0 + 4) return false;
-    o.position.copy(handOf(s, "you", "both", F, 0.3)).add(new Vector3(0, 0.12, 0)).addScaledVector(rightOf(s, F), 0.2); // beside the duck, inside the frame
+    o.position.copy(handOf(s, "you", "both", F, 0.3)).add(new Vector3(0, 0.12 + 0.06 * Math.max(F - t0, 0), 0)).addScaledVector(rightOf(s, F), 0.2); // beside the duck, inside the frame
     faceCam(o, s, F);
-    o.scale.setScalar((F < t0 ? 1 + 0.04 * Math.sin(F * 0.8) : 1 - 0.22 * (F - t0)) * 0.6); // pops inward
+    o.scale.setScalar((F < t0 ? 1 + 0.04 * Math.sin(F * 0.8) : 1 - 0.22 * (F - t0)) * 0.6); // pops inward, floating up clear of the duck's head (review r2 L1)
     return true;
   },
   heldBy: "you",

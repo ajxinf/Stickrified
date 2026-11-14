@@ -158,7 +158,7 @@ export const chadPyjamas: Look = {
   shoes: "#6a4a3a",
   sneakers: false,
   outfit: layers(pattern("pinstripe", "#b8cfee", "#5a7ab0"), campCollar("#e8f0fa"), bottoms("#b8cfee", 0.9)),
-  hair: headLayers(capHair("#4a3428", 0.42, 0.4, 5), shadesUp("#1e2a44", "#3a5a7a")),
+  hair: headLayers(capHair("#4a3428", 0.42, 0.4, 5), cap("#2e4ab0", true), shadesUp("#1e2a44", "#3a5a7a")), // review r2/r3: keeps the backwards cap, or he reads as a new character
   face: undefined,
 };
 /** Dave from the night shift: lanky teen, spiky hair, green FRESHMART vest over a white collar, name tag. */
@@ -222,7 +222,9 @@ const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
 
 /** Where the crowd surges to on "heads" (Chad's shutters) and how it drains back. */
 const SURGE = { from: BEAT.heads - 6, at: BEAT.bang - 4, back: BEAT.give + 8, home: BEAT.give + 70 };
-const shutterSpot = (i: number) => at(CHAD.s - 3 + ((i * 37) % 60) / 10, FRONT - 0.5 - ((i * 13) % 40) / 10, 0);
+// Review r2/r3 H5: modular spots made rigid grid rows; scatter by golden-ratio hashes instead.
+const frac = (x: number) => x - Math.floor(x);
+const shutterSpot = (i: number) => at(CHAD.s - 3 + 6 * frac(i * 0.618034 + 0.13), FRONT - 0.5 - 4 * frac(i * 0.754877 + 0.41), 0);
 
 /** The cart's path from the kick to inside Chad's shop (also used by props.ts). */
 export const CART_RUN = { kick: BEAT.kick, foot: BEAT.kick + 26, door: BEAT.door2 - 30, stop: BEAT.door2 - 12 };
@@ -257,7 +259,7 @@ const zombie = (i: number, f: number) => {
     const go = ease((f - SURGE.from - h.delay) / (SURGE.at - SURGE.from)), back = ease((f - SURGE.back - h.delay) / (SURGE.home - SURGE.back));
     const pos = home.clone().lerp(spot, go * (1 - back)).add(wob);
     const moving = (go > 0 && go < 1) || (back > 0 && back < 1);
-    const state = moving ? ((Math.floor(f / 5) + i) % 2 ? Z.runA : Z.runB) : go >= 1 && back <= 0 ? (f >= BEAT.bang - 2 && f < BEAT.give ? Z.bang : Z.idle) : milling;
+    const state = moving ? ((Math.floor(f / 5) + i) % 2 ? Z.runA : Z.runB) : go >= 1 && back <= 0 ? (f >= BEAT.bang - 2 && f < BEAT.give ? ((Math.floor(f / 4) + i) % 2 ? Z.bang : Z.reachA) : Z.idle) : milling; // pounding, not a still pose
     return { pos, state, look: h.look };
   }
   // Lines 17-18: on "scream" every head snaps toward the cart (review C2: they slept through it on "now").

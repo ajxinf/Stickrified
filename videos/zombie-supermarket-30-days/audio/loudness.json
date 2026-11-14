@@ -15,7 +15,7 @@
   "duck": -16
  },
  "voice_music_gap_db": 24.0,
- "voice_music_gap_min_word_db": -5.6,
- "worst_word": "roof.",
- "voice_button_gap_db": 16.5
+ "voice_music_gap_min_word_db": -3.9,
+ "worst_word": "the",
+ "voice_button_gap_db": 16.4
 }

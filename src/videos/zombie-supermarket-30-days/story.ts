@@ -12,7 +12,7 @@ import { POSES, blendPose } from "../../../kit/toon/poses";
 import type { Pose } from "../../../kit/toon/poses";
 import { youLook } from "../../../kit/toon/protagonist";
 import { CART_IN, CHAD, CHAD_DOOR, CHAD_ROOF, CHART_AT, DOCK, FLOODS, FRONT, GENERATOR, GRILL, HEAP, IN, PALLET, RAMP_TOP, ROOF_Y, SHUTTER_AT, WINDOW_SPOT, at } from "./build";
-import { BEAT, FPS, LAST, LEAD, cartAt, chadLook, chadPyjamas, daveLook, exprAt, words } from "./roles";
+import { BEAT, CART_RUN, FPS, LAST, LEAD, cartAt, chadLook, chadPyjamas, daveLook, exprAt, words } from "./roles";
 
 /**
  * Shot plan v2 for zombie-supermarket-30-days (80.8 s), rebuilt after the critique (2026-11-13): shoot the GAG on its
@@ -108,12 +108,17 @@ const youKnock: Role = {
   },
 };
 const YOU_PALLET = PALLET.clone().add(new Vector3(-0.75, 0, 1.25)), DAVE_PALLET = PALLET.clone().add(new Vector3(0.55, 0, 1.15));
+/** Eating beans off your pinky (review r2/r3 C2: the kit "eat" pose was too small to read): the can comes up beside
+ * your chin, the pinky dips into it and back to your mouth on a ~0.8 s loop. */
+const pinkyEat = (F: number, look: number, phase: number): Pose => {
+  const p = posed("eat", F / FPS, look), k = 0.5 + 0.5 * Math.sin(((F + phase) / FPS) * Math.PI * 2.4);
+  return { ...p, arms: [{ at: [0.32, 0.18], grip: "mitt" }, { at: [-0.3 + 0.12 * k, -0.28 + 0.34 * k], grip: "point", layer: "front" }] }; // x inward = toward the mouth
+};
 const youBeans: Role = {
   name: "you", look: youLook, at: still(YOU_PALLET),
-  // Eating cold beans with your pinky, to keep quiet: the hand goes to the mouth on "eating".
-  state: (F) => st(F >= W_.eating - LEAD ? posed("eat", F / FPS, 0.3) : posed("hold", F / FPS, 0.3), F < BEAT.silence - LEAD ? "tired" : "deadpan", F, 3, { prop: "can" }),
+  state: (F) => st(F >= W_.eating - LEAD ? pinkyEat(F, 0.3, 0) : posed("hold", F / FPS, 0.3), F < BEAT.silence - LEAD ? "tired" : "deadpan", F, 3, { prop: "can" }),
 };
-const daveBeans: Role = { name: "dave", look: daveLook, at: still(DAVE_PALLET), state: (F) => st(F >= W_.eating + 10 ? posed("eat", F / FPS, -0.3) : posed("hold", F / FPS, -0.3), F < BEAT.silence - LEAD ? "worried" : "sad", F, 4, { prop: "can" }) };
+const daveBeans: Role = { name: "dave", look: daveLook, at: still(DAVE_PALLET), state: (F) => st(F >= W_.eating + 10 ? pinkyEat(F, -0.3, 11) : posed("hold", F / FPS, -0.3), F < BEAT.silence - LEAD ? "worried" : "sad", F, 4, { prop: "can" }) };
 const chadMorning: Role = {
   name: "chad", look: chadLook, at: still(CHAD_ROOF),
   state: (F) => {
@@ -179,8 +184,9 @@ const chadRoofEnd: Role = {
   state: (F) => {
     const late = F >= W_.thirty - 6;
     const tremble = late ? 0 : Math.sin(F * 0.8) * 2.5;
-    const arms: Pose["arms"] = [{ at: [0.2, 0.92] }, { at: [-0.24, 0.5], grip: "mitt" }];
-    return st({ ...posed("hold", F / FPS, -0.1), arms, sway: tremble }, late ? "shocked" : "scared", F, 7, { fx: { ringEyes: late, sweat: late ? 0.35 + 0.65 * Math.min((F - W_.thirty) / 60, 1) : (F % 45) / 45 } });
+    const q = late ? 0 : 0.035 * Math.sin(F * 2.3); // the megaphone shakes in his hands (pack gag; review r3: a 3 s frozen hold)
+    const arms: Pose["arms"] = [{ at: [0.2 + q, 0.92 - q] }, { at: [-0.24 - q, 0.5 + q], grip: "mitt" }];
+    return st({ ...posed("hold", F / FPS, -0.1), arms, sway: tremble }, F >= BEAT.doesnt - LEAD ? "worried" : late ? "shocked" : "scared", F, 7, { fx: { ringEyes: late, sweat: late ? 0.35 + 0.65 * Math.min((F - W_.thirty) / 60, 1) : (F % 45) / 45 } });
   },
 };
 // The payoff two-shot: you and Dave in the empty street, Chad's shop stuffed with zombies behind you; you wave up at him.
@@ -190,7 +196,7 @@ const youWave: Role = {
   name: "you", look: youLook, at: still(YOU_END),
   state: (F) => {
     const p = actionPose("wave", F / FPS, 0.5), s = Math.sin((F / FPS) * Math.PI * 4);
-    return st({ ...p, arms: [p.arms![0], { at: [0.62 + 0.1 * s, -1.05], grip: "open" }] }, "smirk", F, 3); // arm 1 = screen right, away from Dave; hand clear of the head
+    return st({ ...p, arms: [{ at: [0.4 + 0.12 * s, -1.0], grip: "open", layer: "front" }, p.arms![1]] }, "smirk", F, 3); // review r3: the right hand vanished against the dark zombie-stuffed window; wave on the bright yellow-wall side
   },
 };
 const daveEnd: Role = { name: "dave", look: daveLook, at: still(DAVE_END), state: (F) => st(posed("hold", F / FPS, 0.6), "grin", F, 4, { prop: "can" }) };
@@ -204,7 +210,6 @@ const ACROSS2 = at(CHAD.s - 2.0, -4.9, 1.8);
 const lowAngle = (p: { pos: Vector3; look: Vector3; fov: number }, dy: number) => ({ ...p, pos: p.pos.clone().add(new Vector3(0, -dy, 0)) });
 /** Aim lower so the subject sits higher in the frame, clear of the caption band (y 0.64-0.76 H). */
 const liftSubject = <P extends { look: Vector3 }>(p: P, dy: number): P => ({ ...p, look: p.look.clone().add(new Vector3(0, -dy, 0)) });
-const PALLET_MID = PALLET.clone().add(new Vector3(-0.1, 0, 1.2));
 const motes = (c: Vector3, color: string) => ({ center: c.clone().setY(1.5), size: new Vector3(4.5, 2.6, 4.5), color });
 
 let T = 0;
@@ -237,8 +242,15 @@ const shots: S[] = [
     whips: [[14, 60]], // a fast crane up the fortress (motion-blurred, like the refs' reveals)
     cast: inShot(262, [chadMock]), subject: "chad", subjectFrom: 64, crowd: true, dof: POST.dof,
   }),
-  // "...hardware store, steel shutters, and a megaphone": Chad MCU, flexes the megaphone up on "megaphone".
-  sh("B05-chad-flex", BEAT.hardware - 2, BEAT.on1 - 4, "ext-day", { pose: creep({ pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 13 }, 90, 0.06), cast: inShot(BEAT.hardware - 2, [chadMock]), subject: "chad", crowd: true, dof: POST.dof }),
+  // "...hardware store, electric steel shutters, and a megaphone": the whole storefront (sign, steel shutters, Chad on the
+  // roof) while the words list it, then a fast push to Chad's MCU as he flexes the megaphone up on "megaphone"
+  // (review r2 C3: the old telephoto MCU showed none of what the words named).
+  sh("B05-chad-flex", BEAT.hardware - 2, BEAT.on1 - 4, "ext-day", (() => {
+    const F0 = BEAT.hardware - 2, m = BEAT.megaphone - F0;
+    const mcu = { pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 13 };
+    const front = creep({ pos: at(CHAD.s - 1.2, FRONT - 7.5, 2.0), look: at(CHAD.s, FRONT, 3.4), fov: 62 }, 90, 0.08);
+    return { pose: reframe(front, mcu, m - 16, m + 2), whips: [[m - 16, m + 2]] as [number, number][], cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
+  })()),
   // Line 4. Day 1: you knock on his shutter.
   sh("B06-knock", BEAT.on1 - 4, W_.he - 2, "ext-day", { pose: creep(fo(YOU_SHUTTER, at(CHAD.s + 2.2, -1.5), "mcu", youLook, { side: -0.4 }), 70, 0.08), cast: inShot(BEAT.on1 - 4, [youKnock]), subject: "you", dof: DOF.medium(2.2) }),
   // The slot slides open on two sunglasses ("He said"), and slams on "only" (impact shake).
@@ -251,7 +263,7 @@ const shots: S[] = [
   // Line 5. Night: you and Dave on the pallet, a battery lantern between you.
   sh("B09-pallet", BEAT.so, W_.eating - 2, "int-night", { pose: shot({ pos: PALLET.clone().add(new Vector3(-0.15, 1.25, 4.6)), look: PALLET.clone().add(new Vector3(-0.55, 1.1, 1.2)), fov: 48 }, [drift(-0.2), pushIn(0.4)], 80), cast: inShot(BEAT.so, [youBeans, daveBeans]), subject: "you", dof: DOF.medium(3.3), motes: motes(PALLET, "#ffc98a") }),
   // "eating cold beans in total silence": CU, beans off your pinky.
-  sh("B10-pinky", W_.eating - 2, BEAT.every + 6, "int-night", { pose: creep({ pos: PALLET_MID.clone().add(new Vector3(-0.1, 1.25, 4.6)), look: PALLET_MID.clone().add(new Vector3(-0.12, 1.05, 0)), fov: 56 }, 90, 0.12), cast: inShot(W_.eating - 2, [youBeans, daveBeans]), subject: "you", dof: DOF.closeup(1.4), motes: motes(YOU_PALLET, "#ffc98a") }),
+  sh("B10-pinky", W_.eating - 2, BEAT.every + 6, "int-night", { pose: creep(fo(YOU_PALLET, YOU_PALLET.clone().add(new Vector3(0.3, 0, 3.4)), "mcu", youLook), 90, 0.12), cast: inShot(W_.eating - 2, [youBeans]), subject: "you", dof: DOF.closeup(1.4), motes: motes(YOU_PALLET, "#ffc98a") }),
   // Line 6. Dawn: "Morning, toy boy!" into the megaphone, sound rings.
   sh("B11-morning", BEAT.every, BEAT.heads - 20, "ext-dawn", { pose: creep(tele(ACROSS2, CHAD_ROOF, chadLook, 2.6), 120, 0.03), cast: inShot(BEAT.every, [chadMorning]), subject: "chad", crowd: true, dof: POST.dof }),
   // Line 7. The horde surges, bangs, gives up (high crane).
@@ -268,17 +280,18 @@ const shots: S[] = [
   sh("B17-ramp", BEAT.park - 4, W_.daveAsks - 2, "ext-day", { pose: shot({ pos: RAMP_TOP.clone().add(new Vector3(-2.5, 1.95, 0.7)), look: at(CHAD.s, FRONT, 0.8), fov: 48 }, [pushIn(1.2)], 110), crowd: true, dof: POST.dof }),
   // Line 11. You point (the window shows Chad's generator across the street).
   sh("B18-point", W_.daveAsks - 2, BEAT.generator1 - 6, "int-day", {
-    pose: reframe(creep({ pos: IN(1.2, 3.8, 1.3), look: YOU_WIN.clone().setY(1.3), fov: 40 }, 80), fo(YOU_WIN, IN(1.6, 4.2), "mcu", youLook), BEAT.point - (W_.daveAsks - 2) - 14, BEAT.point - (W_.daveAsks - 2) + 6),
+    pose: reframe(creep({ pos: IN(1.2, 3.8, 1.3), look: YOU_WIN.clone().lerp(DAVE_WIN, 0.33).setY(1.3), fov: 50 }, 80) /* both of you on "Dave asks" (review r3) */, fo(YOU_WIN, IN(1.6, 4.2), "mcu", youLook), BEAT.point - (W_.daveAsks - 2) - 22, BEAT.point - (W_.daveAsks - 2) + 6),
     cast: inShot(W_.daveAsks - 2, [youWindow, daveWindow]), subject: "you", dof: DOF.medium(3.0),
   }),
   sh("B19-generator", BEAT.generator1 - 6, BEAT.counting - 12, "ext-day", { pose: creep({ pos: GENERATOR.clone().add(new Vector3(-3.3, 1.05, 2.7)), look: GENERATOR.clone().add(new Vector3(0.2, 0.6, 0.6)), fov: 44 }, 50, 0.12), dof: DOF.medium(3.2) }),
-  // Line 12. The tally chart by flashlight: pan to the last can, then push in on the skull.
+  // Line 12. The tally chart by flashlight: open on the whole chart (30 cans, the count reads), then push in on the
+  // skull can on "day" (review r3: the pan ended one can short, the skull never showed, only 2 columns were visible).
   sh("B20-tally", BEAT.counting - 18, BEAT.day29 - 8, "int-night", {
     pose: (f) => {
-      const F0 = BEAT.counting - 18, u = Math.min(Math.max(f / (BEAT.day - F0 + 4), 0), 1), t = 0.5 * u + 0.5 * u * u * (3 - 2 * u);
-      const look = chartPoint(0.42, 0.45).lerp(chartPoint(0.879, 0.836), t);
-      const z = smootherstep(Math.min(Math.max((f - (BEAT.day - F0)) / 18, 0), 1));
-      return { pos: look.clone().add(new Vector3(-2.6 + 0.8 * z, 0.05, 0)), look, fov: 32, roll: 0 };
+      const F0 = BEAT.counting - 18, u = smootherstep(Math.min(Math.max(f / (BEAT.day - F0 + 6), 0), 1));
+      const look = chartPoint(0.5, 0.5).lerp(chartPoint(0.879, 0.836), u);
+      const dist = 4.4 - 2.9 * u;
+      return { pos: look.clone().add(new Vector3(-dist, 0.05, 0)), look, fov: 32, roll: 0 };
     },
     dof: POST.dof,
   }),
@@ -322,21 +335,29 @@ const shots: S[] = [
   sh("B29-heads", BEAT.now - 6, BEAT.and400 + 2, "ext-dawn", { pose: (f) => ({ pos: at(38.5, 1.2, 2.3), look: cartAt(f + BEAT.now - 6).add(new Vector3(0, 0.9, 0)), fov: 44, roll: 0 }), crowd: true, dof: POST.dof }),
   // Line 19. The stampede: the whole street pours toward Chad's open door.
   sh("B30-stampede", BEAT.and400 - 4, BEAT.ball, "ext-dawn", { pose: shot({ pos: at(20, -1.5, 1.6), look: at(32, 4.5, 1.6), fov: 50 }, [pullOut(3), arc(-6, 0.8)], 90), crowd: true, wide: true, dof: POST.dof }),
-  // "...straight through Chad's open door": the doorway; the cart crashes in (impact shake), the shop fills to the ceiling.
+  // "...straight through Chad's open door": ride behind the cart (crowd parted by the lens lane) as it barrels through the
+  // open shutter, then hold on the doorway as the shop fills to the ceiling (review r3: the crash was a wall of faces).
   sh("B30b-crash", BEAT.ball, BEAT.chadRoof + 4, "ext-dawn", {
-    pose: shake(creep({ pos: at(CHAD.s - 2.2, FRONT - 6.2, 2.4), look: CHAD_DOOR.clone().setY(1.5), fov: 48 }, 70, 0.1), BEAT.door2 - BEAT.ball, 0.05),
+    pose: shake((f) => {
+      const F = Math.min(f + BEAT.ball, CART_RUN.door - 6), c = cartAt(F), dir = cartAt(F + 4).sub(c).setY(0);
+      if (dir.lengthSq() < 1e-6) dir.set(1, 0, 0);
+      dir.normalize();
+      const k = smootherstep(Math.min(Math.max((f + BEAT.ball - (CART_RUN.door - 6)) / 24, 0), 1)); // settle on the doorway
+      const pos = c.clone().addScaledVector(dir, -3.4).add(new Vector3(0, 1.5, 0)).addScaledVector(dir, -1.2 * k).add(new Vector3(0, 0.5 * k, 0));
+      return { pos, look: c.clone().addScaledVector(dir, 3).setY(1.0).lerp(CHAD_DOOR.clone().setY(1.5), k), fov: 52 - 4 * k, roll: 0 };
+    }, BEAT.door2 - BEAT.ball, 0.05),
     kicks: [[BEAT.door2 - BEAT.ball, BEAT.door2 - BEAT.ball + 7]], crowd: true, wide: true, dof: POST.dof,
   }),
   // Line 20. Chad made it to the roof, clutching the megaphone, trembling.
-  sh("B31-chad-roof", BEAT.chadRoof, BEAT.but, "ext-dawn", { pose: creep({ pos: at(CHAD.s - 2.4, 3.2, 8.2), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 30 }, 90, 0.1), cast: inShot(BEAT.chadRoof, [chadRoofEnd]), subject: "chad", crowd: true, dof: DOF.medium(4.2) }),
+  sh("B31-chad-roof", BEAT.chadRoof, BEAT.but, "ext-dawn", { pose: creep({ pos: at(CHAD.s - 2.4, 3.2, 8.2), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 30 }, 90, 0.22), cast: inShot(BEAT.chadRoof, [chadRoofEnd]), subject: "chad", crowd: true, dof: DOF.medium(4.2) }),
   // Line 21. You and Dave in the empty street, the shop stuffed with zombies behind you: a tiny wave up at him.
   sh("B32-wave", BEAT.but, W_.thirty + 24, "ext-dawn", { pose: creep({ pos: at(29.4, -1.5, 1.2), look: at(31.45, 1.1, 1.38), fov: 52 }, 60, 0.08), cast: inShot(BEAT.but, [youWave, daveEnd]), subject: "you", crowd: true, dof: DOF.medium(3.6) }),
   // "...the guy across the street doesn't make a sound": the opening telephoto, now a silent close-up (the loop).
-  sh("B33-silence", W_.thirty + 24, FRAMES, "ext-dawn", { pose: shot(liftSubject(tele(ACROSS, CHAD_ROOF, chadPyjamas, 1.8), 0.35), [pushIn(0.5)], 80), cast: inShot(W_.thirty + 24, [chadRoofEnd]), subject: "chad", crowd: true, dof: POST.dof }),
+  sh("B33-silence", W_.thirty + 24, FRAMES, "ext-dawn", { pose: shot(liftSubject(tele(ACROSS, CHAD_ROOF, chadPyjamas, 1.8), 0.35), [pushIn(1.4)], 80), cast: inShot(W_.thirty + 24, [chadRoofEnd]), subject: "chad", crowd: true, dof: POST.dof }),
 ];
 void T;
 function chartPoint(u: number, v: number) {
-  return CHART_AT.clone().add(new Vector3(-0.03, (0.5 - v) * 1.34, -(u - 0.5) * 1.9));
+  return CHART_AT.clone().add(new Vector3(-0.03, (0.5 - v) * 1.34, (u - 0.5) * 1.9)); // +z is screen right from the room side
 }
 void GRILL;
 void walkPose;
