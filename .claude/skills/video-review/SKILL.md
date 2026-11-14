@@ -14,6 +14,7 @@ the `video-qa` skill's job. This skill adds whether the video is worth watching.
 | 2. Cold Viewer | `critics/cold-viewer.md` | Would a stranger scrolling past stop and stay? |
 | 3. Regular Viewer | `critics/regular-viewer.md` | Is this a good episode of *our* channel, and not a repeat? |
 | 4. Content Manager | `critics/content-manager.md` | Can it compete, grow the channel and earn money? |
+| 5. Production Quality (Opus) | `critics/production-quality.md` + `docs/style/QUALITY_STANDARD.md` | Does it look as well made as the reference shorts? (10 categories, gate >= 8) |
 
 Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evidence, self-check). Fixes: `fixes.md`. Report: `report.md`. Authorities the critics judge against (they never invent their own):
 `CLAUDE.md`, `docs/STYLE.md`, `docs/style/LOOK_SPEC.md`, the `stickrified-script` and `toon-world-short` skills.
@@ -38,6 +39,10 @@ Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evide
    with frames), explains or fails each layer-2 flag, and writes `r<N>-qa-layer3.md`. Script only: run
    `python .claude/skills/stickrified-script/check_script.py videos/<slug>/script.json` instead and say QA layers
    1-3 were not possible. Score: see "Scores".
+2b. **Production Quality** (module 5): a fresh agent on **Opus** (pass `model: "opus"`) with
+   `critics/_protocol.md`, `critics/production-quality.md`, `QUALITY_STANDARD.md`, the frame sheets and
+   `python scripts/ref_compare.py assets/video-standard.mp4 out/<slug>/final.mp4 out/<slug>/review/r<N>/metrics.json`.
+   It writes `r<N>-production-quality.md`. Runs in parallel with step 3.
 3. **Three critics, independently.** Each critic is a fresh agent on the latest **Sonnet** (pass
    `model: "sonnet"`; user rule 2026-11-14: critics never run on Opus) given ONLY: `critics/_protocol.md`, its
    critic file, `pack.md`, the paths of the assets marked present, and the authorities above. The prompt repeats
@@ -70,6 +75,13 @@ Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evide
    list the rest under Remaining issues. Never polish LOW items into another round.
 8. **Report.** Write `videos/<slug>/REVIEW.md` from `report.md` (committed; `out/` is git-ignored), commit
    (`<slug>: review round N`), and give the user the decision line plus the before/after table.
+
+## Production quality gate (module 5, user rule 2026-11-15)
+A video is finished only when module 5 scores **every one of the 10 categories >= 8** and no automatic-fail item is
+present (`QUALITY_STANDARD.md` "Scoring"). Rendering, technical correctness and visual quality are three separate
+things: a clean QA pass does not pass this gate. Scores come from the rendered frames, never from what the code is
+meant to do. If a category cannot reach 8 because of a real technical limit, the report names the limit and the best
+practical alternative; it never rounds the score up.
 
 ## Scores
 Every score is an integer /10 with a one-line reason tied to evidence. Anchors (all critics):
