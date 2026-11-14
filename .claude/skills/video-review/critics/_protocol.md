@@ -7,6 +7,9 @@ A report that breaks a rule here is sent back.
 - Open **every** sheet in `out/<slug>/qa/frames/sheets/` in shot order (`B01_01`, `B01_02`, ... to the last), as
   images. No sampling. Round 2 critics opened 14-24 of 75 sheets and called gags "missing" that were on the
   sheets they skipped.
+- **Write each sheet's ledger rows to your report file right after you open it** (append, then open the next).
+  Images drop out of your context after a few dozen: round 3 critics opened all 75 sheets but kept no notes on the
+  first 15-40, so half the video ended up "not reviewed".
 - Then open the key frames your file names (opening frames, word starts of gag words, the last frame).
 - An insert drawn over the 3D (a chart, an x-ray, a stamp card) may be on no sheet: check `INDEX.md`; if it is
   missing there, say "insert not on sheets, not reviewed" rather than guessing.
