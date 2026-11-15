@@ -468,4 +468,4 @@ export const toyHeap = () => toyPile();
 export { battery, dinoToy, duckToy, megaphone, scrawlTex, shakeBox, toothbrush };
 /** The street across from FRESHMART through its front windows: CHAD'S HARDWARE with Chad, his generator and floods. */
 const windowViews = (night: boolean) =>
-  paneViews(STORE_PANES, streetViewTex({ night, landmark: { name: "CHAD'S HARDWARE", x0: 4.6, x1: 8.0, roofFigure: { body: "#f2efe6", cap: "#2e4ab0" }, floodlights: true, generator: true } }), { tint: night ? "#ffffff" : "#e8e4dc" });
+  paneViews(STORE_PANES, streetViewTex({ night, landmark: { name: "CHAD'S HARDWARE", x0: 4.6, x1: 8.0, wall: night ? "#3a3e52" : "#5a6078", /* R14: the real slate facade, not the default red brick */ roofFigure: { body: "#f2efe6", cap: "#2e4ab0" }, floodlights: true, generator: true } }), { tint: night ? "#ffffff" : "#e8e4dc" });

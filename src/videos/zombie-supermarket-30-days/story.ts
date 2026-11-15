@@ -237,7 +237,9 @@ const chadRoofEnd: Role = {
     const tremble = late ? 0 : Math.sin(F * 0.8) * 2.5;
     const q = late ? 0 : 0.035 * Math.sin(F * 2.3); // the megaphone shakes in his hands (pack gag; review r3: a 3 s frozen hold)
     const arms: Pose["arms"] = [{ at: [0.2 + q, 0.92 - q] }, { at: [-0.24 - q, 0.5 + q], grip: "mitt" }];
-    return st({ ...posed("hold", F / FPS, -0.1), arms, sway: tremble }, F >= BEAT.doesnt - LEAD ? "worried" : late ? "shocked" : "scared", F, 7, { fx: { ringEyes: late, sweat: late ? 0.35 + 0.65 * Math.min((F - W_.thirty) / 60, 1) : (F % 45) / 45 } });
+    // R14 (one face for 2 s): a word-synced ladder on the roof: scared on "roof", worried on "still", a scared clutch on "megaphone".
+    const early = exprAt([[0, "scared"], [onWord(BEAT.roof + 10), "worried"], [BEAT.megaphone2, "scared"]], F);
+    return st(withSquash({ ...posed("hold", F / FPS, -0.1), arms, sway: tremble }, late ? 0 : early.squash), F >= BEAT.doesnt - LEAD ? "worried" : late ? "shocked" : early.expr, F, 7, { fx: { ringEyes: late, sweat: late ? 0.35 + 0.65 * Math.min((F - W_.thirty) / 60, 1) : (F % 45) / 45 } });
   },
 };
 // The payoff two-shot: you and Dave in the empty street, Chad's shop stuffed with zombies behind you; you wave up at him.
@@ -247,10 +249,11 @@ const youWave: Role = {
   name: "you", look: youLook, at: still(YOU_END),
   state: (F) => {
     const p = actionPose("wave", F / FPS, 0.5), s = Math.sin((F / FPS) * Math.PI * 4);
-    return st({ ...p, arms: [{ at: [0.4 + 0.12 * s, -1.0], grip: "open", layer: "front" }, p.arms![1]] }, "smirk", F, 3); // review r3: the right hand vanished against the dark zombie-stuffed window; wave on the bright yellow-wall side
+    const e = exprAt([[0, "smirk"], [onWord(BEAT.but + 10), "relieved"], [BEAT.thirty, "grin"]], F); // R14 ladder
+    return st(withSquash({ ...p, arms: [{ at: [0.4 + 0.12 * s, -1.0], grip: "open", layer: "front" }, p.arms![1]] }, e.squash), e.expr, F, 3); // review r3: the right hand vanished against the dark zombie-stuffed window; wave on the bright yellow-wall side
   },
 };
-const daveEnd: Role = { name: "dave", look: daveLook, at: still(DAVE_END), state: (F) => st(posed("hold", F / FPS, 0.6), "grin", F, 4, { prop: "can" }) };
+const daveEnd: Role = { name: "dave", look: daveLook, at: still(DAVE_END), state: (F) => st(posed("hold", F / FPS, 0.6), F < onWord(BEAT.but + 10) - LEAD ? "worried" : "grin", F, 4, { prop: "can" }) };
 
 // ---------------------------------------------------------------- shots
 
@@ -354,7 +357,7 @@ const shots: S[] = [
     pose: reframe(creep({ pos: IN(1.2, 3.8, 1.3), look: YOU_WIN.clone().lerp(DAVE_WIN, 0.33).setY(1.3), fov: 50 }, 80) /* both of you on "Dave asks" (review r3) */, fo(YOU_WIN, IN(1.6, 4.2), "mcu", youLook), BEAT.point - (W_.daveAsks - 2) - 22, BEAT.point - (W_.daveAsks - 2) + 6),
     cast: inShot(W_.daveAsks - 2, [youWindow, daveWindow]), subject: "you", dof: DOF.medium(3.0),
   }),
-  sh("B19-generator", BEAT.generator1 - 6, BEAT.counting - 12, "ext-day", { pose: creep({ pos: GENERATOR.clone().add(new Vector3(-3.3, 1.05, 2.7)), look: GENERATOR.clone().add(new Vector3(0.2, 0.6, 0.6)), fov: 44 }, 50, 0.12), dof: DOF.medium(3.2) }),
+  sh("B19-generator", BEAT.generator1 - 6, BEAT.counting - 12, "ext-day", { pose: creep({ pos: GENERATOR.clone().add(new Vector3(-3.3, 1.05, -2.7)), look: GENERATOR.clone().add(new Vector3(0.2, 0.6, 0.6)), fov: 44 }, 50, 0.12) /* R14: the same panel side as B23 */, dof: DOF.medium(3.2) }),
   // Line 12. The tally chart by flashlight: open on the whole chart (30 cans, the count reads), then push in on the
   // skull can on "day" (review r3: the pan ended one can short, the skull never showed, only 2 columns were visible).
   sh("B20-tally", BEAT.counting - 18, BEAT.day29 - 8, "int-night", {
