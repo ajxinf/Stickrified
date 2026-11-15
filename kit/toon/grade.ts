@@ -106,7 +106,8 @@ vec3 grade(vec3 src, vec2 uv) {
 }`;
 
 /** Per-shot look (R13): `pool` [x, y, r, k] in uv (y up), `accent` [hue 0-1, mute 0-1]. */
-export type Look = { pool?: [number, number, number, number]; accent?: [number, number] };
+/** `dim`: practicals going out inside a shot: [shot frame, exposure multiplier] steps, each over 3 frames (R14 B24). */
+export type Look = { pool?: [number, number, number, number]; accent?: [number, number]; dim?: [number, number][] };
 export const setLookUniforms = (u: Record<string, { value: unknown }>, l: Look = {}) => {
   u.uPool.value = l.pool ?? [0.5, 0.5, 1, 0];
   u.uAccent.value = l.accent ?? [0, 0];

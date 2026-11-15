@@ -335,6 +335,7 @@ export const Composer: React.FC<{ dof?: Dof; look?: ShotLook }> = ({ dof = POST.
     }
     setGradeUniforms(p.fin.uniforms, gradeState.current);
     setLookUniforms(p.fin.uniforms, look);
+    for (const [at, k] of look?.dim ?? []) p.fin.uniforms.uExposure.value *= 1 - (1 - k) * Math.min(Math.max((frame - at) / 3, 0), 1);
     p.fin.uniforms.uFrame.value = frame % 997;
     draw(p.fin, null);
   }, 1);

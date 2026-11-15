@@ -380,7 +380,8 @@ const shots: S[] = [
   // Line 14. Dawn, day 30: the generator coughs a smoke ring...
   sh("B23-coughs", W_.onDay30 - 6, BEAT.dies - 4, "ext-dawn", { pose: jolt(whipIn(creep({ pos: GENERATOR.clone().add(new Vector3(-3.6, 0.85, -2.9)), look: GENERATOR.clone().add(new Vector3(0.3, 0.95, 0.9)), fov: 50 }, 80, 0.4)), BEAT.coughs - 8 - (W_.onDay30 - 6)), whips: [[0, WHIP]], dof: POST.dof }), // R14: the cough jolts the frame
   // ...and dies: the floodlight goes dark against the sky.
-  sh("B24-lights-out", BEAT.dies - 4, BEAT.electric - 12, "ext-dawn", { pose: creep({ pos: FLOODS[0].clone().add(new Vector3(-2.0, -1.0, -0.6)), look: FLOODS[0].clone(), fov: 36 }, 30, 0.08), dof: POST.dof }),
+  sh("B24-lights-out", BEAT.dies - 4, BEAT.electric - 12, "ext-dawn", { pose: creep({ pos: FLOODS[0].clone().add(new Vector3(-2.0, -1.0, -0.6)), look: FLOODS[0].clone(), fov: 36 }, 30, 0.08), dof: POST.dof,
+    look: { dim: [[10, 0.84], [19, 0.7]] } }), // R14: each flood going out darkens the frame (flood i off = dies + 6 + 9 i)
   // Line 15. The shutter rolls up on Chad in pyjamas: tilt up to his face, ring-eyed on "up".
   sh("B25-shutter", BEAT.electric - 12, BEAT.thats - 2, "ext-dawn", {
     pose: (f) => {

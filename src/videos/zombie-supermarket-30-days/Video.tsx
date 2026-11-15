@@ -55,7 +55,7 @@ const WORLD_LOOK: Record<S["w"], ShotLook> = {
   "ext-dawn": { pool: [0.5, 0.58, 0.28, 0.18], accent: [0.045, 0.28] },
 };
 const lookOf = (s: S): ShotLook => {
-  const l = s.look ?? WORLD_LOOK[s.w];
+  const l = { ...WORLD_LOOK[s.w], ...s.look }; // a shot's look overrides its world's, key by key
   return s.wide && l.pool ? { ...l, pool: [l.pool[0], l.pool[1], l.pool[2] + 0.12, l.pool[3] * 0.5] } : l;
 };
 
