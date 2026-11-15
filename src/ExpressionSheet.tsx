@@ -11,11 +11,14 @@ const POSE_OF: Record<Expr, PoseName> = {
   neutral: "idle", tired: "facepalm", worried: "chin", scared: "panic", shocked: "point", smug: "crossed",
   determined: "run", sad: "hold", angry: "hips", sneaky: "lean", relieved: "walk", confused: "shrug",
   deadpan: "hold", laughing: "panic", grin: "wave", smirk: "knock",
+  excited: "panic", nervous: "chin", suspicious: "crossed", disgusted: "lean", scheming: "hips", crying: "facepalm", pleading: "hold", proud: "hips",
 };
 const CELLS: { expr: Expr; pose: PoseName; label: string; fx: Effects; prop?: CharState["prop"] }[] = [
   ...EXPRESSIONS.map((e) => ({ expr: e, pose: POSE_OF[e], label: `${e} / ${POSE_OF[e]}`, fx: {}, prop: e === "sad" ? ("box" as const) : e === "deadpan" ? ("can" as const) : undefined })),
   { expr: "shocked", pose: "lean", label: "ring eyes + sweat + !", fx: { ringEyes: true, sweat: 0.5, bang: 12 } },
   { expr: "angry", pose: "crossed", label: "steam + colour fill", fx: { steam: 0.4, fill: { color: "rgba(214,60,50,0.55)", t: 0.7 } } },
+  { expr: "relieved", pose: "wave", label: "blush", fx: { blush: 1 } },
+  { expr: "sad", pose: "hold", label: "sad + tears", fx: { tears: 0.3 } },
 ];
 
 /** Draws a character card at scale k into `c` at (x, y); `silhouette` fills it with ink (identity check). */
@@ -41,13 +44,13 @@ export const ExpressionSheet: React.FC = () => {
     const c = ref.current!.getContext("2d")!;
     c.fillStyle = "#ddd6cc";
     c.fillRect(0, 0, 1080, 1920);
-    const cw = 270, ch = 480, k = 0.45;
+    const cols = 5, cw = 216, ch = 320, k = 0.3; // R22: 28 cells
     CELLS.forEach((cell, i) => {
-      const x = (i % 4) * cw, y = Math.floor(i / 4) * ch;
+      const x = (i % cols) * cw, y = Math.floor(i / cols) * ch;
       const s: CharState = { pose: posed(cell.pose, 0.2), expr: cell.expr, blink: false, fx: cell.fx, prop: cell.prop };
       drawCard2D(c, youLook, s, x + (cw - DESIGN.W * k) / 2, y, k);
       c.fillStyle = "#3a2e30";
-      c.font = "bold 20px sans-serif";
+      c.font = "bold 15px sans-serif";
       c.textAlign = "center";
       c.fillText(cell.label, x + cw / 2, y + ch - 14);
     });

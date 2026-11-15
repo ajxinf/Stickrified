@@ -245,6 +245,15 @@ The look values below make a frame pretty; these rules make the frames tell the 
   colour (tall vs short, cool vs warm). Crowds of extras share one costume family so the leads pop.
 - **Faces carry the jokes.** Pick the expression per word: smug half-lids, gritted-teeth grin, ring-eyed shock,
   sweat drop, colour fill. A reaction close-up after every turn in the story.
+- **Emotion density (R22, user 2026-11-16: "more emotions on our character to make it feel more alive").** Every
+  on-screen character runs an `exprAt` timeline (kit cast.ts), never one face per shot:
+  - a face change at least every ~1.5 s of screen time, on the words; big beats get a **ladder** of 2-4 faces
+    (e.g. smug -> suspicious -> nervous -> crying), each swap through the 2-frame blink;
+  - use the whole library (kit face.ts, 24 faces, `ExpressionSheet`): excited, nervous, suspicious, disgusted,
+    scheming, crying, pleading, proud besides the originals; whites-and-pupils eyes (neutral, worried, confused,
+    excited, pleading) let `alive()` glances show, so point `gazes` at what the character would look at;
+  - layer effects on the peaks: `sweat`, `blush`, `tears`, `steam`, `fill`, `bang`, `ringEyes`;
+  - the body follows the face (pose change or `reactSquash` on the same frame); listeners never freeze (`alive`).
 - **Words live in the world.** Signs, labels, banners, name tags, calendars, screens and placards carry text
   (a "DO NOT PUSH" sign, a "SHAKE ME!" box, a scoreboard number rolling over). Floating cards only for the
   identity stamps (DAY N, year) and effect cards. Sign faces use an unlit material (Readability traps).

@@ -9,6 +9,8 @@ import type { P2 } from "./toon";
 export const EXPRESSIONS = [
   "neutral", "tired", "worried", "scared", "shocked", "smug", "determined",
   "sad", "angry", "sneaky", "relieved", "confused", "deadpan", "laughing", "grin", "smirk",
+  // R22 (user: "more emotions on our character to make it feel more alive"; refs 2/5/6 faces).
+  "excited", "nervous", "suspicious", "disgusted", "scheming", "crying", "pleading", "proud",
 ] as const;
 export type Expr = (typeof EXPRESSIONS)[number];
 
@@ -16,16 +18,18 @@ export type Expr = (typeof EXPRESSIONS)[number];
 /** `yaw`: the view (figure.ts viewOf), 0 / undefined = front. */
 export type Head = { cx: number; cy: number; a: number; b: number; W: number; u: number; pts: P2[]; facing: number; look: number; yaw?: number };
 
-type EyeK = "dot" | "small" | "lid" | "heavy" | "happy" | "dash" | "squeeze" | "shock";
+/** `pupil` (R22): a white eye with a pupil that follows the gaze (refs 2/5: eye darts read in the whites);
+ * `pinpoint`: the same with a tiny pupil (nerves); `big`: wide white with a large pupil (pleading, excited). */
+type EyeK = "dot" | "small" | "lid" | "heavy" | "happy" | "dash" | "squeeze" | "shock" | "pupil" | "pinpoint" | "big";
 type Brow = [number, number];
-type MouthK = "dash" | "flat" | "frown" | "smirk" | "smileWide" | "grin" | "laugh" | "O" | "wave" | "teeth";
+type MouthK = "dash" | "flat" | "frown" | "smirk" | "smileWide" | "grin" | "laugh" | "O" | "wave" | "teeth" | "wail" | "bleh";
 /** eyes [back, front]; brows [inner, outer] offsets in u (+ = down), per side or shared, or raised arcs. */
 type Face = { eye: [EyeK, EyeK]; brow: Brow | [Brow, Brow] | "arc"; mouth: MouthK; glance?: number };
 
 const FACE: Record<Expr, Face> = {
-  neutral: { eye: ["dot", "dot"], brow: [0, -1], mouth: "dash" },
+  neutral: { eye: ["pupil", "pupil"], brow: [0, -1], mouth: "dash" }, // R22: whites + pupils (was dots)
   tired: { eye: ["heavy", "heavy"], brow: [-1, 3], mouth: "flat" },
-  worried: { eye: ["small", "small"], brow: [-3, 2], mouth: "wave" },
+  worried: { eye: ["pinpoint", "pinpoint"], brow: [-4, 3], mouth: "wave" },
   scared: { eye: ["shock", "shock"], brow: [-6, 1], mouth: "teeth" },
   shocked: { eye: ["shock", "shock"], brow: "arc", mouth: "O" },
   smug: { eye: ["lid", "lid"], brow: [[1, -1], [-4, -6]], mouth: "smirk" },
@@ -34,12 +38,21 @@ const FACE: Record<Expr, Face> = {
   angry: { eye: ["lid", "lid"], brow: [5, -3], mouth: "teeth" },
   sneaky: { eye: ["lid", "lid"], brow: [2, -1], mouth: "smirk", glance: 1 },
   relieved: { eye: ["happy", "happy"], brow: [-2, 1], mouth: "smileWide" },
-  confused: { eye: ["dot", "small"], brow: [[-4, -6], [3, 1]], mouth: "wave" },
+  confused: { eye: ["pupil", "pinpoint"], brow: [[-4, -6], [3, 1]], mouth: "wave" },
   deadpan: { eye: ["lid", "lid"], brow: [0, 0], mouth: "flat" },
   laughing: { eye: ["squeeze", "squeeze"], brow: [-4, -4], mouth: "laugh" },
   // Pilot critique: more faces that carry a joke. A wide toothy grin; a one-brow-up smirk (cocky, scheming).
   grin: { eye: ["happy", "happy"], brow: [-3, -5], mouth: "teeth" },
   smirk: { eye: ["lid", "lid"], brow: [[2, 0], [-7, -9]], mouth: "smirk", glance: 1 },
+  // R22: the emotions the refs act with that we lacked (asymmetry where a real face would have it).
+  excited: { eye: ["big", "big"], brow: "arc", mouth: "laugh" },
+  nervous: { eye: ["pinpoint", "pinpoint"], brow: [-6, 2], mouth: "teeth", glance: 1 },
+  suspicious: { eye: ["heavy", "pupil"], brow: [[5, 1], [-6, -8]], mouth: "flat", glance: 1 },
+  disgusted: { eye: ["squeeze", "lid"], brow: [[6, 2], [3, -2]], mouth: "bleh" },
+  scheming: { eye: ["lid", "lid"], brow: [7, -5], mouth: "grin", glance: 1 },
+  crying: { eye: ["squeeze", "squeeze"], brow: [-7, 3], mouth: "wail" },
+  pleading: { eye: ["big", "big"], brow: [-7, 2], mouth: "wave" },
+  proud: { eye: ["happy", "happy"], brow: [-4, -6], mouth: "smirk" },
 };
 
 export type Effects = {
@@ -49,6 +62,10 @@ export type Effects = {
   steam?: number;
   /** Colour rising up the face, t 0..1 (reach 1 over ~8 frames). */
   fill?: { color: string; t: number };
+  /** Blush (R22, ref6): soft pink cheeks, 0..1 strength (embarrassed, flattered, in love, very hot). */
+  blush?: number;
+  /** Tears (R22): streams from both eyes, time in s (they run down and re-form). */
+  tears?: number;
   /** Shock eyes regardless of expression. */
   ringEyes?: boolean;
   /** "!" pop, frames since it appeared. */
@@ -131,6 +148,12 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       const tip: P2 = [x - 6 * u * side, ey]; // doubled middle point = sharp ">" (3 points would round it)
       p.stroke([[x + 6 * u * side, ey - 5 * u], tip, tip, [x + 6 * u * side, ey + 5 * u]], lw);
     }
+    else if (kind === "pupil" || kind === "pinpoint" || kind === "big") {
+      // R22: white + pupil; the pupil rides the gaze (pose.look + glance), so alive() darts show in the whites.
+      const [rx, ry, pr] = kind === "big" ? [10, 11, 5.2] : kind === "pinpoint" ? [8, 9, 1.9] : [8, 9, 3.6];
+      p.ell(x, ey, rx * u, ry * u, WHITE, 2.6 * u);
+      p.dot(x + Math.max(-1, Math.min(1, look)) * (rx - pr - 1.6) * u, ey + 1.2 * u, pr * u);
+    }
     else {
       p.ell(x, ey, 11 * u, 11 * u, WHITE, 2.6 * u);
       p.dot(lx - side * 1.5 * u, ey + 1.5 * u, 3 * u);
@@ -141,9 +164,22 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       const [dI, dO] = (Array.isArray(F.brow[0]) ? (F.brow as [Brow, Brow])[i] : F.brow) as Brow;
       p.taper([x - side * 8.5 * u, by + dI * u], [x + side * 8.5 * u, by + dO * u], 5 * u, 2.5 * u);
     }
+    if (o.fx.tears !== undefined) {
+      // A stream from the outer corner down the cheek, with a drop that runs and re-forms (~0.7 s).
+      const t = (o.fx.tears / 0.7) % 1, sx = x + side * 6 * u;
+      p.stroke([[sx, ey + 5 * u], [sx + side * 2 * u, ey + 14 * u], [sx + side * u, ey + 24 * u]], 3.4 * u, "#8fcbff");
+      p.ell(sx + side * 1.5 * u, ey + 8 * u + t * 20 * u, 3.2 * u, 4 * u, "#8fcbff", 1.4 * u);
+    }
     g.restore();
     if (far) g.restore();
   });
+  if (o.fx.blush) {
+    // R22 (ref6): soft pink cheeks below the eyes, no outline.
+    for (const side of [-1, 1]) {
+      if (sn > 0.05 && side !== vs && ay > 60) continue;
+      p.ell(fx + side * (ex + 2 * u), ey + 11 * u, 8 * u, 4.2 * u, `rgba(240,110,125,${0.5 * Math.min(o.fx.blush, 1)})`);
+    }
+  }
   const mx = cx + 8 * u * facing + 0.26 * h.a * turn + vs * 0.55 * h.a * sn, my = cy + 19 * u, mw = 4 * u;
   // A turned mouth foreshortens (narrower toward the profile).
   g.save();
@@ -198,6 +234,16 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       p.stroke(s, 3 * u);
       break;
     }
+    case "wail":
+      // Open crying mouth: the top half of an oval (corners down), tongue showing.
+      p.ell(mx, my + 7 * u, 12 * u, 10 * u, MOUTH, 3 * u, 180, 360);
+      p.clip([[mx - 12 * u, my - 3 * u], [mx + 12 * u, my - 3 * u], [mx + 12 * u, my + 7 * u], [mx - 12 * u, my + 7 * u]], () => p.ell(mx, my + 7 * u, 6 * u, 4 * u, TONGUE));
+      break;
+    case "bleh":
+      // Disgust: a frown with the tongue out of one corner.
+      p.ell(mx + 3 * u, my + 3 * u, 4.5 * u, 6 * u, TONGUE, 2.4 * u, 0, 180);
+      p.arc(mx, my + 4 * u, 8 * u, 4 * u, 200, 340, mw);
+      break;
     case "teeth":
       p.poly([[mx - 12 * u, my - 4 * u], [mx + 12 * u, my - 4 * u], [mx + 11 * u, my + 4 * u], [mx - 11 * u, my + 4 * u]], WHITE, 3 * u);
       for (const k of [-1, 0, 1]) p.stroke([[mx + k * 6 * u, my - 4 * u], [mx + k * 6 * u, my + 4 * u]], 1.5 * u);

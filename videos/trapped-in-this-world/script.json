@@ -1,0 +1,199 @@
+{
+  "slug": "trapped-in-this-world",
+  "title": "In this world, you're trapped inside an \"In this world\" video.",
+  "pillar": "'In this world...' fiction",
+  "formula": "Strange act (punching the edge of the screen) -> why (you live inside a looping 'In this world' video; loop 9,000) -> doubter (Gary the extra: nobody leaves before the end) -> opponent with total power (the narrator: whatever follows 'In this world' comes true) -> the rule used against you (painted doors, soup shoes) -> weird preparation, mystery protected (every loop you jump and grab something; a jar you guard; Gary's ladder timed to the frame) -> setback (the narrator notices and freezes you) -> tension stretch (the progress bar 90-99 %) -> the doubter's habit saves you (his ladder clips the jar) -> the narrator's own power frees you (he reads his captions aloud) -> twist: you escape into the next video, loop 1",
+  "loop": "Line 1: you're punching the edge of the screen on loop 9,000. Last: you escape into the next video, loop 1, and raise your fist at its edge: the punch starts again.",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "facts": [
+    "Fiction: no sources needed. Rule: you are a character inside a Stickrified 'In this world' Short. When the progress bar reaches the end, the video loops and you start again. The narrator is the villain: anything he says after the words 'In this world' becomes true. He also reads his captions aloud, whatever they say.",
+    "Planted early (visible oddities): a caption with a word missing (line 10), the glowing jar you guard (line 11), Gary walking the exact same path every loop (lines 4-5)."
+  ],
+  "lines": [
+    {
+      "narration": "You're punching the edge of the *screen*.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open, MCU: your fist slams into the edge of the frame itself; the whole picture wobbles like jelly and a crack spiders across the corner. Face: angry -> scheming. At ~1 s, hard cut down to the red progress bar along the bottom of the frame, already filling: the threat.",
+      "camera": "Punch-in on the fist hitting the frame edge, hard cut to the progress bar",
+      "onScreenText": "",
+      "gag": "The frame edge ripples like glass where you hit it"
+    },
+    {
+      "narration": "Because you're stuck inside an \"In this world\" video, and when it ends, it *loops*.",
+      "spoken": "Because you're stuck inside an 'In this world' video, and when it ends... it loops.",
+      "audioTag": "quick",
+      "scene": "The progress bar hits the end; the whole street rewinds with tape wobble, birds flying backwards, and you snap back to mid-punch. Face: shocked -> crying (tears).",
+      "camera": "Wide on the street as it rewinds, whip back to your face",
+      "onScreenText": "",
+      "gag": "The whole street rewinds, birds flying backwards"
+    },
+    {
+      "narration": "This is loop *9,000*.",
+      "spoken": "This is loop nine thousand.",
+      "audioTag": "tired, dry",
+      "scene": "A wall covered floor to roof in chalk tally marks; you add one more and the chalk snaps. Face: tired -> deadpan.",
+      "camera": "Slow pull-out along the wall of tally marks",
+      "onScreenText": "LOOP 9,000",
+      "gag": "The chalk snaps on mark 9,000"
+    },
+    {
+      "narration": "Gary, the extra who walks by with a ladder every loop, gave up *years* ago.",
+      "audioTag": "playful",
+      "scene": "Gary (overalls, a long ladder on his shoulder, a mug that says WORLD'S OKAYEST EXTRA) strolls the exact same line as always; two grooves are worn into the cobbles by his feet. You run beside him, pleading.",
+      "camera": "Tracking side-on with Gary, ladder sweeping past the lens",
+      "onScreenText": "",
+      "gag": "Gary's footsteps have worn grooves into the cobbles"
+    },
+    {
+      "narration": "\"Nobody leaves before the end, kid,\" he says, for the 9,000th *time*.",
+      "spoken": "\"Nobody leaves before the end, kid,\" he says, for the nine thousandth time.",
+      "audioTag": "amused",
+      "scene": "Gary says it without even looking at you; you mouth every word along with him, in perfect sync. Faces: Gary deadpan; you disgusted -> deadpan.",
+      "camera": "Two-shot, slow push",
+      "onScreenText": "",
+      "gag": "You mouth his line along with him, word for word"
+    },
+    {
+      "narration": "And nobody beats the narrator. That's *me*.",
+      "audioTag": "mischievous",
+      "scene": "The sky dims; the caption bar at the bottom of the frame glows and swells up into a giant floating sign that towers over the street. Your face: nervous, sweat drop.",
+      "camera": "Low angle, tilt up as the caption sign rises",
+      "onScreenText": "",
+      "gag": "The narrator's caption bar towers over you like a billboard"
+    },
+    {
+      "narration": "Whatever I say after \"In this world\" comes *true*.",
+      "audioTag": "mischievous",
+      "scene": "The giant caption sign hangs over the street, the words IN THIS WORLD glowing; the street seems to hold its breath.",
+      "camera": "Slow crane around the sign",
+      "onScreenText": "",
+      "gag": ""
+    },
+    {
+      "narration": "In this world, every door is painted *on*.",
+      "audioTag": "mischievous, quick",
+      "scene": "You sprint at a shop door and smack flat into it: it's a painting. You slide down it. Face: determined -> ring eyes -> crying.",
+      "camera": "Follow you into the door, hard cut on the splat",
+      "onScreenText": "",
+      "gag": "The door is a painting; you slide down it"
+    },
+    {
+      "narration": "In this world, your shoes are full of *soup*.",
+      "audioTag": "playful",
+      "scene": "Squelch: you lift a sneaker and tomato soup sloshes out. Behind you, Gary sips from his mug: it's soup too. Face: disgusted.",
+      "camera": "Low insert on the shoe, tilt up to your face",
+      "onScreenText": "",
+      "gag": "Gary's mug is full of soup too"
+    },
+    {
+      "narration": "So every loop, at the same second, you jump and *grab* something.",
+      "audioTag": "sneaky, quick",
+      "scene": "You leap at the captions along the bottom of the frame and snatch one glowing word; that caption now has a gap where a word should be. Face: scheming.",
+      "camera": "Low angle, the jump framed against the caption bar",
+      "onScreenText": "",
+      "gag": "A caption on screen is missing a word"
+    },
+    {
+      "narration": "You hide it in a jar under your bed, and you never let Gary *near* it.",
+      "audioTag": "sneaky",
+      "scene": "Night bedroom: a glass jar under the bed glowing with stolen words. Gary leans in through the window with his ladder and reaches for it; you slap his hand away. Faces: you suspicious; Gary pleading.",
+      "camera": "Under-bed POV on the jar, then two-shot",
+      "onScreenText": "",
+      "gag": "You slap Gary's hand away from the jar"
+    },
+    {
+      "narration": "And you've timed his ladder, to the frame, 9,000 *times*.",
+      "spoken": "And you've timed his ladder, to the frame, nine thousand times.",
+      "audioTag": "proud",
+      "scene": "Your wall of tally marks now has chalk diagrams of Gary's path, a stopwatch and string between pins. Face: proud.",
+      "camera": "Pan across the chalk plan",
+      "onScreenText": "",
+      "gag": "A stopwatch hangs on a nail labelled GARY"
+    },
+    {
+      "narration": "A word a loop, 9,000 loops, and today you need just *one* more.",
+      "spoken": "A word a loop, nine thousand loops, and today you need just one more.",
+      "audioTag": "building excitement",
+      "scene": "Back on the street, the next caption slides along the bottom of the frame; you crouch under it, eyes locked on one word, jar ready. Face: excited -> scheming.",
+      "camera": "Low angle, push in on your eyes",
+      "onScreenText": "",
+      "gag": "You crouch like a cat under the captions"
+    },
+    {
+      "narration": "Then, this loop, I *notice*.",
+      "audioTag": "tense",
+      "scene": "The giant caption sign turns toward you like an eye; you stop mid-step on the street, the jar under your arm. Face: nervous, sweat.",
+      "camera": "Fast push-in on you from behind the sign",
+      "onScreenText": "",
+      "gag": "The caption sign turns to look at you"
+    },
+    {
+      "narration": "In this world, you can't *move*.",
+      "audioTag": "mischievous, slow",
+      "scene": "You freeze grey and stiff like a statue mid-run, jar in hand; only your eyes can still move, darting. Face: pinpoint eyes.",
+      "camera": "Slow arc around the frozen you",
+      "onScreenText": "",
+      "gag": "Only your eyes can still move"
+    },
+    {
+      "narration": "The red bar crawls. 90%. 95%. *99*.",
+      "spoken": "The red bar crawls. Ninety percent. Ninety-five. Ninety-nine.",
+      "audioTag": "tense, hushed",
+      "scene": "The progress bar inches toward the end; your eyes dart to it and back; behind you, Gary's ladder swings into frame on his usual path.",
+      "camera": "Hard cuts between the bar and your eyes",
+      "onScreenText": "",
+      "gag": ""
+    },
+    {
+      "narration": "But Gary is right on time, and his ladder clips your *jar*.",
+      "audioTag": "building excitement",
+      "scene": "Gary walks his exact line; the ladder swings round and knocks the jar out of your frozen hand; glass bursts and the glowing words spill out and drop into the caption bar. Faces: Gary shocked; you excited.",
+      "camera": "Low angle, slow motion on the jar",
+      "onScreenText": "",
+      "gag": "The words spill out and fall into the caption bar"
+    },
+    {
+      "narration": "They land in my captions, and I read captions out loud. I can't *help* it.",
+      "audioTag": "panicked",
+      "scene": "The stolen words click into the caption bar one by one: IN / THIS / WORLD / YOU'RE / FREE. The giant sign shakes.",
+      "camera": "Insert on the caption bar filling",
+      "onScreenText": "",
+      "gag": "The words click into place like tiles"
+    },
+    {
+      "narration": "\"In this world... you're... *free*.\"",
+      "spoken": "In this world... you're... free.",
+      "audioTag": "reluctant, slow",
+      "scene": "The edge of the frame shatters like a windscreen; light pours in; colour floods back into you and you unfreeze. Gary drops his mug. Face: shocked -> excited.",
+      "camera": "Push in as the frame edge shatters",
+      "onScreenText": "",
+      "gag": "The frame edge shatters like glass"
+    },
+    {
+      "narration": "9,000 loops, because I almost never say *free*.",
+      "spoken": "Nine thousand loops, because I almost never say free.",
+      "audioTag": "sulky",
+      "scene": "The empty jar rolls across the cobbles; its label reads 'FREE: 1'. The giant caption sign sags like a sulking face.",
+      "camera": "Insert on the jar label",
+      "onScreenText": "",
+      "gag": "The caption sign sulks"
+    },
+    {
+      "narration": "You dive straight through the crack and out of the *video*.",
+      "audioTag": "excited",
+      "scene": "You dive through the broken frame edge in slow motion, grinning; Gary waves goodbye with his empty mug. Face: excited, blush.",
+      "camera": "Follow the dive through the crack",
+      "onScreenText": "",
+      "gag": "Gary waves goodbye with his mug"
+    },
+    {
+      "narration": "Into the next one. Loop *one*.",
+      "audioTag": "deadpan",
+      "scene": "You land in a brand-new 'In this world' video: a pink street where everyone is a pigeon, a fresh red progress bar starting at zero, and a pigeon with a tiny ladder walking by. Face: crying -> scheming; you raise your fist at the edge of the screen.",
+      "camera": "Hold on you, tiny push as the fist comes up",
+      "onScreenText": "LOOP 1",
+      "gag": "The next video's Gary is a pigeon with a tiny ladder"
+    }
+  ]
+}
