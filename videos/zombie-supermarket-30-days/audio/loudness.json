@@ -5,22 +5,22 @@
  "seconds": 80.83333333333333,
  "channels": 2,
  "premaster": {
-  "lufs": -14.9,
-  "dbtp": 0.71
+  "lufs": -14.98,
+  "dbtp": 0.41
  },
  "levels_db": {
   "voice": 0,
   "music_bed": -3,
   "button": -26,
-  "sfx": -6,
+  "sfx": -12,
   "duck": -16,
   "ambience": -9,
   "amb_duck": -13
  },
- "voice_music_gap_db": 23.7,
+ "voice_music_gap_db": 25.2,
  "voice_music_gap_min_word_db": 12.0,
- "worst_word": "like",
+ "worst_word": "heads",
  "voice_button_gap_db": 18.5,
- "sfx_loudest_vs_voice_db": -10.4,
- "sfx_loudest_at_s": 15.4
+ "sfx_loudest_vs_voice_db": -18.8,
+ "sfx_loudest_at_s": 0.0
 }

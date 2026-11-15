@@ -20,10 +20,12 @@ import numpy as np
 from scipy.io import wavfile
 
 SR = 48000
-MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -6, 16
+MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -12, 16  # SFX -12 (was -6; user 2026-11-15: effects way too loud)
+SFX_DUCK_DB = 6  # effects also dip under the narrator, so hits sit in the gaps
 AMB_DB, AMB_DUCK_DB = -9, 13  # R13: a continuous scene bed under everything, ducked less than the music
 MIN_GAP_DB = 15
-MAX_SFX_DB = -10  # R14 quality bar: loudest effect 10-15 dB under the narrator (was -6, user 2026-11-14: effects way too loud)
+MAX_SFX_DB = -16  # loudest effect 16 dB under the narrator (user 2026-11-15: still way too loud at -10)
+AMB_UNDER_VOICE_DB = 24  # the scene bed stays this far under the narrator while he speaks (dawn groans masked 'Dave thinks Chad is winning')
 FFMPEG = os.path.abspath("node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe")  # bundled with Remotion
 db = lambda x: 10 ** (x / 20)
 
@@ -110,9 +112,11 @@ def main(d):
     ambm = db(AMB_DB) * amb * aduck[:, None]
     # R14 (reviewer: one word masked, lowest -5.9 dB): ride the bed + ambience down under any word that is still less
     # than WORD_GAP_DB clear of them, by the shortfall, with 60 ms ramps.
+    words = json.load(open(f"{d}/voice/words.json"))
+    ambm = amb_ceiling(voice, ambm, words, k)
     ride = word_ride(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
     mus, ambm = mus * ride[:, None], ambm * ride[:, None]
-    sfxm = sfx_ceiling(voice, db(SFX_DB) * sfx, json.load(open(f"{d}/voice/words.json")))
+    sfxm = sfx_ceiling(voice, db(SFX_DB) * sfx * db(-SFX_DUCK_DB * k)[:, None], words)
     mix = np.stack([voice, voice], 1) + mus + ambm + sfxm
     # Master tone (R13 band study): more low end and air, a little less boxy low-mid.
     from scipy.signal import butter as _b, sosfilt as _sf
@@ -171,6 +175,18 @@ def word_ride(voice, bed, words):
     ramp = int(0.06 * SR)
     cut = uniform_filter1d(np.maximum.reduce([cut, np.roll(cut, ramp), np.roll(cut, -ramp)]), ramp)
     return db(-cut)
+
+
+def amb_ceiling(voice, amb, words, k, w=0.4):
+    """While the narrator speaks (k = voice activity 0..1), ride the bed down wherever its 400 ms RMS is closer than
+    AMB_UNDER_VOICE_DB to his median word: a loop's loud moments (groans, a crow) never sit on a line."""
+    from scipy.ndimage import uniform_filter1d
+    r = lambda z: 20 * np.log10(np.sqrt(np.mean(z ** 2)) + 1e-12)
+    vref = float(np.median([r(voice[int(x["start"] * SR):int(x["end"] * SR)]) for x in words if x["end"] - x["start"] > 0.15]))
+    env = np.sqrt(np.maximum(uniform_filter1d(amb.mean(1) ** 2, int(w * SR)), 0) + 1e-20)
+    g = np.minimum(1.0, db(vref - AMB_UNDER_VOICE_DB) / env)
+    g = 1 - uniform_filter1d(k, int(0.1 * SR)) * (1 - g)  # only while speaking
+    return amb * uniform_filter1d(g, int(0.1 * SR))[:, None]
 
 
 def sfx_ceiling(voice, sfx, words, w=0.4, margin=1.5):
