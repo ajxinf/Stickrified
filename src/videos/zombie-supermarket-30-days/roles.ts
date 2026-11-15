@@ -176,7 +176,7 @@ export const daveLook: Look = {
 // ---------------------------------------------------------------- the horde (instanced crowd)
 
 const ZOMBIE_SKIN = { color: "#9cb88c", t: 1 };
-const ZLOOKS: Look[] = [
+export const ZLOOKS: Look[] = [
   { build: BUILDS.tallThin, seed: 101, jacket: "#6a7a6a", pants: "#3a3a44", shoes: "#3a2a24", hair: capHair("#5a4a3a", 0.35, 0.5, 3) },
   { build: BUILDS.shortRound, seed: 102, jacket: "#8a6a5a", pants: "#4a3a3a", shoes: "#2a2a30", hair: capHair("#3a2a24", 0.3, 0.5) },
   { build: BUILDS.pear, seed: 103, jacket: "#5a5a7a", pants: "#3a3446", shoes: "#3a2a24", hair: capHair("#7a6a5a", 0.5, 0.4, 4) },
@@ -184,7 +184,7 @@ const ZLOOKS: Look[] = [
   { build: BUILDS.stocky, seed: 105, jacket: "#6a5a6a", pants: "#2e3446", shoes: "#2a2a30", outfit: pattern("plaid", "#6a5a6a", "#4a3a4a") },
   { build: BUILDS.tallThin, seed: 106, jacket: "#5a6a7a", pants: "#3a3a44", shoes: "#3a2a24", hair: capHair("#4a3a2a", 0.4, 0.45, 6) },
 ];
-const zs = (pose: Pose, expr: Expr, extra: Partial<CharState["fx"]> = {}): CharState => ({ pose, expr, blink: false, fx: { fill: ZOMBIE_SKIN, ...extra } });
+export const zs = (pose: Pose, expr: Expr, extra: Partial<CharState["fx"]> = {}): CharState => ({ pose, expr, blink: false, fx: { fill: ZOMBIE_SKIN, ...extra } });
 const armsUp = (p: Pose): Pose => ({ ...p, arms: [{ at: [0.62, -0.5], grip: "open" }, { at: [0.62, -0.45], grip: "open" }] });
 export const Z = { idle: 0, sway: 1, tiltL: 2, tiltR: 3, runA: 4, runB: 5, bang: 6, reachA: 7, reachB: 8 } as const;
 const ZSTATES: CharState[] = [

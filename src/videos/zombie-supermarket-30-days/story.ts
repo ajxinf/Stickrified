@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+﻿import { Vector3 } from "three";
 import { CamPose, ShotSize, arc, drift, frameOn, impact, pullOut, pushIn, reframe, shot, smootherstep, telephoto } from "../../../kit/toon/camera";
 import { actionPose, blinkAt, posed, reactSquash, walkPose } from "../../../kit/toon/cast";
 import type { CharState, Look } from "../../../kit/toon/cast";
@@ -16,7 +16,7 @@ import { act, actingKeys } from "../../../kit/toon/acting";
 import type { Pose } from "../../../kit/toon/poses";
 import { youLook } from "../../../kit/toon/protagonist";
 import { CART_IN, CHAD, CHAD_DOOR, CHAD_ROOF, CHART_AT, DOCK, FLOODS, FRONT, GENERATOR, GRILL, HEAP, IN, PALLET, RAMP_TOP, ROOF_Y, SHUTTER_AT, WINDOW_SPOT, at } from "./build";
-import { BEAT, CART_RUN, FPS, LAST, LEAD, cartAt, chadLook, chadPyjamas, daveLook, exprAt, words } from "./roles";
+import { BEAT, CART_RUN, FPS, LAST, LEAD, ZLOOKS, cartAt, chadLook, chadPyjamas, daveLook, exprAt, words, zs } from "./roles";
 
 /**
  * Shot plan v2 for zombie-supermarket-30-days (80.8 s), rebuilt after the critique (2026-11-13): shoot the GAG on its
@@ -36,7 +36,7 @@ const wordsStart = (t: string, n: number) => {
 const W_ = {
   batteries: wordsStart("batteries", 0), talking: wordsStart("talking", 0), chad1: wordsStart("chad", 0), he: wordsStart("he", 0),
   eating: wordsStart("eating", 0), winning: wordsStart("winning", 0), cart: wordsStart("cart", 0), daveAsks: wordsStart("dave", 3),
-  onDay30: wordsStart("on", 5), youSee: wordsStart("you", 8), thirty: wordsStart("30", 1),
+  onDay30: wordsStart("on", 5), youSee: wordsStart("you", 8), thirty: wordsStart("30", 1), z212: wordsStart("212", 0),
 };
 /** Expression-ladder steps land on words (QA "Reaction timing"): the start of the first word at or after F. */
 const onWord = (F: number) => {
@@ -257,6 +257,18 @@ const youWave: Role = {
   },
 };
 const daveEnd: Role = { name: "dave", look: daveLook, at: still(DAVE_END), state: (F) => st(posed("hold", F / FPS, 0.6), F < onWord(BEAT.but + 10) - LEAD ? "worried" : "grin", F, 4, { prop: "can" }) };
+// R17 (REVIEW_R5 #1 hook, user's pick: a zombie cut on "212"): three of the 400 outside snap their heads toward the
+// store, one after another. They stand in the dock lane, which the instanced crowd keeps clear.
+const Z3 = [at(31.4, -0.5, 0), at(32.66, 0.09, 0), at(31.48, 0.67, 0)]; // spread across the lens axis (s 29.5, x -2.45)
+const zSnap = (i: number): Role => ({
+  name: `z${i}`, look: ZLOOKS[[0, 2, 4][i]], at: still(Z3[i]),
+  state: (F) => {
+    // Faces swap on the word (guard: reactions land on words); the head turns ripple 2 f apart after it.
+    const on = F >= W_.z212 - LEAD, turned = F >= W_.z212 - LEAD + 2 * i;
+    const pose = { ...posed("idle", F / FPS + i, turned ? [0.15, -0.2, 0.25][i] : [0.9, -0.9, 0.8][i]), tilt: turned ? [22, -20, 16][i] : [6, -5, 4][i], squash: reactSquash(F - W_.z212 + LEAD - 2 * i) * 1.4 };
+    return zs(pose, on ? "shocked" : "tired", on ? { ringEyes: true } : {});
+  },
+});
 
 // ---------------------------------------------------------------- shots
 
@@ -291,18 +303,19 @@ const sh = (id: string, from: number, to: number, w: World, rest: Omit<S, "id" |
 
 const shots: S[] = [
   // Line 1. Cold open: you, holding a duck; its QUACK bubble pops off with the battery (props.ts).
-  sh("B01-duck", 0, W_.talking - 6, "int-day", { pose: creep(lowAngle(fo(HEAP, IN(2.6, -8.3), "mcu", youLook, { side: 0.2 }), 0.55), 70, 0.2), cast: inShot(0, [youHeap]), subject: "you", dof: DOF.medium(2.0), motes: motes(HEAP, "#ffe6c0") }),
+  sh("B01-duck", 0, W_.z212 - 8, "int-day", { pose: creep(lowAngle(fo(HEAP, IN(2.6, -8.3), "mcu", youLook, { side: 0.2 }), 0.55), 70, 0.2), cast: inShot(0, [youHeap]), subject: "you", dof: DOF.medium(2.0), motes: motes(HEAP, "#ffe6c0") }),
+  // "out of 212": hard cut outside (lens above the dock ramp), across the street from the store front: three zombies snap toward the sound.
+  sh("B01z-snap", W_.z212 - 8, W_.talking - 6, "ext-day", { pose: creep(liftSubject(fo(Z3[0], at(26.0, -FRONT, 0), "ms", ZLOOKS[0], { side: 0.35, height: 1.45 }), -0.15), 33, 0.22), cast: inShot(W_.z212 - 8, [0, 1, 2].map(zSnap)), subject: "z0", crowd: true, dof: POST.dof }),
   // "212 talking toys": a low macro dolly along the pile.
   sh("B02-toys", W_.talking - 6, BEAT.street, "int-day", { pose: shot({ pos: HEAP.clone().add(new Vector3(-1.9, 0.42, 1.0)), look: HEAP.clone().add(new Vector3(-0.2, 0.25, -0.4)), fov: 44 }, [drift(1.1), pushIn(0.3)], 60), dof: DOF.closeup(1.2) }),
   // "the guy across the street laughs at you": Chad close on a long lens, laughing at you.
   sh("B03-chad-laughs", BEAT.street, BEAT.because - 2, "ext-day", { pose: creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.3), 50, 0.04, true), cast: inShot(BEAT.street, [chadMock]), subject: "chad", crowd: true, dof: POST.dof }),
-  // "Because outside, 400 zombies hunt by sound": a fast pull-out and crane up over the horde (whip, blurred).
+  // "Because outside, 400 zombies hunt by sound": a fast pull-out over the horde (whip, blurred), then (R17, REVIEW_R5
+  // #1/#2: zombies were specks) a crane down into the densest cluster (s 37.5, x 0.5) from the empty dock lane, landing
+  // before "sound" so the heads tilt big in frame.
   sh("B03b-horde", BEAT.because - 2, 270, "ext-day", {
-    pose: (f) => {
-      const p = reframe(creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.6), 104, 0.02), { pos: at(21, -2.5, 7.5), look: at(34, 0.5, 0.8), fov: 46 }, 0, 30)(f); // R15 C2: zombies were 2-3 px dots from 15 m up
-      const k = Math.max(f - 30, 0) * 0.025;
-      return { ...p, pos: p.pos.clone().add(new Vector3(0, k * 0.5, -k)) };
-    },
+    pose: reframe(reframe(creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.6), 104, 0.02), { pos: at(21, -2.5, 7.5), look: at(34, 0.5, 0.8), fov: 46 }, 0, 30),
+      { pos: at(32.1, -0.5, 2.6), look: at(37.5, 0.5, 1.3), fov: 40 }, 31, 76),
     whips: [[0, 30]], crowd: true, wide: true, dof: POST.dof,
     cast: inShot(BEAT.because - 2, [chadMock]), // R14 QA: Chad vanished on the cut from B03 (f163 -> f164)
   }),
