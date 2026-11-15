@@ -83,7 +83,7 @@ export const REWIND: [number, number] = [B.ends + 6, B.loops - 2];
 export const worldF = (F: number) => (F < REWIND[0] || F >= REWIND[1] ? F : REWIND[0] - 3 * (F - REWIND[0]));
 
 // ------------------------------------------------------------------ "you"
-const FREEZE_AT = snap(B.cant + 4), UNFREEZE = snap(B.free + 2);
+const FREEZE_AT = snap(B.cant + 4), UNFREEZE = snap(B.free);
 const PUNCH0 = 4;
 /** Where you are, section by section (each line is another loop, so places jump between sections). */
 const youAt = (F: number): Vector3 => {
@@ -91,7 +91,7 @@ const youAt = (F: number): Vector3 => {
   if (F < T_WALL) return YOU_SPOT.clone();
   if (F < B.gary) return at(17.25, 5.55, 0.02); // the tally wall
   if (F < B.narrator) {
-    const s = 21.2 - (1.12 * (F - B.gary)) / FPS; // jogging beside Gary
+    const s = 15.6 - (1.12 * (F - B.gary)) / FPS; // jogging beside Gary (past the lamp post at s 17)
     return at(s, 3.8, 0.02); // clear of the lamp posts (x 4.45)
   }
   if (F < B.door - 2) return at(12.6, 4.0, 0.02); // under the sign
@@ -212,7 +212,8 @@ const STOP_AT = B.clips - 8; // the climax: he stops beside you, turns, the ladd
 const garyAt = (F: number): Vector3 => {
   F = worldF(F);
   if (F < T_WALL) return garyWalk(F, 0, 30);
-  if (F < B.narrator) return garyWalk(F, B.gary, 21.6);
+  if (F < B.gary) return at(60, GARY_X, 0.02); // not on the street while you scratch the tally
+  if (F < B.narrator) return garyWalk(F, B.gary, 16.0);
   if (F < B.so) return at(DOOR_S + 1.8, GARY_X, 0.02); // behind you at the door, sipping soup
   if (F < B.hide) return garyWalk(F, B.so, 26);
   if (F < B.timed) return BR(2.75, 0, -1.45); // outside the bedroom window
@@ -294,11 +295,10 @@ const B1 = shot("B1-tally-wall", B.gary, "street", [YOU], (F) => lerpPose(P(at(1
   { dof: () => mid(3.2) });
 /** Walking toward the lens side by side: the lens backs up at their pace. */
 const pair = (F: number) => garyAt(F).clone().lerp(youAt(F), 0.5).setY(1.3);
-const C1 = shot("C1-walk-wide", B.years + 12, "street", [YOU, GARY], (F) => {
+const C1 = shot("C1-walk-wide", B.nobody - 4, "street", [YOU, GARY], (F) => {
   const m = pair(F), d = 5.4 - 0.4 * span(F, B.gary, B.years + 12);
   return P(m.clone().add(new Vector3(0.1, -0.05, d)), m.clone().setY(1.05), 46);
 }, { subject: "gary", dof: () => mid(4.2) });
-const C2 = shot("C2-grooves", B.nobody - 4, "street", [GARY], (F) => P(at(14.4, GARY_X - 0.55, 0.32), at(18, GARY_X, 0.12), 40), { subject: undefined, wide: true, dof: () => mid(2.4) });
 const C3 = shot("C3-says", B.kid + 14, "street", [YOU, GARY], (F) => {
   const m = pair(F);
   const l = m.clone().lerp(garyAt(F).setY(1.3), 0.15);
@@ -336,7 +336,7 @@ const eyes = (F: number, d0: number, d1: number, a: number, b: number) => {
 const I2 = shot("I2-eyes", B.then - 2, "street", [YOU], (F) => eyes(F, 2.4, 2.15, B.one - 14, B.then), { dof: () => close(2.2) });
 const J1 = shot("J1-notice", B.cant - 2, "street", [YOU], (F) => {
   const t = span(F, B.then, B.notice + 8);
-  return P(SIGN_AT.clone().add(new Vector3(0.6, 0.8, -2.2)).lerp(at(15.2, 2.6, 3.0), t), head(F, 1.2).lerp(SIGN_AT, 0.25 * (1 - t)), 42);
+  return P(SIGN_AT.clone().add(new Vector3(2.8, -1.2, 1.2)).lerp(at(15.2, 2.6, 3.0), t), head(F, 1.2).lerp(SIGN_AT, 0.1 * (1 - t)), 42);
 }, { dof: () => NONE });
 const J2 = shot("J2-freeze-arc", B.red - 2, "street", [YOU, GARY], (F) => {
   const a = 0.25 + 0.5 * span(F, B.cant, B.red), h = head(F, 1.25);
@@ -361,7 +361,7 @@ const Q1 = shot("Q1-next-video", FRAMES, "pink", [YOU, ...PIGEONS, LADDER_PIGEON
   return P(h.clone().add(new Vector3(0.0, -0.1, 3.6)).lerp(h.clone().add(new Vector3(0.05, -0.05, 3.1)), span(F, B.into, FRAMES)), h.clone().setY(1.1), 50);
 }, { dof: () => mid(3.2) });
 
-export const SHOTS: S[] = [A1, A2, A3, B1, C1, C2, C3, C4, D1, D2, E1, E2, F1, F2, G1, G2, H1, I1, I2, J1, J2, K1, K2, K3, L1, M1, N1, O1, O2, P1, Q1];
+export const SHOTS: S[] = [A1, A2, A3, B1, C1, C3, C4, D1, D2, E1, E2, F1, F2, G1, G2, H1, I1, I2, J1, J2, K1, K2, K3, L1, M1, N1, O1, O2, P1, Q1];
 export const PLAN: Plan = { slug: "trapped-in-this-world", shots: SHOTS, words };
 
 // ------------------------------------------------------------------ story props (same pose for render and QA)
