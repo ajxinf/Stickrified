@@ -23,7 +23,7 @@ SR = 48000
 MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -6, 16
 AMB_DB, AMB_DUCK_DB = -9, 13  # R13: a continuous scene bed under everything, ducked less than the music
 MIN_GAP_DB = 15
-MAX_SFX_DB = -6  # no effect within 6 dB of the narrator (user 2026-11-14: effects way too loud)
+MAX_SFX_DB = -10  # R14 quality bar: loudest effect 10-15 dB under the narrator (was -6, user 2026-11-14: effects way too loud)
 FFMPEG = os.path.abspath("node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe")  # bundled with Remotion
 db = lambda x: 10 ** (x / 20)
 
@@ -108,7 +108,12 @@ def main(d):
     bedm = shelf(widen(music[:n]), 160, 3, False)  # R13: warmer, wider score
     mus = db(MUSIC_DB) * bedm * duck[:, None] + db(button_db) * widen(button)
     ambm = db(AMB_DB) * amb * aduck[:, None]
-    mix = np.stack([voice, voice], 1) + mus + ambm + db(SFX_DB) * sfx
+    # R14 (reviewer: one word masked, lowest -5.9 dB): ride the bed + ambience down under any word that is still less
+    # than WORD_GAP_DB clear of them, by the shortfall, with 60 ms ramps.
+    ride = word_ride(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
+    mus, ambm = mus * ride[:, None], ambm * ride[:, None]
+    sfxm = sfx_ceiling(voice, db(SFX_DB) * sfx, json.load(open(f"{d}/voice/words.json")))
+    mix = np.stack([voice, voice], 1) + mus + ambm + sfxm
     # Master tone (R13 band study): more low end and air, a little less boxy low-mid.
     from scipy.signal import butter as _b, sosfilt as _sf
     mix = _sf(_b(2, 35, "highpass", fs=SR, output="sos"), mix, axis=0)  # no rumble under the sub
@@ -116,7 +121,7 @@ def main(d):
     mid, side = mix.mean(1), (mix[:, 0] - mix[:, 1]) / 2
     mix = np.stack([mid + 0.45 * side, mid - 0.45 * side], 1)  # R13 width: side about -25 dB under mid
     gap = voice_gap(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
-    gap.update(sfx_check(voice, db(SFX_DB) * sfx.mean(1), json.load(open(f"{d}/voice/words.json"))))
+    gap.update(sfx_check(voice, sfxm.mean(1), json.load(open(f"{d}/voice/words.json"))))
     pre = f"{d}/audio/premaster.wav"
     wavfile.write(pre, SR, mix.astype(np.float32))
 
@@ -146,6 +151,38 @@ def main(d):
     assert gap["voice_music_gap_db"] >= MIN_GAP_DB, f"FAIL: voice only {gap['voice_music_gap_db']:.1f} dB over the music (needs >= {MIN_GAP_DB})"
     # The toon skill's rule (15 dB); this only checked > 0, so the pilot shipped at 3.3 dB (review H4).
     assert gap["voice_button_gap_db"] >= MIN_GAP_DB, f"FAIL: button only {gap['voice_button_gap_db']:.1f} dB under the last word (needs >= {MIN_GAP_DB}): lower music.button_db"
+
+
+WORD_GAP_DB = 12
+
+
+def word_ride(voice, bed, words):
+    from scipy.ndimage import uniform_filter1d
+    from scipy.signal import butter, sosfilt
+    sos = butter(4, [200, 4000], "bandpass", fs=SR, output="sos")
+    v, m = sosfilt(sos, voice), sosfilt(sos, bed)
+    rms = lambda z: np.sqrt(np.mean(z ** 2) + 1e-20)
+    cut = np.zeros(len(bed))
+    for w in words:
+        a, b = int(w["start"] * SR), max(int(w["end"] * SR), int(w["start"] * SR) + int(0.08 * SR))
+        short = WORD_GAP_DB - 20 * np.log10(rms(v[a:b]) / rms(m[a:b]))
+        if short > 0:
+            cut[a:b] = np.maximum(cut[a:b], min(short, 18))
+    ramp = int(0.06 * SR)
+    cut = uniform_filter1d(np.maximum.reduce([cut, np.roll(cut, ramp), np.roll(cut, -ramp)]), ramp)
+    return db(-cut)
+
+
+def sfx_ceiling(voice, sfx, words, w=0.4, margin=1.5):
+    """Ride the SFX stem down wherever its 400 ms RMS would come within MAX_SFX_DB (+ margin) of the narrator's median
+    word (the same measure as sfx_check), so the loudest hit lands at the bar instead of tripping it."""
+    from scipy.ndimage import uniform_filter1d
+    r = lambda z: 20 * np.log10(np.sqrt(np.mean(z ** 2)) + 1e-12)
+    vref = float(np.median([r(voice[int(x["start"] * SR):int(x["end"] * SR)]) for x in words if x["end"] - x["start"] > 0.15]))
+    env = np.sqrt(np.maximum(uniform_filter1d(sfx.mean(1) ** 2, int(w * SR)), 0) + 1e-20)
+    g = np.minimum(1.0, db(vref + MAX_SFX_DB - margin) / env)
+    g = uniform_filter1d(g, int(0.05 * SR))  # smooth 50 ms
+    return sfx * g[:, None]
 
 
 def sfx_check(voice, sfx, words, w=0.4):
