@@ -321,10 +321,11 @@ const spatulaProp = (s: S): MovingProp => ({
   name: "spatula",
   make: () => {
     const g = new Group();
-    const h = new Mesh(new CylinderGeometry(0.015, 0.015, 0.3, 6), MAT.darkWood());
-    h.position.y = 0.15;
-    const b = new Mesh(new BoxGeometry(0.1, 0.12, 0.01), MAT.metal());
-    b.position.y = 0.36;
+    // R6 (QA m3: the blade floated ~150 px off his hand): a thick short handle that reads at phone size.
+    const h = new Mesh(new CylinderGeometry(0.03, 0.03, 0.2, 8), MAT.darkWood());
+    h.position.y = 0.1;
+    const b = new Mesh(new BoxGeometry(0.12, 0.12, 0.015), MAT.metal());
+    b.position.y = 0.25;
     g.add(h, b);
     return g;
   },

@@ -232,7 +232,7 @@ const ARRIVAL = HOME.map((h, i) => ({ i, t: h.delay / FPS + Math.hypot(h.s - CHA
 const SLOT = new Map(ARRIVAL.map((a, k) => [a.i, k]));
 const pileAt = (k: number) => {
   const col = k % 9, deep = Math.floor(k / 9) % 4, layer = Math.floor(k / 36);
-  if (layer > 5) return null;
+  if (layer > 1) return null; // R6 (QA M2, PQ): six layers read as cards floating in the air; two, the rest wait at the door
   return at(CHAD.s - (CHAD.shutterW - 0.9) / 2 + col * ((CHAD.shutterW - 0.9) / 8), FRONT + 0.45 + deep * 0.55, layer * 0.5);
 };
 const ease = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
@@ -303,7 +303,8 @@ const zombie = (i: number, f: number) => {
       if (!slot) return { pos: door, state: Z.bang, look: h.look, scale: h.scale };
       return { pos: slot, state: (Math.floor(f / 7) + i) % 2 ? Z.bang : Z.reachA, look: h.look, scale: h.scale };
     }
-    const pos = home.clone().lerp(door, run / d);
+    // R6 (all critics: the chase read as standing): a running bounce, so the cards gallop instead of sliding.
+    const pos = home.clone().lerp(door, run / d).add(new Vector3(0, 0.13 * Math.abs(Math.sin((f + h.phase) * 0.8)), 0));
     return { pos, state: (Math.floor(f / 4) + i) % 2 ? Z.runA : Z.runB, look: h.look, scale: h.scale };
   }
   return { pos: home.add(wob), state: h.reach ? (Math.floor((f + h.phase) / 22) % 2 ? Z.reachA : Z.reachB) : milling, look: h.look, scale: h.scale };

@@ -38,7 +38,7 @@ export const DustWipe: React.FC<{ frames?: number; peak?: number; color?: string
           const rr = p.size * g * H * (1 + (f > peak ? (f - peak) * 0.02 : 0)) * 0.48;
           // House style (R14 QA: a blank tan screen): painted puffs with an ink rim, never fully covering the frame.
           return (
-            <g key={i} opacity={fade * 0.82 * Math.min(1, p.shade)}>
+            <g key={i} opacity={fade * 0.7 * Math.min(1, p.shade)}>
               <circle cx={cx} cy={cy} r={rr} fill={`url(#dw${seed}_${i})`} />
               <circle cx={cx} cy={cy} r={rr * 0.62} fill="none" stroke="#3a2a1e" strokeOpacity={0.55} strokeWidth={H * 0.004} />
             </g>

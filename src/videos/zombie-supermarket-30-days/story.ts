@@ -150,7 +150,9 @@ const chadMorning: Role = {
   state: (F) => {
     const e = exprAt([[0, "smug"], [BEAT.morning, "laughing"], [BEAT.heads, "smirk"], [BEAT.give, "laughing"]], F);
     const dance = F >= BEAT.heads && F < BEAT.dave ? Math.sin((F / FPS) * Math.PI * 4) * 6 : 0;
-    const pose = F < BEAT.grabs ? chadPose("low", F) : F < BEAT.heads ? chadPose("mouth", F) : chadPose("up", F, { sway: dance });
+    // R6 (PQ: the megaphone teleported f736->737): the arm travels to the mouth over 6 frames.
+    const grab = Math.min(Math.max((F - BEAT.grabs + 3) / 6, 0), 1);
+    const pose = F < BEAT.heads ? blendPose(chadPose("low", F), chadPose("mouth", F), smootherstep(grab)) : chadPose("up", F, { sway: dance });
     return st(withSquash(pose, e.squash), e.expr, F, 7, { blink: false, fx: { talk: talkAt(MOUTH_T, F, SPEAKS.chadMorning) ?? laughFlap(F, BEAT.give - LEAD) } });
   },
 };
@@ -221,7 +223,7 @@ const chadWake: Role = {
 };
 // R14 B26 (the kick never touched the cart): the cart-side foot (lift[0], negative reach = screen-right at look 0.8) winds back, swings out
 // and meets the cart on the kick_cart SFX (kick - 2), then follows through as the cart starts to roll (kick + 2).
-const YOU_KICK = at(DOCK.s - 1.0, -FRONT + 0.4, DOCK.floor);
+const YOU_KICK = at(DOCK.s - 0.85, -FRONT + 0.4, DOCK.floor); // R6 (QA M4): 1.0 m left the foot ~100 px short of the cart (0.7: the cart went through your card)
 const kickAt = (F: number): Pose => {
   const k = F - (BEAT.kick - 2), ease = (a: number, b: number, x: number) => smootherstep(Math.min(Math.max((x - a) / (b - a), 0), 1));
   const back = ease(-12, -4, k) * (1 - ease(-4, 0, k)), out = ease(-4, 0, k), settle = ease(6, 14, k);
@@ -339,11 +341,13 @@ const shots: S[] = [
   // (review r2 C3: the old telephoto MCU showed none of what the words named).
   sh("B05-chad-flex", BEAT.hardware - 2, BEAT.on1 - 4, "ext-day", (() => {
     const F0 = BEAT.hardware - 2, m = BEAT.megaphone - F0;
-    const mcu = { pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 13 };
+    const mcu = { pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 15 }; // R6: 13 magnified the crane past 25 px/f
     // R14: a three-quarter storefront (it receded nowhere flat-on), the roofline leading to Chad.
     // REVIEW_R5 #2 (Chad a speck): closer and higher, the sign mid-frame and Chad in the top third.
     const front = creep({ pos: at(CHAD.s - 3.6, FRONT - 6.2, 3.2), look: at(CHAD.s + 0.2, FRONT, 4.4), fov: 56 }, 90, 0.1);
-    return { pose: reframe(front, mcu, m - 16, m + 2), whips: [[m - 16, m + 2]] as [number, number][], cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
+    // R6 (all critics: a 1.7 s dead hold on the wide): one slow crane from the storefront to Chad, landing on "megaphone".
+    const e = Math.min(8, wordsStart("electric", 0) - F0 - 10); // the whole list rides the crane (QA: <= 25 px/f)
+    return { pose: reframe(front, mcu, e, m + 2), cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
   })()),
   // Line 4. Day 1: you knock on his shutter.
   // R14 (knock with no door in frame): the lens looks along the shopfront, the shutter recedes beside you.
@@ -373,7 +377,9 @@ const shots: S[] = [
   sh("B16-hedgehog", W_.cart - 2, BEAT.park - 4, "int-day", { pose: shot({ pos: CART_IN.clone().add(new Vector3(-1.2, 1.6, 2.6)), look: CART_IN.clone().add(new Vector3(0.6, 0.95, -0.4)), fov: 46 }, [arc(30, 0.8), pushIn(0.5)], 70), cast: inShot(W_.cart - 2, [youTape]), subject: "you", dof: DOF.medium(2.6) }),
   // Line 10. On the ramp, DO NOT PUSH on the handle, lined up on Chad's door.
   // REVIEW_R5 #2 (cart cropped at the edge): aim between the cart and Chad's door so both read.
-  sh("B17-ramp", BEAT.park - 4, W_.daveAsks - 2, "ext-day", { pose: shot({ pos: RAMP_TOP.clone().add(new Vector3(-2.5, 1.95, 0.7)), look: RAMP_TOP.clone().setY(DOCK.floor + 0.6).lerp(at(CHAD.s, FRONT, 0.8), 0.3), fov: 52 }, [pushIn(1.2)], 110), crowd: true, dof: POST.dof }),
+  // R6 (all critics: the push slid the cart and sign off the edge): directly behind the cart, easing back and rising,
+  // so the cart, its DO NOT PUSH sign, the ramp and Chad's door stay in frame.
+  sh("B17-ramp", BEAT.park - 4, W_.daveAsks - 2, "ext-day", { pose: shot({ pos: RAMP_TOP.clone().add(new Vector3(-2.0, 1.9, 0)), look: RAMP_TOP.clone().setY(DOCK.floor + 0.5).lerp(at(CHAD.s, FRONT, 0.8), 0.35), fov: 50 }, [pullOut(0.5), drift(0.25)], 110), crowd: true, dof: POST.dof }),
   // Line 11. You point (the window shows Chad's generator across the street).
   sh("B18-point", W_.daveAsks - 2, BEAT.generator1 - 6, "int-day", {
     pose: reframe(creep({ pos: IN(1.2, 3.8, 1.3), look: YOU_WIN.clone().lerp(DAVE_WIN, 0.33).setY(1.3), fov: 50 }, 80) /* both of you on "Dave asks" (review r3) */, fo(YOU_WIN, IN(1.6, 4.2), "mcu", youLook), BEAT.point - (W_.daveAsks - 2) - 22, BEAT.point - (W_.daveAsks - 2) + 6),

@@ -119,7 +119,8 @@ const Dissolve: React.FC<{ children: React.ReactNode; len: number }> = ({ childr
  */
 const ToyXRay: React.FC = () => {
   const f = useCurrentFrame();
-  const shake = Math.sin(f * 1.7) * 3.2, on = Math.abs(Math.sin(f * 1.7)) > 0.6;
+  // R6 (QA m1: the sound arcs blinked on/off every other frame): a smooth pulse, not a threshold.
+  const shake = Math.sin(f * 1.7) * 3.2, pulse = 0.5 + 0.5 * Math.sin(f * 0.6), on = pulse > 0.35;
   const INKC = "#2a1a14", ink = { stroke: INKC, strokeWidth: 1.1, strokeLinejoin: "round" as const, strokeLinecap: "round" as const };
   const label = { fontSize: 3.6, fill: INKC, fontWeight: 900, letterSpacing: 0.3, fontFamily: CAPTION_FONT };
   const hole = "M28 96 L 34 92 L 40 95 L 47 90 L 54 94 L 61 89 L 68 93 L 74 98 L 76 106 L 73 113 L 76 120 L 70 126 L 62 124 L 55 129 L 47 125 L 40 129 L 33 124 L 27 118 L 30 111 L 25 104 Z";
@@ -146,7 +147,7 @@ const ToyXRay: React.FC = () => {
       <path d="M58 108 C 62 114, 68 116, 70 118" stroke="#3e6aa8" strokeWidth={1.1} fill="none" />
       <circle cx={70} cy={120} r={6.5} fill={on ? "#ffb35a" : "#9aa0a8"} {...ink} />
       <circle cx={70} cy={120} r={3 + (on ? 0.8 : 0)} fill="#5a6070" {...ink} />
-      {on && [0, 1, 2].map((k) => <path key={k} d={`M${81 + k * 5} ${111 - k * 2} q5 9 0 18`} stroke="#e8742a" strokeWidth={1.6} fill="none" strokeLinecap="round" />)}
+      {[0, 1, 2].map((k) => <path key={k} d={`M${81 + k * 5} ${111 - k * 2} q5 9 0 18`} stroke="#e8742a" strokeWidth={1.6} fill="none" strokeLinecap="round" opacity={Math.min(1, Math.max(0, pulse * 1.6 - k * 0.3))} />)}
       <text x={18} y={150} {...label}>BATTERY</text>
       <text x={6} y={84} {...label}>MOTION SWITCH</text>
       <text x={70} y={150} {...label}>SPEAKER</text>
@@ -169,7 +170,7 @@ export const ZombieSupermarket: React.FC = () => (
     </Sequence>
     {/* R13: the crash's dust cloud fills the frame and clears onto Chad on his roof (in-world transition) */}
     <Sequence from={BEAT.chadRoof - 10} durationInFrames={28}>
-      <DustWipe frames={28} peak={10} />
+      <DustWipe frames={20} peak={7} /> {/* R6 (QA M3, PQ): the wipe hid the crash for ~0.5 s */}
     </Sequence>
     <Stamp text="DAY 1" at={0} hold={40} top="7%" />
     <Stamp text="DAY 29" at={BEAT.day29 - 2} hold={50} />
