@@ -122,6 +122,21 @@ export const frameOn = (at: Vector3, from: Vector3, size: ShotSize, o: { fov?: n
 };
 
 /**
+ * Where a crowd line should land the camera (zombie pilot R17: wides over the horde read as specks): the centre of the
+ * densest disc of radius `r` (m) among `points` (e.g. `crowd.place(i, f).pos`), searched on a 0.5 m grid inside the
+ * world-space box x0..x1 / z0..z1. Crane to ~5 m from it, from a lane the crowd keeps clear.
+ */
+export const densestSpot = (points: Vector3[], box: { x0: number; x1: number; z0: number; z1: number }, r = 2.5) => {
+  let best = { n: -1, x: 0, z: 0 };
+  for (let x = box.x0; x <= box.x1 + 1e-9; x += 0.5)
+    for (let z = box.z0; z <= box.z1 + 1e-9; z += 0.5) {
+      const n = points.filter((p) => Math.hypot(p.x - x, p.z - z) < r).length;
+      if (n > best.n) best = { n, x, z };
+    }
+  return { at: new Vector3(best.x, 0, best.z), count: best.n };
+};
+
+/**
  * Telephoto close-up from far away (across a street, up at a roof): looks at `who`'s chest so `span` m of frame height
  * shows (1.7-2.2 = MCU, 1.4 = CU) and derives the fov from the distance. `head` = head-top height of the character.
  * The long lens flattens the background and keeps the face big (zombie pilot critique: roof shots read as specks).

@@ -245,6 +245,11 @@ def main(d):
         # engine made it as loud as the narrator. The sound's loudest 400 ms sits `level` dB under the narrator's
         # median word in the final mix: hits -10, long/steady sounds (>= 1.5 s) -15, library "level" overrides.
         spec = lib.get(e["sfx"], {})
+        # User 2026-11-15 ("the zombie groans last way too long"): cap a sound at max_s (event or library) with a 150 ms fade.
+        cap = e.get("max_s", spec.get("max_s"))
+        if cap and len(s) > cap * SR:
+            s = s[:int(cap * SR)].copy()
+            s[-int(0.15 * SR):] *= np.linspace(1, 0, int(0.15 * SR))[:, None]
         level = spec.get("level", -15 if len(s) >= 1.5 * SR else -10) + LEVEL_DB.get(e["sfx"], 0) + e.get("gain_db", 0)
         s = pan(s * 10 ** ((VOICE_REF + level - SFX_DB - loud(s)) / 20), e.get("pan", 0))
         at = round(e["f"] / fps * SR) - (len(s) // 2 if e["sfx"] in CENTRED else 0)

@@ -164,7 +164,10 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      each sound's loudest 400 ms lands 10 dB (hits) or 15 dB (sounds >= 1.5 s: engines, crowds, rattles) under the
      narrator's median word; a library entry's `"level"` overrides. `mix.py` FAILS any mix with an effect within 6 dB
      of the voice.
-     Per event: `"pan"` -1..1 (where it is on screen), `"gain_db"`.
+     Per event: `"pan"` -1..1 (where it is on screen), `"gain_db"`, `"max_s"` (cut the sound to that length with a
+     150 ms fade; a library entry's `"max_s"` applies to every use). **Keep hits short** (user 2026-11-15: "the zombie
+     groans last way too long"): crowd groans and other long one-shots get `max_s` ~1.2. Mix-time keys (`level`,
+     `max_s`) never trigger a paid regeneration; only `prompt`/`dur`/`influence`/`loop` do.
      `"ambience": {"<scene tag>": "<library loop>"}` lays a continuous bed per scene (from `shots.json` scene tags,
      10-frame crossfades): the mix is never silent between lines. `"space": {"<scene tag>": RT60 s}` puts the
      effects in that room (interiors ~1.1, streets ~0.45).
@@ -272,10 +275,19 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
   Toys from build/toys.ts (`toyParts`, `toyPile`, `duckToy`, `dinoToy`).
 - **Crowds clump**: `clusteredSpots` (kit crowd.tsx), per-instance `scale` 0.88-1.1, two or more idle states
   (reaching arms), and the payoff of a crowd is shown (a shop filling to the ceiling), not cut away from.
+- **Threat in frame by ~1 s** (pilot r5 blocker, fixed R17): the hook shows the danger, not only the hero. Hard cut
+  to 2-3 close extras (cast roles with the crowd's looks and fill, at MS) on line 1's number or stakes word.
+  A group reaction swaps every face on the word (QA "Reaction timing" allows 0-3 f before a word start); only the head
+  turns ripple, 2 f apart. Spread the extras across the lens axis or QA "Cast overlap" fails.
+- **Crowd lines crane INTO the crowd** (pilot r5: "zombies ~1/25 frame height"): the reveal wide may open the shot,
+  but land ~5 m from the densest cluster (`densestSpot` in kit camera.ts, over `crowd.place(i, f).pos`) before the
+  key word, heads ~1/8 frame. Put the lens in a lane the crowd keeps clear (`clusteredSpots` keepOut), clear of ramps
+  and rails (QA "Camera clearance" >= 0.3 m). Moves stay <= 25 px/f outside whips (QA "Camera curve"): ~45 f for a
+  crane from 7 m up.
 - **Dawn/golden light rakes across the set from the side or front** (sun az ~150 from the main lens), not from behind:
   a backlit dawn turned the whole street violet.
 - **The ending mirrors the opening**: the same framing (a telephoto close-up of the rival), now silent.
-- **Sound**: horde scenes get a `groan` bed, crashes a `crash`; the music `build` cue (events.json) starts the climax.
+- **Sound**: horde scenes get a short `horde_groan` hit (library `max_s` 1.2, not the full 3 s), crashes a `crash`; the music `build` cue (events.json) starts the climax.
 
 ## Staging and camera (from the 2026-11-14 stress-test comparison; `src/videos/_stress-test` is the worked example)
 - **Frame with `frameOn(at, from, size)`** (`kit/toon/camera.ts`). Sizes are calibrated to our cards (heads are

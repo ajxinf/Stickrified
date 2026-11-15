@@ -8,7 +8,7 @@
  "battery_pop": {"prompt": "AA battery popping out of a plastic toy's battery compartment: a sharp plastic click and pop, then the battery tumbling.", "dur": 0.8},
  "cartoon_boing": {"prompt": "Short cartoon boing, a springy comedic bounce.", "dur": 0.5},
  "whoosh_big": {"prompt": "Fast deep cinematic whoosh, a camera swooping upward.", "dur": 1.2},
- "horde_groan": {"prompt": "Crowd of many zombies groaning and moaning together outdoors, cartoonish but creepy.", "dur": 3.0},
+ "horde_groan": {"prompt": "Crowd of many zombies groaning and moaning together outdoors, cartoonish but creepy.", "dur": 3.0, "max_s": 1.2},
  "megaphone_on": {"prompt": "A megaphone switched on: a short electric click and a feedback chirp.", "dur": 0.6},
  "knock_steel": {"prompt": "Two knuckle knocks on a steel roller shutter, hollow metallic.", "dur": 0.8},
  "slot_open": {"prompt": "A small metal peephole slot in a steel door sliding open, metallic scrape.", "dur": 0.5},

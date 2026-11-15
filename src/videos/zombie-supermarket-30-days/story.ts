@@ -259,6 +259,9 @@ const youWave: Role = {
 const daveEnd: Role = { name: "dave", look: daveLook, at: still(DAVE_END), state: (F) => st(posed("hold", F / FPS, 0.6), F < onWord(BEAT.but + 10) - LEAD ? "worried" : "grin", F, 4, { prop: "can" }) };
 // R17 (REVIEW_R5 #1 hook, user's pick: a zombie cut on "212"): three of the 400 outside snap their heads toward the
 // store, one after another. They stand in the dock lane, which the instanced crowd keeps clear.
+// B03b cranes into the horde's densest spot (kit camera.ts densestSpot over HORDE at f200, s 36-50: 33 within 2.5 m;
+// at f242 a tie picks s 39, x -1.5). Kept as the point the R17 render checked.
+const HORDE_CORE = at(37.5, 0.5, 0);
 const Z3 = [at(31.4, -0.5, 0), at(32.66, 0.09, 0), at(31.48, 0.67, 0)]; // spread across the lens axis (s 29.5, x -2.45)
 const zSnap = (i: number): Role => ({
   name: `z${i}`, look: ZLOOKS[[0, 2, 4][i]], at: still(Z3[i]),
@@ -311,11 +314,11 @@ const shots: S[] = [
   // "the guy across the street laughs at you": Chad close on a long lens, laughing at you.
   sh("B03-chad-laughs", BEAT.street, BEAT.because - 2, "ext-day", { pose: creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.3), 50, 0.04, true), cast: inShot(BEAT.street, [chadMock]), subject: "chad", crowd: true, dof: POST.dof }),
   // "Because outside, 400 zombies hunt by sound": a fast pull-out over the horde (whip, blurred), then (R17, REVIEW_R5
-  // #1/#2: zombies were specks) a crane down into the densest cluster (s 37.5, x 0.5) from the empty dock lane, landing
+  // #1/#2: zombies were specks) a crane down into the densest cluster (HORDE_CORE) from the empty dock lane, landing
   // before "sound" so the heads tilt big in frame.
   sh("B03b-horde", BEAT.because - 2, 270, "ext-day", {
     pose: reframe(reframe(creep(tele(ACROSS, CHAD_ROOF, chadLook, 2.6), 104, 0.02), { pos: at(21, -2.5, 7.5), look: at(34, 0.5, 0.8), fov: 46 }, 0, 30),
-      { pos: at(32.1, -0.5, 2.6), look: at(37.5, 0.5, 1.3), fov: 40 }, 31, 76),
+      { pos: at(32.1, -0.5, 2.6), look: HORDE_CORE.clone().setY(1.3), fov: 40 }, 31, 76),
     whips: [[0, 30]], crowd: true, wide: true, dof: POST.dof,
     cast: inShot(BEAT.because - 2, [chadMock]), // R14 QA: Chad vanished on the cut from B03 (f163 -> f164)
   }),

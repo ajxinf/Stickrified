@@ -39,9 +39,13 @@ def path(name):
     return os.path.join(CACHE, f"{name}.wav")
 
 
+GEN_KEYS = ("prompt", "dur", "influence", "loop")  # mix-time keys (level, max_s) never trigger a paid regeneration
+
+
 def fresh(name, spec):
     meta = os.path.join(CACHE, f"{name}.json")
-    return os.path.exists(path(name)) and os.path.exists(meta) and json.load(open(meta, encoding="utf-8")) == spec
+    gen = lambda s: {k: s.get(k) for k in GEN_KEYS}
+    return os.path.exists(path(name)) and os.path.exists(meta) and gen(json.load(open(meta, encoding="utf-8"))) == gen(spec)
 
 
 def generate(name, spec):

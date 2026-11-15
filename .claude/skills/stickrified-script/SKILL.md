@@ -37,7 +37,9 @@ breaks, it is a list: rewrite it.
 1. **Open on a strange action** (first clause 6-12 words, present or past tense, no context): "You pull the
    batteries out of 212 talking toys." The viewer's "why?" is the hook. The title asks the question; the narration starts doing.
 2. **Sentence 2 answers "why" with stakes** ("Because outside, 400 zombies hunt by sound.") and keeps the *how*
-   secret.
+   secret. **But the picture shows the threat by ~1 s**, before sentence 2 says it (zombie pilot review r5 blocker:
+   8 s of hero and toys, "no premise, no zombie"). In line 1's `scene`, plan a quick cut to the danger on its
+   number or stakes word (pilot R17: three zombies snap ring-eyed toward the store on "212").
 3. **Chain every line to the one before** with But / So / Then / That night / The next morning / Until /
    Eventually. "Day N" stamps only for the 2-3 biggest jumps; a "Day 1... Day 3... Day 7..." diary is a list.
 4. **Give "you" a goal, an opponent and a doubter.** The opponent pushes back (zombies, a rival, a deadline, the
