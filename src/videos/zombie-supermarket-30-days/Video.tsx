@@ -27,6 +27,21 @@ import { FRAMES, INSERT, PLAN, S, SHOTS, WORLD } from "./story";
 export const ZOMBIE_FRAMES = FRAMES;
 const INT_OPTS = { seed: 30 };
 const SHADOW = { ext: { center: at(32, 0), size: 44 }, int: { center: IN(3, 0), size: 30 } };
+/** R14 (B25/B27 stair-stepped band): one 4096 map over +-44 m is ~2 cm a texel, ~14 px in a close-up. Fit the shadow
+ * area to what the lens looks at over the shot (look points + a margin that grows with lens distance). */
+const shadowFor = (s: S, base: { center: Vector3; size: number }) => {
+  const looks: Vector3[] = [];
+  let far = 0;
+  for (let f = 0; f <= s.frames; f += 4) {
+    const p = s.pose(f);
+    looks.push(p.look.clone());
+    far = Math.max(far, p.pos.distanceTo(p.look));
+  }
+  const center = looks.reduce((a, v) => a.add(v), new Vector3()).multiplyScalar(1 / looks.length).setY(0);
+  const spread = Math.max(...looks.map((v) => Math.hypot(v.x - center.x, v.z - center.z)));
+  const size = Math.min(base.size, Math.max(8, spread + 1.5 * far + 4));
+  return size >= base.size ? base : { center, size };
+};
 
 /**
  * R13 look per world: one pool of key light around the subject (darker edges), and one accent hue per scene (rust =
@@ -58,11 +73,12 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
   const moving = useMemo(() => propsFor(s), [s]);
   const extras = useMemo(() => (ext ? [] : INT_EXTRAS(s.w === "int-night")), [ext, s.w]);
   const shotWithProps = useMemo(() => ({ ...s, moving }), [s, moving]);
+  const shadow = useMemo(() => shadowFor(s, ext ? SHADOW.ext : SHADOW.int), [s, ext]);
   const avoid = useMemo(() => ({ from: s.from, frames: s.frames, lens: (F: number) => s.pose(F - s.from).pos }), [s]);
   return (
     <ThreeCanvas width={width} height={height}>
       <ShotCamera {...shotWithProps} />
-      <ToonWorld preset={light} sunDir={W.sun} shadow={ext ? SHADOW.ext : SHADOW.int} />
+      <ToonWorld preset={light} sunDir={W.sun} shadow={shadow} />
       <Street preset={preset} light={light} opts={ext ? EXT_OPTS : INT_OPTS} />
       {extras.map((o, i) => <primitive key={i} object={o} />)}
       {s.crowd && <Crowd spec={HORDE} f={f} avoid={avoid} keepOff={[{ pos: cartAt(f), r: 1.0 }]} />}

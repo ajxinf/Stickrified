@@ -80,8 +80,11 @@ float edgeAt(vec3 pc, vec3 nc, float zc, bool skyC, vec2 uv, out float zn, out f
 float paintedAO(vec3 pc, vec3 nc, float zc) {
   float occ = 0.0;
   float rpx = clamp(uAORad / max(-pc.z, 0.1) / uTexel.y * 0.5, 6.0, 90.0);
-  for (int k = 0; k < 16; k++) {
-    float a = float(k) * 2.39996, t = (float(k) + 0.5) / 16.0;
+  // R14 (B25 "blue mosaic"): a fixed 16-tap spiral stamped 16 shifted copies of every nearby box edge. Turn the spiral
+  // per pixel (interleaved gradient noise) and take 32 taps: the copies melt into a soft, slightly mottled dark.
+  float rot = 6.2831853 * fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715))));
+  for (int k = 0; k < 32; k++) {
+    float a = float(k) * 2.39996 + rot, t = (float(k) + 0.5) / 32.0;
     vec2 uv = vUv + vec2(cos(a), sin(a)) * sqrt(t) * rpx * uTexel;
     float dq = texture2D(tDepth, uv).x;
     if (dq >= 1.0) continue;
@@ -89,7 +92,7 @@ float paintedAO(vec3 pc, vec3 nc, float zc) {
     float l = length(v);
     occ += max(dot(nc, v / max(l, 1e-4)) - 0.15, 0.0) * (1.0 - smoothstep(0.3 * uAORad, uAORad, l));
   }
-  return clamp(occ / 16.0 * 3.0, 0.0, 1.0);
+  return clamp(occ / 32.0 * 3.0, 0.0, 1.0);
 }
 
 void main() {
