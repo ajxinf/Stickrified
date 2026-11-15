@@ -30,7 +30,7 @@
     },
     {
       "narration": "This is loop *9,000*.",
-      "spoken": "This is loop nine thousand.",
+      "spoken": "This is loop nine-thousand.",
       "audioTag": "tired, dry",
       "scene": "A wall covered floor to roof in chalk tally marks; you add one more and the chalk snaps. Face: tired -> deadpan.",
       "camera": "Slow pull-out along the wall of tally marks",
@@ -47,7 +47,7 @@
     },
     {
       "narration": "\"Nobody leaves before the end, kid,\" he says, for the 9,000th *time*.",
-      "spoken": "\"Nobody leaves before the end, kid,\" he says, for the nine thousandth time.",
+      "spoken": "\"Nobody leaves before the end, kid,\" he says, for the nine-thousandth time.",
       "audioTag": "amused",
       "scene": "Gary says it without even looking at you; you mouth every word along with him, in perfect sync. Faces: Gary deadpan; you disgusted -> deadpan.",
       "camera": "Two-shot, slow push",
@@ -104,7 +104,7 @@
     },
     {
       "narration": "And you've timed his ladder, to the frame, 9,000 *times*.",
-      "spoken": "And you've timed his ladder, to the frame, nine thousand times.",
+      "spoken": "And you've timed his ladder, to the frame, nine-thousand times.",
       "audioTag": "proud",
       "scene": "Your wall of tally marks now has chalk diagrams of Gary's path, a stopwatch and string between pins. Face: proud.",
       "camera": "Pan across the chalk plan",
@@ -113,7 +113,7 @@
     },
     {
       "narration": "A word a loop, 9,000 loops, and today you need just *one* more.",
-      "spoken": "A word a loop, nine thousand loops, and today you need just one more.",
+      "spoken": "A word a loop, nine-thousand loops, and today you need just one more.",
       "audioTag": "building excitement",
       "scene": "Back on the street, the next caption slides along the bottom of the frame; you crouch under it, eyes locked on one word, jar ready. Face: excited -> scheming.",
       "camera": "Low angle, push in on your eyes",
@@ -138,7 +138,7 @@
     },
     {
       "narration": "The red bar crawls. 90%. 95%. *99*.",
-      "spoken": "The red bar crawls. Ninety percent. Ninety-five. Ninety-nine.",
+      "spoken": "The red bar crawls. Ninety-percent. Ninety-five. Ninety-nine.",
       "audioTag": "tense, hushed",
       "scene": "The progress bar inches toward the end; your eyes dart to it and back; behind you, Gary's ladder swings into frame on his usual path.",
       "camera": "Hard cuts between the bar and your eyes",
@@ -172,7 +172,7 @@
     },
     {
       "narration": "9,000 loops, because I almost never say *free*.",
-      "spoken": "Nine thousand loops, because I almost never say free.",
+      "spoken": "Nine-thousand loops, because I almost never say free.",
       "audioTag": "sulky",
       "scene": "The empty jar rolls across the cobbles; its label reads 'FREE: 1'. The giant caption sign sags like a sulking face.",
       "camera": "Insert on the jar label",
