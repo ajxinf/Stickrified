@@ -20,9 +20,11 @@ export type { PropName } from "./figure";
  * hood, headphones resting round the neck (the signature accessory), a rust stripe on the sneakers.
  */
 export const YOU = {
-  hair: "#4a3226",
-  hairLight: "#7a5440",
-  hairShine: "#9a6c52",
+  // R21 (user: "still cheap"): lifted ~2 value steps (was #4a3226 / #7a5440 / #9a6c52). Under scene light the old
+  // brown went near-black, so the fringe read as a flat helmet and its strands vanished; ref hair is mid-brown.
+  hair: "#664430",
+  hairLight: "#94684a",
+  hairShine: "#bc8c64",
   hoodie: "#c8582c",
   hoodieDark: "#a8441f",
   hoodieLight: "#e07a4c",

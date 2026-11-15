@@ -128,9 +128,10 @@ void main() {
     vec2 side = vec2(Ls.x + (Ls.x >= 0.0 ? 0.45 : -0.45), max(Ls.y, 0.35));
     vec3 Lc = normalize(vec3(side, min(Ls.z, 0.4)));
     float wrap = clamp(dot(nl, Lc) * 0.5 + 0.5, 0.0, 1.0);
-    float lit = smoothstep(0.36, 0.66, wrap);
+    // R21: a soft form shade (refs: a gentle grey near the edge), not a hard terminator line across the face.
+    float lit = smoothstep(0.12, 0.8, wrap);
     vec3 ratio = min(uShade / max(uLit, vec3(1e-3)), vec3(1.0));
-    vec3 shadeTone = mix(vec3(1.0), ratio, 0.7);
+    vec3 shadeTone = mix(vec3(1.0), ratio, 0.42);
     float self = 1.0 - smoothstep(0.02, 0.12, max(tex.r, max(tex.g, tex.b)));
     m *= mix(vec3(1.0), mix(shadeTone, vec3(1.0), lit), 1.0 - self);
     vec3 V = normalize(cameraPosition - vWP);

@@ -1,4 +1,4 @@
-﻿import { ThreeCanvas } from "@remotion/three";
+import { ThreeCanvas } from "@remotion/three";
 import { useMemo } from "react";
 import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { BoxGeometry, Color, CylinderGeometry, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, Object3D, Quaternion, SphereGeometry, TorusGeometry, Vector3 } from "three";
@@ -258,7 +258,9 @@ const CAST = [
 ];
 
 // ------------------------------------------------------------------ shots
-type S = Shot & { from: number; frames: number; dof: (f: number) => Dof };
+/** `pool` (R21): where the subject sits [x, y (up), radius kept lit, depth]: the grade darkens away from it so the
+ * character, not a lit window, is the brightest thing in the frame (grade.ts uPool). */
+type S = Shot & { from: number; frames: number; dof: (f: number) => Dof; pool?: [number, number, number, number] };
 const P = (pos: Vector3, look: Vector3, fov: number, roll = 0): CamPose => ({ pos, look, fov, roll });
 const lerpPose = (a: CamPose, b: CamPose, t: number): CamPose => ({ pos: a.pos.clone().lerp(b.pos, t), look: a.look.clone().lerp(b.look, t), fov: a.fov + (b.fov - a.fov) * t, roll: a.roll + (b.roll - a.roll) * t });
 const lerpDof = (a: Dof, b: Dof, t: number): Dof => ({ maxPx: a.maxPx + (b.maxPx - a.maxPx) * t, near: a.near + (b.near - a.near) * t, far: a.far + (b.far - a.far) * t, fgPx: (a.fgPx ?? 0) + ((b.fgPx ?? 0) - (a.fgPx ?? 0)) * t, fgNear: (a.fgNear ?? 0) + ((b.fgNear ?? 0) - (a.fgNear ?? 0)) * t, fgFar: (a.fgFar ?? 0) + ((b.fgFar ?? 0) - (a.fgFar ?? 0)) * t });
@@ -267,7 +269,7 @@ const castIn = (from: number, names: string[]) => CAST.filter((c) => names.inclu
 const base = { scene: "high street sunset", light: "sunset" as const, sun: SUN, allow: ALLOW };
 
 const S1: S = {
-  ...base, id: "_visual-test/S1-establish", from: 0, frames: 110, wide: true, subject: "you",
+  ...base, id: "_visual-test/S1-establish", from: 0, frames: 110, pool: [0.62, 0.55, 0.3, 0.22], wide: true, subject: "you",
   // Low over the wet cobbles past a blurred barrel, then a slow crane up and in over the raking light.
   pose: (f) => lerpPose(P(at(1.4, 2.9, 0.38), at(15, 4.1, 1.1), 46), P(at(5.8, 2.6, 2.2), at(15, 4.6, 0.95), 40), glide(f / 110)),
   cast: castIn(0, ["you", "old"]), dof: () => ({ maxPx: 0, near: 30, far: 60, fgPx: 18, fgNear: 0.6, fgFar: 2.6 }),
@@ -275,7 +277,7 @@ const S1: S = {
 /** S2: the lens dollies back ahead of you at walking pace (the street and its long shadows behind you). */
 const S2_LENS = (F: number) => at(YOU_AT(F).z * -1 + 2.55 - 0.25 * glide((F - 110) / 90), 3.62, 1.12);
 const S2: S = {
-  ...base, id: "_visual-test/S2-walk-in", from: 110, frames: 90, subject: "you",
+  ...base, id: "_visual-test/S2-walk-in", from: 110, frames: 90, pool: [0.5, 0.62, 0.26, 0.32], subject: "you",
   pose: (f) => {
     const F = f + 110, h = head(F).setY(1.22);
     return P(S2_LENS(F), h.lerp(at(13.95, 4.35, 1.2), 0.12), 36);
@@ -291,7 +293,7 @@ const S3: S = {
 };
 const S4_A = at(14.42, 5.75, 1.32), S4_B = at(14.24, 5.56, 1.36);
 const S4: S = {
-  ...base, id: "_visual-test/S4-reaction", from: 262, frames: 90, subject: "you",
+  ...base, id: "_visual-test/S4-reaction", from: 262, frames: 90, pool: [0.6, 0.64, 0.26, 0.3], subject: "you",
   // Over the globe (a soft colourful block, lower corner): focus racks from the gumballs to your face; slow push.
   pose: (f) => {
     const p = P(S4_A.clone().lerp(S4_B, glide(f / 90)), head(STOP).setY(1.3), 50);
@@ -302,7 +304,7 @@ const S4: S = {
   cast: castIn(262, ["you"]), dof: (f) => lerpDof({ maxPx: 14, near: 0.95, far: 1.4, fgPx: 0, fgNear: 0, fgFar: 0 }, DOF.closeup(1.7), smootherstep((f - 4) / 16)),
 };
 const S5: S = {
-  ...base, id: "_visual-test/S5-whip-laugh", from: 352, frames: 58, subject: "old", subjectFrom: 8,
+  ...base, id: "_visual-test/S5-whip-laugh", from: 352, frames: 58, pool: [0.42, 0.6, 0.26, 0.3], subject: "old", subjectFrom: 8,
   pose: (f) => {
     const w = smootherstep(f / 8), from = head(STOP).setY(1.3).lerp(OLD_AT().setY(1.35), 0.3), to = OLD_AT().setY(1.2);
     return P(S4_B.clone(), from.lerp(to, w), 24 - 4 * glide(f / 58));
@@ -312,7 +314,7 @@ const S5: S = {
 };
 const S6_BASE = (f: number) => P(at(10.2, 4.38, 0.5).lerp(at(10.9, 4.5, 0.62), glide(f / 60)), at(14.0, 4.38, 0.95), 52);
 const S6: S = {
-  ...base, id: "_visual-test/S6-kick", from: 410, frames: 60, subject: "you",
+  ...base, id: "_visual-test/S6-kick", from: 410, frames: 60, pool: [0.45, 0.55, 0.3, 0.28], subject: "you",
   // Low profile from behind along the pavement: the wind-up, the kick, the hit shake; the old man small between.
   pose: impact(S6_BASE, KICK - 410, 0.03, 8),
   kicks: [[KICK - 410, KICK - 410 + 8]],
@@ -320,14 +322,14 @@ const S6: S = {
 };
 const S7_A = P(at(16.4, 2.4, 0.62), at(14.05, 4.2, 0.95), 46);
 const S7: S = {
-  ...base, id: "_visual-test/S7-burst", from: 470, frames: 76, subject: "you",
+  ...base, id: "_visual-test/S7-burst", from: 470, frames: 76, pool: [0.58, 0.6, 0.3, 0.25], subject: "you",
   // Low along the pavement toward the lens: the lid pops, the burst sprays past the lens.
   pose: (f) => lerpPose(S7_A, P(at(16.1, 2.6, 0.66), at(14.0, 4.15, 1.0), 44), glide(f / 76)),
   cast: castIn(470, ["you", "old"]), dof: () => ({ maxPx: 6, near: 4.5, far: 14, fgPx: 20, fgNear: 0.4, fgFar: 1.6 }),
 };
 const S8_LENS = at(15.55, 3.1, 1.12);
 const S8: S = {
-  ...base, id: "_visual-test/S8-grin", from: 546, frames: 54, subject: "you",
+  ...base, id: "_visual-test/S8-grin", from: 546, frames: 54, pool: [0.5, 0.64, 0.3, 0.3], subject: "you",
   // Punch in: your grin, the last gumballs bouncing round your feet.
   pose: (f) => P(S8_LENS.clone().lerp(at(15.2, 3.28, 1.18), glide(f / 54)), head(STOP).setY(1.3), 44),
   cast: castIn(546, ["you"]), dof: () => DOF.closeup(1.85),
@@ -361,7 +363,7 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <Dust center={at(14, 3.5, 2.2)} size={new Vector3(8, 4, 16)} color="#ffd8a8" strength={0.9} count={380} />
       <Birds f={F} from={at(40, -14, 14)} to={at(-6, 16, 11)} count={7} period={480} />
       {s.cast?.map((c) => <Character key={c.name} position={c.at(f)} state={c.state(f)} look={c.look} />)}
-      <Composer dof={s.dof(f)} />
+      <Composer dof={s.dof(f)} look={s.pool ? { pool: s.pool } : undefined} />
     </ThreeCanvas>
   );
 };

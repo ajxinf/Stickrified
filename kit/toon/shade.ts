@@ -22,6 +22,8 @@ export const shared = {
   uCharInk: { value: linear(INK) },
   /** World ink on concave contacts (ink.ts), per preset. */
   uContactInk: { value: 0.6 },
+  /** Lit windows, lamp glass, signs: x this (lights.ts `glow`). */
+  uEmissiveK: { value: 1 },
 };
 
 /** Practical light positions (world), for the lamp-thrown card shadow; the lights themselves are three PointLights. */
@@ -69,6 +71,7 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   shared.uCharShade.value = p.char.shade;
   shared.uCharInk.value.copy(linear(p.charInk ?? INK));
   shared.uContactInk.value = p.contactInk ?? 0.6;
+  shared.uEmissiveK.value = p.glow ?? 1;
   gradeState.current = GRADE[p.grade];
 };
 
@@ -162,7 +165,7 @@ uniform vec3 uColor, uEmissive;
 uniform sampler2D uMap;
 uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss;
 uniform vec3 uSunDir, uLit, uShade, uLift, uHazeColor;
-uniform float uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
+uniform float uEmissiveK, uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
 uniform vec2 uRepeat;
 varying vec3 vN;
 varying vec3 vW;
@@ -225,7 +228,7 @@ void main() {
   }
   c = max(mix(vec3(dot(c, W)), c, uSat), 0.0);
   c = aerial(c, vDist);
-  c += uEmissive * a; // HDR glow keeps the map's frames and mullions dark
+  c += uEmissive * a * uEmissiveK; // HDR glow keeps the map's frames and mullions dark
   gl_FragColor = vec4(c, 1.0);
   #include <fog_fragment>
 }`;

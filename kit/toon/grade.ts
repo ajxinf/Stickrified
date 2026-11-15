@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Display-referred grade after the tone map (vendor/cartoon-3d-short/reports/grade.md section 4-5):
  * 1. one RGB tone curve, monotone cubic Hermite through knots at x = 0, .1, .25, .5, .75, .9, 1;
  * 2. saturation around luma per zone (shadows / mids / highlights);
@@ -44,7 +44,7 @@ export const GRADE: Record<GradeName, Grade> = {
   golden: { ...S_CURVE, ...FILM, exposure: 2.08, sat: [1.2, 1.38, 1.2], tint: { s: [8, -1, 6], m: [2, 0, 2], h: [3, 0, -4] }, vig: [0.36, 0.35], top: 0.1, amount: 1 },
   // R20 (visual-ref4/6 sunsets): a sunlit street, so normal exposure (golden's 2.08 is for backlit, mostly-shade
   // frames and blew the lit ground to pastel); cool shadows, warm highlights, a firm vignette.
-  sunset: { ...S_CURVE, ...FILM, exposure: 1.25, sat: [1.06, 1.12, 1.02], tint: { s: [-3, 0, 9], m: [3, 1, -2], h: [5, 2, -6] }, vig: [0.34, 0.36], top: 0.06, amount: 1 },
+  sunset: { ...S_CURVE, ...FILM, exposure: 1.2, sat: [1.06, 1.1, 1.0], tint: { s: [-3, 0, 9], m: [3, 1, -2], h: [5, 2, -6] }, vig: [0.4, 0.32], top: 0.08, amount: 1, halation: 0.12 },
   // R14: refs keep night readable (navy, not black; ref1/ref2 night rooms luma ~.3); the pilot night aisle measured .16.
   night: { ...DEEP_CURVE, ...FILM, exposure: 1.85, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
   interior: { ...DEEP_CURVE, ...FILM, exposure: 1.2, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },

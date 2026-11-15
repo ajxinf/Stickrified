@@ -83,7 +83,9 @@ export const drawFill = (p: Pen, h: Head, fx: Effects) => {
 };
 
 /** Feature scale (eyes, brows, mouth and their line widths) about each feature's centre. */
-const FEAT = 0.7;
+// R21: 1 (was .7): ref faces carry the joke with readable eyes, brows and mouths (eyes ~12-20 % of the head
+// width); at .7 our dots and dash mouths vanished on a big blank head.
+const FEAT = 1.0;
 
 export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: Effects; brim?: boolean }) => {
   const { cx, cy, u, facing } = h;

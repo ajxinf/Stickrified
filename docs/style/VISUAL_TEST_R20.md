@@ -66,3 +66,17 @@ nothing. The old man by the lamp laughs. You kick it, the lid pops, 84 gumballs 
 ## Next
 Apply the R20 kit to the next episode (it is kit-wide: haze, face slide). Run `video-review` on it. Fix 2 and 3 above in
 the kit (a `hold()` camera helper; a contact-puff effect for hits).
+
+## R21 (user feedback, same day): lights stealing focus, characters "still kinda cheap"
+Video: `out/_visual-test/visual-test-r21.mp4`. Close-ups of refs 1, 2, 5, 6 next to ours showed four cheap cues:
+1. **Outline** ~1.2 % of the head width, brown, plum at sunset; refs 2-3 %, near-black. Now `LINE` .8, `INK` #1c1414,
+   sunset `charInk` #1c1220.
+2. **Features** at 0.7 scale: dot eyes and a dash mouth on a big blank head. Now `FEAT` 1.0.
+3. **Head shading**: a hard light/shade line across the face (lit-cards terminator). Now a soft form shade
+   (smoothstep .12-.8, depth .42).
+4. **Hair** near-black under scene light: a flat helmet, strands invisible. Lifted two value steps (#664430).
+Light: sunset key softened (lit 1.42/.94/.58), lamps 1.3, lit windows/lamp glass x .4 (`LightPreset.glow`, kit-wide
+option, default 1 = night), characters keep .93 of their light in shade, halation .12, and every character shot has a
+subject `pool` (the grade darkens away from the face). Measured: luma .40, sat .51, colourfulness .32 (all inside
+the refs' band now), still frames 6 %.
+Still open from the R20 list: true camera holds, a kick contact effect, S1 length.

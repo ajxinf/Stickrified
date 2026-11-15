@@ -11,7 +11,8 @@ import { CanvasTexture, LinearFilter, LinearMipmapLinearFilter, SRGBColorSpace }
 export const DESIGN = { W: 600, H: 1000, SOLE: 975, PX_PER_M: 500, RES: 2 };
 
 /** Character ink: warm brown-black, one family with the world ink #1c1210 (identity, LOOK_SPEC section 2). */
-export const INK = "#2a1a14";
+// R21 (user: "characters still feel cheap"; visual-ref1-6 close-ups): near-black ink, like every ref outline.
+export const INK = "#1c1414";
 /** Cast heads: pale cream (identity). */
 export const CREAM = "#f7f4f0";
 export const WHITE = "#fdfaf4";
@@ -98,7 +99,9 @@ export const INK_K = 0.15;
  * Outline scale on every ink ring (cast redesign 2026-11-15, measured on the reference videos: an even line ~2 % of
  * the head width; the old 2-7.5 % thick-thin brush read heavy and crude).
  */
-export const LINE = 0.42;
+// R21: .42 drew ~1.2 % of the head width on screen (refs 2-3 %: the bold outline is what makes a ref card read
+// as finished at phone size); .8 lands ~2.3 %.
+export const LINE = 0.8;
 /** Hand-drawn pressure wobble of the outline width (+-, seeded per character, so no two outlines are the same). */
 export const INK_WOBBLE = 0.2;
 

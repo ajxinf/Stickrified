@@ -1,4 +1,4 @@
-﻿import { Color, Vector3 } from "three";
+import { Color, Vector3 } from "three";
 import type { GradeName } from "./grade";
 
 type RGB = [number, number, number];
@@ -43,6 +43,11 @@ export type LightPreset = {
   charInk?: string;
   /** World ink on concave contacts (an object standing on the ground), 0-1. Interiors 0: no wall/floor lines. */
   contactInk?: number;
+  /**
+   * How bright lit windows, lamp glass and signs glow, x their night value (default 1). R21: by day and at sunset the
+   * practicals must not out-shine the character (user: "the lights steal the focus").
+   */
+  glow?: number;
   /** Grade preset (grade.ts) applied after the tone map. */
   grade: GradeName;
 };
@@ -150,7 +155,8 @@ export const LIGHTS = {
   sunset: {
     az: -32,
     el: 26,
-    lit: [1.7, 1.06, 0.6],
+    // R21: gentler key (was 1.7/1.06/.6): sunlit facades out-shone the character; the subject must be the brightest.
+    lit: [1.42, 0.94, 0.58],
     shade: [0.4, 0.33, 0.56],
     lift: [0.02, 0.015, 0.035],
     litMax: 3.2,
@@ -166,9 +172,11 @@ export const LIGHTS = {
     sunDisc: "#ffd6a0",
     sunGlow: ["#ffb070", 0.7],
     clouds: { lit: "#ffc89e", shade: "#8a68b0", cover: 0.55 },
-    lamp: ["#ffad52", 2.4],
-    char: { tint: [1.0, 0.9, 0.8], shade: 0.8 },
-    charInk: "#2e1530",
+    lamp: ["#ffad52", 1.3],
+    glow: 0.4,
+    // R21: characters keep their light in the street shadow (at .8 "you" went dim lavender against bright walls).
+    char: { tint: [1.0, 0.93, 0.86], shade: 0.93 },
+    charInk: "#1c1220",
     grade: "sunset",
   },
   // Moon-blue key, warm practicals carry the scene (lamp pools, lit windows).
