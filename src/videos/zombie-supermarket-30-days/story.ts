@@ -423,8 +423,8 @@ const shots: S[] = [
       dir.normalize();
       const k = smootherstep(Math.min(Math.max((f + BEAT.ball - (CART_RUN.door - 6)) / 24, 0), 1)); // settle on the doorway
       // R14 (the crash happened inside the crowd): the lens rises over the heads and looks down at the counter.
-      const pos = c.clone().addScaledVector(dir, -3.4).add(new Vector3(0, 1.5, 0)).addScaledVector(dir, -1.2 * k).add(new Vector3(0, 1.6 * k, 0));
-      return { pos, look: c.clone().addScaledVector(dir, 3).setY(1.0).lerp(CHAD_DOOR.clone().setY(0.7), k), fov: 52 - 4 * k, roll: 0 };
+      const pos = c.clone().addScaledVector(dir, -3.4).add(new Vector3(0, 1.5, 0)).addScaledVector(dir, 0.6 * k).add(new Vector3(0, 1.3 * k, 0)); // R15: settle CLOSE on the impact (cart >= 1/4 frame)
+      return { pos, look: c.clone().addScaledVector(dir, 3).setY(1.0).lerp(CHAD_DOOR.clone().setY(0.7), k), fov: 52 - 5 * k, roll: 0 };
     }, BEAT.door2 - BEAT.ball, 0.05),
     kicks: [[BEAT.door2 - BEAT.ball, BEAT.door2 - BEAT.ball + 7]], crowd: true, cartClear: 2.4, wide: true, dof: POST.dof,
     flash: [[BEAT.chadRoof - 10 - BEAT.ball, BEAT.chadRoof + 4 - BEAT.ball]], // the DustWipe (Video.tsx), planned

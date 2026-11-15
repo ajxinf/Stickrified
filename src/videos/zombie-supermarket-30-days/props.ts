@@ -11,7 +11,7 @@ import type { Hand } from "../../../kit/toon/cast";
 import { youLook } from "../../../kit/toon/protagonist";
 import { NOINK } from "../../../kit/toon/ink";
 import {
-  CART_IN, CHAD, CHART, CHART_AT, DOCK, FLOODS, FUEL_AT, GRILL, ROOF_Y, SHUTTER_AT, scrawlTex,
+  CART_IN, CHAD, CHART, CHART_AT, DOCK, FLOODS, FUEL_AT, GRILL, ROOF_Y, SHUTTER_AT,
   battery, chartTex, dinoToy, duckToy, floodGlass, fuelCan, hedgehogCart, megaphone, shutter, toothbrush,
 } from "./build";
 import { BEAT, CART_RUN, cartAt } from "./roles";
@@ -311,25 +311,7 @@ const tallyOverlay: MovingProp = {
   },
 };
 
-/** The duck's "QUACK!" bubble (toys talk until the battery comes out): pops on "batteries". Faces the lens. */
-const quackBubble = (s: S): MovingProp => ({
-  name: "quack bubble",
-  make: () => {
-    const m = new Mesh(new PlaneGeometry(0.5, 0.3), new MeshBasicMaterial({ map: scrawlTex(["QUACK!"], "#fffdf4", "#e8a020", 512, 300), transparent: true }));
-    m.layers.set(NOINK);
-    return m;
-  },
-  pose: (o, F) => {
-    const t0 = Math.round(0.52 * 30) - 4; // pops just before the battery flies
-    if (F > t0 + 4) return false;
-    o.position.copy(handOf(s, "you", "both", F, 0.3)).add(new Vector3(0, 0.12 + 0.06 * Math.max(F - t0, 0), 0)).addScaledVector(rightOf(s, F), 0.2); // beside the duck, inside the frame
-    faceCam(o, s, F);
-    o.scale.setScalar((F < t0 ? 1 + 0.04 * Math.sin(F * 0.8) : 1 - 0.22 * (F - t0)) * 0.6); // pops inward, floating up clear of the duck's head (review r2 L1)
-    return true;
-  },
-  heldBy: "you",
-  hand: "none",
-});
+
 const rightOf = (s: S, F: number) => {
   const toCam = camOf(s, F).clone().sub(s.pose(F - s.from).look).setY(0).normalize();
   return new Vector3(toCam.z, 0, -toCam.x);
@@ -410,7 +392,7 @@ export const propsFor = (s: S): MovingProp[] => {
   const ext = s.w.startsWith("ext");
   const out: MovingProp[] = ext ? [...floods(), ...cans(), shutterProp] : [];
   switch (id) {
-    case "B01": out.push(youHeapToy(s), poppedBattery(s), quackBubble(s)); break;
+    case "B01": out.push(youHeapToy(s), poppedBattery(s)); break; // user 2026-11-15: no QUACK text box
     case "B03": case "B03b": case "B04": case "B05": out.push(megaProp(s, () => false)); break;
     case "B06": out.push({ ...soundRings(s, [BEAT.knocked - 2, BEAT.knocked + 7], (F) => handOf(s, "you", "right", F, 0.05), 0.45), heldBy: undefined }); break; // R14: the raps land on the shutter
     case "B11": out.push(megaProp(s, (F) => F >= BEAT.grabs + 6), soundRings(s, [BEAT.morning - 2, BEAT.boy - 4])); break;
