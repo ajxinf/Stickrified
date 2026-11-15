@@ -108,7 +108,7 @@ export const LIGHTS = {
     fog: "#f2b896",
     fogNear: 50,
     fogFar: 300,
-    sat: 1.12,
+    sat: 1.25, // R15: colourfulness .225 after the warmer shade (bar >= .25)
     haze: { color: "#f2b896", start: 30, amount: 0.28 },
     litTint: "#ffc89c",
     sunDisc: "#ffd6a0",

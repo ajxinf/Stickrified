@@ -411,7 +411,7 @@ const shots: S[] = [
   sh("B28-trail", BEAT.bump - 4, W_.youSee, "ext-dawn", { pose: (f) => { const c = cartAt(f + BEAT.bump - 4); return { pos: c.clone().add(new Vector3(-0.7, 1.2, 3.3)), look: c.clone().add(new Vector3(0.4, 0.75, 0)), fov: 42, roll: 0 }; /* R15 C2: the cart was < 1/6 of the frame */ }, crowd: true, dof: POST.dof }),
   // (INSERT: the x-ray of a toy, 2D in Video.tsx, W_.youSee .. BEAT.now - 6)
   // Line 18. "...now that cart is the loudest thing in town": 400 heads swing toward it.
-  sh("B29-heads", BEAT.now - 6, BEAT.and400 + 2, "ext-dawn", { pose: (f) => ({ pos: at(38.5, 1.2, 2.3), look: cartAt(f + BEAT.now - 6).add(new Vector3(0, 0.9, 0)), fov: 30, roll: 0 }), /* R15 C2: long lens on the cart */ crowd: true, dof: POST.dof }),
+  sh("B29-heads", BEAT.now - 6, BEAT.and400 + 2, "ext-dawn", { pose: (f) => ({ pos: at(38.5, 1.2, 2.3), look: cartAt(f + BEAT.now - 6).add(new Vector3(0, 0.9, 0)), fov: 36, roll: 0 }), /* R15 C2: longer lens on the cart (30 magnified its jitter: QA SHAKE) */ crowd: true, dof: POST.dof }),
   // Line 19. The stampede: the whole street pours toward Chad's open door.
   sh("B30-stampede", BEAT.and400 - 4, BEAT.ball, "ext-dawn", { pose: shot({ pos: at(20, -1.5, 1.6), look: at(32, 4.5, 1.6), fov: 50 }, [pullOut(3), arc(-6, 0.8)], 90), crowd: true, wide: true, dof: POST.dof }),
   // "...straight through Chad's open door": ride behind the cart (crowd parted by the lens lane) as it barrels through the

@@ -427,7 +427,7 @@ export const propsFor = (s: S): MovingProp[] => {
     case "B23": out.push(smokeRing(s)); break;
     case "B25": out.push(brushProp(s)); break;
     case "B26": out.push(cartExt("you")); break;
-    case "B28": out.push(cartExt(), trail, { ...soundRings(s, [BEAT.scream - 2, BEAT.scream + 10], (F) => cartAt(F).add(new Vector3(0, 1.1, 0)), 1.8), heldBy: undefined }); break; // R14: the toys scream
+    case "B28": out.push(cartExt(), trail, { ...soundRings(s, [BEAT.scream - 2, BEAT.scream + 10], (F) => cartAt(F).add(new Vector3(0, 1.1, 0)), 0.9), heldBy: undefined }); break; // R14: the toys scream (R15: 0.9, the closer lens made 1.8 fill the frame)
     case "B27": case "B29": case "B30": out.push(cartExt(), trail); break;
     case "B30b": out.push(cartExt(), trail, toyBurst); break;
     case "B31": case "B33": out.push(megaProp(s, () => false, true), brushProp(s)); break;
