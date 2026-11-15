@@ -28,3 +28,14 @@ Still open:
 7. One ~7 s continuous ride (merge B27+B28); ladders on B06, B21.
 Floodlight "off" lens still reads as an offset brown plate (B24).
 Then: render (out/r14_render.ps1, detached via Start-Process), rerun module 5, iterate until all >= 8.
+
+## R16 (last round of 2026-11-15, commit 14f242e)
+Done: QUACK text box removed from B01 (user); B30b settles close on the cart hitting Chad's counter (~1/3 frame).
+Tried and REVERTED (each failed QA layer 1 in stills; do not retry the same way):
+- B17 pulled back 3.4 m: lens inside FRESHMART. Needs a pose clear of the store (check `Camera clearance`).
+- B22 close-up from the other side: the toy pile covers the hands. Try from above/behind your shoulder instead.
+- B26 low lens on foot + cart: cut your head off. Try a two-shot from the street side with the foot crossing toward the cart.
+- B29 lens lowered to 1.25 m: inside a parked car (s 37.7). Move the lens off the car first.
+Not reviewed after R16 (token limit): run the delta re-review next session (CHANGED.md vs review/prev_final.mp4 =
+the round-5 render). Still open from REVIEW_R5.md: opening premise (f0-255), contact moments, empty slabs, x-ray restyle,
+crowd motion, jump cuts B21/B22, colourfulness .231 (< .25).
