@@ -13,7 +13,8 @@ export const EXPRESSIONS = [
 export type Expr = (typeof EXPRESSIONS)[number];
 
 /** Head frame passed to faces, hair and hats (unrotated: the caller rotates the canvas with the head). */
-export type Head = { cx: number; cy: number; a: number; b: number; W: number; u: number; pts: P2[]; facing: number; look: number };
+/** `yaw`: the view (figure.ts viewOf), 0 / undefined = front. */
+export type Head = { cx: number; cy: number; a: number; b: number; W: number; u: number; pts: P2[]; facing: number; look: number; yaw?: number };
 
 type EyeK = "dot" | "small" | "lid" | "heavy" | "happy" | "dash" | "squeeze" | "shock";
 type Brow = [number, number];
@@ -74,12 +75,25 @@ export const drawFill = (p: Pen, h: Head, fx: Effects) => {
 
 export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: Effects; brim?: boolean }) => {
   const { cx, cy, u, facing } = h;
+  // Turnaround: the features slide toward the side faced (profile: near the edge), the eyes close up and the far eye
+  // narrows, then hides past 60 deg; from behind (> 100 deg) there is no face.
+  const yaw = h.yaw ?? 0, ay = Math.abs(yaw), sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), vs = yaw < 0 ? -1 : 1;
+  if (ay > 100) return drawEffects(p, h, o.fx);
   const F: Face = o.fx.ringEyes ? { ...FACE[expr], eye: ["shock", "shock"], brow: "arc" } : FACE[expr];
-  const fx = cx + 7 * u * facing, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
+  const fx = cx + 7 * u * facing + vs * 0.5 * h.a * sn, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
   const shock = F.eye[0] === "shock";
-  const ex = (shock ? 12 : 13) * u, ey = cy;
+  const ex = (shock ? 12 : 13) * u * (1 - 0.45 * sn), ey = cy;
+  const g = p.g;
   ([-1, 1] as const).forEach((side, i) => {
+    const far = sn > 0.05 && side !== vs;
+    if (far && ay > 60) return;
     const x = fx + side * ex, lx = x + look * 3 * u;
+    if (far) {
+      g.save();
+      g.translate(x, ey);
+      g.scale(1 - 0.35 * sn, 1);
+      g.translate(-x, -ey);
+    }
     const front = facing ? side === Math.sign(facing) : side > 0;
     let kind: EyeK = F.eye[front ? 1 : 0];
     if (o.blink && kind !== "happy" && kind !== "squeeze") kind = "dash";
@@ -105,8 +119,14 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       const [dI, dO] = (Array.isArray(F.brow[0]) ? (F.brow as [Brow, Brow])[i] : F.brow) as Brow;
       p.taper([x - side * 8.5 * u, by + dI * u], [x + side * 8.5 * u, by + dO * u], 5 * u, 2.5 * u);
     }
+    if (far) g.restore();
   });
-  const mx = cx + 8 * u * facing, my = cy + 20 * u, mw = 4 * u;
+  const mx = cx + 8 * u * facing + vs * 0.55 * h.a * sn, my = cy + 20 * u, mw = 4 * u;
+  // A turned mouth foreshortens (narrower toward the profile).
+  g.save();
+  g.translate(mx, my);
+  g.scale(1 - 0.45 * sn, 1);
+  g.translate(-mx, -my);
   const dmouth = (rx: number, ry: number, y: number, tongue = false) => {
     p.ell(mx, y, rx, ry, MOUTH, 0, 0, 180);
     p.clip([[mx - rx, y], [mx + rx, y], [mx + rx, y + 3 * u], [mx - rx, y + 3 * u]], () => p.ell(mx, y, rx, ry, WHITE, 0, 0, 180));
@@ -120,6 +140,7 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
     else if (t.shape === "e") {
       dmouth(13 * u, 7 * u * k, my - 2 * u);
     } else dmouth(11 * u, 11 * u * k, my - u, k > 0.7);
+    g.restore();
     drawEffects(p, h, o.fx);
     return;
   }
@@ -159,6 +180,7 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       for (const k of [-1, 0, 1]) p.stroke([[mx + k * 6 * u, my - 4 * u], [mx + k * 6 * u, my + 4 * u]], 1.5 * u);
       break;
   }
+  g.restore();
   drawEffects(p, h, o.fx);
 };
 

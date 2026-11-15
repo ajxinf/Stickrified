@@ -23,6 +23,7 @@ export type Pose = {
   lean?: number; // 0..1 head forward toward the lens (bigger, lower)
   shrug?: number; // shoulders up, px
   squash?: number; // reaction squash (+) / stretch (-), 1 = 8 %
+  yaw?: number; // view angle for looks with `turns` (degrees): 0 front, +90 profile facing card-right, 180 back
 };
 
 const hang: Arm = { at: [0.2, 0.92] };

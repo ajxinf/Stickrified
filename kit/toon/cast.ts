@@ -3,7 +3,8 @@ import { createElement, useMemo } from "react";
 import { LOOK_FEATURES } from "./lookdev";
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, ShaderMaterial, Vector3 } from "three";
 import { CARD_LOOK, cardMaterial, contactMaterial, lampShadowMaterial } from "./cardshade";
-import { drawPerson, handsOf, headHeight } from "./figure";
+import { drawPerson, handsOf, headHeight, viewYaw } from "./figure";
+export { viewYaw } from "./figure";
 import type { CharState, Look } from "./figure";
 import { CASTER, NOINK, SKY } from "./ink";
 import { rng } from "./paint";
@@ -16,13 +17,16 @@ export type { CharState, Look } from "./figure";
 export { STRIDE, actionPose, blendPose, idlePose, poseAt, posed, reactSquash, runPose, walkPose } from "./poses";
 
 export type Hand = "left" | "right" | "both";
+/** The state as drawn from `cam`: a state with a `heading` gets its view angle. */
+export const asSeen = (s: CharState, at: Vector3, cam: Vector3): CharState =>
+  s.heading === undefined ? s : { ...s, pose: { ...s.pose, yaw: viewYaw(s.heading, at, cam) } };
 /**
  * World position of a drawn hand of a character standing at `at` (soles), its card facing `cam` (cards turn to the
  * lens): "left"/"right" as seen on screen, "both" = between the hands. `fwd` m toward the lens so a held prop sits in
  * front of the card. Every held story prop is placed here (the QA guard checks `MovingProp.hand`).
  */
-export const handWorld = (look: Look, pose: Pose, at: Vector3, cam: Vector3, hand: Hand, fwd = 0.06) => {
-  const [l, r] = handsOf(look, pose);
+export const handWorld = (look: Look, pose: Pose, at: Vector3, cam: Vector3, hand: Hand, fwd = 0.06, heading?: number) => {
+  const [l, r] = handsOf(look, heading === undefined ? pose : { ...pose, yaw: viewYaw(heading, at, cam) });
   const px = hand === "left" ? l : hand === "right" ? r : ([(l[0] + r[0]) / 2, (l[1] + r[1]) / 2] as const);
   const toCam = cam.clone().sub(at).setY(0).normalize();
   const right = new Vector3(toCam.z, 0, -toCam.x);
@@ -130,10 +134,11 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
     // Street-shadow probes (chest and knees, nudged toward the sun past the card's own caster).
     cu.uProbeA.value.copy(position).setY(position.y + p.headUp * 0.75).addScaledVector(sun, 0.6);
     cu.uProbeB.value.copy(position).setY(position.y + 0.35).addScaledVector(sun, 0.6);
-    const key = JSON.stringify(state) + ang;
+    const seen = asSeen(state, position, camera.position); // turnaround: the view from this lens
+    const key = JSON.stringify(seen) + ang;
     if (key !== p.key) {
       p.key = key;
-      p.cv.draw((ctx) => drawPerson(new Pen(ctx, ang), look, state));
+      p.cv.draw((ctx) => drawPerson(new Pen(ctx, ang), look, seen));
       p.height?.update();
     }
   });

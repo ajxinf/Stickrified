@@ -104,6 +104,18 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
 - Oversized rust hoodie `#c8582c`: hood bunched behind the neck (shows past the jaw on both sides: the silhouette
   cue), hood collar under the chin, cream drawstrings with ink aglets, kangaroo pocket, ribbed hem; dark joggers
   `#30364a`; chunky white sneakers (`Look.sneakers`).
+- Upgrade 2026-11-15 (user): chunky pointed fringe locks (irregular, swept from the part), a shine band and strands
+  for volume, hoodie folds, a lined hood, **headphones resting round the neck** (signature accessory), a rust stripe
+  on the sneakers (`Look.shoeStripe`). Reference: `docs/style/frames/you_turnaround.png` (`TurnaroundSheet`).
+- **Turnaround** (`Look.turns`; only "you" so far): 0 front, +-45 3/4, +-90 profile, +-135 3/4 back, 180 back. Hair,
+  hood, hoodie details, face, ear, arms and feet all follow the view. In a shot, give the role's state a world
+  `heading` (rad, the way he faces: `Math.atan2(target.x - at.x, target.z - at.z)` to face a target) and the card
+  picks the view from the lens every frame (`kit/toon/cast.ts` `asSeen`/`viewYaw`); `pose.yaw` sets it by hand
+  (sheets). Use the angles (reference study): profile for walking, talking to someone or looking at a thing,
+  3/4 for reactions, back for following him into a place or looking out at the threat. Looks without `turns`
+  always draw the front view. Self-check: `node kit/toon/turn.test.mjs`.
+- Channel profile picture: `ChannelPfp` composition -> `assets/brand/` (docs/CHANNEL.md); re-render it after any
+  change to the protagonist.
 - Faces from the face library in LOOK_SPEC: lidded deadpan default, no blush, no catchlights.
 - Expressions: neutral (lidded), tired, worried, scared, shocked (white circles almost touching), smug, determined,
   sad, angry, sneaky, relieved, confused, deadpan, laughing. Extras: sweat drop, steam puffs, colour fill, "!" pop.

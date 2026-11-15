@@ -102,7 +102,8 @@ section of the vendored report and port it into `kit/toon/`; do not copy their c
 ## 2. Stickrified identity (ours, not in the reference)
 
 1. **"You" is a recurring character.** The protagonist (messy curtain fringe, oversized rust hoodie with the hood
-   behind the neck, dark joggers, chunky white sneakers; redesigned 2026-11-13) appears in every video and is the first thing on screen in the hook. Competitors
+   behind the neck, headphones round the neck, dark joggers, chunky white sneakers; redesigned 2026-11-13, upgraded with
+   a full turnaround 2026-11-15, see docs/style/frames/you_turnaround.png) appears in every video and is the first thing on screen in the hook. Competitors
    cast new characters every time; we build one face people recognise.
 2. **Rust-orange signature accent** `#c8582c`: the protagonist's hoodie plus one story prop per video. Keep other
    large surfaces away from this hue so it always points at "you".

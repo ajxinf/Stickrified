@@ -340,7 +340,7 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
         const holder = m.heldBy ? cast.find((c) => c.name === m.heldBy) : undefined;
         if (m.heldBy && !m.hand) r.add("Moving props", shot, f, m.name, `held by "${m.heldBy}" but no \`hand\` declared (left/right/both, or "none" if it only touches the body)`);
         else if (holder && m.hand && m.hand !== "none") {
-          const h = handWorld(holder.look ?? youLook, holder.state(f).pose, holder.at(f), cams[f].position, m.hand);
+          const hs = holder.state(f), h = handWorld(holder.look ?? youLook, hs.pose, holder.at(f), cams[f].position, m.hand, 0.06, hs.heading);
           const grip = new Vector3().setFromMatrixPosition(obj.matrixWorld), d = grip.distanceTo(h);
           if (d > HAND_TOL) r.add("Moving props", shot, f, `${m.name} vs "${holder.name}" ${m.hand} hand`, `floats ${(d * 100).toFixed(0)} cm from the hand (max ${HAND_TOL * 100}): place it with handWorld()`);
         }

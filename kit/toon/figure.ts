@@ -11,7 +11,7 @@ import type { Blob, Build, P2 } from "./toon";
  * ink dots; arms come out from behind the bean and hang outside it. Our pose library (poses.ts) drives the hands
  * (2-bone IK, elbows bend outward), lifts, bob, sway, tilt, lean, shrug and squash.
  */
-export type Torso = { pts: P2[]; cx: number; cy: number; a: number; b: number; top: number; bot: number; chin: number; u: number; HH: number; facing: number };
+export type Torso = { pts: P2[]; cx: number; cy: number; a: number; b: number; top: number; bot: number; chin: number; u: number; HH: number; facing: number; yaw: number };
 
 /** What a character looks like. Heads are always cream (identity); variety comes from build, clothes, hair, hats. */
 export type Look = {
@@ -39,24 +39,48 @@ export type Look = {
   socks?: string;
   /** Chunky sneakers: inked outline, `shoes` fill and a sole line (instead of a plain foot stroke). */
   sneakers?: boolean;
+  /** A colour stripe along the sneakers' side. */
+  shoeStripe?: string;
+  /** Turnaround (2026-11-15): the look draws every view from `pose.yaw` (front, 3/4, profile, back). Its outfit, hair
+   * and hairBack read `torso.yaw` / `head.yaw`. Looks without it always draw the front view. */
+  turns?: boolean;
 };
 
 export type PropName = "phone" | "flashlight" | "box" | "can" | "mug" | "lantern" | "tape";
-export type CharState = { pose: Pose; expr: Expr; blink: boolean; fx: Effects; prop?: PropName };
+/** `heading`: world yaw (rad, three.js rotation.y) the character faces; the card turns it into `pose.yaw` against the
+ * camera (cast.ts), so a turning look shows the right view in every shot. */
+export type CharState = { pose: Pose; expr: Expr; blink: boolean; fx: Effects; prop?: PropName; heading?: number };
+
+/**
+ * The view angle (deg, figure.ts `pose.yaw`) of a character facing world `heading` (rad, three.js rotation.y) at `at`,
+ * seen from `cam`: 0 = facing the lens, +90 = facing card-right, 180 = back to the lens. Rounded to 3 deg so a
+ * drifting camera does not redraw the card every frame.
+ */
+export const viewYaw = (heading: number, at: { x: number; z: number }, cam: { x: number; z: number }) => {
+  const d = ((heading - Math.atan2(cam.x - at.x, cam.z - at.z)) * 180) / Math.PI;
+  return Math.round(((((d + 180) % 360) + 360) % 360 - 180) / 3) * 3;
+};
+/** The view a look is drawn in: yaw (deg, -180..180), the side it faces (+1 card-right), |sin|, cos. */
+export const viewOf = (look: Look, pose: Pose) => {
+  const yaw = look.turns ? ((((pose.yaw ?? 0) + 180) % 360) + 360) % 360 - 180 : 0, r = rad(yaw);
+  return { yaw, side: (yaw < 0 ? -1 : 1) as 1 | -1, sn: Math.abs(Math.sin(r)), cs: Math.cos(r) };
+};
 
 const { SOLE } = DESIGN;
 const CX = DESIGN.W / 2;
 
 /** Landmarks for a look in a pose (design px). Total height = (1 + torso + legs) head heights. */
 export const layout = (look: Look, pose: Pose = REST) => {
-  const B = look.build, facing = clamp(pose.look, -1, 1), stoop = B.stoop ?? 0;
+  const B = look.build, V = viewOf(look, pose), stoop = B.stoop ?? 0;
+  // Turned views lean the head shape and features toward the side faced (profile = fully one-sided).
+  const facing = clamp(pose.look * (1 - V.sn) + V.side * V.sn, -1, 1);
   const H = headBlob(look.seed, B.a, facing), W = 2 * H.a, HH = 2 * H.b, u = W / 100;
   const torsoBot = SOLE - B.legs * HH - pose.bob;
   const chin = torsoBot - B.torso * HH;
   const fwd = facing < 0 ? -1 : 1;
   const hx = CX + stoop * 0.1 * W * fwd;
   const hc = chin - H.b + stoop * 0.1 * HH + (pose.lean ?? 0) * 0.08 * HH - (pose.shrug ?? 0) * 0.3;
-  return { H, W, HH, u, torsoBot, chin, hx, hc, facing, fwd, stoop };
+  return { H, W, HH, u, torsoBot, chin, hx, hc, facing, fwd, stoop, V };
 };
 
 /** Head centre above the soles (m), standing at rest. */
@@ -74,8 +98,9 @@ export const measureLook = (look: Look) => {
 type Solved = { S: P2; E: P2; H: P2; side: number; a: Arm; front: boolean };
 
 /** 2-bone arm from shoulder S: hand target in arm lengths (x outward, y down), elbow out-and-down (bend +1). */
-const solveArm = (S: P2, side: number, a: Arm, half: number): Omit<Solved, "front"> => {
-  let H: P2 = [S[0] + side * a.at[0] * 2 * half, S[1] + a.at[1] * 2 * half];
+const solveArm = (S: P2, dir: number, a: Arm, half: number): Omit<Solved, "front"> => {
+  const side = dir < 0 ? -1 : 1; // dir: front view +-1 (outward); turned views blend toward the side faced
+  let H: P2 = [S[0] + dir * a.at[0] * 2 * half, S[1] + a.at[1] * 2 * half];
   let dx = H[0] - S[0], dy = H[1] - S[1], d = Math.hypot(dx, dy);
   const max = 2 * half * 0.995;
   if (d > max) {
@@ -90,6 +115,24 @@ const solveArm = (S: P2, side: number, a: Arm, half: number): Omit<Solved, "fron
   let E: P2 = [mid[0] - uy * h, mid[1] + ux * h];
   if (((E[0] - mid[0]) * side * 0.5 + (E[1] - mid[1])) * (a.bend ?? 1) < 0) E = [mid[0] + uy * h, mid[1] - ux * h];
   return { S, E, H, side, a };
+};
+
+/** Torso size and both arms for a look in a pose (shared by drawPerson and handsOf so held props stay in the hand). */
+const armRig = (look: Look, pose: Pose, L: ReturnType<typeof layout>) => {
+  const B = look.build, { W, HH, u, chin, facing, V } = L;
+  const Ta = (((B.tw / 2) * W) / 1.06) * (1 - 0.3 * V.sn); // a turned torso is narrower (profile 70 %)
+  const tcx = CX + 3 * u * facing + V.side * 4 * u * V.sn, sy = chin + 0.12 * HH - (pose.shrug ?? 0);
+  const arms = pose.arms.map((a, i) => {
+    const side = i === 0 ? -1 : 1, near = side === V.side;
+    // Shoulders close in as the body turns (profile: both at the centre); hands swing toward the side faced, the
+    // far hand 6u behind so both read.
+    const S: P2 = [tcx + side * 0.85 * Ta * Math.max(Math.abs(V.cs), 0), sy];
+    const dir = side + (V.side - side) * V.sn;
+    const r = solveArm(S, dir, a, 0.475 * HH);
+    if (!near && V.sn > 0.5) r.H = [r.H[0] - V.side * 6 * u * V.sn, r.H[1]];
+    return { ...r, near };
+  });
+  return { Ta, tcx, sy, arms };
 };
 
 /** Ink-dot hand; pointing adds one finger stroke along the forearm. */
@@ -157,13 +200,9 @@ const drawProp = (p: Pen, name: CharState["prop"], arms: Solved[], u: number) =>
  * reaction squash as drawPerson. Held props must sit here (cast.ts `handWorld`; the QA guard checks `MovingProp.hand`).
  */
 export const handsOf = (look: Look, pose: Pose): [P2, P2] => {
-  const L = layout(look, pose), B = look.build, { W, HH, u, torsoBot, chin, facing, fwd, stoop } = L;
-  const T = { a: ((B.tw / 2) * W) / 1.06 };
-  const tcx = CX + 3 * u * facing, sy = chin + 0.12 * HH - (pose.shrug ?? 0);
+  const L = layout(look, pose), { torsoBot, fwd, stoop } = L;
   const ang = rad(pose.sway + stoop * 4 * fwd), sq = (pose.squash ?? 0) * 0.08;
-  return pose.arms.map((a, i) => {
-    const side = i === 0 ? -1 : 1;
-    const H = solveArm([tcx + side * 0.85 * T.a, sy], side, a, 0.475 * HH).H;
+  return armRig(look, pose, L).arms.map(({ H }) => {
     // sway: rotate about (CX, torsoBot); squash: scale about (CX, SOLE)
     const dx = H[0] - CX, dy = H[1] - torsoBot;
     const x = CX + dx * Math.cos(ang) - dy * Math.sin(ang), y = torsoBot + dx * Math.sin(ang) + dy * Math.cos(ang);
@@ -171,10 +210,11 @@ export const handsOf = (look: Look, pose: Pose): [P2, P2] => {
   }) as [P2, P2];
 };
 
-/** Draws a whole character (front view): legs, back arms, torso + clothing, props, front arms, head, face. */
+/** Draws a whole character in its view (front unless the look `turns`): legs, back arms, torso + clothing, props,
+ * front arms, head, face. */
 export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   const g = p.g, pose = s.pose, L = layout(look, pose), B = look.build;
-  const { H, W, HH, u, torsoBot, chin, facing, fwd, stoop } = L;
+  const { H, W, HH, u, torsoBot, chin, facing, fwd, stoop, V } = L;
   const ow = 5 * u;
   p.weight = inkWeight(B, look.seed);
   p.seed = look.seed;
@@ -187,11 +227,15 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   // Legs: single thin strokes from the hips, slight bow, A-stance; feet = short outward strokes.
   // Limbs are ink strokes with only a hint of the cloth (refs: navy/near-black limbs that read against any outfit).
   const legCol = mix(look.pants, INK, 0.8), footCol = mix(look.shoes, INK, 0.3);
-  ([-1, 1] as const).forEach((side, i) => {
-    const lift = pose.lift[i];
-    const hx = CX + side * 15 * u, hy = torsoBot - 0.12 * HH;
-    const fx = CX + side * (22 * u - lift * 0.15 + (lift > 2 ? pose.reach ?? 0 : 0) * u), fy = SOLE - 4 * u - lift;
-    const bow = side * (1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u);
+  // Turned views: the stance narrows (profile 30 %), toes and knees point the way the body faces, the far leg is
+  // drawn first; from behind the feet shrink to heels.
+  const spread = 0.3 + 0.7 * Math.abs(V.cs), toeK = V.cs < 0 ? 1 + 0.7 * V.cs : 1;
+  const legOrder: (-1 | 1)[] = V.sn > 0.3 && V.side < 0 ? [1, -1] : [-1, 1];
+  legOrder.forEach((side) => {
+    const i = side < 0 ? 0 : 1, lift = pose.lift[i], dir = side + (V.side - side) * V.sn;
+    const hx = CX + side * 15 * u * spread, hy = torsoBot - 0.12 * HH;
+    const fx = CX + side * (22 * u - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir, fy = SOLE - 4 * u - lift;
+    const bow = dir * (1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u);
     const leg: P2[] = [[hx, hy], [(hx + fx) / 2 + bow, (hy + fy) / 2], [fx, fy]];
     p.stroke(leg, 5.8 * u, look.shorts ? mix(CREAM, INK, 0.5) : legCol);
     // Point at t (0 hip .. 1 ankle) along the two-segment leg.
@@ -206,12 +250,13 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
     if (look.shorts) band(0, 0.24, 12 * u, look.shorts);
     if (look.socks) band(0.68, 0.97, 7.5 * u, look.socks);
     const drop = lift > 2 ? 0.35 : 0; // the toe drops while the foot is off the ground
-    const toe: P2 = [fx + side * 16 * u * Math.cos(drop), fy + 0.5 * u + 16 * u * Math.sin(drop)];
+    const toe: P2 = [fx + dir * toeK * 16 * u * Math.cos(drop), fy + 0.5 * u + 16 * u * Math.sin(drop)];
     if (look.sneakers) {
-      const heel: P2 = [fx - side * 2 * u, fy - 1 * u];
+      const heel: P2 = [fx - dir * 2 * u, fy - 1 * u];
       p.stroke([heel, toe], 12 * u, INK);
       p.stroke([heel, toe], 8.4 * u, look.shoes);
       p.stroke([[heel[0], heel[1] + 3 * u], [toe[0], toe[1] + 3 * u]], 1.6 * u, mix(look.shoes, INK, 0.35));
+      if (look.shoeStripe) p.stroke([[heel[0] + (toe[0] - heel[0]) * 0.2, heel[1] - 0.5 * u], [heel[0] + (toe[0] - heel[0]) * 0.62, toe[1] - 1.5 * u]], 2.6 * u, look.shoeStripe);
     } else p.stroke([[fx, fy], toe], 7.5 * u, footCol);
   });
 
@@ -220,14 +265,13 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   g.translate(CX, torsoBot);
   g.rotate(rad(pose.sway + stoop * 4 * fwd));
   g.translate(-CX, -torsoBot);
-  const T: Blob = { a: ((B.tw / 2) * W) / 1.06, b: 0.5 * (torsoBot - (chin - 0.25 * HH)), nTop: 2.2, nBot: 2.6, egg: 0.12 + (B.egg ?? 0), asym: 0.04 * facing, rot: 0, noise: 0.006, seed: look.seed + 7 };
-  const tcx = CX + 3 * u * facing, tcy = torsoBot - T.b, tp = blobPts(tcx, tcy, T);
-  const sy = chin + 0.12 * HH - (pose.shrug ?? 0);
-  const arms: Solved[] = pose.arms.map((a, i) => {
-    const side = i === 0 ? -1 : 1;
-    const r = solveArm([tcx + side * 0.85 * T.a, sy], side, a, 0.475 * HH);
-    // A hand inside the bean's outline is in front of the body (crossed arms, holding a prop).
-    const front = !!s.prop || Math.abs(r.H[0] - tcx) < T.a * 0.9;
+  const rig = armRig(look, pose, L), back = V.cs < -0.3;
+  const T: Blob = { a: rig.Ta, b: 0.5 * (torsoBot - (chin - 0.25 * HH)), nTop: 2.2, nBot: 2.6, egg: 0.12 + (B.egg ?? 0), asym: 0.04 * facing, rot: 0, noise: 0.006, seed: look.seed + 7 };
+  const tcx = rig.tcx, tcy = torsoBot - T.b, tp = blobPts(tcx, tcy, T);
+  const arms: Solved[] = rig.arms.map((r) => {
+    // A hand inside the bean's outline is in front of the body (crossed arms, holding a prop). Turned: the near arm
+    // is in front, the far arm behind; from behind, every arm is behind the body.
+    const front = back ? false : V.sn > 0.5 ? r.near : !!s.prop || Math.abs(r.H[0] - tcx) < T.a * 0.9;
     return { ...r, front };
   });
   const armCol = mix(look.jacket, INK, 0.82);
@@ -235,16 +279,17 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
     p.stroke([a.S, a.E, a.H], 5.2 * u, armCol);
     hand(p, a, u);
   };
-  arms.filter((a) => !a.front && a.a.layer !== "front").forEach(drawArm);
+  const over = (a: Solved) => a.a.layer === "front" && !back; // from behind, even a face-layer arm is behind him
+  arms.filter((a) => !a.front && !over(a)).forEach(drawArm);
 
   p.poly(tp, look.jacket);
-  const torso: Torso = { pts: tp, cx: tcx, cy: tcy, a: T.a, b: T.b, top: chin - 0.25 * HH, bot: torsoBot, chin, u, HH, facing };
+  const torso: Torso = { pts: tp, cx: tcx, cy: tcy, a: T.a, b: T.b, top: chin - 0.25 * HH, bot: torsoBot, chin, u, HH, facing, yaw: V.yaw };
   if (look.outfit) p.clip(tp, () => look.outfit!(p, torso));
   p.shade(tp, SH_CLOTH, T.a, 0.55, 0.18);
   if (look.rim) p.rimLight(tp, mix(look.jacket, "#ffffff", 0.45), 2 * u);
   p.inkRing(tp, ow);
-  drawProp(p, s.prop, arms, u);
-  arms.filter((a) => a.front && a.a.layer !== "front").forEach(drawArm);
+  if (!back) drawProp(p, s.prop, arms, u); // from behind, the body hides what the hands hold
+  arms.filter((a) => a.front && !over(a)).forEach(drawArm);
 
   // Head: tilts around the chin with its own random rot; hair, face and hats are drawn in the rotated frame.
   const k = 1 + (pose.lean ?? 0) * 0.07;
@@ -254,18 +299,24 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   g.scale(k, k);
   g.translate(-L.hx, -chin);
   const hp = blobPts(L.hx, L.hc, { ...H, rot: 0 });
-  const head: Head = { cx: L.hx, cy: L.hc, a: H.a, b: H.b, W, u, pts: hp, facing, look: pose.look };
+  const head: Head = { cx: L.hx, cy: L.hc, a: H.a, b: H.b, W, u, pts: hp, facing, look: pose.look, yaw: V.yaw };
   look.hairBack?.(p, head);
   p.poly(hp, CREAM);
   drawFill(p, head, s.fx);
   p.shade(hp, SH_PALE, H.a);
   p.inkRing(hp, ow);
   look.hair?.(p, head);
+  // Turned heads show an ear (over the hair, which tucks behind it): behind the face at 3/4, mid-head in profile, toward the front from 3/4 behind.
+  if (V.sn > 0.35 && Math.abs(V.yaw) < 165) {
+    const ex = L.hx - V.side * H.a * (0.1 + (V.cs >= 0 ? 0.73 : 1.02) * V.cs), ey = L.hc + 4 * u;
+    p.ell(ex, ey, 7 * u, 10 * u, CREAM, 2.6 * u);
+    p.arc(ex + V.side * 1.5 * u, ey, 3.2 * u, 5 * u, V.side > 0 ? 120 : -60, V.side > 0 ? 240 : 60, 1.8 * u);
+  }
   drawFace(p, head, s.expr, { blink: s.blink, fx: s.fx, brim: look.brim });
   look.face?.(p, head);
   g.restore();
 
-  arms.filter((a) => a.a.layer === "front").forEach(drawArm);
+  arms.filter(over).forEach(drawArm);
   g.restore();
   g.restore();
 };
