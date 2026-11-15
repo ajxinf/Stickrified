@@ -1,15 +1,24 @@
-# R14 quality upgrade: status (2026-11-15, after pass 3)
+# R14 quality upgrade: status (2026-11-15, pass 4)
 Standard: docs/style/QUALITY_STANDARD.md. Gate: video-review module 5 (Opus), every category >= 8, no auto-fail.
-Latest module-5 review (on pass 2): FAIL, scores 4-6 (videos/zombie-supermarket-30-days/QUALITY_R14.md).
-Pass 3 render (03:37): still 6.3 % (pass), median motion .0152 (target .016), luma .394 (target .40), colourfulness .243 (.25).
-Fixed in pass 3: Chad vanishing at f164, f706 whip flash, f1527 light jump, blank dust wipe, smoke outline in the sky.
-Open, in the reviewer's order (est. 6-9 h):
-1. B25/B27 stair-stepped orange band + mosaic patches; SALE sign halo (f0) -> find the low-res source in kit/toon (AO/light patch).
-2. Draw the actions the narration and SFX mark: knock contact (B06), tape strip (B15), battery slide+click (B21/22),
-   a kick that connects (B26), generator jolt + ink smoke ring (B23), toys screaming with ink rings (B28), the crash (B30b).
-3. Crowd: ragged formation and run cycles for the nearest 20-30 (B12 grid, B30 block slide).
-4. Continuity: one Chad shop design (B18 window vs B05/B17), one generator model (B19 vs B23), the can in B18.
-5. House-style effects: x-ray insert -> painted cutaway dive; rainbow trail, cart core, megaphone rings with ink edges.
-6. Practicals act on the scene: lantern tints your face, the dying floodlight darkens the roof, warm shop light behind the shutter.
-7. Expression ladders on B06, B21, B31, B32; one ~7 s continuous ride (merge B27+B28); loudest SFX 7.2 -> 10 dB under voice.
-Then: render (out/r14_render.ps1, detached), rerun module 5, iterate until all >= 8.
+Last module-5 review (on pass 2): FAIL, scores 4-6 (videos/zombie-supermarket-30-days/QUALITY_R14.md).
+
+Done in pass 4 (commits 7f01915..0f65a75):
+1. B25/B27 stair-stepped band: shadow frustum fitted per shot (Video.tsx shadowFor). Blue mosaic + SALE halo were the
+   painted-AO spiral ghosting (kit/toon/ink.ts): now rotated per pixel, 32 taps.
+2. Actions drawn on their SFX: B06 knock (lens along the shopfront, raps on knock_steel, ink rings), B15 tape roll +
+   strip per tape_rip, B21/B22 battery out -> hatch -> click (gently + 8), B23 smooth jolt + smoke ring at the lens,
+   B26 kick meets the cart (Pose.reach), B28 ink rings from the cart on "scream", B30b cart hits the counter on
+   cart_crash (clear lens->cart lane `cartClear`, lens over heads, toy burst).
+4. B18 window view uses the real slate facade; B19 sees the same generator panel as B23.
+5. (part) megaphone/sound rings are solid inked tubes.
+6. (part) B24: each flood going out dims the frame (Look.dim).
+7. Ladders on B31/B32; mix: SFX ceiling 10 dB under voice, music rides under any word < 12 dB clear (lowest now 12.0).
+
+Still open:
+3. Crowd: ragged formation + run cycles for the nearest 20-30 (B12 grid, B30 block slide).
+5. x-ray insert -> painted cutaway dive; rainbow trail + cart core are still additive un-inked glows.
+6. Lantern tints your face (B09/B10); warm light inside Chad's shop for the B25 reveal (a glowSprite on the pale wall
+   did not read: needs a real warm light/grade on the recess).
+7. One ~7 s continuous ride (merge B27+B28); ladders on B06, B21.
+Floodlight "off" lens still reads as an offset brown plate (B24).
+Then: render (out/r14_render.ps1, detached via Start-Process), rerun module 5, iterate until all >= 8.
