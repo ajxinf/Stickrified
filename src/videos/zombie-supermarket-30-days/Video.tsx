@@ -111,47 +111,47 @@ const Dissolve: React.FC<{ children: React.ReactNode; len: number }> = ({ childr
   return <AbsoluteFill style={{ opacity }}>{children}</AbsoluteFill>;
 };
 
-/** Insert art (100 x 178 units): a toy duck x-ray; the motion switch's ball rattles and lights the speaker. */
 /**
- * Insert art (100 x 178 units): x-ray of a rubber duck (critique: a thin outline read as a different show). Glowing
- * filled body with its bones of plastic: the battery pack, a circuit board with chips, the motion switch whose ball
- * rattles, wires to a speaker cone that pulses and throws sound waves. Labels name the parts.
+ * Insert art (100 x 178 units): a cutaway of the rubber duck in the channel's own look (REVIEW_R5 #5: the neon x-ray
+ * read as another show): a yellow toy in the characters' thin ink, a torn-open belly showing the battery pack, the
+ * circuit board, the motion switch whose ball rattles, and the speaker that pulses and throws sound waves. Labels
+ * name the parts.
  */
 const ToyXRay: React.FC = () => {
   const f = useCurrentFrame();
   const shake = Math.sin(f * 1.7) * 3.2, on = Math.abs(Math.sin(f * 1.7)) > 0.6;
-  const line = { stroke: "#cfefff", strokeWidth: 1.4, fill: "none", strokeLinejoin: "round" as const };
-  const label = { fontSize: 3.6, fill: "#9fe4ff", fontWeight: 900, letterSpacing: 0.3, fontFamily: CAPTION_FONT };
+  const INKC = "#2a1a14", ink = { stroke: INKC, strokeWidth: 1.1, strokeLinejoin: "round" as const, strokeLinecap: "round" as const };
+  const label = { fontSize: 3.6, fill: INKC, fontWeight: 900, letterSpacing: 0.3, fontFamily: CAPTION_FONT };
+  const hole = "M28 96 L 34 92 L 40 95 L 47 90 L 54 94 L 61 89 L 68 93 L 74 98 L 76 106 L 73 113 L 76 120 L 70 126 L 62 124 L 55 129 L 47 125 L 40 129 L 33 124 L 27 118 L 30 111 L 25 104 Z";
   return (
     <g transform={`translate(${shake * 0.5} -34)`}>
-      <defs>
-        <radialGradient id="duckBody" cx="45%" cy="40%" r="65%">
-          <stop offset="0%" stopColor="#7fd4ff" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#1a5a9a" stopOpacity="0.15" />
-        </radialGradient>
-      </defs>
-      <path d="M22 112 C 20 92, 40 86, 56 92 C 60 84, 52 66, 62 62 C 76 58, 80 72, 74 80 L 88 82 L 76 88 C 82 96, 84 116, 70 126 C 56 136, 28 132, 22 112 Z" {...line} fill="url(#duckBody)" strokeWidth={1.8} />
-      <circle cx={67} cy={70} r={2.4} fill="#cfefff" />
-      <path d="M30 108 q8 -10 18 -2" {...line} strokeDasharray="1.5 1.5" />
-      <rect x={30} y={110} width={22} height={10} rx={2} {...line} fill="#7fd4ff22" />
-      <rect x={30} y={110} width={10} height={10} rx={1.5} {...line} />
-      <text x={41} y={117.5} fontSize={4.6} fill="#e8f8ff" textAnchor="middle" fontWeight={900} fontFamily={CAPTION_FONT}>AA</text>
-      <rect x={52} y={98} width={18} height={10} rx={1} {...line} fill="#2a8a5a44" />
-      {[0, 1, 2].map((k) => <rect key={k} x={54 + k * 5.4} y={100} width={3.6} height={3} fill="#cfefff" />)}
-      <path d="M53 106 h16 M55 104 v2 M61 104 v2 M67 104 v2" stroke="#9fe4ff" strokeWidth={0.6} />
-      <rect x={44} y={92} width={14} height={5} rx={2.5} {...line} />
-      <circle cx={51 + shake * 0.7} cy={94.5} r={2} fill="#ffd36a" />
-      <path d="M52 110 C 54 116, 62 120, 66 122" stroke="#ff8a5a" strokeWidth={1} fill="none" />
-      <path d="M58 108 C 62 114, 68 116, 70 118" stroke="#ffd36a" strokeWidth={1} fill="none" />
-      <circle cx={70} cy={122} r={6.5} {...line} fill={on ? "#ff8a5a66" : "#7fd4ff18"} />
-      <circle cx={70} cy={122} r={3 + (on ? 0.8 : 0)} {...line} />
-      {on && [0, 1, 2].map((k) => <path key={k} d={`M${80 + k * 5} ${113 - k * 2} q5 9 0 18`} stroke="#ffd36a" strokeWidth={1.4} fill="none" />)}
-      <path d="M40 130 l-3 8 h8 M58 132 l-2 8 h8" {...line} />
-      <text x={22} y={146} {...label}>BATTERY</text>
-      <text x={8} y={84} {...label}>MOTION SWITCH</text>
-      <text x={70} y={146} {...label}>SPEAKER</text>
-      <path d="M30 143 L 36 121 M30 86 L 45 93 M76 141 L 72 129" stroke="#9fe4ff" strokeWidth={0.5} />
-      <text x={50} y={194} fontSize={6.5} fill="#cfefff" textAnchor="middle" fontWeight={900} fontFamily={CAPTION_FONT}>SHAKE = SOUND</text>
+      <path d="M40 130 l-3 8 h9 M58 132 l-2 8 h9" {...ink} stroke="#e8742a" strokeWidth={2.4} fill="none" />
+      <path d="M40 130 l-3 8 h9 M58 132 l-2 8 h9" {...ink} strokeWidth={0.8} fill="none" />
+      <path d="M22 112 C 20 92, 40 86, 56 92 C 60 84, 52 66, 62 62 C 76 58, 80 72, 74 80 L 88 82 L 76 88 C 82 96, 84 116, 70 126 C 56 136, 28 132, 22 112 Z" fill="#ffd23a" {...ink} strokeWidth={1.4} />
+      <path d="M62 66 C 70 63, 75 69, 72 74" stroke="#fff3b0" strokeWidth={1.6} fill="none" strokeLinecap="round" />
+      <path d="M74 80 L 88 82 L 76 88 Z" fill="#ff8a3a" {...ink} />
+      <circle cx={67} cy={71} r={2.2} fill={INKC} />
+      <path d={hole} fill="#f4e6c4" {...ink} strokeDasharray="0" />
+      <path d="M28 96 L 34 92 L 40 95 L 47 90 L 54 94 L 61 89 L 68 93 L 74 98 L 76 106 L 60 100 L 40 101 Z" fill="#d8b46a" opacity={0.55} />
+      <path d={hole} fill="none" {...ink} strokeWidth={1.3} />
+      <rect x={30} y={110} width={22} height={10} rx={2} fill="#3a8a5a" {...ink} />
+      <rect x={30} y={110} width={4} height={10} rx={1} fill="#c9ced4" {...ink} />
+      <text x={43} y={117.6} fontSize={4.6} fill="#f4f0e6" textAnchor="middle" fontWeight={900} fontFamily={CAPTION_FONT}>AA</text>
+      <rect x={52} y={98} width={18} height={10} rx={1} fill="#2f7a4a" {...ink} />
+      {[0, 1, 2].map((k) => <rect key={k} x={54 + k * 5.4} y={100} width={3.6} height={3} fill={INKC} />)}
+      <path d="M53 106 h16" stroke="#e8c45a" strokeWidth={0.6} />
+      <rect x={42} y={92} width={16} height={5.4} rx={2.7} fill="#fdfaf4" {...ink} />
+      <circle cx={50 + shake * 0.8} cy={94.7} r={2} fill="#c23a2a" {...ink} strokeWidth={0.6} />
+      <path d="M52 110 C 54 116, 62 120, 66 122" stroke="#c23a2a" strokeWidth={1.1} fill="none" />
+      <path d="M58 108 C 62 114, 68 116, 70 118" stroke="#3e6aa8" strokeWidth={1.1} fill="none" />
+      <circle cx={70} cy={120} r={6.5} fill={on ? "#ffb35a" : "#9aa0a8"} {...ink} />
+      <circle cx={70} cy={120} r={3 + (on ? 0.8 : 0)} fill="#5a6070" {...ink} />
+      {on && [0, 1, 2].map((k) => <path key={k} d={`M${81 + k * 5} ${111 - k * 2} q5 9 0 18`} stroke="#e8742a" strokeWidth={1.6} fill="none" strokeLinecap="round" />)}
+      <text x={18} y={150} {...label}>BATTERY</text>
+      <text x={6} y={84} {...label}>MOTION SWITCH</text>
+      <text x={70} y={150} {...label}>SPEAKER</text>
+      <path d="M28 146 L 36 121 M30 86 L 44 93 M76 145 L 72 128" stroke={INKC} strokeWidth={0.6} />
+      <text x={50} y={194} fontSize={7} fill="#c8582c" stroke={INKC} strokeWidth={0.35} textAnchor="middle" fontWeight={900} fontFamily={CAPTION_FONT}>SHAKE = SOUND</text>
     </g>
   );
 };
@@ -165,7 +165,7 @@ export const ZombieSupermarket: React.FC = () => (
       </Sequence>
     ))}
     <Sequence from={INSERT.from} durationInFrames={INSERT.to - INSERT.from}>
-      <Insert kind="xray" title="X-RAY" readout="SHAKEN: LOUD"><ToyXRay /></Insert>
+      <Insert kind="cutaway" title="INSIDE" readout="SHAKEN: LOUD"><ToyXRay /></Insert>
     </Sequence>
     {/* R13: the crash's dust cloud fills the frame and clears onto Chad on his roof (in-world transition) */}
     <Sequence from={BEAT.chadRoof - 10} durationInFrames={28}>

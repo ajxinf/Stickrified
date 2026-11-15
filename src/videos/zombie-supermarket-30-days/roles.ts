@@ -242,7 +242,11 @@ const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
 const SURGE = { from: BEAT.heads - 6, at: BEAT.bang - 4, back: BEAT.give + 8, home: BEAT.give + 70 };
 // Review r2/r3 H5: modular spots made rigid grid rows; scatter by golden-ratio hashes instead.
 const frac = (x: number) => x - Math.floor(x);
-const shutterSpot = (i: number) => at(CHAD.s - 3 + 6 * frac(i * 0.618034 + 0.13), FRONT - 0.5 - 4 * frac(i * 0.754877 + 0.41), 0);
+// REVIEW_R5 #6 (a rigid rectangle at the shutters): a ragged fan packed toward the shutter, thinning out into the street.
+const shutterSpot = (i: number) => {
+  const a = (frac(i * 0.618034 + 0.13) - 0.5) * Math.PI * 0.95, r = frac(i * 0.754877 + 0.41) ** 0.75 * (1 + 0.45 * (frac(i * 0.381966 + 0.7) - 0.5));
+  return at(CHAD.s + 3.6 * r * Math.sin(a), FRONT - 0.5 - 4.6 * r * Math.cos(a), 0);
+};
 
 /** The cart's path from the kick to inside Chad's shop (also used by props.ts). */
 // R14: the cart hits Chad's counter ON the cart_crash SFX (door2 - 2), at full speed (it used to ease to a stop 10 f early).

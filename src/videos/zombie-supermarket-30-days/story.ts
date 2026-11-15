@@ -172,7 +172,8 @@ const youWindow: Role = {
   name: "you", look: youLook, at: still(YOU_WIN),
   state: (F) => {
     const e = exprAt([[0, "tired"], [BEAT.point, "smirk"]], F);
-    return st(withSquash(posed(F >= BEAT.point - LEAD ? "point" : "hold", F / FPS, 0.6), e.squash), e.expr, F, 3, { prop: F < BEAT.point - LEAD ? "can" : undefined });
+    // REVIEW_R5 #3: the can vanished on the point (f1278); it stays in the hanging hand (drawProp: the lower hand).
+    return st(withSquash(posed(F >= BEAT.point - LEAD ? "point" : "hold", F / FPS, 0.6), e.squash), e.expr, F, 3, { prop: "can" });
   },
 };
 const YOU_CART = CART_IN.clone().add(new Vector3(0.95, 0, -0.65));
@@ -340,7 +341,8 @@ const shots: S[] = [
     const F0 = BEAT.hardware - 2, m = BEAT.megaphone - F0;
     const mcu = { pos: at(CHAD.s - 3.0, FRONT - 9.0, 3.4), look: ROOF_HEAD.clone().add(new Vector3(0, -0.4, 0)), fov: 13 };
     // R14: a three-quarter storefront (it receded nowhere flat-on), the roofline leading to Chad.
-    const front = creep({ pos: at(CHAD.s - 4.8, FRONT - 6.8, 1.7), look: at(CHAD.s + 0.6, FRONT, 3.4), fov: 60 }, 90, 0.1);
+    // REVIEW_R5 #2 (Chad a speck): closer and higher, the sign mid-frame and Chad in the top third.
+    const front = creep({ pos: at(CHAD.s - 3.6, FRONT - 6.2, 3.2), look: at(CHAD.s + 0.2, FRONT, 4.4), fov: 56 }, 90, 0.1);
     return { pose: reframe(front, mcu, m - 16, m + 2), whips: [[m - 16, m + 2]] as [number, number][], cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
   })()),
   // Line 4. Day 1: you knock on his shutter.
@@ -370,7 +372,8 @@ const shots: S[] = [
   // "...until it looks like a hedgehog": orbit the finished hedgehog.
   sh("B16-hedgehog", W_.cart - 2, BEAT.park - 4, "int-day", { pose: shot({ pos: CART_IN.clone().add(new Vector3(-1.2, 1.6, 2.6)), look: CART_IN.clone().add(new Vector3(0.6, 0.95, -0.4)), fov: 46 }, [arc(30, 0.8), pushIn(0.5)], 70), cast: inShot(W_.cart - 2, [youTape]), subject: "you", dof: DOF.medium(2.6) }),
   // Line 10. On the ramp, DO NOT PUSH on the handle, lined up on Chad's door.
-  sh("B17-ramp", BEAT.park - 4, W_.daveAsks - 2, "ext-day", { pose: shot({ pos: RAMP_TOP.clone().add(new Vector3(-2.5, 1.95, 0.7)), look: at(CHAD.s, FRONT, 0.8), fov: 48 }, [pushIn(1.2)], 110), crowd: true, dof: POST.dof }),
+  // REVIEW_R5 #2 (cart cropped at the edge): aim between the cart and Chad's door so both read.
+  sh("B17-ramp", BEAT.park - 4, W_.daveAsks - 2, "ext-day", { pose: shot({ pos: RAMP_TOP.clone().add(new Vector3(-2.5, 1.95, 0.7)), look: RAMP_TOP.clone().setY(DOCK.floor + 0.6).lerp(at(CHAD.s, FRONT, 0.8), 0.3), fov: 52 }, [pushIn(1.2)], 110), crowd: true, dof: POST.dof }),
   // Line 11. You point (the window shows Chad's generator across the street).
   sh("B18-point", W_.daveAsks - 2, BEAT.generator1 - 6, "int-day", {
     pose: reframe(creep({ pos: IN(1.2, 3.8, 1.3), look: YOU_WIN.clone().lerp(DAVE_WIN, 0.33).setY(1.3), fov: 50 }, 80) /* both of you on "Dave asks" (review r3) */, fo(YOU_WIN, IN(1.6, 4.2), "mcu", youLook), BEAT.point - (W_.daveAsks - 2) - 22, BEAT.point - (W_.daveAsks - 2) + 6),
@@ -392,7 +395,8 @@ const shots: S[] = [
   sh("B21-dino", BEAT.day29 - 8, BEAT.very - 4, "int-night", { pose: creep(fo(YOU_DINO, YOU_DINO.clone().add(new Vector3(-3, 0, 0.7)), "mcu", youLook, { side: -0.15 }), 90, 0.18), cast: inShot(BEAT.day29 - 8, [youDino, daveTorch]), subject: "you", dof: DOF.medium(1.8), motes: motes(YOU_DINO, "#c8c0ff") }),
   // "Very, very gently": macro on your hands, the battery sliding into the hatch.
   sh("B22-gently", BEAT.very - 4, W_.onDay30 - 6, "int-night", {
-    pose: whipOut(creep(fo(YOU_DINO, YOU_DINO.clone().add(new Vector3(-2.4, 0, 0.6)), "mcu", youLook), 60, 0.2), W_.onDay30 - 6 - (BEAT.very - 4)),
+    // REVIEW_R5 #7 (jump cut from B21's near-identical MCU): a high angle down over you, the hands and the dino's hatch.
+    pose: whipOut(creep({ pos: YOU_DINO.clone().add(new Vector3(-1.7, 2.45, 0.6)), look: YOU_DINO.clone().add(new Vector3(0.05, 1.1, 0)), fov: 50 }, 60, 0.2), W_.onDay30 - 6 - (BEAT.very - 4)),
     whips: [[W_.onDay30 - 6 - (BEAT.very - 4) - WHIP, W_.onDay30 - 6 - (BEAT.very - 4)]],
     cast: inShot(BEAT.very - 4, [youDino]), subject: "you", dof: DOF.closeup(1.2), motes: motes(YOU_DINO, "#c8c0ff"), // R14 QA f1527: same air as B21
   }),
@@ -427,7 +431,8 @@ const shots: S[] = [
   sh("B28-trail", BEAT.bump - 4, W_.youSee, "ext-dawn", { pose: (f) => { const c = cartAt(f + BEAT.bump - 4); return { pos: c.clone().add(new Vector3(-0.7, 1.2, 3.3)), look: c.clone().add(new Vector3(0.4, 0.75, 0)), fov: 42, roll: 0 }; /* R15 C2: the cart was < 1/6 of the frame */ }, crowd: true, dof: POST.dof }),
   // (INSERT: the x-ray of a toy, 2D in Video.tsx, W_.youSee .. BEAT.now - 6)
   // Line 18. "...now that cart is the loudest thing in town": 400 heads swing toward it.
-  sh("B29-heads", BEAT.now - 6, BEAT.and400 + 2, "ext-dawn", { pose: (f) => ({ pos: at(38.5, 1.2, 2.3), look: cartAt(f + BEAT.now - 6).add(new Vector3(0, 0.9, 0)), fov: 36, roll: 0 }), /* R15 C2: longer lens on the cart (30 magnified its jitter: QA SHAKE) */ crowd: true, dof: POST.dof }),
+  // REVIEW_R5 #2: fov 36 -> 27 crops the parked car's roof (a dead grey slab across the lower third).
+  sh("B29-heads", BEAT.now - 6, BEAT.and400 + 2, "ext-dawn", { pose: (f) => ({ pos: at(38.5, 1.2, 2.3), look: cartAt(f + BEAT.now - 6).add(new Vector3(0, 0.9, 0)), fov: 27, roll: 0 }), /* R15 C2: longer lens on the cart (30 magnified its jitter: QA SHAKE) */ crowd: true, dof: POST.dof }),
   // Line 19. The stampede: the whole street pours toward Chad's open door.
   sh("B30-stampede", BEAT.and400 - 4, BEAT.ball, "ext-dawn", { pose: shot({ pos: at(20, -1.5, 1.6), look: at(32, 4.5, 1.6), fov: 50 }, [pullOut(3), arc(-6, 0.8)], 90), crowd: true, wide: true, dof: POST.dof }),
   // "...straight through Chad's open door": ride behind the cart (crowd parted by the lens lane) as it barrels through the
