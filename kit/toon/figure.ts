@@ -44,6 +44,8 @@ export type Look = {
   /** Turnaround (2026-11-15): the look draws every view from `pose.yaw` (front, 3/4, profile, back). Its outfit, hair
    * and hairBack read `torso.yaw` / `head.yaw`. Looks without it always draw the front view. */
   turns?: boolean;
+  /** Head colour; default CREAM. Zombies are green. */
+  skin?: string;
 };
 
 export type PropName = "phone" | "flashlight" | "box" | "can" | "mug" | "lantern" | "tape";
@@ -135,13 +137,13 @@ const armRig = (look: Look, pose: Pose, L: ReturnType<typeof layout>) => {
   return { Ta, tcx, sy, arms };
 };
 
-/** Ink-dot hand; pointing adds one finger stroke along the forearm. */
+/** Ink-dot hand (refs: a small dot a little wider than the arm); pointing adds one finger stroke along the forearm. */
 const hand = (p: Pen, s: Solved, u: number) => {
   const grip = s.a.grip ?? "mitt";
-  p.dot(s.H[0], s.H[1], (grip === "open" ? 6.5 : 5.5) * u);
+  p.dot(s.H[0], s.H[1], (grip === "open" ? 4.4 : 3.8) * u);
   if (grip === "point") {
     const l = Math.hypot(s.H[0] - s.E[0], s.H[1] - s.E[1]) || 1;
-    p.stroke([s.H, [s.H[0] + ((s.H[0] - s.E[0]) / l) * 10 * u, s.H[1] + ((s.H[1] - s.E[1]) / l) * 10 * u]], 3 * u);
+    p.stroke([s.H, [s.H[0] + ((s.H[0] - s.E[0]) / l) * 8 * u, s.H[1] + ((s.H[1] - s.E[1]) / l) * 8 * u]], 2.4 * u);
   }
 };
 
@@ -224,40 +226,38 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   g.scale(1 + sq, 1 - sq);
   g.translate(-CX, -SOLE);
 
-  // Legs: single thin strokes from the hips, slight bow, A-stance; feet = short outward strokes.
-  // Limbs are ink strokes with only a hint of the cloth (refs: navy/near-black limbs that read against any outfit).
-  const legCol = mix(look.pants, INK, 0.8), footCol = mix(look.shoes, INK, 0.3);
+  // Legs: thin ink lines from the hips, slight bow, A-stance; feet = small dark rounded shoes pointing outward
+  // (cast redesign 2026-11-15 from the reference videos: limbs ~3 % of the head width, the outline's colour).
+  const skin = look.skin ?? CREAM, LIMB = 3.2 * u;
   // Turned views: the stance narrows (profile 30 %), toes and knees point the way the body faces, the far leg is
   // drawn first; from behind the feet shrink to heels.
   const spread = 0.3 + 0.7 * Math.abs(V.cs), toeK = V.cs < 0 ? 1 + 0.7 * V.cs : 1;
   const legOrder: (-1 | 1)[] = V.sn > 0.3 && V.side < 0 ? [1, -1] : [-1, 1];
   legOrder.forEach((side) => {
     const i = side < 0 ? 0 : 1, lift = pose.lift[i], dir = side + (V.side - side) * V.sn;
-    const hx = CX + side * 15 * u * spread, hy = torsoBot - 0.12 * HH;
-    const fx = CX + side * (22 * u - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir, fy = SOLE - 4 * u - lift;
+    const hx = CX + side * 11 * u * spread, hy = torsoBot - 0.12 * HH;
+    const fx = CX + side * (17 * u - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir, fy = SOLE - 3 * u - lift;
     const bow = dir * (1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u);
     const leg: P2[] = [[hx, hy], [(hx + fx) / 2 + bow, (hy + fy) / 2], [fx, fy]];
-    p.stroke(leg, 5.8 * u, look.shorts ? mix(CREAM, INK, 0.5) : legCol);
+    p.stroke(leg, LIMB, INK);
     // Point at t (0 hip .. 1 ankle) along the two-segment leg.
     const along = (t: number): P2 => {
       const [a, b] = t < 0.5 ? [leg[0], leg[1]] : [leg[1], leg[2]], k = t < 0.5 ? t * 2 : t * 2 - 1;
       return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
     };
     const band = (t0: number, t1: number, w: number, col: string) => {
-      p.stroke([along(t0), along((t0 + t1) / 2), along(t1)], w + 3 * u, INK);
+      p.stroke([along(t0), along((t0 + t1) / 2), along(t1)], w + 2.4 * u, INK);
       p.stroke([along(t0), along((t0 + t1) / 2), along(t1)], w, col);
     };
-    if (look.shorts) band(0, 0.24, 12 * u, look.shorts);
-    if (look.socks) band(0.68, 0.97, 7.5 * u, look.socks);
+    if (look.shorts) band(0, 0.26, 10 * u, look.shorts);
+    if (look.socks) band(0.7, 0.97, 5.5 * u, look.socks);
     const drop = lift > 2 ? 0.35 : 0; // the toe drops while the foot is off the ground
-    const toe: P2 = [fx + dir * toeK * 16 * u * Math.cos(drop), fy + 0.5 * u + 16 * u * Math.sin(drop)];
+    const heel: P2 = [fx - dir * 1.5 * u, fy], toe: P2 = [fx + dir * toeK * 9 * u * Math.cos(drop), fy + 9 * u * Math.sin(drop)];
     if (look.sneakers) {
-      const heel: P2 = [fx - dir * 2 * u, fy - 1 * u];
-      p.stroke([heel, toe], 12 * u, INK);
-      p.stroke([heel, toe], 8.4 * u, look.shoes);
-      p.stroke([[heel[0], heel[1] + 3 * u], [toe[0], toe[1] + 3 * u]], 1.6 * u, mix(look.shoes, INK, 0.35));
-      if (look.shoeStripe) p.stroke([[heel[0] + (toe[0] - heel[0]) * 0.2, heel[1] - 0.5 * u], [heel[0] + (toe[0] - heel[0]) * 0.62, toe[1] - 1.5 * u]], 2.6 * u, look.shoeStripe);
-    } else p.stroke([[fx, fy], toe], 7.5 * u, footCol);
+      p.stroke([heel, toe], 7.4 * u, INK);
+      p.stroke([heel, toe], 4.4 * u, look.shoes);
+      if (look.shoeStripe) p.stroke([[heel[0] + (toe[0] - heel[0]) * 0.25, heel[1] - 0.6 * u], [heel[0] + (toe[0] - heel[0]) * 0.65, toe[1] - 0.6 * u]], 1.6 * u, look.shoeStripe);
+    } else p.stroke([heel, toe], 6 * u, mix(look.shoes, INK, 0.55));
   });
 
   // Upper body pivots around the hips.
@@ -266,7 +266,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   g.rotate(rad(pose.sway + stoop * 4 * fwd));
   g.translate(-CX, -torsoBot);
   const rig = armRig(look, pose, L), back = V.cs < -0.3;
-  const T: Blob = { a: rig.Ta, b: 0.5 * (torsoBot - (chin - 0.25 * HH)), nTop: 2.2, nBot: 2.6, egg: 0.12 + (B.egg ?? 0), asym: 0.04 * facing, rot: 0, noise: 0.006, seed: look.seed + 7 };
+  const T: Blob = { a: rig.Ta, b: 0.5 * (torsoBot - (chin - 0.25 * HH)), nTop: 2.3, nBot: 2.4, egg: 0.04 + (B.egg ?? 0) * 0.6, asym: 0.04 * facing, rot: 0, noise: 0.006, seed: look.seed + 7 };
   const tcx = rig.tcx, tcy = torsoBot - T.b, tp = blobPts(tcx, tcy, T);
   const arms: Solved[] = rig.arms.map((r) => {
     // A hand inside the bean's outline is in front of the body (crossed arms, holding a prop). Turned: the near arm
@@ -274,9 +274,8 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
     const front = back ? false : V.sn > 0.5 ? r.near : !!s.prop || Math.abs(r.H[0] - tcx) < T.a * 0.9;
     return { ...r, front };
   });
-  const armCol = mix(look.jacket, INK, 0.82);
   const drawArm = (a: Solved) => {
-    p.stroke([a.S, a.E, a.H], 5.2 * u, armCol);
+    p.stroke([a.S, a.E, a.H], LIMB * 0.95, INK);
     hand(p, a, u);
   };
   const over = (a: Solved) => a.a.layer === "front" && !back; // from behind, even a face-layer arm is behind him
@@ -301,7 +300,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   const hp = blobPts(L.hx, L.hc, { ...H, rot: 0 });
   const head: Head = { cx: L.hx, cy: L.hc, a: H.a, b: H.b, W, u, pts: hp, facing, look: pose.look, yaw: V.yaw };
   look.hairBack?.(p, head);
-  p.poly(hp, CREAM);
+  p.poly(hp, skin);
   drawFill(p, head, s.fx);
   p.shade(hp, SH_PALE, H.a);
   p.inkRing(hp, ow);
@@ -309,7 +308,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   // Turned heads show an ear (over the hair, which tucks behind it): behind the face at 3/4, mid-head in profile, toward the front from 3/4 behind.
   if (V.sn > 0.35 && Math.abs(V.yaw) < 165) {
     const ex = L.hx - V.side * H.a * (0.1 + (V.cs >= 0 ? 0.73 : 1.02) * V.cs), ey = L.hc + 4 * u;
-    p.ell(ex, ey, 7 * u, 10 * u, CREAM, 2.6 * u);
+    p.ell(ex, ey, 7 * u, 10 * u, skin, 2.6 * u);
     p.arc(ex + V.side * 1.5 * u, ey, 3.2 * u, 5 * u, V.side > 0 ? 120 : -60, V.side > 0 ? 240 : 60, 1.8 * u);
   }
   drawFace(p, head, s.expr, { blink: s.blink, fx: s.fx, brim: look.brim });

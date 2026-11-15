@@ -13,7 +13,7 @@ export const DESIGN = { W: 600, H: 1000, SOLE: 975, PX_PER_M: 500, RES: 2 };
 /** Character ink: warm brown-black, one family with the world ink #1c1210 (identity, LOOK_SPEC section 2). */
 export const INK = "#2a1a14";
 /** Cast heads: pale cream (identity). */
-export const CREAM = "#f4ece0";
+export const CREAM = "#f7f4f0";
 export const WHITE = "#fdfaf4";
 export const MOUTH = "#5a1e28";
 export const TONGUE = "#e86e78";
@@ -68,20 +68,21 @@ export const blobPts = (cx: number, cy: number, B: Blob, n = 96): P2[] => {
 };
 
 /**
- * Measured head: H/W 0.94, slightly pointed crown (1.75), fuller jaw (2.3), chin taper -0.12, 6-10 % bulge toward
- * the facing side. `facing` is continuous (-1..1, the pose's head turn) so the bulge slides instead of popping.
+ * Head: an imperfect hand-drawn circle, different per character (cast redesign 2026-11-15, refs: round heads with
+ * lumps, not a dome with a flat jaw): H/W 0.92-1.02, near-circle crown and jaw, seeded lumps (noise), 6-10 % bulge
+ * toward the facing side. `facing` is continuous (-1..1, the pose's head turn) so the bulge slides instead of popping.
  */
 export const headBlob = (seed: number, a: number, facing = 0): Blob => {
   const side = rnd(seed, 6) < 0.5 ? -1 : 1, f = clamp(facing * 2, -1, 1);
   return {
     a,
-    b: a * (0.94 + 0.08 * (rnd(seed, 1) - 0.5)),
-    nTop: 1.75 + 0.3 * (rnd(seed, 2) - 0.5),
-    nBot: 2.3 + 0.3 * (rnd(seed, 3) - 0.5),
-    egg: -0.12 + 0.06 * (rnd(seed, 4) - 0.5),
+    b: a * (0.97 + 0.1 * (rnd(seed, 1) - 0.5)),
+    nTop: 2.05 + 0.4 * (rnd(seed, 2) - 0.5),
+    nBot: 2.1 + 0.4 * (rnd(seed, 3) - 0.5),
+    egg: -0.04 + 0.1 * (rnd(seed, 4) - 0.5),
     asym: (0.06 + 0.04 * rnd(seed, 5)) * (side * (1 - Math.abs(f)) + f),
     rot: rad(8 * (rnd(seed, 7) - 0.5)),
-    noise: 0.008,
+    noise: 0.012 + 0.012 * rnd(seed, 8),
     seed,
   };
 };
@@ -92,9 +93,14 @@ export const thickAngle = (light: number) => Math.atan2(-Math.sin(light) + 0.8, 
  * Outline thickness profile: w0 (1 + K cos(theta - thick)), thick/thin = (1 + K) / (1 - K) = 3.4 (ref2 / ref11
  * measured 3-4: ~2 % W on the lit side, ~7.5 % W away from the light).
  */
-export const INK_K = 0.55;
+export const INK_K = 0.15;
+/**
+ * Outline scale on every ink ring (cast redesign 2026-11-15, measured on the reference videos: an even line ~2 % of
+ * the head width; the old 2-7.5 % thick-thin brush read heavy and crude).
+ */
+export const LINE = 0.42;
 /** Hand-drawn pressure wobble of the outline width (+-, seeded per character, so no two outlines are the same). */
-export const INK_WOBBLE = 0.12;
+export const INK_WOBBLE = 0.2;
 
 /** Contour points above `y` (the crown), left to right, pushed out from (cx, cy) by `push`. */
 export const crownPts = (pts: P2[], y: number, cx: number, cy: number, push = 1.03): P2[] => {
@@ -104,6 +110,17 @@ export const crownPts = (pts: P2[], y: number, cx: number, cy: number, push = 1.
     if (yy < y) out.push([cx + (x - cx) * push, cy + (yy - cy) * push]);
   }
   return out;
+};
+
+/** Chaikin corner cutting (closed shape): a few rounds turn a rough polygon into a soft hand-drawn contour. */
+export const smooth = (pts: P2[], rounds = 2): P2[] => {
+  let p = pts;
+  for (let r = 0; r < rounds; r++)
+    p = p.flatMap((a, i) => {
+      const b = p[(i + 1) % p.length];
+      return [[0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]], [0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]]] as P2[];
+    });
+  return p;
 };
 
 // ---------------------------------------------------------------- pen
@@ -247,8 +264,8 @@ export class Pen {
    */
   inkRing(pts: P2[], w0: number, thick = this.thick, k = INK_K, col = INK) {
     const n = pts.length, ring = this.rings++;
-    const ph1 = rnd(this.seed, 40 + ring) * 6.283, ph2 = rnd(this.seed, 60 + ring) * 6.283;
-    w0 *= this.weight;
+    const ph1 = rnd(this.seed, 40 + ring) * 6.283, ph2 = rnd(this.seed, 60 + ring) * 6.283, ph3 = rnd(this.seed, 80 + ring) * 6.283;
+    w0 *= this.weight * LINE;
     let cx = 0, cy = 0;
     for (const [x, y] of pts) {
       cx += x / n;
@@ -262,7 +279,7 @@ export class Pen {
       nx /= l;
       ny /= l;
       const th = Math.atan2(q[1] - cy, q[0] - cx);
-      const h = 0.5 * w0 * (1 + k * Math.cos(th - thick)) * (1 + INK_WOBBLE * (0.6 * Math.sin(3 * th + ph1) + 0.4 * Math.sin(5 * th + ph2)));
+      const h = 0.5 * w0 * (1 + k * Math.cos(th - thick)) * (1 + INK_WOBBLE * (0.45 * Math.sin(2 * th + ph3) + 0.35 * Math.sin(3 * th + ph1) + 0.2 * Math.sin(7 * th + ph2)));
       out.push([q[0] + nx * h, q[1] + ny * h]);
       inn.push([q[0] - nx * h, q[1] - ny * h]);
     });

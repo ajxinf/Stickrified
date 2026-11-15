@@ -1,6 +1,7 @@
 import { Composition } from "remotion";
 import { CastLineup, CloseUp } from "./CastLineup";
 import { CharacterTest } from "./CharacterTest";
+import { CharacterLineup } from "./CharacterLineup";
 import { CastSheet } from "./CastSheet";
 import { ExpressionSheet } from "./ExpressionSheet";
 import { TurnaroundSheet } from "./TurnaroundSheet";
@@ -32,7 +33,9 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="ExpressionSheet" component={ExpressionSheet} fps={30} durationInFrames={1} width={1080} height={1920} />
     <Composition id="TurnaroundSheet" component={TurnaroundSheet} fps={30} durationInFrames={1} width={1920} height={1080} />
     <Composition id="ChannelPfp" component={ChannelPfp} fps={30} durationInFrames={1} width={2048} height={2048} />
-    <Composition id="CastSheet" component={CastSheet} fps={30} durationInFrames={1} width={1080} height={1920} />
+    <Composition id="CharacterLineup" component={CharacterLineup} fps={30} durationInFrames={1} width={1920} height={1080} />
+    <Composition id="HordeLineup" component={CharacterLineup} defaultProps={{ horde: true }} fps={30} durationInFrames={1} width={1920} height={1080} />
+    <Composition id="CastSheet"component={CastSheet} fps={30} durationInFrames={1} width={1080} height={1920} />
     <Composition id="PipelineTest" component={PipelineTest} fps={30} durationInFrames={450} width={1080} height={1920} />
       <Composition id="PipelineTest2" component={PipelineTest2} fps={30} durationInFrames={PT2_FRAMES} width={1080} height={1920} />
       <Composition id="StressTest" component={StressTest} fps={30} durationInFrames={STRESS_FRAMES} width={1080} height={1920} />

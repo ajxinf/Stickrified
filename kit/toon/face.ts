@@ -23,7 +23,7 @@ type MouthK = "dash" | "flat" | "frown" | "smirk" | "smileWide" | "grin" | "laug
 type Face = { eye: [EyeK, EyeK]; brow: Brow | [Brow, Brow] | "arc"; mouth: MouthK; glance?: number };
 
 const FACE: Record<Expr, Face> = {
-  neutral: { eye: ["lid", "lid"], brow: [0, -1], mouth: "dash" },
+  neutral: { eye: ["dot", "dot"], brow: [0, -1], mouth: "dash" },
   tired: { eye: ["heavy", "heavy"], brow: [-1, 3], mouth: "flat" },
   worried: { eye: ["small", "small"], brow: [-3, 2], mouth: "wave" },
   scared: { eye: ["shock", "shock"], brow: [-6, 1], mouth: "teeth" },
@@ -66,12 +66,24 @@ export const talkAt = (track: MouthFrame[], F: number, spans: [number, number][]
 export const laughFlap = (F: number, from: number, frames = 24): MouthFrame | undefined =>
   F >= from && F < from + frames ? { open: 0.35 + 0.65 * Math.abs(Math.sin(((F - from) / 30) * Math.PI * 4.5)), shape: "a" } : undefined;
 
+/**
+ * Draw inside the head's outline (cast redesign 2026-11-15, refs: the hair is part of the one round head, its
+ * hairline a line across it, not a cap stuck on top): clipped to the head shrunk just inside its ink ring.
+ */
+export const insideHead = (p: Pen, h: Head, fn: () => void) => {
+  const k = 1 - (1.2 * h.u) / h.a;
+  p.clip(h.pts.map(([x, y]) => [h.cx + (x - h.cx) * k, h.cy + (y - h.cy) * k] as P2), fn);
+};
+
 /** Colour-fill gag (drawn between the head fill and its ink ring, so the outline stays whole). */
 export const drawFill = (p: Pen, h: Head, fx: Effects) => {
   if (!fx.fill || fx.fill.t <= 0) return;
   const { cx, cy, a, b } = h, top = cy + b - fx.fill.t * 2.1 * b;
   p.clip(h.pts, () => p.poly([[cx - 2 * a, top], [cx + 2 * a, top], [cx + 2 * a, cy + 2 * b], [cx - 2 * a, cy + 2 * b]], fx.fill!.color));
 };
+
+/** Feature scale (eyes, brows, mouth and their line widths) about each feature's centre. */
+const FEAT = 0.7;
 
 export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: Effects; brim?: boolean }) => {
   const { cx, cy, u, facing } = h;
@@ -82,7 +94,7 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
   const F: Face = o.fx.ringEyes ? { ...FACE[expr], eye: ["shock", "shock"], brow: "arc" } : FACE[expr];
   const fx = cx + 7 * u * facing + vs * 0.5 * h.a * sn, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
   const shock = F.eye[0] === "shock";
-  const ex = (shock ? 12 : 13) * u * (1 - 0.45 * sn), ey = cy;
+  const ex = (shock ? 14 : 15) * u * (1 - 0.45 * sn), ey = cy;
   const g = p.g;
   ([-1, 1] as const).forEach((side, i) => {
     const far = sn > 0.05 && side !== vs;
@@ -94,10 +106,15 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       g.scale(1 - 0.35 * sn, 1);
       g.translate(-x, -ey);
     }
+    // Small features set wide (cast redesign 2026-11-15, refs: small ovals ~30 % of the head apart, thin lines).
+    g.save();
+    g.translate(x, ey);
+    g.scale(FEAT, FEAT);
+    g.translate(-x, -ey);
     const front = facing ? side === Math.sign(facing) : side > 0;
     let kind: EyeK = F.eye[front ? 1 : 0];
     if (o.blink && kind !== "happy" && kind !== "squeeze") kind = "dash";
-    if (kind === "dot") p.ell(lx, ey, 3.8 * u, 5.5 * u, INK);
+    if (kind === "dot") p.ell(lx, ey, 5.6 * u, 4.4 * u, INK);
     else if (kind === "small") p.ell(lx, ey, 3 * u, 4.4 * u, INK);
     else if (kind === "lid" || kind === "heavy") {
       const d = kind === "heavy" ? 1.5 * u : -u;
@@ -113,19 +130,20 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       p.ell(x, ey, 11 * u, 11 * u, WHITE, 2.6 * u);
       p.dot(lx - side * 1.5 * u, ey + 1.5 * u, 3 * u);
     }
-    const by = ey - (o.brim ? 17 : 20) * u;
+    const by = ey - (o.brim ? 14 : 17) * u;
     if (F.brow === "arc") p.arc(x, by - 6 * u, 9 * u, 3 * u, 200, 340, 4 * u);
     else {
       const [dI, dO] = (Array.isArray(F.brow[0]) ? (F.brow as [Brow, Brow])[i] : F.brow) as Brow;
       p.taper([x - side * 8.5 * u, by + dI * u], [x + side * 8.5 * u, by + dO * u], 5 * u, 2.5 * u);
     }
+    g.restore();
     if (far) g.restore();
   });
-  const mx = cx + 8 * u * facing + vs * 0.55 * h.a * sn, my = cy + 20 * u, mw = 4 * u;
+  const mx = cx + 8 * u * facing + vs * 0.55 * h.a * sn, my = cy + 19 * u, mw = 4 * u;
   // A turned mouth foreshortens (narrower toward the profile).
   g.save();
   g.translate(mx, my);
-  g.scale(1 - 0.45 * sn, 1);
+  g.scale((1 - 0.45 * sn) * FEAT, FEAT);
   g.translate(-mx, -my);
   const dmouth = (rx: number, ry: number, y: number, tongue = false) => {
     p.ell(mx, y, rx, ry, MOUTH, 0, 0, 180);

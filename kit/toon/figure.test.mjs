@@ -18,7 +18,7 @@ for (const { name, look } of [{ name: "you", look: youLook }, ...EXTRAS]) {
   const [lo, hi] = kid ? [2.75, 2.95] : [3.4, 3.6];
   console.log(`${name.padEnd(24)} ${m.heads.toFixed(2)} HH  H/W ${m.hw.toFixed(3)}  ink ${m.thickThin.toFixed(2)}:1  ${m.meters.toFixed(2)} m`);
   assert(m.heads >= lo && m.heads <= hi, `${name}: ${m.heads.toFixed(2)} HH outside ${lo}-${hi}`);
-  assert(m.hw >= 0.9 && m.hw <= 0.98, `${name}: head H/W ${m.hw.toFixed(3)} outside 0.90-0.98`);
-  assert(m.thickThin >= 2.5, `${name}: thick/thin ${m.thickThin.toFixed(2)} < 2.5`);
+  assert(m.hw >= 0.9 && m.hw <= 1.05, `${name}: head H/W ${m.hw.toFixed(3)} outside 0.90-1.05`);
+  assert(m.thickThin <= 1.5, `${name}: thick/thin ${m.thickThin.toFixed(2)} > 1.5 (refs: an even line)`);
 }
 console.log("figure ok");

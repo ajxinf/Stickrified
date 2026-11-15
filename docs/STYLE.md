@@ -107,6 +107,26 @@ high, fov 56-60. Foreground props 3.5-6 m from the lens, cut by the frame edge (
 ToonTest (library street, 24 practical lights), 150 frames at 1080x1920, `--concurrency=2`: ~40 s.
 
 ## Characters (`kit/toon/`: toon.ts figure.ts face.ts poses.ts protagonist.ts extras.ts cast.ts cardshade.ts)
+**Character style for every episode (cast redesign 2026-11-15, matched to `assets/visual-ref1-3.mp4` +
+`video-standard.mp4`; the user rejected the earlier cast as cheap).** It lives in the shared kit (`kit/toon/`), so every
+character in every video gets it; do not override it per video. Review sheets: `CharacterLineup`, `HordeLineup`,
+`TurnaroundSheet`. Before any character change, pull close-up frames from the refs and compare side by side.
+- Head: an imperfect hand-drawn circle, different per character (`headBlob`: H/W .92-1.02, seeded lumps), near-white
+  `CREAM #f7f4f0` with soft grey shading (zombies: `Look.skin`). Hair is drawn INSIDE the head (`insideHead`): one
+  outline round the whole head, the hairline a line across it, combed strand lines + a shine. Never a cap stuck on a
+  half-dome. Hats sit on top.
+- Outline: thin, nearly even (`LINE` .42: ~2 % of the head width, thick/thin 1.35), with a seeded hand-drawn wobble
+  (`INK_WOBBLE` .2) so no two characters' lines match. No thick brush outlines.
+- Face: small features set wide (`FEAT` .7): small oval eyes ~30 % of the head apart (neutral = plain ovals, lids for
+  deadpan/tired/smug), thin brows, a tiny mouth, no nose, no blush, no catchlights.
+- Body: the build's pill torso (original widths, not slimmer) carrying the costume detail (stripes, buttons, lanyard,
+  tie, patterns); thin dark stick limbs (~3 % of the head width) in the ink colour, small dot hands, small dark feet
+  (white sneakers for "you"). Tried and rejected: brush limbs in cloth colours, mitten hands, shaped shoes, paper grain.
+- Variety comes from build, costume, hair, one accessory (`kit/toon/wardrobe.ts`, `extras.ts`). Zombies: green skin,
+  sunken-eye arcs + stitched scar (`zombieFace`), torn shirt hem + grime (`rips`), each one a different person
+  (office, jogger, granny, old man, lumberjack, road worker: `ZLOOKS` in the pilot's `roles.ts`).
+
+Older notes below (outline widths, face spacing, mitten hands) predate the 2026-11-15 redesign; the spec above wins.
 Review renders: ExpressionSheet, CastLineup (9:16 medium-wide, 4 characters, frame 10), CloseUp (9:16, frame 10);
 side-by-side with the references in `out/char/sbs_refs2.jpg`. Old approved frames in `frames/` predate the redesign.
 - Design canvas 600x1000, drawn at 2x (1200x2000) with mipmaps + anisotropy 8; soles at y 975, 500 px = 1 m.

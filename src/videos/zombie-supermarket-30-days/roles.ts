@@ -4,7 +4,7 @@ import type { PoseName } from "../../../kit/toon/poses";
 import type { CaptionWord } from "../../../kit/toon/Captions";
 import { clusteredSpots } from "../../../kit/toon/crowd";
 import type { CrowdSpec } from "../../../kit/toon/crowd";
-import { BUILDS, capHair } from "../../../kit/toon/extras";
+import { BUILDS, capHair, glasses, outfit, rips, tufts, zombieFace } from "../../../kit/toon/extras";
 import type { Expr } from "../../../kit/toon/face";
 import { rng } from "../../../kit/toon/paint";
 import type { Pose } from "../../../kit/toon/poses";
@@ -176,13 +176,31 @@ export const daveLook: Look = {
 // ---------------------------------------------------------------- the horde (instanced crowd)
 
 const ZOMBIE_SKIN = { color: "#9cb88c", t: 1 };
+/**
+ * The horde (cast redesign 2026-11-15: recoloured extras read cheap): six people who were somebody before, each in
+ * a torn shirt hem, green skin, sunken eyes and a stitched scar.
+ */
+const ZSKIN = ZOMBIE_SKIN.color;
+const zLook = (seed: number, l: Omit<Look, "seed" | "skin" | "face">, under: string, extraFace?: Look["face"]): Look => ({
+  ...l,
+  seed,
+  skin: ZSKIN,
+  outfit: layers(...(l.outfit ? [l.outfit] : []), rips(under, seed)),
+  face: extraFace ? headLayers(zombieFace(seed), extraFace) : zombieFace(seed),
+});
 export const ZLOOKS: Look[] = [
-  { build: BUILDS.tallThin, seed: 101, jacket: "#6a7a6a", pants: "#3a3a44", shoes: "#3a2a24", hair: capHair("#5a4a3a", 0.35, 0.5, 3) },
-  { build: BUILDS.shortRound, seed: 102, jacket: "#8a6a5a", pants: "#4a3a3a", shoes: "#2a2a30", hair: capHair("#3a2a24", 0.3, 0.5) },
-  { build: BUILDS.pear, seed: 103, jacket: "#5a5a7a", pants: "#3a3446", shoes: "#3a2a24", hair: capHair("#7a6a5a", 0.5, 0.4, 4) },
-  { build: BUILDS.old, seed: 104, jacket: "#7a7a5a", pants: "#4a4a5e", shoes: "#4a3428", hair: capHair("#9a948e", 0.25, 0.6) },
-  { build: BUILDS.stocky, seed: 105, jacket: "#6a5a6a", pants: "#2e3446", shoes: "#2a2a30", outfit: pattern("plaid", "#6a5a6a", "#4a3a4a") },
-  { build: BUILDS.tallThin, seed: 106, jacket: "#5a6a7a", pants: "#3a3a44", shoes: "#3a2a24", hair: capHair("#4a3a2a", 0.4, 0.45, 6) },
+  // Office worker: navy blazer, white shirt, loose red tie, grey trousers.
+  zLook(101, { build: BUILDS.tallThin, jacket: "#3e4a6a", pants: "#55565e", shoes: "#3a2a24", outfit: outfit({ bottom: ["#55565e", 0.86], shirt: { color: "#ece6da", tie: "#b03a3a" } }), hair: capHair("#5a4a3a", 0.35, 0.5, 3) }, "#55565e"),
+  // Jogger: teal tracksuit top, shorts, running shoes.
+  zLook(102, { build: BUILDS.shortRound, jacket: "#2f8a86", pants: "#2a3446", shorts: "#2a3446", shoes: "#e8e4dc", sneakers: true, shoeStripe: "#2f8a86", outfit: outfit({ bottom: ["#2a3446", 0.84], stripes: { color: "#f0ece4", gap: 26, vertical: true } }), hair: capHair("#3a2a24", 0.42, 0.42, 6) }, "#2a3446"),
+  // Granny: pink cardigan with buttons, plum skirt, grey hair.
+  zLook(103, { build: BUILDS.pear, jacket: "#c47a8a", pants: "#5a4466", shoes: "#5a3a3a", outfit: outfit({ bottom: ["#5a4466", 0.8], collar: "#f2ece2", buttons: "#f2ece2" }), hair: capHair("#c8c2bc", 0.55, 0.3, 7) }, "#5a4466", glasses),
+  // Old man: olive suit, white tufts.
+  zLook(104, { build: BUILDS.old, jacket: "#7a7a52", pants: "#4a4a5e", shoes: "#4a3428", outfit: outfit({ bottom: ["#4a4a5e", 0.86], collar: "#e8e2d4", buttons: "#4a3428" }), hair: tufts }, "#4a4a5e"),
+  // Lumberjack: red plaid, jeans.
+  zLook(105, { build: BUILDS.stocky, jacket: "#a83a32", pants: "#3a4a6a", shoes: "#5a3a24", outfit: layers(pattern("plaid", "#a83a32", "#3a2224"), bottoms("#3a4a6a", 0.86)), hair: capHair("#6a3a20", 0.3, 0.55, 5) }, "#3a4a6a"),
+  // Road worker: hi-vis vest, cargo trousers.
+  zLook(106, { build: BUILDS.tallThin, jacket: "#e8b830", pants: "#5a5446", shoes: "#3a2a24", outfit: outfit({ bottom: ["#5a5446", 0.86], stripes: { color: "#d8dcdc", gap: 34 } }), hair: capHair("#4a3a2a", 0.25, 0.6, 2) }, "#5a5446"),
 ];
 export const zs = (pose: Pose, expr: Expr, extra: Partial<CharState["fx"]> = {}): CharState => ({ pose, expr, blink: false, fx: { fill: ZOMBIE_SKIN, ...extra } });
 const armsUp = (p: Pose): Pose => ({ ...p, arms: [{ at: [0.62, -0.5], grip: "open" }, { at: [0.62, -0.45], grip: "open" }] });

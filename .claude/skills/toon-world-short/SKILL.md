@@ -94,11 +94,31 @@ Build in this order, commit after each, and get a verifier pass on stills before
 9. **Pilot Short** through the full pipeline, then copy its folder to `templates/base/`, save the best frames to
    `docs/style/frames/` and write `docs/STYLE.md` with the final values and measured render speed.
 
+## Character style (all characters)
+**Character style for every episode (cast redesign 2026-11-15, matched to `assets/visual-ref1-3.mp4` +
+`video-standard.mp4`; the user rejected the earlier cast as cheap).** It lives in the shared kit (`kit/toon/`), so every
+character in every video gets it; do not override it per video. Review sheets: `CharacterLineup`, `HordeLineup`,
+`TurnaroundSheet`. Before any character change, pull close-up frames from the refs and compare side by side.
+- Head: an imperfect hand-drawn circle, different per character (`headBlob`: H/W .92-1.02, seeded lumps), near-white
+  `CREAM #f7f4f0` with soft grey shading (zombies: `Look.skin`). Hair is drawn INSIDE the head (`insideHead`): one
+  outline round the whole head, the hairline a line across it, combed strand lines + a shine. Never a cap stuck on a
+  half-dome. Hats sit on top.
+- Outline: thin, nearly even (`LINE` .42: ~2 % of the head width, thick/thin 1.35), with a seeded hand-drawn wobble
+  (`INK_WOBBLE` .2) so no two characters' lines match. No thick brush outlines.
+- Face: small features set wide (`FEAT` .7): small oval eyes ~30 % of the head apart (neutral = plain ovals, lids for
+  deadpan/tired/smug), thin brows, a tiny mouth, no nose, no blush, no catchlights.
+- Body: the build's pill torso (original widths, not slimmer) carrying the costume detail (stripes, buttons, lanyard,
+  tie, patterns); thin dark stick limbs (~3 % of the head width) in the ink colour, small dot hands, small dark feet
+  (white sneakers for "you"). Tried and rejected: brush limbs in cloth colours, mitten hands, shaped shoes, paper grain.
+- Variety comes from build, costume, hair, one accessory (`kit/toon/wardrobe.ts`, `extras.ts`). Zombies: green skin,
+  sunken-eye arcs + stitched scar (`zombieFace`), torn shirt hem + grime (`rips`), each one a different person
+  (office, jogger, granny, old man, lumberjack, road worker: `ZLOOKS` in the pilot's `roles.ts`).
+
 ## The protagonist ("you")
 The same character in every video; he is the viewer and the channel's face (LOOK_SPEC section 2). Costumes are
 overlays (hat, coat, uniform) that always keep the messy fringe and a rust-orange `#c8582c` accent.
 Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
-- Adult build 3.5 head-heights; bean head (H/W .94, pointed crown, fuller jaw) in pale cream `#f4ece0`.
+- Adult build 3.5 head-heights; round head in the character style above.
 - Hair: soft messy curtain fringe `#4a3226` in fluffy clumps, parted off-centre toward the facing side, locks
   ending just above the brows, short sideburns.
 - Oversized rust hoodie `#c8582c`: hood bunched behind the neck (shows past the jaw on both sides: the silhouette
@@ -116,8 +136,8 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
   always draw the front view. Self-check: `node kit/toon/turn.test.mjs`.
 - Channel profile picture: `ChannelPfp` composition -> `assets/brand/` (docs/CHANNEL.md); re-render it after any
   change to the protagonist.
-- Faces from the face library in LOOK_SPEC: lidded deadpan default, no blush, no catchlights.
-- Expressions: neutral (lidded), tired, worried, scared, shocked (white circles almost touching), smug, determined,
+- Faces from the face library (character style above).
+- Expressions: neutral (plain ovals), tired, worried, scared, shocked (white circles almost touching), smug, determined,
   sad, angry, sneaky, relieved, confused, deadpan, laughing. Extras: sweat drop, steam puffs, colour fill, "!" pop.
 
 ## Pipeline per video (hands-on target <= 2 h; renders run unattended)

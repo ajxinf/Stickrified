@@ -1,6 +1,7 @@
+import { insideHead } from "./face";
 import type { Head } from "./face";
 import type { Look, Torso } from "./figure";
-import { BUILD, INK, Pen, SH_CLOTH, SH_HAIR, WHITE, clamp, mul } from "./toon";
+import { BUILD, INK, Pen, SH_CLOTH, SH_HAIR, WHITE, clamp, mix, mul, rnd, smooth } from "./toon";
 import type { Build, P2 } from "./toon";
 
 /**
@@ -34,7 +35,7 @@ type Top = {
   collar?: string;
 };
 
-const outfit = (o: Top) => (p: Pen, t: Torso) => {
+export const outfit = (o: Top) => (p: Pen, t: Torso) => {
   const { cx, top, bot, chin, u, a } = t, h = bot - top, line = 1.8 * u;
   if (o.stripes) {
     const s = o.stripes;
@@ -75,20 +76,31 @@ const capPts = (h: Head, k: number, sides = 0.35, spikes = 0): P2[] => {
     const xn = (x - cx) / a, top = clamp((cy - 0.5 * b - y) / (0.5 * b), 0, 1);
     cap.push([cx + (x - cx) * 1.04, cy + (y - cy) * 1.04 - (spikes ? 0.12 * b * top * (0.5 + 0.5 * Math.cos(xn * Math.PI * spikes)) : 0)]);
   }
+  // Hairline: a soft gentle wave (refs: smooth hair caps with combed strand lines).
   const xr = cap[cap.length - 1][0], xl = cap[0][0];
   for (let i = 1; i < 8; i++) {
     const x = xr + ((xl - xr) * i) / 8;
     cap.push([x, lim(x) + (i % 2 ? 2.4 * u : 0)]);
   }
-  return cap;
+  return smooth(cap, 2);
 };
 
 const fillInk = (p: Pen, h: Head, pts: P2[], col: string) => {
   p.shadedFill(pts, col, SH_HAIR, h.a);
   p.inkRing(pts, outline(h));
 };
+/** Hair cap with volume (cast redesign 2026-11-15): a shine arc on the crown and strands toward the hairline. */
+const hairInk = (p: Pen, h: Head, pts: P2[], col: string) => insideHead(p, h, () => {
+  const { cx, cy, a, b, u } = h, light = mix(col, "#ffffff", 0.22), shine = mix(col, "#ffffff", 0.38);
+  p.shadedFill(pts, col, SH_HAIR, a);
+  p.clip(pts, () => {
+    p.arc(cx - 0.15 * a, cy - 0.82 * b, 0.4 * a, 0.13 * b, 205, 300, 3.2 * u, shine);
+    for (const s of [-0.7, -0.35, 0, 0.35, 0.7]) p.stroke([[cx + s * 0.4 * a, cy - 1.05 * b], [cx + s * 0.8 * a, cy - 0.75 * b], [cx + s * 1.0 * a, cy - 0.35 * b]], 1.4 * u, light);
+  });
+  p.inkRing(pts, outline(h));
+});
 
-export const capHair = (col: string, k: number, sides = 0.35, spikes = 0) => (p: Pen, h: Head) => fillInk(p, h, capPts(h, k, sides, spikes), col);
+export const capHair = (col: string, k: number, sides = 0.35, spikes = 0) => (p: Pen, h: Head) => hairInk(p, h, capPts(h, k, sides, spikes), col);
 
 /** Half-ellipse dome (crown of a hat) standing on y0. */
 const dome = (cx: number, y0: number, rx: number, ry: number, flat = 2.4): P2[] => {
@@ -135,14 +147,14 @@ const nightcap = (p: Pen, h: Head) => {
   p.ell(cx + 1.38 * a * d, y0 - 0.42 * b, 7 * u, 7 * u, WHITE, outline(h) * 0.7);
 };
 
-const bun = (p: Pen, h: Head) => {
+export const bun = (p: Pen, h: Head) => {
   const { cx, cy, a, b } = h;
   const pts: P2[] = [];
   for (let i = 0; i < 32; i++) pts.push([cx - 0.08 * a + 0.42 * a * Math.cos((i / 32) * Math.PI * 2), cy - 1.05 * b + 0.38 * b * Math.sin((i / 32) * Math.PI * 2)]);
   fillInk(p, h, pts, "#5a3424");
 };
 
-const glasses = (p: Pen, h: Head) => {
+export const glasses = (p: Pen, h: Head) => {
   const { cx, cy, u, facing } = h, fx = cx + 7 * u * facing, w = 2.4 * u;
   for (const s of [-1, 1]) {
     p.ell(fx + s * 13 * u, cy, 10.5 * u, 10 * u, "rgba(190,225,255,0.22)", w);
@@ -151,7 +163,7 @@ const glasses = (p: Pen, h: Head) => {
   p.arc(fx, cy + 1 * u, 3 * u, 3 * u, 200, 340, w);
 };
 
-const moustache = (p: Pen, h: Head) => {
+export const moustache = (p: Pen, h: Head) => {
   const { cx, cy, u, facing } = h, mx = cx + 8 * u * facing, my = cy + 13 * u;
   for (const s of [-1, 1]) {
     p.taper([mx + s * u, my], [mx + s * 15 * u, my + 4 * u], 9.5 * u, 3.5 * u, INK);
@@ -164,7 +176,7 @@ const moustache = (p: Pen, h: Head) => {
  * Old man's hair: fluffy white side tufts (scalloped outer edge, thin line so they never read as ear cups) and three
  * comb-over wisps across the bald crown.
  */
-const tufts = (p: Pen, h: Head) => {
+export const tufts = (p: Pen, h: Head) => {
   const { cx, cy, a, b, u, pts } = h;
   for (const s of [-1, 1]) {
     const side = pts.filter(([x, y]) => (x - cx) * s > 0 && y > cy - 0.66 * b && y < cy + 0.05 * b);
@@ -243,3 +255,45 @@ export const EXTRAS: { name: string; look: Look }[] = [
     },
   },
 ];
+
+// ------------------------------------------------------------- zombies (cast redesign 2026-11-15)
+
+/**
+ * Zombie wear over any outfit (torso layer): grime smears and a torn shirt hem in `under` (the trousers).
+ */
+export const rips = (under: string, seed: number) => (p: Pen, t: { cx: number; top: number; bot: number; a: number; u: number }) => {
+  const { cx, top, bot, a, u } = t, h = bot - top;
+  for (let k = 0; k < 2; k++) {
+    const x = cx + (rnd(seed, 50 + k) - 0.5) * 1.1 * a, y = top + (0.4 + 0.36 * rnd(seed, 60 + k)) * h, r = (5 + 3 * rnd(seed, 70 + k)) * u;
+    p.ell(x, y, r * 1.3, r * 0.8, "rgba(58,48,36,0.12)", 0, 0, 360, 20); // grime smear
+  }
+  // Torn hem: cloth teeth hanging over what is below.
+  const hem = top + 0.84 * h, teeth: P2[] = [[cx - 2 * a, hem + 12 * u]];
+  for (let x = cx - 1.2 * a, i = 0; x <= cx + 1.2 * a; x += 9 * u, i++) teeth.push([x, hem + (i % 2 ? (4 + 7 * rnd(seed, 90 + i)) * u : -2 * u)]);
+  teeth.push([cx + 2 * a, hem + 12 * u]);
+  p.poly([...teeth, [cx + 2 * a, bot + 20 * u], [cx - 2 * a, bot + 20 * u]], under);
+  p.stroke(teeth.slice(1, -1), 1.6 * u);
+};
+
+/** Zombie face extras (over the face): sunken under-eye rings, a stitched scar, a drool drip. */
+export const zombieFace = (seed: number) => (p: Pen, h: Head) => {
+  const { cx, cy, a, b, u, facing } = h, yaw = h.yaw ?? 0;
+  if (Math.abs(yaw) > 100) return;
+  const sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), vs = yaw < 0 ? -1 : 1, fx = cx + 7 * u * facing + vs * 0.5 * a * sn;
+  for (const s of [-1, 1]) p.arc(fx + s * 15 * u * (1 - 0.45 * sn), cy + 2 * u, 6.5 * u, 5 * u, 20, 160, 1.8 * u, "#4a3a5a");
+  // Scar with stitches across the forehead or cheek (seeded side).
+  const sd = rnd(seed, 3) < 0.5 ? -1 : 1, up = rnd(seed, 4) < 0.5;
+  const s0: P2 = up ? [cx + sd * 0.15 * a, cy - 0.55 * b] : [fx + sd * 22 * u, cy + 6 * u], s1: P2 = up ? [cx + sd * 0.55 * a, cy - 0.32 * b] : [fx + sd * 32 * u, cy + 20 * u];
+  p.stroke([s0, s1], 1.5 * u, "#6a3a3a");
+  const dx = s1[0] - s0[0], dy = s1[1] - s0[1], l = Math.hypot(dx, dy) || 1;
+  for (const t of [0.2, 0.5, 0.8]) {
+    const x = s0[0] + dx * t, y = s0[1] + dy * t;
+    p.stroke([[x - (dy / l) * 3 * u, y + (dx / l) * 3 * u], [x + (dy / l) * 3 * u, y - (dx / l) * 3 * u]], 1.1 * u);
+  }
+  if (rnd(seed, 5) < 0.6) {
+    const mx = cx + 8 * u * facing + vs * 0.55 * a * sn + 7 * u, my = cy + 22 * u;
+    p.stroke([[mx, my], [mx + 0.5 * u, my + 7 * u]], 2 * u, "#b8d8a8");
+    p.dot(mx + 0.5 * u, my + 8 * u, 2.2 * u, "#b8d8a8");
+  }
+};
+

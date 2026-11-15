@@ -1,5 +1,6 @@
 import { drawPerson } from "./figure";
 import type { CharState, Look, Torso } from "./figure";
+import { insideHead } from "./face";
 import type { Head } from "./face";
 import { BUILD, Pen, SH_HAIR, clamp, mul, rnd } from "./toon";
 import type { P2 } from "./toon";
@@ -142,8 +143,9 @@ const hood = (p: Pen, h: Head) => {
     for (const s of [-1, 1]) cup(cx + s * 0.78 * a, cy + 0.95 * b, 6 * u, 11 * u);
     return;
   }
-  const hx = cx - V.side * (0.1 + 0.65 * V.sn) * a, w = 1.16 - 0.5 * V.sn;
-  const pts = ellPts(hx, cy + 0.5 * b, w * a, 0.56 * b, 48);
+  // Cast redesign 2026-11-15: a slim hood just past the jaw (the old wide one read as a blob behind the head).
+  const hx = cx - V.side * (0.1 + 0.6 * V.sn) * a, w = 0.98 - 0.4 * V.sn;
+  const pts = ellPts(hx, cy + 0.66 * b, w * a, 0.4 * b, 48);
   p.shadedFill(pts, YOU.hoodieDark, SH_HAIR, a);
   p.inkRing(pts, 0.8 * 5 * u);
   if (V.cs < 0.55) {
@@ -156,7 +158,7 @@ const hood = (p: Pen, h: Head) => {
   const fc = cx + V.side * 0.45 * a * V.sn;
   for (const s of [-1, 1]) {
     const far = V.sn > 0.05 && s !== V.side, k = far ? 1 - 0.4 * V.sn : 1;
-    cup(fc + s * 0.62 * a * (1 - 0.35 * V.sn), cy + 1.04 * b, 11 * u * k, 14 * u);
+    cup(fc + s * 0.6 * a * (1 - 0.35 * V.sn), cy + 1.02 * b, 8.5 * u * k, 11 * u);
   }
 };
 
@@ -166,7 +168,7 @@ const hood = (p: Pen, h: Head) => {
  * face out from under the hair and the back of the head fills in. The cap follows the skull a little outside it with
  * fluffy clumps; a shine band and crown-to-tip strands give it volume.
  */
-const hair = (p: Pen, h: Head) => {
+const hair = (p: Pen, h: Head) => insideHead(p, h, () => {
   const { cx, cy, a, b, u, pts } = h, V = view(h.yaw ?? 0);
   // Face window in head-x units, measured toward the side faced: its centre slides out and it narrows as the head
   // turns; from 3/4 behind there is none.
@@ -205,7 +207,7 @@ const hair = (p: Pen, h: Head) => {
     last = k;
     const [x, y] = q, th = Math.atan2(y - cy, x - cx);
     const clump = 0.055 * Math.max(0, Math.sin(7 * th + 0.6)) ** 1.5 + 0.03 * Math.max(0, Math.sin(11 * th + 2.1)) ** 2;
-    const kk = 1.07 + clump;
+    const kk = 1.05 + clump * 0.4;
     cap.push([cx + (x - cx) * kk, cy + (y - cy) * kk]);
   }
   if (first < 0) return;
@@ -216,7 +218,7 @@ const hair = (p: Pen, h: Head) => {
   const locks: { x0: number; w: number; depth: number; lean: number }[] = [];
   for (let x = cx - 1.3 * a, i = 0; x < cx + 1.3 * a; i++) {
     const w = a * (0.22 + 0.1 * rnd(i + 3, 41));
-    locks.push({ x0: x, w, depth: 0.12 + 0.09 * rnd(i + 3, 42), lean: 0.35 + 0.5 * rnd(i + 3, 43) });
+    locks.push({ x0: x, w, depth: 0.06 + 0.04 * rnd(i + 3, 42), lean: 0.35 + 0.5 * rnd(i + 3, 43) }); // refs: smooth hair
     x += w;
   }
   for (let i = 1; i < N; i++) {
@@ -240,7 +242,7 @@ const hair = (p: Pen, h: Head) => {
     }
   });
   p.inkRing(cap, 0.85 * 5 * u);
-};
+});
 
 export const youLook: Look = {
   build: BUILD.adult,
