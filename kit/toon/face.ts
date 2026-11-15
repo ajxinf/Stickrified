@@ -92,9 +92,12 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
   const yaw = h.yaw ?? 0, ay = Math.abs(yaw), sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), vs = yaw < 0 ? -1 : 1;
   if (ay > 100) return drawEffects(p, h, o.fx);
   const F: Face = o.fx.ringEyes ? { ...FACE[expr], eye: ["shock", "shock"], brow: "arc" } : FACE[expr];
-  const fx = cx + 7 * u * facing + vs * 0.5 * h.a * sn, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
+  // R20 (visual-ref1-6, moving images): a head turn slides the whole face across the head, not just the pupils
+  // (refs ~35-45 % of the radius at a full turn; we slid 14 %), and the eyes close up a little as they turn away.
+  const turn = h.look * (1 - sn);
+  const fx = cx + 7 * u * facing + 0.22 * h.a * turn + vs * 0.5 * h.a * sn, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
   const shock = F.eye[0] === "shock";
-  const ex = (shock ? 14 : 15) * u * (1 - 0.45 * sn), ey = cy;
+  const ex = (shock ? 14 : 15) * u * (1 - 0.45 * sn) * (1 - 0.12 * Math.abs(turn)), ey = cy;
   const g = p.g;
   ([-1, 1] as const).forEach((side, i) => {
     const far = sn > 0.05 && side !== vs;
@@ -139,7 +142,7 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
     g.restore();
     if (far) g.restore();
   });
-  const mx = cx + 8 * u * facing + vs * 0.55 * h.a * sn, my = cy + 19 * u, mw = 4 * u;
+  const mx = cx + 8 * u * facing + 0.26 * h.a * turn + vs * 0.55 * h.a * sn, my = cy + 19 * u, mw = 4 * u;
   // A turned mouth foreshortens (narrower toward the profile).
   g.save();
   g.translate(mx, my);

@@ -53,6 +53,8 @@ export type StreetOpts = {
   wires?: boolean;
   /** Lots kept free of row buildings (side -1 left / 1 right, s0..s1): the video's own buildings go there (`extra`). */
   reserve?: { side: number; s0: number; s1: number }[];
+  /** Wet or polished street (after rain, a waxed floor): road gloss 0-1, pavements 60 % of it (shade.ts `gloss`). */
+  gloss?: number;
 };
 
 type Light = { pos: Vector3; kind: PracticalKind };
@@ -146,8 +148,8 @@ export const buildStreet = (p: EraPreset, light: LightPreset, o: StreetOpts = {}
     m.receiveShadow = true;
     g.add(m);
   };
-  ground(groundMaterial(p.road, { center: 0, width: 2.4 }), -ROAD, ROAD);
-  const walk = groundMaterial(p.walk);
+  ground(groundMaterial(p.road, { center: 0, width: 2.4 }, o.gloss), -ROAD, ROAD);
+  const walk = groundMaterial(p.walk, undefined, (o.gloss ?? 0) * 0.6);
   ground(walk, -WALK, -ROAD, 0.02);
   ground(walk, ROAD, WALK, 0.02);
   if (p.layout === "detached" && p.yard) {

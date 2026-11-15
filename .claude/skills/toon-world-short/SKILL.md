@@ -363,7 +363,14 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
   - **Glows, no volumetrics** (`kit/toon/glow.ts`): every lamp, lit window, shop front and fire gets a soft painted
     corona (`practicalGlows`, added by the street and supermarket builders; off by day unless the practical has its
     own colour, like an exit sign). `glowSprite(pos, color, size, strength)` for any other source (a phone screen, a
-    candle, a magic item). No light shafts or ray-marched beams: they read as stage spotlights.
+    candle, a magic item). Light shafts only as R20 `lightShafts()` (glow.ts): faint (strength .1-.25), wide, painted,
+    where a strong light enters dusty or smoky air (backlit wides, a window into a dark room); never hard spotlight cones.
+  - **R20 direction (2026-11-15, `docs/style/VISUAL_DIRECTION.md`, study of visual-ref1-6):** the low sun RAKES across
+    the set (`LIGHTS.sunset`, az -32 / el 26), never from straight behind the street, so cast shadows break the ground
+    into warm/cool shapes; diorama haze only past ~24 m; wet/polished floors get `gloss` (`StreetOpts.gloss`); head
+    turns use `pose.look` (the face slides); listeners run `alive()`; expression changes go through `exprAt()`;
+    thrown things use `toss()` (kit/toon/physics.ts); hero props in macros get `spec` .6-.9 and detail. Worked example:
+    `src/videos/_visual-test` (`VisualTest`). Colour targets: sat .44-.52, colourfulness >= .26.
   - **The sun**: `sunDisc(radius)` (hot pale centre, gold limb, rim and corona; SKY layer, billboard it with
     `lookAt`). Put it where the key light comes from (`SUN = SUN_POS - camera`, normalised), so shadows and any
     light gag agree with the sun the viewer sees.

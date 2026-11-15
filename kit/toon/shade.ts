@@ -60,8 +60,11 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   shared.uHazeColor.value.copy(linear(p.haze.color));
   // lookdev "diorama": depth reads in layers (aerial haze starts nearer and goes further).
   // A+B: haze starts behind a subject at telephoto range (the diorama test washed out Chad at ~10 m with start 6 m).
-  shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.6, 14) : p.haze.start;
-  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.75, p.haze.amount * 1.4 + 0.12) : p.haze.amount;
+  // R20 (visual-ref1-6): the refs keep a street's far end in colour (ref6 town hall, ref4 village, ref5 alley lights);
+  // our diorama haze (from 14 m, up to .75) bleached everything past mid-ground to peach: the "milky" frame.
+  // Depth now comes from light, DOF and value steps; the haze only cools the far distance.
+  shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.8, 24) : p.haze.start;
+  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.4, p.haze.amount * 1.1 + 0.05) : p.haze.amount;
   shared.uCharTint.value.set(...p.char.tint);
   shared.uCharShade.value = p.char.shade;
   shared.uCharInk.value.copy(linear(p.charInk ?? INK));
@@ -157,7 +160,7 @@ const fragment = /* glsl */ `
 #include <shadowmask_pars_fragment>
 uniform vec3 uColor, uEmissive;
 uniform sampler2D uMap;
-uniform float uHasMap, uMute, uFloor, uMottle, uSpec;
+uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss;
 uniform vec3 uSunDir, uLit, uShade, uLift, uHazeColor;
 uniform float uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
 uniform vec2 uRepeat;
@@ -205,6 +208,21 @@ void main() {
     float s = pow(max(dot(normalize(vNV), normalize(L + V)), 0.0), 36.0);
     c += uLit * uSpec * smoothstep(0.3, 0.55, s) * t;
   }
+  if (uGloss > 0.0) {
+    // R20 (visual-ref5 wet street, ref6 saloon boards): a polished or wet floor mirrors the practicals and a low sun as
+    // soft streaks that run toward the lens (a grazing Blinn lobe stretches them on its own).
+    vec3 V = normalize(-vView), N = normalize(vNV), g = vec3(0.0);
+    #if NUM_POINT_LIGHTS > 0
+    for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
+      vec3 L = pointLights[i].position - vView;
+      float r = length(L);
+      g += pointLights[i].color * pow(max(dot(N, normalize(L / max(r, 1e-3) + V)), 0.0), 40.0) * (1.0 - smoothstep(0.0, pointLights[i].distance * 2.5, r));
+    }
+    #endif
+    vec3 Ls = normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz);
+    g += uLit * 0.16 * pow(max(dot(N, normalize(Ls + V)), 0.0), 80.0) * t; // a narrow glare path, not a wash
+    c += uGloss * g;
+  }
   c = max(mix(vec3(dot(c, W)), c, uSat), 0.0);
   c = aerial(c, vDist);
   c += uEmissive * a; // HDR glow keeps the map's frames and mullions dark
@@ -229,10 +247,12 @@ export type ToonOpts = {
   mottle?: number;
   /** Soft toon highlight strength (metal only). */
   spec?: number;
+  /** Wet/polished floor: mirrored streaks of the practicals and the sun, 0-1. */
+  gloss?: number;
 };
 
 /** Two-tone toon material. `mute` (0-1) pulls the map toward grey, then `color` tints it; `floor` lifts its darkest value. */
-export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0 }: ToonOpts = {}) =>
+export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0, gloss = 0 }: ToonOpts = {}) =>
   new ShaderMaterial({
     vertexShader: vertex,
     fragmentShader: fragment,
@@ -253,6 +273,7 @@ export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], o
       uWear: { value: wear?.amount ?? 0 },
       uMottle: { value: mottle },
       uSpec: { value: spec },
+      uGloss: { value: gloss },
       uWearC: { value: wear?.center ?? 0 },
       uWearW: { value: wear?.width ?? 1 },
     },

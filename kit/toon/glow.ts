@@ -1,4 +1,4 @@
-import { AdditiveBlending, Camera, Color, DataTexture, Group, LinearFilter, Mesh, Object3D, PlaneGeometry, ShaderMaterial, Sprite, SpriteMaterial, Vector3 } from "three";
+import { AdditiveBlending, Camera, Color, DataTexture, DoubleSide, Group, LinearFilter, Mesh, Object3D, PlaneGeometry, ShaderMaterial, Sprite, SpriteMaterial, Vector3 } from "three";
 import { SKY } from "./ink";
 import type { LightPreset } from "./lights";
 import type { PracticalKind } from "./shade";
@@ -113,6 +113,58 @@ export const sunDisc = (radius: number, hot = "#fffbea", edge = "#ffc95e", halo 
   m.layers.set(SKY);
   m.raycast = () => {};
   return m;
+};
+
+const shaftFrag = /* glsl */ `
+uniform vec3 uColor;
+uniform float uSeed;
+varying vec2 vUv;
+void main() {
+  // x across the beam, y along it (0 = where the light enters). The beam widens a little as it travels.
+  float x = (vUv.x - 0.5) / (0.6 + 0.4 * vUv.y);
+  float body = 1.0 - smoothstep(0.18, 0.5, abs(x));
+  // Painted streaks running down the beam (a few soft stripes), constant along it.
+  float s = 0.55 + 0.25 * sin(x * 23.0 + uSeed * 7.1) + 0.2 * sin(x * 51.0 + uSeed * 3.3);
+  float along = smoothstep(0.0, 0.12, vUv.y) * (1.0 - smoothstep(0.45, 1.0, vUv.y));
+  gl_FragColor = vec4(uColor * body * s * along, 1.0);
+}`;
+
+/**
+ * Light shafts (R20, visual-ref4 forest, ref5 street, ref6 saloon window): a few soft painted beams slanting from
+ * where the light enters (`from`, along `dir`), each a camera-facing ribbon around its own axis. Additive, colour pass
+ * only, no ink. Kept faint and wide so they read as light in dusty air, not as stage spotlights (strength ~.1-.25).
+ * `spread` m: how far apart the beams start (across the beam direction).
+ */
+export const lightShafts = (from: Vector3, dir: Vector3, o: { length: number; width: number; color: string; count?: number; spread?: number; strength?: number; seed?: number }) => {
+  const { length, width, color, count = 4, spread = width * 2, strength = 0.18, seed = 1 } = o;
+  const d = dir.clone().normalize(), g = new Group();
+  const across = new Vector3().crossVectors(d, Math.abs(d.y) > 0.95 ? new Vector3(1, 0, 0) : new Vector3(0, 1, 0)).normalize();
+  const h = (n: number) => { const x = Math.sin(n * 91.7 + seed * 47.3) * 43758.5453; return x - Math.floor(x); };
+  const geo = new PlaneGeometry(1, 1).translate(0, 0.5, 0);
+  const center = new Vector3(), side = new Vector3();
+  for (let i = 0; i < count; i++) {
+    const start = from.clone().addScaledVector(across, (i / Math.max(count - 1, 1) - 0.5) * spread + (h(i) - 0.5) * 0.3 * spread);
+    const w = width * (0.55 + 0.7 * h(i + 10)), L = length * (0.75 + 0.25 * h(i + 20));
+    const m = new Mesh(geo, new ShaderMaterial({
+      vertexShader: discVert, fragmentShader: shaftFrag, blending: AdditiveBlending, transparent: true, depthWrite: false, fog: false, side: DoubleSide,
+      uniforms: { uColor: { value: new Color(color).multiplyScalar(strength * (0.5 + 0.5 * h(i + 30))) }, uSeed: { value: h(i + 40) * 10 } },
+    }));
+    m.matrixAutoUpdate = false;
+    m.layers.set(SKY);
+    m.raycast = () => {};
+    m.frustumCulled = false;
+    // Axial billboard: the ribbon turns about the beam axis to face the lens.
+    m.onBeforeRender = (_r, _s, cam: Camera) => {
+      center.copy(start).addScaledVector(d, L / 2);
+      toCam.setFromMatrixPosition(cam.matrixWorld).sub(center);
+      side.crossVectors(d, toCam).normalize();
+      const n = new Vector3().crossVectors(side, d).normalize();
+      m.matrix.makeBasis(side.clone().multiplyScalar(w), d.clone().multiplyScalar(L), n).setPosition(start);
+      m.matrixWorld.copy(m.matrix);
+    };
+    g.add(m);
+  }
+  return g;
 };
 
 /**

@@ -1,4 +1,4 @@
-import { Composition } from "remotion";
+﻿import { Composition } from "remotion";
 import { CastLineup, CloseUp } from "./CastLineup";
 import { CharacterTest } from "./CharacterTest";
 import { CharacterLineup } from "./CharacterLineup";
@@ -14,6 +14,7 @@ import { PipelineTest } from "./videos/_pipeline-test/Video";
 import { PipelineTest2 } from "./videos/_pipeline-test-2/Video";
 import { FRAMES as PT2_FRAMES } from "./videos/_pipeline-test-2/story";
 import { STRESS_FRAMES, StressTest } from "./videos/_stress-test/Video";
+import { VISUAL_TEST_FRAMES, VisualTest } from "./videos/_visual-test/Video";
 import { ZOMBIE_FRAMES, ZombieSupermarket } from "./videos/zombie-supermarket-30-days/Video";
 
 export const RemotionRoot: React.FC = () => (
@@ -39,6 +40,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="PipelineTest" component={PipelineTest} fps={30} durationInFrames={450} width={1080} height={1920} />
       <Composition id="PipelineTest2" component={PipelineTest2} fps={30} durationInFrames={PT2_FRAMES} width={1080} height={1920} />
       <Composition id="StressTest" component={StressTest} fps={30} durationInFrames={STRESS_FRAMES} width={1080} height={1920} />
+      <Composition id="VisualTest" component={VisualTest} fps={30} durationInFrames={VISUAL_TEST_FRAMES} width={1080} height={1920} />
       <Composition id="ZombieSupermarket" component={ZombieSupermarket} fps={30} durationInFrames={ZOMBIE_FRAMES} width={1080} height={1920} />
   </>
 );

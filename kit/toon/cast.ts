@@ -51,6 +51,16 @@ export const blinkAt = (frame: number, fps: number, seed = 1) => {
 };
 
 /**
+ * Expression timeline (R20, visual-ref1 reaction ladder: every swap goes through a closed-eye frame): [frame, expr]
+ * keys; the eyes shut for 2 frames on each change, on top of the seeded blinks.
+ */
+export const exprAt = <E extends string>(keys: [number, E][], F: number, seed = 1): { expr: E; blink: boolean } => {
+  let i = 0;
+  while (i + 1 < keys.length && keys[i + 1][0] <= F) i++;
+  return { expr: keys[i][1], blink: (i > 0 && F - keys[i][0] < 2) || blinkAt(F, 30, seed) };
+};
+
+/**
  * A character card standing at `position` (soles on the ground): camera-facing on the NOINK layer, with a soft
  * contact blob offset away from the sun, a real cast shadow (an invisible sun-facing copy of the card, alpha-tested
  * into the shadow map) and a lamp-thrown decal shadow. Redraws only when the drawn state or light direction changes.

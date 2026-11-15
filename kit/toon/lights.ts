@@ -1,4 +1,4 @@
-import { Color, Vector3 } from "three";
+﻿import { Color, Vector3 } from "three";
 import type { GradeName } from "./grade";
 
 type RGB = [number, number, number];
@@ -141,6 +141,35 @@ export const LIGHTS = {
     char: { tint: [1.0, 0.9, 0.86], shade: 0.86 },
     charInk: "#2a1638",
     grade: "golden",
+  },
+  // R20 (visual-ref4 ending, ref6 sunset street, ref2 lobby): a low sun RAKING across the set from ahead-left, not
+  // from behind the street: sunlit facades and long diagonal shadows of posts, people and buildings cross the ground
+  // in big warm/cool blocks. Orange-gold light, a muted plum shade (never a violet wash), little haze, lamps on.
+  // el 26 (not 12): at 12 deg the left row shaded the whole 12 m street and the frame went one flat peach; the
+  // shadow must reach only part way across (cross-street reach = h * sin(az) / tan(el) ~ 1.1 h).
+  sunset: {
+    az: -32,
+    el: 26,
+    lit: [1.7, 1.06, 0.6],
+    shade: [0.4, 0.33, 0.56],
+    lift: [0.02, 0.015, 0.035],
+    litMax: 3.2,
+    skyTop: "#4a58b0",
+    skyMid: "#dc7f9c",
+    skyHorizon: "#ffc27c",
+    fog: "#f4b48c",
+    fogNear: 60,
+    fogFar: 340,
+    sat: 1.2,
+    haze: { color: "#f4b48c", start: 40, amount: 0.1 },
+    litTint: "#ffbc7c",
+    sunDisc: "#ffd6a0",
+    sunGlow: ["#ffb070", 0.7],
+    clouds: { lit: "#ffc89e", shade: "#8a68b0", cover: 0.55 },
+    lamp: ["#ffad52", 2.4],
+    char: { tint: [1.0, 0.9, 0.8], shade: 0.8 },
+    charInk: "#2e1530",
+    grade: "sunset",
   },
   // Moon-blue key, warm practicals carry the scene (lamp pools, lit windows).
   night: {

@@ -189,3 +189,21 @@ export const fidget = (p: Pose, F: number, seed: number, hasProp = false): Pose 
   arms[side] = arm;
   return { ...p, arms };
 };
+
+/**
+ * A listening head (R20, visual-ref5/6 holds: nobody's head is still while others act). On top of the pose: the gaze
+ * jumps between a few targets every 0.6-1.8 s (each jump eased over 3 frames, like the refs' eye darts) and the
+ * head drifts through a slow +-4 deg tilt. `gazes`: look values to pick from (default: lens, a little left/right).
+ */
+export const alive = (p: Pose, F: number, seed: number, gazes: number[] = [0, -0.35, 0.3, 0.05]): Pose => {
+  const h = (n: number) => { const x = Math.sin(n * 127.1 + seed * 311.7) * 43758.5453; return x - Math.floor(x); };
+  let t = Math.floor(h(0) * 20), k = 0, prev = 0;
+  while (true) {
+    const next = t + 18 + Math.floor(h(k + 1) * 36);
+    if (next > F) break;
+    prev = k; k++; t = next;
+  }
+  const g = (i: number) => gazes[Math.floor(h(i + 50) * gazes.length) % gazes.length];
+  const e = Math.min((F - t) / 3, 1), s = e * e * (3 - 2 * e);
+  return { ...p, look: Math.max(-1, Math.min(1, p.look + lerp(k ? g(prev) : g(0), g(k), s))), tilt: (p.tilt ?? 0) + 4 * Math.sin((F + seed * 53) / 41) };
+};

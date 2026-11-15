@@ -248,10 +248,10 @@ export const groundTex = ({ kind, base, contrast = 0.5, accent, grime = 0, grout
   });
 
 /** Ground material; `wear` = a smoother worn path down the middle (lateral uv in metres). */
-export const groundMaterial = (o: GroundOpts, wear?: { center: number; width: number }) => {
+export const groundMaterial = (o: GroundOpts, wear?: { center: number; width: number }, gloss = 0) => {
   const k = o.kind === "asphalt" ? 1 / ASPHALT_TILE : 0.5;
   // Asphalt paints its own lane wear (offset half a tile so the painted centre sits on the road axis).
-  return toonMaterial({ map: groundTex(o), repeat: [k, k], offset: o.kind === "asphalt" ? 0.5 : 0, wear: wear && o.kind !== "asphalt" ? { ...wear, amount: 0.75 } : undefined, mottle: 0.14 });
+  return toonMaterial({ map: groundTex(o), repeat: [k, k], offset: o.kind === "asphalt" ? 0.5 : 0, wear: wear && o.kind !== "asphalt" ? { ...wear, amount: 0.75 } : undefined, mottle: 0.14, gloss });
 };
 
 // ------------------------------------------------------------- puddles
