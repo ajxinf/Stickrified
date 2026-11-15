@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { ShotSize, arc, drift, frameOn, impact, pullOut, pushIn, reframe, shot, smootherstep, telephoto } from "../../../kit/toon/camera";
+import { CamPose, ShotSize, arc, drift, frameOn, impact, pullOut, pushIn, reframe, shot, smootherstep, telephoto } from "../../../kit/toon/camera";
 import { actionPose, blinkAt, posed, reactSquash, walkPose } from "../../../kit/toon/cast";
 import type { CharState, Look } from "../../../kit/toon/cast";
 import { DOF, Dof, POST } from "../../../kit/toon/Composer";
@@ -61,7 +61,7 @@ export const WORLD: Record<World, { preset: PresetName; light: keyof typeof LIGH
   "int-night": { preset: "supermarket_abandoned", light: "moonInterior", scene: "store night", sun: new Vector3(0.25, Math.sin((24 * Math.PI) / 180), 1).normalize() },
 };
 
-export type S = Shot & { from: number; frames: number; dof: Dof; w: World; look?: ShotLook; crowd?: boolean; motes?: { center: Vector3; size: Vector3; color: string } };
+export type S = Shot & { from: number; frames: number; dof: Dof; w: World; look?: ShotLook; crowd?: boolean; cartClear?: number; motes?: { center: Vector3; size: Vector3; color: string } };
 
 // ---------------------------------------------------------------- helpers
 
@@ -79,6 +79,11 @@ const still = (p: Vector3) => () => p;
 const st = (pose: Pose, expr: Expr, F: number, seed: number, extra: Partial<CharState> = {}): CharState => ({ pose: fidget(pose, F, seed, !!extra.prop), expr, blink: blinkAt(F, FPS, seed), fx: {}, ...extra });
 const withSquash = (p: Pose, squash: number): Pose => ({ ...p, squash });
 const shake = impact;
+/** A smooth jolt (a damped wobble, not impact()'s every-frame flip): stays under the guard's acceleration cap. */
+const jolt = (pose: (f: number) => CamPose, at: number, amp = 0.03, len = 14) => (f: number): CamPose => {
+  const p = pose(f), k = f - at, d = k >= 0 && k < len ? amp * Math.sin(k * 0.9) * (1 - k / len) ** 2 : 0;
+  return { ...p, pos: p.pos.clone().add(new Vector3(d, 0.6 * d, 0)), look: p.look.clone().add(new Vector3(d, 0.6 * d, 0)) };
+};
 
 // ---------------------------------------------------------------- roles (composition frames)
 
@@ -118,7 +123,9 @@ const youKnock: Role = {
   state: (F) => {
     const e = exprAt([[0, "relieved"], [BEAT.members, "confused"], [BEAT.only, "shocked"], [onWord(BEAT.only + 6), "scared"], [onWord(BEAT.so + 4), "deadpan"]], F);
     const knocking = F >= BEAT.knocked - LEAD && F < W_.he - 4;
-    const pose = knocking ? actionPose("knock", F / FPS, -0.6) : posed("idle", F / FPS, -0.6);
+    // R14: the raps are locked to the knock_steel hits (knocked - 2, knocked + 7): fist out on contact, back between.
+    const rap = Math.max(...[BEAT.knocked - 2, BEAT.knocked + 7].map((h) => Math.max(0, 1 - Math.abs(F - h) / 4)));
+    const kp = POSES.knock, pose = knocking ? { ...kp, look: -0.6, arms: [kp.arms[0], { ...kp.arms[1], at: [0.3 + 0.14 * rap, 0.08 - 0.04 * rap] }] as Pose["arms"], bob: 3 * rap } : posed("idle", F / FPS, -0.6);
     // On "only" the slam blows your fringe back: a big squash, ring eyes, the "!" pop.
     return st(withSquash(pose, e.squash || reactSquash(F - BEAT.only + LEAD) * 1.6), e.expr, F, 2, { fx: F >= BEAT.only - LEAD ? { ringEyes: true, bang: F - BEAT.only + LEAD } : {} });
   },
@@ -171,13 +178,34 @@ const youTape: Role = {
   // Taping: the arm pulls strips across (actionPose "tape"), then hands on hips and a grin on "hedgehog".
   state: (F) => {
     const e = exprAt([[0, "determined"], [BEAT.hedgehog, "grin"]], F);
-    return st(withSquash(F < BEAT.hedgehog - LEAD ? actionPose("tape", F / FPS, -0.5) : posed("hips", F / FPS, -0.5), e.squash), e.expr, F, 3);
+    // R14 (tape_rip SFX with no picture): each rip (tape - 28, tape) is the end of a pull, then the strip slaps down
+    // onto the toys (hand drops, squash) and the hand comes back to the roll.
+    const pull = (rip: number) => {
+      const d = F - rip, k = (a: number, b: number) => smootherstep(Math.min(Math.max((d - a) / (b - a), 0), 1));
+      return { out: k(-12, 0) * (1 - k(8, 16)), slap: k(1, 5) * (1 - k(8, 16)) };
+    };
+    const a = pull(BEAT.tape - 28), b = pull(BEAT.tape), out = Math.max(a.out, b.out), slap = Math.max(a.slap, b.slap);
+    const base = POSES.tape;
+    const taping: Pose = { ...base, look: -0.5, arms: [base.arms[0], { ...base.arms[1], at: [0.05 + 0.5 * out - 0.1 * slap, 0.36 + 0.22 * slap] }], lean: 0.4 + 0.3 * slap };
+    const slapSq = reactSquash(F - BEAT.tape - 3) + reactSquash(F - BEAT.tape + 25);
+    return st(withSquash(F < BEAT.hedgehog - LEAD ? taping : posed("hips", F / FPS, -0.5), e.squash || slapSq * 0.6), e.expr, F, 3, F < BEAT.hedgehog - LEAD ? { prop: "tape" } : {});
   },
 };
 const YOU_DINO = CART_IN.clone().add(new Vector3(-1.0, 0, -0.2)), DAVE_DINO = CART_IN.clone().add(new Vector3(-0.75, 0, 1.25));
 const youDino: Role = {
   name: "you", look: youLook, at: still(YOU_DINO),
-  state: (F) => st(posed("hold", F / FPS, 0.2), F < BEAT.very - LEAD ? "worried" : "scared", F, 3, { fx: { sweat: Math.min(Math.max((F - BEAT.battery) / 40, 0), 1) } }),
+  // R14 (battery SFX with no picture): the right hand waits out to the side with the battery, slides it to the hatch on
+  // "battery" (battery_slide), creeps in through "very, very" and pushes home on the click (gently + 8).
+  state: (F) => {
+    const p = posed("hold", F / FPS, 0.2), click = BEAT.gently + 8; // plastic_click lead -8 = 8 f after the word
+    const k = (a: number, b: number) => smootherstep(Math.min(Math.max((F - a) / (b - a), 0), 1));
+    const slide = k(BEAT.battery - 8, BEAT.battery + 2), creep = k(BEAT.battery + 6, click - 2), push = k(click - 2, click) * (1 - 0.4 * k(click + 2, click + 10));
+    const shake = 0.012 * Math.sin(F * 1.9) * (1 - push); // nervous hand
+    const x = 0.52 - 0.34 * slide - 0.12 * creep - 0.1 * push, y = 0.22 + 0.16 * slide + 0.06 * creep + 0.04 * push + shake;
+    const arms: Pose["arms"] = [p.arms[0], { ...p.arms[1], at: [x, y], grip: "mitt" }];
+    const e = { expr: (F < BEAT.very - LEAD ? "worried" : F < BEAT.gently - LEAD ? "scared" : "relieved") as Expr, squash: 0 };
+    return st(withSquash({ ...p, arms }, reactSquash(F - click) * 0.8), e.expr, F, 3, { fx: { sweat: Math.min(Math.max((F - BEAT.battery) / 40, 0), 1) } });
+  },
 };
 const daveTorch: Role = { name: "dave", look: daveLook, at: still(DAVE_DINO), state: (F) => st(posed("hold", F / FPS, -0.6), "scared", F, 4, { prop: "flashlight" }) };
 const chadWake: Role = {
@@ -187,12 +215,19 @@ const chadWake: Role = {
     return st(withSquash(posed(F < BEAT.up - LEAD ? "hold" : "panic", F / FPS, 0), e.squash), e.expr, F, 7, { fx: F >= BEAT.up - LEAD ? { ringEyes: true, bang: F - BEAT.up + LEAD, sweat: 0.6 } : {} });
   },
 };
+// R14 B26 (the kick never touched the cart): the cart-side foot (lift[0], negative reach = screen-right at look 0.8) winds back, swings out
+// and meets the cart on the kick_cart SFX (kick - 2), then follows through as the cart starts to roll (kick + 2).
 const YOU_KICK = at(DOCK.s - 1.0, -FRONT + 0.4, DOCK.floor);
+const kickAt = (F: number): Pose => {
+  const k = F - (BEAT.kick - 2), ease = (a: number, b: number, x: number) => smootherstep(Math.min(Math.max((x - a) / (b - a), 0), 1));
+  const back = ease(-12, -4, k) * (1 - ease(-4, 0, k)), out = ease(-4, 0, k), settle = ease(6, 14, k);
+  return { ...POSES.kick, look: 0.8, lift: [(30 * back + 55 * out) * (1 - settle), 0], reach: (14 * back - 95 * out) * (1 - settle), sway: -7 * out + 4 * back, knee: 20 };
+};
 const youKick: Role = {
   name: "you", look: youLook, at: still(YOU_KICK),
   state: (F) => {
-    const kicking = F >= BEAT.kick - LEAD && F < BEAT.kick + 10;
-    return st(withSquash(kicking ? { ...POSES.kick, look: 0.8 } : posed("hips", F / FPS, 0.8), reactSquash(F - BEAT.kick + LEAD)), F < BEAT.kick - LEAD ? "smirk" : "determined", F, 3);
+    const kicking = F >= BEAT.kick - 14 && F < BEAT.kick + 12;
+    return st(withSquash(kicking ? kickAt(F) : posed("hips", F / FPS, 0.8), reactSquash(F - BEAT.kick + 2)), F < BEAT.kick - LEAD ? "smirk" : "determined", F, 3);
   },
 };
 const chadRoofEnd: Role = {
@@ -287,7 +322,8 @@ const shots: S[] = [
     return { pose: reframe(front, mcu, m - 16, m + 2), whips: [[m - 16, m + 2]] as [number, number][], cast: inShot(F0, [chadMock]), subject: "chad", subjectFrom: m + 2, crowd: true, dof: POST.dof };
   })()),
   // Line 4. Day 1: you knock on his shutter.
-  sh("B06-knock", BEAT.on1 - 4, W_.he - 2, "ext-day", { pose: creep(fo(YOU_SHUTTER, at(CHAD.s + 2.2, -1.5), "mcu", youLook, { side: -0.4 }), 70, 0.08), cast: inShot(BEAT.on1 - 4, [youKnock]), subject: "you", dof: DOF.medium(2.2) }),
+  // R14 (knock with no door in frame): the lens looks along the shopfront, the shutter recedes beside you.
+  sh("B06-knock", BEAT.on1 - 4, W_.he - 2, "ext-day", { pose: creep(fo(YOU_SHUTTER, at(CHAD.s + 3.6, FRONT - 2.4), "mcu", youLook, { side: 0.2 }), 70, 0.08), cast: inShot(BEAT.on1 - 4, [youKnock]), subject: "you", dof: DOF.medium(2.2) }),
   // The slot slides open on two sunglasses ("He said"), and slams on "only" (impact shake).
   sh("B07-slot", W_.he - 2, BEAT.only + 4, "ext-day", {
     pose: shake(creep({ pos: SHUTTER_AT.clone().add(new Vector3(-1.9, 1.6, 0.35)), look: SHUTTER_AT.clone().add(new Vector3(0, 1.58, 0)), fov: 30 }, 40, 0.1), BEAT.only - (W_.he - 2), 0.012),
@@ -339,7 +375,7 @@ const shots: S[] = [
     cast: inShot(BEAT.very - 4, [youDino]), subject: "you", dof: DOF.closeup(1.2), motes: motes(YOU_DINO, "#c8c0ff"), // R14 QA f1527: same air as B21
   }),
   // Line 14. Dawn, day 30: the generator coughs a smoke ring...
-  sh("B23-coughs", W_.onDay30 - 6, BEAT.dies - 4, "ext-dawn", { pose: whipIn(creep({ pos: GENERATOR.clone().add(new Vector3(-3.6, 0.85, -2.9)), look: GENERATOR.clone().add(new Vector3(0.3, 0.95, 0.9)), fov: 50 }, 80, 0.4)), whips: [[0, WHIP]], dof: POST.dof }),
+  sh("B23-coughs", W_.onDay30 - 6, BEAT.dies - 4, "ext-dawn", { pose: jolt(whipIn(creep({ pos: GENERATOR.clone().add(new Vector3(-3.6, 0.85, -2.9)), look: GENERATOR.clone().add(new Vector3(0.3, 0.95, 0.9)), fov: 50 }, 80, 0.4)), BEAT.coughs - 8 - (W_.onDay30 - 6)), whips: [[0, WHIP]], dof: POST.dof }), // R14: the cough jolts the frame
   // ...and dies: the floodlight goes dark against the sky.
   sh("B24-lights-out", BEAT.dies - 4, BEAT.electric - 12, "ext-dawn", { pose: creep({ pos: FLOODS[0].clone().add(new Vector3(-2.0, -1.0, -0.6)), look: FLOODS[0].clone(), fov: 36 }, 30, 0.08), dof: POST.dof }),
   // Line 15. The shutter rolls up on Chad in pyjamas: tilt up to his face, ring-eyed on "up".
@@ -379,10 +415,11 @@ const shots: S[] = [
       if (dir.lengthSq() < 1e-6) dir.set(1, 0, 0);
       dir.normalize();
       const k = smootherstep(Math.min(Math.max((f + BEAT.ball - (CART_RUN.door - 6)) / 24, 0), 1)); // settle on the doorway
-      const pos = c.clone().addScaledVector(dir, -3.4).add(new Vector3(0, 1.5, 0)).addScaledVector(dir, -1.2 * k).add(new Vector3(0, 0.5 * k, 0));
-      return { pos, look: c.clone().addScaledVector(dir, 3).setY(1.0).lerp(CHAD_DOOR.clone().setY(1.5), k), fov: 52 - 4 * k, roll: 0 };
+      // R14 (the crash happened inside the crowd): the lens rises over the heads and looks down at the counter.
+      const pos = c.clone().addScaledVector(dir, -3.4).add(new Vector3(0, 1.5, 0)).addScaledVector(dir, -1.2 * k).add(new Vector3(0, 1.6 * k, 0));
+      return { pos, look: c.clone().addScaledVector(dir, 3).setY(1.0).lerp(CHAD_DOOR.clone().setY(0.7), k), fov: 52 - 4 * k, roll: 0 };
     }, BEAT.door2 - BEAT.ball, 0.05),
-    kicks: [[BEAT.door2 - BEAT.ball, BEAT.door2 - BEAT.ball + 7]], crowd: true, wide: true, dof: POST.dof,
+    kicks: [[BEAT.door2 - BEAT.ball, BEAT.door2 - BEAT.ball + 7]], crowd: true, cartClear: 2.4, wide: true, dof: POST.dof,
     flash: [[BEAT.chadRoof - 10 - BEAT.ball, BEAT.chadRoof + 4 - BEAT.ball]], // the DustWipe (Video.tsx), planned
   }),
   // Line 20. Chad made it to the roof, clutching the megaphone, trembling.

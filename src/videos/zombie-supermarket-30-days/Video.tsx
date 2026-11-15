@@ -65,6 +65,16 @@ const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
   return <primitive object={o} />;
 };
 
+/** The crowd stands clear of the cart; with `cartClear` also of the sightline lens -> cart (R14 B30b: the crash
+ * happened behind a wall of zombies). */
+const keepOff = (s: S, f: number) => {
+  const c = cartAt(f), out = [{ pos: c, r: s.cartClear ?? 1.0 }];
+  if (!s.cartClear) return out;
+  const lens = s.pose(f - s.from).pos.clone().setY(c.y);
+  for (let k = 1; k < 8; k++) out.push({ pos: lens.clone().lerp(c, k / 8), r: 1.1 });
+  return out;
+};
+
 const ShotView: React.FC<{ s: S }> = ({ s }) => {
   const lf = useCurrentFrame(), f = lf + s.from;
   const { width, height } = useVideoConfig();
@@ -81,7 +91,7 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <ToonWorld preset={light} sunDir={W.sun} shadow={shadow} />
       <Street preset={preset} light={light} opts={ext ? EXT_OPTS : INT_OPTS} />
       {extras.map((o, i) => <primitive key={i} object={o} />)}
-      {s.crowd && <Crowd spec={HORDE} f={f} avoid={avoid} keepOff={[{ pos: cartAt(f), r: 1.0 }]} />}
+      {s.crowd && <Crowd spec={HORDE} f={f} avoid={avoid} keepOff={keepOff(s, f)} />}
       {s.motes && <Dust center={s.motes.center} size={s.motes.size} color={s.motes.color} strength={0.9} count={260} />}
       {ext && <Dust center={at(32, 0, 3)} size={new Vector3(16, 6, 30)} color={s.w === "ext-dawn" ? "#ffd8a8" : "#fff4dc"} strength={0.8} count={420} />}
       {moving.map((p) => <Moving key={p.name} prop={p} f={f} />)}

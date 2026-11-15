@@ -41,7 +41,7 @@ export type Look = {
   sneakers?: boolean;
 };
 
-export type PropName = "phone" | "flashlight" | "box" | "can" | "mug" | "lantern";
+export type PropName = "phone" | "flashlight" | "box" | "can" | "mug" | "lantern" | "tape";
 export type CharState = { pose: Pose; expr: Expr; blink: boolean; fx: Effects; prop?: PropName };
 
 const { SOLE } = DESIGN;
@@ -133,6 +133,14 @@ const drawProp = (p: Pen, name: CharState["prop"], arms: Solved[], u: number) =>
     p.poly(rect(hx - 8 * u, hy + 6 * u, 16 * u, 4 * u), "#4a4058", w);
     p.poly(rect(hx - 7 * u, hy + 10 * u, 14 * u, 18 * u), "#ffd27a", w);
     p.poly(rect(hx - 9 * u, hy + 28 * u, 18 * u, 4 * u), "#4a4058", w);
+  } else if (name === "tape") {
+    // A roll in the left hand, the strip pulled out to the right hand (its length is however far apart the hands are).
+    p.stroke([[l[0], l[1] - 4 * u], [r[0], r[1] - 4 * u]], 7 * u, "#e9e2c6");
+    p.stroke([[l[0], l[1] - 7.5 * u], [r[0], r[1] - 7.5 * u]], 1.4 * u);
+    p.stroke([[l[0], l[1] - 0.5 * u], [r[0], r[1] - 0.5 * u]], 1.4 * u);
+    p.dot(l[0], l[1] - 4 * u, 11 * u, "#d9cfa8");
+    p.arc(l[0], l[1] - 4 * u, 11 * u, 11 * u, 0, 360, w);
+    p.dot(l[0], l[1] - 4 * u, 5 * u, "#8a7a5a");
   } else if (name === "phone") {
     const [hx, hy] = r;
     p.poly(rect(hx - 8 * u, hy - 24 * u, 16 * u, 27 * u), "#3a3048", w);
@@ -182,7 +190,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   ([-1, 1] as const).forEach((side, i) => {
     const lift = pose.lift[i];
     const hx = CX + side * 15 * u, hy = torsoBot - 0.12 * HH;
-    const fx = CX + side * (22 * u - lift * 0.15), fy = SOLE - 4 * u - lift;
+    const fx = CX + side * (22 * u - lift * 0.15 + (lift > 2 ? pose.reach ?? 0 : 0) * u), fy = SOLE - 4 * u - lift;
     const bow = side * (1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u);
     const leg: P2[] = [[hx, hy], [(hx + fx) / 2 + bow, (hy + fy) / 2], [fx, fy]];
     p.stroke(leg, 5.8 * u, look.shorts ? mix(CREAM, INK, 0.5) : legCol);

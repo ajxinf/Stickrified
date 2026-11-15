@@ -15,6 +15,7 @@ export type Pose = {
   bob: number; // upper body up (+) / down (-), design px
   sway: number; // upper-body tilt, degrees (+ = toward the card's right)
   lift: [number, number]; // foot lift, left / right
+  reach?: number; // a lifted foot swings this far out (design px, kicks)
   arms: [Arm, Arm]; // left, right
   look: number; // head turn -1 (card left) .. 1 (card right)
   knee?: number; // extra outward knee bend, px

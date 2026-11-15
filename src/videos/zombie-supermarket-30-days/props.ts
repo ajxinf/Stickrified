@@ -2,15 +2,16 @@ import {
   AdditiveBlending, BoxGeometry, BufferAttribute, CanvasTexture, BufferGeometry, CatmullRomCurve3, CylinderGeometry, Group, Mesh, MeshBasicMaterial, Object3D,
   PlaneGeometry, ShaderMaterial, SphereGeometry, TorusGeometry, TubeGeometry, Vector3,
 } from "three";
-import { MAT } from "../../../kit/toon/build/kit";
+import { Kit, MAT } from "../../../kit/toon/build/kit";
+import { TOY_COLS, toyParts } from "../../../kit/toon/build/toys";
 import { glowSprite } from "../../../kit/toon/glow";
 import type { MovingProp } from "../../../kit/toon/guard";
 import { handWorld } from "../../../kit/toon/cast";
 import type { Hand } from "../../../kit/toon/cast";
 import { youLook } from "../../../kit/toon/protagonist";
-import { NOINK, SKY } from "../../../kit/toon/ink";
+import { NOINK } from "../../../kit/toon/ink";
 import {
-  CART_IN, CHAD, CHART, CHART_AT, DOCK, FLOODS, FUEL_AT, GENERATOR, GRILL, ROOF_Y, SHUTTER_AT, scrawlTex,
+  CART_IN, CHAD, CHART, CHART_AT, DOCK, FLOODS, FUEL_AT, GRILL, ROOF_Y, SHUTTER_AT, scrawlTex,
   battery, chartTex, dinoToy, duckToy, floodGlass, fuelCan, hedgehogCart, megaphone, shutter, toothbrush,
 } from "./build";
 import { BEAT, CART_RUN, cartAt } from "./roles";
@@ -135,56 +136,51 @@ const shutterProp: MovingProp = {
   touches: ["CHAD'S HARDWARE"],
 };
 /** The generator's sad smoke ring on "coughs". */
-const smokeRing: MovingProp = {
+const smokeRing = (s: S): MovingProp => ({
   name: "smoke ring",
   make: () => new Mesh(new TorusGeometry(0.16, 0.06, 8, 20), new MeshBasicMaterial({ color: "#3a3640", transparent: true, opacity: 0.9, depthWrite: false })),
   pose: (o, F) => {
-    const t = (F - BEAT.coughs + 2) / 40;
+    // R14 (the ring left frame at the top): it puffs out of the exhaust toward the B23 lens, face-on, so it reads as an O.
+    const t = (F - BEAT.coughs + 8) / 40;
     if (t < 0 || t > 1) return false;
-    o.position.copy(GENERATOR).add(new Vector3(0.2, 1.3 + 1.2 * t, -0.4 + 0.3 * t));
-    o.rotation.set(Math.PI / 2 - 0.3, 0, 0);
-    o.scale.setScalar(1 + 2.2 * t);
+    const p = s.pose(BEAT.coughs - 8 - s.from), cam = p.pos, ex = p.look.clone().add(new Vector3(0, 0.75, 0)); // the top of the housing in frame
+    const k = 1 - (1 - t) ** 2;
+    o.position.copy(ex).lerp(cam, 0.22 * k).add(new Vector3(0, 0.3 * k, 0));
+    o.lookAt(cam);
+    o.scale.setScalar(0.6 + 0.9 * k);
     ((o as Mesh).material as MeshBasicMaterial).opacity = 0.9 * (1 - t);
     return true;
   },
   touches: ["CHAD'S HARDWARE"],
-};
+});
 
 // ---------------------------------------------------------------- the megaphone's sound rings
 
-const ringMat = () => new ShaderMaterial({
-  uniforms: { uA: { value: 1 } },
-  vertexShader: "void main(){ gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-  fragmentShader: "uniform float uA; void main(){ gl_FragColor = vec4(vec3(1.0, 0.92, 0.7) * 1.6 * uA, 1.0); }",
-  blending: AdditiveBlending, transparent: true, depthWrite: false,
-});
-const soundRings = (s: S, starts: number[]): MovingProp => ({
+// R14 (art direction: soft additive rings had no ink): solid cream tubes on the inked layer, popped off at the end
+// (a fading opaque ring would leave its ink outline behind, like the old smoke puff).
+const ringMat = () => new MeshBasicMaterial({ color: "#fff1cf" });
+const soundRings = (s: S, starts: number[], src: (F: number) => Vector3 = (F) => bellAt(s, F), size = 1): MovingProp => ({
   name: "sound rings",
   make: () => {
     const g = new Group();
-    for (let i = 0; i < 6; i++) {
-      const m = new Mesh(new TorusGeometry(1, 0.035, 6, 40), ringMat());
-      m.layers.set(SKY);
-      g.add(m);
-    }
+    for (let i = 0; i < 3 * starts.length; i++) g.add(new Mesh(new TorusGeometry(1, 0.06, 8, 40), ringMat()));
     return g;
   },
   pose: (o, F) => {
-    const mouth = bellAt(s, F);
+    const mouth = src(F);
     const cam = s.pose(F - s.from).pos;
     let any = false;
     o.children.forEach((m, i) => {
       const t = (F - starts[Math.floor(i / 3)] - (i % 3) * 5) / 26;
-      m.visible = t > 0 && t < 1;
+      m.visible = t > 0 && t < 0.85;
       if (!m.visible) return;
       any = true;
       // Rings travel toward the street (the camera side) and grow.
       const dir = cam.clone().sub(mouth).normalize();
       // Small and short-lived (a telephoto shot turned 1.8 m rings into bands across the frame).
-      m.position.copy(mouth).addScaledVector(dir, 0.25 + 1.1 * t);
+      m.position.copy(mouth).addScaledVector(dir, (0.25 + 1.1 * t) * size);
       m.lookAt(m.position.clone().add(dir));
-      m.scale.setScalar(0.12 + 0.45 * t);
-      ((m as Mesh).material as ShaderMaterial).uniforms.uA.value = 1 - t;
+      m.scale.setScalar((0.12 + 0.45 * t) * size);
     });
     return any;
   },
@@ -265,21 +261,23 @@ const dinoProp = (s: S): MovingProp => ({
   name: "dino",
   make: dinoToy,
   pose: (o, F) => {
-    o.position.copy(handOf(s, "you", "both", F, 0.12));
+    o.position.copy(handOf(s, "you", "left", F, 0.12));
     o.scale.setScalar(0.5);
     faceCam(o, s, F);
     o.rotateY(Math.PI / 2);
   },
   heldBy: "you",
-  hand: "both",
+  hand: "left", // R14: the right hand is busy with the battery
 });
 /** The battery travels from your right hand into the dinosaur's hatch (between your hands), very, very gently. */
 const batteryIn = (s: S): MovingProp => ({
   name: "battery going in",
   make: battery,
   pose: (o, F) => {
-    const t = ease((F - BEAT.battery) / (BEAT.gently + 10 - BEAT.battery));
-    o.position.copy(handOf(s, "you", "right", F, 0.16).lerp(handOf(s, "you", "both", F, 0.16), t)).add(new Vector3(0, 0.02 * Math.sin(F * 0.7) * (1 - t), 0));
+    // R14: the right hand itself carries it in (story.ts youDino); after the click it is inside the hatch.
+    if (F > BEAT.gently + 10) return false; // gone into the hatch on the click (gently + 8)
+    o.position.copy(handOf(s, "you", "right", F, 0.16));
+    o.scale.setScalar(1.8); // reads at phone size (a true-size AA was ~20 px)
     o.rotation.set(0, 0, Math.PI / 2);
   },
   heldBy: "you",
@@ -379,6 +377,34 @@ const grillSmoke: MovingProp = {
   touches: ["CHAD'S HARDWARE"],
 };
 
+/** R14 (the crash was never drawn): on cart_crash the toys burst out of the cart, tumble and land around the counter. */
+const CRASH = CART_RUN.stop;
+const toyBurst: MovingProp = {
+  name: "toy burst",
+  make: () => {
+    const g = new Group();
+    for (let i = 0; i < 12; i++) {
+      const k = new Kit();
+      toyParts(k, i, TOY_COLS[i % TOY_COLS.length], 0, 0, 0, 1.4);
+      g.add(k.build());
+    }
+    return g;
+  },
+  pose: (o, F) => {
+    const s = (F - CRASH) / 30;
+    if (s < 0) return false;
+    const c = cartAt(CRASH);
+    o.children.forEach((m, i) => {
+      const a = i * 2.39996, sp = 1.4 + 0.9 * ((i * 0.618) % 1), up = 3.2 + 1.6 * ((i * 0.382) % 1);
+      const fall = Math.min(s, (up + Math.sqrt(up * up + 2 * 9.8 * 1.1)) / 9.8); // lands on the floor, then lies still
+      m.position.set(c.x + Math.cos(a) * sp * fall, Math.max(0.02, 1.1 + up * fall - 4.9 * fall * fall), c.z + Math.sin(a) * sp * fall);
+      m.rotation.set(5 * fall * Math.cos(a), 7 * fall, 4 * fall * Math.sin(a));
+    });
+    return true;
+  },
+  touches: ["CHAD'S HARDWARE"],
+};
+
 export const propsFor = (s: S): MovingProp[] => {
   const id = s.id.split("/")[1].split("-")[0];
   const ext = s.w.startsWith("ext");
@@ -386,6 +412,7 @@ export const propsFor = (s: S): MovingProp[] => {
   switch (id) {
     case "B01": out.push(youHeapToy(s), poppedBattery(s), quackBubble(s)); break;
     case "B03": case "B03b": case "B04": case "B05": out.push(megaProp(s, () => false)); break;
+    case "B06": out.push({ ...soundRings(s, [BEAT.knocked - 2, BEAT.knocked + 7], (F) => handOf(s, "you", "right", F, 0.05), 0.45), heldBy: undefined }); break; // R14: the raps land on the shutter
     case "B11": out.push(megaProp(s, (F) => F >= BEAT.grabs + 6), soundRings(s, [BEAT.morning - 2, BEAT.boy - 4])); break;
     case "B12": out.push(megaProp(s, () => false)); break;
     case "B13": out.push(spatulaProp(s), grillSmoke); break;
@@ -397,10 +424,12 @@ export const propsFor = (s: S): MovingProp[] => {
       out.push(cartIn, dinoProp(s), batteryIn(s), torchPool(() => you.clone().add(new Vector3(0.1, 1.0, 0.25)), 0.9, 0.7));
       break;
     }
-    case "B23": out.push(smokeRing); break;
+    case "B23": out.push(smokeRing(s)); break;
     case "B25": out.push(brushProp(s)); break;
     case "B26": out.push(cartExt("you")); break;
-    case "B27": case "B28": case "B29": case "B30": case "B30b": out.push(cartExt(), trail); break;
+    case "B28": out.push(cartExt(), trail, { ...soundRings(s, [BEAT.scream - 2, BEAT.scream + 10], (F) => cartAt(F).add(new Vector3(0, 1.1, 0)), 1.8), heldBy: undefined }); break; // R14: the toys scream
+    case "B27": case "B29": case "B30": out.push(cartExt(), trail); break;
+    case "B30b": out.push(cartExt(), trail, toyBurst); break;
     case "B31": case "B33": out.push(megaProp(s, () => false, true), brushProp(s)); break;
   }
   return out;

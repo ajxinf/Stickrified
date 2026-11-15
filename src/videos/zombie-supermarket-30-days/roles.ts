@@ -227,7 +227,8 @@ const frac = (x: number) => x - Math.floor(x);
 const shutterSpot = (i: number) => at(CHAD.s - 3 + 6 * frac(i * 0.618034 + 0.13), FRONT - 0.5 - 4 * frac(i * 0.754877 + 0.41), 0);
 
 /** The cart's path from the kick to inside Chad's shop (also used by props.ts). */
-export const CART_RUN = { kick: BEAT.kick, foot: BEAT.kick + 26, door: BEAT.door2 - 30, stop: BEAT.door2 - 12 };
+// R14: the cart hits Chad's counter ON the cart_crash SFX (door2 - 2), at full speed (it used to ease to a stop 10 f early).
+export const CART_RUN = { kick: BEAT.kick, foot: BEAT.kick + 26, door: BEAT.door2 - 30, stop: BEAT.door2 - 2 };
 export const cartAt = (f: number): Vector3 => {
   const { kick, foot, door, stop } = CART_RUN;
   const inside = at(CHAD.s, FRONT + 2.0, 0.04);
@@ -243,7 +244,7 @@ export const cartAt = (f: number): Vector3 => {
     const t = (f - foot) / (door - foot);
     return RAMP_FOOT.clone().lerp(doorP, 1 - (1 - t) ** 1.3).setY(0.02);
   }
-  return doorP.lerp(inside, ease((f - door) / (stop - door)));
+  return doorP.lerp(inside, Math.min(Math.max((f - door) / (stop - door), 0), 1));
 };
 
 /** Zombie i at composition frame f. */
