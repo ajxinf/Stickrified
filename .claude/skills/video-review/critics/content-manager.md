@@ -8,8 +8,8 @@ Read `critics/_protocol.md` first (coverage, shot ledger, evidence, self-check).
 
 ## What you look at
 `pack.md` (timeline, pacing, catalogue, analytics line), `script.json`, `SCRIPT.md`, `sources.md` (history),
-`PUBLISH.md` (titles, description), `src/videos/<slug>/story.ts` (shot plan), **every** sheet and the key frames in
-`out/<slug>/qa/frames/`, `audio/cues.md`, `audio/loudness.json`, `assets/CREDITS.md`. Rules to hold it to: the
+`PUBLISH.md` (titles, description), `src/videos/<slug>/story.ts` (shot plan), **every** phone sheet in `out/<slug>/qa/frames/phone/` and
+the key frames protocol 1 allows in `out/<slug>/qa/frames/`, `audio/cues.md`, `audio/loudness.json`, `assets/CREDITS.md`. Rules to hold it to: the
 `stickrified-script` skill (story engine, back half, entertainment rules), `toon-world-short` "Visual
 storytelling", "Shoot the gag" and "Staging and camera", and `CLAUDE.md` content rules. Open every file you cite;
 one you did not open is "not checked", never "fine".

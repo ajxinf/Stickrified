@@ -8,7 +8,7 @@ Never recommend abandoning the art direction to copy a reference.
 Read `critics/_protocol.md` (coverage, ledger, evidence, self-check) and `docs/style/QUALITY_STANDARD.md` first.
 
 ## What you look at
-- Every sheet in `out/<slug>/qa/frames/sheets/` in order, and key frames at full size for every transition and gag.
+- Every QA sheet in `out/<slug>/qa/frames/sheets/` in order (inserts included), and key frames at full size for every transition and gag.
 - The metrics JSON from `scripts/ref_compare.py` (still %, median motion, luma, colourfulness, longest move, audio).
 - Reference frames for side-by-side: extract with ffmpeg from `assets/video-standard.mp4` and `assets/visual-ref*.mp4`
   at the timestamps the standard cites; compare a comparable shot type (dialogue medium, wide, insert, transition).

@@ -12,7 +12,7 @@ the `video-qa` skill's job. This skill adds whether the video is worth watching.
 |---|---|---|
 | 1. Technical QA (Opus) | `.claude/skills/video-qa/SKILL.md` (unchanged) | Is anything broken? |
 | 2. Cold Viewer | `critics/cold-viewer.md` | Would a stranger scrolling past stop and stay? |
-| 3. Regular Viewer | `critics/regular-viewer.md` | Is this a good episode of *our* channel, and not a repeat? |
+| 3. Regular Viewer | `critics/regular-viewer.md` | Is this a good episode of *our* channel, and not a repeat? Runs only once the catalogue has a published episode (pilot: skipped, it repeated the Cold Viewer). |
 | 4. Content Manager | `critics/content-manager.md` | Can it compete, grow the channel and earn money? |
 | 5. Production Quality (Opus) | `critics/production-quality.md` + `docs/style/QUALITY_STANDARD.md` | Does it look as well made as the reference shorts? (10 categories, gate >= 8) |
 
@@ -31,7 +31,11 @@ Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evide
 1. **Evidence pack.** `python scripts/review_pack.py <slug>` writes `out/<slug>/review/pack.md`: which assets
    exist, the review stage (script only / voiced / rendered), a line-by-line timeline (time, shots, gag, text,
    sfx), pacing numbers and the channel catalogue. If `final.mp4` exists but `out/<slug>/qa/frames/` does not, run
-   `python scripts/frames.py out/<slug>/final.mp4 out/<slug>/shots.json videos/<slug>` so critics see exact frames.
+   `python scripts/frames.py out/<slug>/final.mp4 out/<slug>/shots.json videos/<slug>` so critics see exact frames
+   (QA sheets for the Opus checks, phone sheets for the critics: protocol 1). **Re-review (round 2+):** add
+   `--prev out/<slug>/review/prev_final.mp4` so it writes `CHANGED.md`; every agent then opens only the changed
+   shots plus the previous round's open items (protocol 1). After a round's reports are written, copy
+   `final.mp4` to `out/<slug>/review/prev_final.mp4`: that render is the next round's baseline.
 2. **Technical QA.** Rendered video: run the `video-qa` skill as written (it is module 1, reuse its outputs:
    `layer1.md`, `out/qa/<name>/report.md`, `QA.md`). Layer 3's eye pass is a fresh agent on **Opus** (pass
    `model: "opus"`; user rule 2026-11-14) that reads all sheets, pulls frames of any insert that is on no sheet
@@ -43,11 +47,11 @@ Critics (Sonnet) all follow `critics/_protocol.md` (coverage, shot ledger, evide
    `critics/_protocol.md`, `critics/production-quality.md`, `QUALITY_STANDARD.md`, the frame sheets and
    `python scripts/ref_compare.py assets/video-standard.mp4 out/<slug>/final.mp4 out/<slug>/review/r<N>/metrics.json`.
    It writes `r<N>-production-quality.md`. Runs in parallel with step 3.
-3. **Three critics, independently.** Each critic is a fresh agent on the latest **Sonnet** (pass
+3. **The critics, independently** (Cold Viewer and Content Manager; plus the Regular Viewer once an episode is published). Each critic is a fresh agent on the latest **Sonnet** (pass
    `model: "sonnet"`; user rule 2026-11-14: critics never run on Opus) given ONLY: `critics/_protocol.md`, its
    critic file, `pack.md`, the paths of the assets marked present, and the authorities above. The prompt repeats
    the protocol's coverage rule ("open every sheet in order and start with the coverage line"): Sonnet samples
-   otherwise (round 2: 14-24 of 75 sheets). No critic sees another's report or any earlier score. Run the three
+   otherwise (round 2: 14-24 of 75 sheets). No critic sees another's report or any earlier score. Run them
    in parallel. Each writes `out/<slug>/review/r<N>/r<N>-<critic>.md` in the format its file sets. A report whose
    coverage line shows sampling, or with problems lacking frames, is sent back once to the same agent. (If
    agents are unavailable, run them one at a time yourself and write each report before reading the next critic
@@ -96,7 +100,7 @@ at 4. Script-only reviews give no QA score ("n/a").
 - **Nobody hears the audio.** Audio judgments come from `words.json` timings, `events.json`/`cues.md`,
   `loudness.json` and the tag clips; say so in the audio lines.
 - Watching = reading frame sheets and key frames (`qa/frames/`), never playback, never a summary.
-- **Before calling something missing, open every sheet of that shot** (`<shot>_01..NN`). Pilot round 1: two critics
+- **Before calling something missing, open every sheet of that shot** (the `S*`/`P*` sheets INDEX.md lists for its frames). Pilot round 1: two critics
   read only B25_01 and called Chad's shock and toothbrush missing; both land on "up" in B25_02. In consolidation,
   the lead re-checks every "missing" claim from a critic that sampled sheets.
 - A prompt or plan edit is not a changed video: footage changes only after the re-render, and re-review reads the

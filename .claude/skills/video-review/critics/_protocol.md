@@ -3,18 +3,24 @@
 Your critic file says *what* to judge. This file says *how*: coverage, evidence, the shot ledger and a self-check.
 A report that breaks a rule here is sent back.
 
-## 1. Coverage: open everything, log it
-- Open **every** sheet in `out/<slug>/qa/frames/sheets/` in shot order (`B01_01`, `B01_02`, ... to the last), as
-  images. No sampling. Round 2 critics opened 14-24 of 75 sheets and called gags "missing" that were on the
-  sheets they skipped.
+## 1. Coverage: open everything you are given, log it
+Which sheets you get depends on your role (token budget, 2026-11-15: 75 full sheets per agent was ~170k tokens):
+- **Viewer critics (Cold Viewer, Regular Viewer, Content Manager, Sonnet):** every `phone/P*.png` in
+  `out/<slug>/qa/frames/phone/` in order (2 frames a second at phone size, the way a viewer sees it, ~7 sheets).
+  Open a `key/` frame only where your file names it or a phone tile leaves a real question; **at most 10 key
+  frames** in total.
+- **Opus checks (QA layer 3, Production Quality):** every `sheets/S*.png` (every 3rd frame of the whole video,
+  inserts included, ~40 sheets), plus key frames where a sheet raises a question. Pull frames straight from
+  `final.mp4` only for something on no sheet or key frame, **at most 10**.
+- **Re-reviews** (`CHANGED.md` exists in `qa/frames/`): open only the sheets it lists for the changed shots, plus
+  the frames of every open item from the previous round. Shots it lists as unchanged keep the previous round's
+  ledger rows and findings: copy them, marked "carried from round N-1". Your scores still judge the whole video.
 - **Write each sheet's ledger rows to your report file right after you open it** (append, then open the next).
   Images drop out of your context after a few dozen: round 3 critics opened all 75 sheets but kept no notes on the
   first 15-40, so half the video ended up "not reviewed".
-- Then open the key frames your file names (opening frames, word starts of gag words, the last frame).
-- An insert drawn over the 3D (a chart, an x-ray, a stamp card) may be on no sheet: check `INDEX.md`; if it is
-  missing there, say "insert not on sheets, not reviewed" rather than guessing.
 - Start your report with a **coverage line**: `Sheets opened: N of M (all) / key frames: list`. If you could not
-  open some, list them and mark every claim about those shots "not reviewed".
+  open some, list them and mark every claim about those shots "not reviewed". No sampling: round 2 critics opened
+  14-24 of 75 sheets and called gags "missing" that were on the sheets they skipped.
 
 ## 2. The shot ledger (build it before you judge)
 For every shot in `pack.md`'s timeline, write one row in a scratch table (keep it in the report as an appendix):
@@ -32,7 +38,7 @@ Your problems list is built from this ledger, so every problem has a shot and a 
 
 ## 3. Evidence rules
 - Every claim cites a time (s), frame (`f1234`), shot id or line number. No evidence, no claim.
-- "Missing" means you opened every sheet of that shot and list them ("B10_01-03, every tile").
+- "Missing" means you opened every sheet covering that shot and list them ("P03-P04, every tile").
 - Separate **observed** (in a frame or a file) from **predicted** (what a viewer would do). Label predictions.
 - Nobody hears the audio: judge sound only from `words.json`, `cues.md`, `events.json`, `loudness.json`, and say so.
 - Do not read other critics' reports, `REVIEW.md` or earlier rounds. Fresh eyes are the point.

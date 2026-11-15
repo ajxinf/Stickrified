@@ -8,8 +8,8 @@ Read `critics/_protocol.md` first (coverage, shot ledger, evidence, self-check).
 
 ## What you look at
 - `pack.md` timeline (what is said, when, over which shot) and pacing numbers.
-- Frames: `out/<slug>/qa/frames/key/` for 0-3 s (every key frame of the opening), then **every** sheet in
-  `qa/frames/sheets/` in order. Script-only review: the `scene`, `camera` and `gag` fields stand in for frames;
+- Frames: `out/<slug>/qa/frames/key/` for 0-3 s (the opening key frames), then **every** phone sheet in
+  `qa/frames/phone/` in order (protocol 1). Script-only review: the `scene`, `camera` and `gag` fields stand in for frames;
   say so.
 - Read the narration as heard (the `spoken` text, at its word times), not as an essay.
 - Do NOT open `script.json` comments, `SCRIPT.md` notes, `story.ts` or anything that explains intent: a stranger

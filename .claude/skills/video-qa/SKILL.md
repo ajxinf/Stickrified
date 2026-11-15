@@ -63,7 +63,7 @@ Export the plan for layer 2 at the same time: `out/<slug>/plan.json` with
 
 ## Layer 3: eyes on exact frames, never on playback
 1. `python scripts/frames.py out/<slug>/final.mp4 out/<slug>/shots.json videos/<slug>` decodes every frame (exact
-   index, no seek rounding) into `qa/frames/`: per-shot sheets of every 2nd frame labelled `f123  S3  word`, full-size
+   index, no seek rounding) into `qa/frames/`: QA sheets of every 3rd frame of the whole video (inserts included) labelled `f123  B04  word`, phone sheets (2/s) for the critics, full-size
    key frames (shot first/last, dissolve middles, every word start, every sound cue) and `INDEX.md` with a checklist.
 2. Read **every** sheet and tick every tile: clipping, scale, contact, background, faces on the word, light. Note
    problems by frame number, then open the key frame at full size to confirm. Any clip found here that layer 1
