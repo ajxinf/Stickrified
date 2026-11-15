@@ -1,6 +1,9 @@
 # R14 quality upgrade: status (2026-11-15, pass 4)
 Standard: docs/style/QUALITY_STANDARD.md. Gate: video-review module 5 (Opus), every category >= 8, no auto-fail.
-Last module-5 review (on pass 2): FAIL, scores 4-6 (videos/zombie-supermarket-30-days/QUALITY_R14.md).
+Last module-5 review (on pass 4): FAIL, scores 5-6 in every category (videos/zombie-supermarket-30-days/QUALITY_R14_P4.md).
+The reviewer's ordered fix list in that file supersedes the 'Still open' list below. Its points on pass-4 work:
+battery not readable at phone size, kick still reads as missing the cart, tape slap off-frame, knock has no door edge
+in frame, smoke ring behind the DAY 30 card, counter impact unreadable, bean can vanishes f1278->1280.
 
 Done in pass 4 (commits 7f01915..0f65a75):
 1. B25/B27 stair-stepped band: shadow frustum fitted per shot (Video.tsx shadowFor). Blue mosaic + SALE halo were the
