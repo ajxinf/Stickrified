@@ -105,7 +105,9 @@ const TileRow: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => 
       {ROW.map((word, i) => {
         const t0 = B.they + i * step, k = F - t0;
         if (k < 0) return null;
-        const drop = ease(k / 8), x = (0.14 + i * 0.18) * w, y = (0.2 + 0.37 * drop) * h, s = 0.7 + 0.08 * (k < 10 ? Math.sin((k / 10) * Math.PI) : 0);
+        // Two rows above the caption band: IN THIS WORLD / YOU'RE FREE.
+        const row = i < 3 ? 0 : 1, col = i < 3 ? i - 1 : i - 3.5;
+        const drop = ease(k / 8), x = (0.5 + col * 0.3) * w, y = (0.2 + (0.31 + 0.08 * row) * drop) * h, s = 0.66 + 0.08 * (k < 10 ? Math.sin((k / 10) * Math.PI) : 0);
         return <Tile key={word} text={word} x={x} y={y} s={s} w={w} glow={0.6} rot={(1 - drop) * (i % 2 ? 14 : -14)} />;
       })}
     </AbsoluteFill>
@@ -164,5 +166,5 @@ export const Meta: React.FC = () => {
     </AbsoluteFill>
   );
 };
-/** Words the captions skip: "grab" is in your fist, line 19 is the tile caption. */
-export const SKIP_CAPTION = (start: number) => Math.round(start * 30) === B.grab || (Math.round(start * 30) >= B.inThis - 1 && Math.round(start * 30) < B.loops9000 - 1);
+/** Frames with no normal captions: "grab" is in your fist (until the next word), and line 19 is the tile caption. */
+export const captionsOff = (F: number) => (F >= B.grab - 1 && F < B.something - 1) || (F >= B.inThis - 1 && F < B.loops9000 - 1);

@@ -15,7 +15,7 @@ import { toss } from "../../../kit/toon/physics";
 import { practicalLights, toonMaterial } from "../../../kit/toon/shade";
 import { Stamp } from "../../../kit/toon/Stamp";
 import { ToonWorld } from "../../../kit/toon/world";
-import { Meta, SKIP_CAPTION } from "./meta";
+import { Meta, captionsOff } from "./meta";
 import { B, FRAMES, JAR_REST, PLAN, S, SHOTS, SIGN_RISE, WORLDS, jarPose, propsFor, signY, words, youAtF } from "./story";
 import { BED_JAR, BR, PINK_PRESET, SIGN_AT, STREET, STREET_PRESET, WALL_X, at, bedroom, narratorSign, poseSign, wordTile } from "./world";
 
@@ -138,7 +138,8 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
   );
 };
 
-const CAPTION_WORDS = words.filter((w) => !SKIP_CAPTION(w.start));
+/** Normal captions, switched off where the story's own words take over (meta.tsx captionsOff). */
+const StoryCaptions: React.FC = () => (captionsOff(useCurrentFrame()) ? null : <Captions words={words} />);
 
 export const TrappedInThisWorld: React.FC = () => (
   <AbsoluteFill style={{ background: "black" }}>
@@ -151,7 +152,7 @@ export const TrappedInThisWorld: React.FC = () => (
     <Meta />
     <Stamp text="LOOP 9,000" at={B.loop9000 - 2} hold={44} />
     <Stamp text="LOOP 1" at={B.loopOne - 2} hold={FRAMES - B.loopOne} />
-    <Captions words={CAPTION_WORDS} />
+    <StoryCaptions />
     {getRemotionEnvironment().isStudio && <Audio src={staticFile("trapped-in-this-world/mix.wav")} />}
   </AbsoluteFill>
 );

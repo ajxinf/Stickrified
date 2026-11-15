@@ -31,7 +31,7 @@ export const TALLY = { s0: 15.4, s1: 19.6, y0: 0.35, y1: 3.1 };
 export const PLAN = { s0: 14.25, s1: 15.25 };
 export const DOOR_S = 20.9;
 export const YOU_SPOT = at(12, 4.0, 0.02); // where you punch the edge of the screen, every loop
-export const GARY_X = 4.85; // Gary's line along the pavement (worn into the cobbles)
+export const GARY_X = 5.25; // Gary's line along the pavement (worn into the cobbles), clear of the lamp posts at 4.45
 export const SIGN_AT = at(19, 1.0, 6.2); // the narrator's caption sign floats over the street
 
 const placed = (o: Object3D, p: Vector3, ry = 0) => ((o.position.copy(p), (o.rotation.y = ry)), o);
@@ -118,6 +118,7 @@ export const yourWall = () => {
   k.box(MAT.darkStone(), 0.5, 0.35, L, WALL_X + 0.15, 0.175, -18);
   k.box(MAT.stone(), 0.55, 0.22, L + 0.1, WALL_X + 0.17, H, -18);
   const g = k.build();
+  g.userData.collider = "your wall";
   const decal = (tex: CanvasTexture, s0: number, s1: number, y0: number, y1: number) => {
     const m = new Mesh(new PlaneGeometry(s1 - s0, y1 - y0), new MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
     m.position.copy(at((s0 + s1) / 2, WALL_X - 0.005, (y0 + y1) / 2));
@@ -148,7 +149,9 @@ export const yourWall = () => {
 };
 /** Two shallow grooves worn into the cobbles along Gary's line (s 0-40). */
 export const grooves = () => {
-  const g = new Group(), mat = new MeshBasicMaterial({ color: "#2a1c1c", transparent: true, opacity: 0.35, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3 });
+  const g = new Group();
+  g.userData.collider = "grooves";
+  const mat = new MeshBasicMaterial({ color: "#2a1c1c", transparent: true, opacity: 0.35, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3 });
   for (const dx of [-0.13, 0.13]) {
     const m = new Mesh(new PlaneGeometry(0.11, 40), mat);
     m.rotation.x = -Math.PI / 2;
@@ -269,7 +272,7 @@ export const bedroom = () => {
   k.add(wall, new BoxGeometry(0.15, 0.95, 4.4), RX, 0.475, -1.5, { tile: true });
   k.add(wall, new BoxGeometry(0.15, 0.75, 4.4), RX, 2.525, -1.5, { tile: true });
   k.add(wall, new BoxGeometry(0.15, 1.2, 1.7), RX, 1.55, -2.85, { tile: true });
-  k.add(wall, new BoxGeometry(0.15, 1.2, 2.1), RX, 1.55, -0.45, { tile: true });
+  k.add(wall, new BoxGeometry(0.15, 1.2, 1.6), RX, 1.55, -0.1, { tile: true }); // window opening z -2.0..-0.9
   const trim = M("brTrim", () => toonMaterial({ map: rough("#efe6d4"), repeat: [1, 1] }));
   k.add(trim, new BoxGeometry(0.22, 0.06, 1.25), RX - 0.03, 0.93, -1.45);
   // Bed: frame, mattress, blanket, pillow (under it, the jar).
