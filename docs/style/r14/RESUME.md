@@ -46,3 +46,15 @@ B30b: cart reaches the counter with a toy burst f2184-2187 (REVIEW_R5 #4 partly 
 the frame from f2190 and the trail is still an un-inked additive glow (#5). QA flags unchanged in kind (B28/B29 SHAKE/JERK
 = cart rattle #9, POP f1557 jump cut #7, WASH/CLIP f1645 floodlight #10). Critics not rerun (one shot changed).
 review/prev_final.mp4 now = R16 render. Next: REVIEW_R5 #1 (opening premise, f0-f255).
+
+## R17 (2026-11-15): hook fix, REVIEW_R5 #1 (user's pick: zombie cut on "212")
+- B01 now ends on "out of" (f28); new B01z-snap f28-61 (ext-day): three zombies in the empty dock lane (s 30-33, the
+  crowd keeps it clear) snap ring-eyed toward the store on "212", CHAD'S MEMBERS ONLY behind; reveal_pop SFX on "212".
+  Lens notes: from FRESHMART's side the dock ramp + rail are in the way; the lens sits at s 29.5 (from at(26, -FRONT)).
+- B03b: after the whip to the wide, cranes down into the densest cluster (s 37.5, x 0.5; 33 within 2.5 m) over local
+  f31-76, landing before "sound": heads ~1/8 frame, ring-eyed tilt reads (was 2-3 px dots).
+- Audio rebuilt (sfx_gen + mix): -14.0 LUFS, -1.3 dBTP. Render commit 15653fb.
+- R17 render: exit 0, CHANGED = B01z + B03b only; no new QA flags in f0-280 (LIGHTJUMP f173 dL .006 is the old whip).
+  Sheets S001/S004 confirm both reads. prev_final.mp4 = R17 render. Critics not rerun yet.
+  Next from REVIEW_R5: #2 dead holds/specks (B05 Chad speck + ELECTRIC button, B17 cart crop, B29/B30/B33 empty slabs),
+  #3 contact actions (kick f1755, battery into dino f1440, can f1278), #7 jump cuts B21/B22.
