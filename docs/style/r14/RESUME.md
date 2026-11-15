@@ -39,3 +39,10 @@ Tried and REVERTED (each failed QA layer 1 in stills; do not retry the same way)
 Not reviewed after R16 (token limit): run the delta re-review next session (CHANGED.md vs review/prev_final.mp4 =
 the round-5 render). Still open from REVIEW_R5.md: opening premise (f0-255), contact moments, empty slabs, x-ray restyle,
 crowd motion, jump cuts B21/B22, colourfulness .231 (< .25).
+
+## R16 delta check (2026-11-15, next session)
+R16 render done (exit 0). CHANGED.md: only B30b (B01's box removal is under the 1.5 diff threshold; S001 shows no box).
+B30b: cart reaches the counter with a toy burst f2184-2187 (REVIEW_R5 #4 partly fixed); the ring/dust wipe still covers
+the frame from f2190 and the trail is still an un-inked additive glow (#5). QA flags unchanged in kind (B28/B29 SHAKE/JERK
+= cart rattle #9, POP f1557 jump cut #7, WASH/CLIP f1645 floodlight #10). Critics not rerun (one shot changed).
+review/prev_final.mp4 now = R16 render. Next: REVIEW_R5 #1 (opening premise, f0-f255).
