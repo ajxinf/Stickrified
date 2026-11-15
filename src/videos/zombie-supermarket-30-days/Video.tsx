@@ -13,6 +13,7 @@ import { Dust } from "../../../kit/toon/dust";
 import { DustWipe } from "../../../kit/toon/DustWipe";
 import { MovingProp, QAPlan, ShotCamera } from "../../../kit/toon/guard";
 import { Insert } from "../../../kit/toon/Insert";
+import { Birds } from "../../../kit/toon/life";
 import { LIGHTS } from "../../../kit/toon/lights";
 import { Stamp } from "../../../kit/toon/Stamp";
 import { ToonWorld } from "../../../kit/toon/world";
@@ -94,6 +95,8 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       {s.crowd && <Crowd spec={HORDE} f={f} avoid={avoid} keepOff={keepOff(s, f)} />}
       {s.motes && <Dust center={s.motes.center} size={s.motes.size} color={s.motes.color} strength={0.9} count={260} />}
       {ext && <Dust center={at(32, 0, 3)} size={new Vector3(16, 6, 30)} color={s.w === "ext-dawn" ? "#ffd8a8" : "#fff4dc"} strength={0.8} count={420} />}
+      {ext && <Birds f={f} from={at(-10, 6, 16)} to={at(75, -4, 19)} />}
+      {ext && <Birds f={f + 190} from={at(70, 10, 22)} to={at(-5, -8, 18)} count={6} period={520} />}
       {moving.map((p) => <Moving key={p.name} prop={p} f={f} />)}
       {s.cast?.map((c) => <Character key={c.name} position={c.at(lf)} state={c.state(lf)} look={c.look} />)}
       <Composer dof={s.dof} look={lookOf(s)} />

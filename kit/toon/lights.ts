@@ -93,6 +93,30 @@ export const LIGHTS = {
     charInk: "#2e1530",
     grade: "golden",
   },
+  // R15 (review r4: 30 s of one blue-violet): golden with a warmer, lighter shade (rose-lilac, not blue) and more
+  // lift, so shade and sunlit read as a warm/cool PAIR; the cool side keeps blue but no longer swallows the frame.
+  dawn: {
+    az: 6,
+    el: 11,
+    lit: [1.5, 0.86, 0.5],
+    shade: [0.4, 0.3, 0.62],
+    lift: [0.06, 0.04, 0.06],
+    litMax: 4,
+    skyTop: "#5c6aa8",
+    skyMid: "#e89a8c",
+    skyHorizon: "#ffd890",
+    fog: "#f2b896",
+    fogNear: 50,
+    fogFar: 300,
+    sat: 1.12,
+    haze: { color: "#f2b896", start: 30, amount: 0.28 },
+    litTint: "#ffc89c",
+    sunDisc: "#ffd6a0",
+    clouds: { lit: "#ffd0a8", shade: "#9a86c4", cover: 0.62 },
+    char: { tint: [1.0, 0.9, 0.8], shade: 0.9 },
+    charInk: "#2e1530",
+    grade: "golden",
+  },
   // Backlit: the sun just right of straight ahead, 8 deg up; peach sunlit patches ~3x the violet shade, long
   // shadows toward the lens; haze only past 50 m.
   dusk: {
