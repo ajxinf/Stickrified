@@ -1,0 +1,33 @@
+{
+ "fps": 30,
+ "frames": "auto",
+ "events": [
+  {"f": 10, "sfx": "glass_knock", "pan": 0.6, "gain_db": -3, "note": "punch 1 on the frame edge (meta ripple, f10)"},
+  {"f": 24, "sfx": "glass_knock", "pan": 0.6, "gain_db": -3, "note": "punch 2"},
+  {"f": 38, "sfx": "glass_knock", "pan": 0.6, "gain_db": -2, "note": "punch 3: the crack grows"},
+  {"word": "ends", "n": 0, "lead": -6, "sfx": "tape_rewind", "note": "the whole street rewinds (REWIND = ends + 6)"},
+  {"word": "9,000", "n": 0, "lead": 2, "sfx": "stamp_thump", "note": "LOOP 9,000 stamp"},
+  {"word": "9,000", "n": 0, "lead": -3, "sfx": "chalk_snap", "pan": 0.3, "note": "the chalk snaps on mark 9,000"},
+  {"word": "narrator", "n": 0, "lead": 4, "sfx": "sign_rise", "note": "the caption sign rises over the street (SIGN_RISE)"},
+  {"word": "me", "n": 0, "lead": 2, "sfx": "reveal_pop", "note": "the sign's eyes open on 'me'"},
+  {"word": "on", "n": 0, "lead": 0, "sfx": "wall_splat", "note": "you smack flat into the painted door"},
+  {"word": "soup", "n": 0, "lead": 6, "sfx": "soup_squelch", "note": "soup sloshes out of your shoe"},
+  {"word": "grab", "n": 0, "lead": 0, "sfx": "word_pluck", "note": "you snatch the word out of the captions"},
+  {"word": "near", "n": 0, "lead": 3, "sfx": "hand_slap", "pan": 0.4, "note": "you slap Gary's hand away from the jar"},
+  {"word": "move", "n": 0, "lead": 1, "sfx": "freeze_zap", "note": "you freeze grey (FREEZE_AT)"},
+  {"word": "clips", "n": 0, "lead": 6, "sfx": "ladder_swing", "pan": 0.3, "note": "Gary's ladder swings round and clips your jar"},
+  {"word": "jar", "n": 1, "lead": -8, "sfx": "cork_pop", "note": "the cork pops, the words fly out"},
+  {"word": "captions", "n": 0, "lead": 0, "sfx": "tile_clicks", "note": "the stolen words click into the caption row"},
+  {"word": "free", "n": 0, "lead": 0, "sfx": "screen_shatter", "pan": 0.6, "note": "the frame edge shatters on 'free'"},
+  {"word": "dive", "n": 0, "lead": -10, "sfx": "whoosh_big", "note": "the dive through the crack (the only whoosh)"},
+  {"word": "one", "n": 2, "lead": 2, "sfx": "stamp_thump", "note": "LOOP 1 stamp"}
+ ],
+ "music": {
+  "bpm": 120, "frames": "auto",
+  "button": {"word": "one", "n": 2}, "button_db": -26,
+  "build": {"word": "red", "lead": 10},
+  "stops": [[{"word": "move", "lead": -2}, {"word": "red", "lead": 4}]]
+ },
+ "ambience": {"street sunset": "amb_street_evening", "bedroom night": "amb_bedroom_night", "next video": "amb_suburb_morning"},
+ "space": {"street sunset": 0.45, "bedroom night": 0.6, "next video": 0.45}
+}

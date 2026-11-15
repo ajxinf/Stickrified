@@ -32,5 +32,21 @@
  "xray_beep": {"prompt": "Electronic scanner beep and a short digital glitch.", "dur": 0.8},
  "stampede": {"prompt": "Huge crowd stampede: hundreds of running footsteps thundering past, rumbling.", "dur": 3.0},
  "cart_crash": {"prompt": "A shopping cart crashing through a shop doorway: metal crash, glass and toys clattering everywhere.", "dur": 1.6},
- "megaphone_rattle": {"prompt": "A metal megaphone rattling in trembling hands, small nervous metallic shakes.", "dur": 1.0}
+ "megaphone_rattle": {"prompt": "A metal megaphone rattling in trembling hands, small nervous metallic shakes.", "dur": 1.0},
+ "amb_street_evening": {"prompt": "Ambience of a quiet old town high street at sunset: light breeze, a few distant birds, a faint far-off town hum. No voices, no music.", "dur": 20, "loop": true},
+ "amb_bedroom_night": {"prompt": "Quiet small bedroom at night: soft room tone, a clock ticking faintly, distant crickets through an open window. No voices, no music.", "dur": 20, "loop": true},
+ "amb_suburb_morning": {"prompt": "Pleasant suburban street on a sunny morning: birdsong and lots of pigeons cooing nearby, light breeze. No voices, no music.", "dur": 20, "loop": true},
+ "glass_knock": {"prompt": "A fist punching a very thick pane of glass: one dull heavy thud with a short glassy ring.", "dur": 0.6},
+ "tape_rewind": {"prompt": "An old VHS tape rewinding fast: whirring mechanical rewind with a warbly pitch-up squeal.", "dur": 1.5, "max_s": 0.9},
+ "chalk_snap": {"prompt": "A stick of chalk snapping in half against a brick wall: one tiny dry crack, then two little bits tapping on stone.", "dur": 0.6},
+ "sign_rise": {"prompt": "A huge heavy metal sign rising up out of the ground: low mechanical rumble and grinding, ending with a clunk.", "dur": 1.6, "max_s": 1.2},
+ "wall_splat": {"prompt": "A cartoon character running face-first into a flat brick wall: a heavy comedic thud with a little squish.", "dur": 0.6},
+ "soup_squelch": {"prompt": "A sneaker full of thick soup lifted off the ground: a wet slurpy squelch and a drip.", "dur": 0.8},
+ "word_pluck": {"prompt": "A quick bright cartoon pluck-pop, like snatching something small out of the air.", "dur": 0.5, "max_s": 0.4},
+ "hand_slap": {"prompt": "A quick light slap of one hand on another hand.", "dur": 0.5, "max_s": 0.4},
+ "freeze_zap": {"prompt": "A magic freeze spell: a quick icy crystalline crackle that stops dead.", "dur": 0.8},
+ "ladder_swing": {"prompt": "A long wooden ladder swung round fast and knocking a glass jar: a short wooden swish and a glassy clonk.", "dur": 0.7},
+ "cork_pop": {"prompt": "A cork popping out of a glass jar: one bright pop with a little fizz.", "dur": 0.5},
+ "tile_clicks": {"prompt": "Five small plastic tiles clicking into place one after another, evenly spaced, light and satisfying.", "dur": 1.4},
+ "screen_shatter": {"prompt": "A huge pane of glass shattering: a big bright crash, then tinkling shards.", "dur": 1.6, "max_s": 1.2}
 }

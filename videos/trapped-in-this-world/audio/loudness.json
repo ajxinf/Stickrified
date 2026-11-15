@@ -1,0 +1,26 @@
+{
+ "integrated_lufs": -14.01,
+ "true_peak_dbtp": -1.3,
+ "samples": 3334400,
+ "seconds": 69.46666666666667,
+ "channels": 2,
+ "premaster": {
+  "lufs": -14.23,
+  "dbtp": 0.68
+ },
+ "levels_db": {
+  "voice": 0,
+  "music_bed": -3,
+  "button": -26,
+  "sfx": -12,
+  "duck": -16,
+  "ambience": -9,
+  "amb_duck": -13
+ },
+ "voice_music_gap_db": 25.9,
+ "voice_music_gap_min_word_db": -9.2,
+ "worst_word": "So",
+ "voice_button_gap_db": 24.3,
+ "sfx_loudest_vs_voice_db": -19.2,
+ "sfx_loudest_at_s": 18.9
+}
