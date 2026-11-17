@@ -7,7 +7,6 @@ import { Captions } from "../../../kit/toon/Captions";
 import { Character } from "../../../kit/toon/cast";
 import type { Look } from "../../../kit/toon/cast";
 import { Composer } from "../../../kit/toon/Composer";
-import { Dust } from "../../../kit/toon/dust";
 import { glowSprite, practicalGlows, sunDisc } from "../../../kit/toon/glow";
 import { SKY } from "../../../kit/toon/ink";
 import { MovingProp, QAPlan, ShotCamera } from "../../../kit/toon/guard";
@@ -45,26 +44,28 @@ const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
 
 // ------------------------------------------------------------------ sky: moon, stars, Milky Way (follow the lens)
 const starTex = () => canvasTex(32, 32, (g) => { const r = g.createRadialGradient(16, 16, 0, 16, 16, 16); r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(0.35, "rgba(255,255,255,0.6)"); r.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = r; g.fillRect(0, 0, 32, 32); });
+// The band's plane: through the zenith and the sea-hill axis, a little tilted.
+const BAND_U = new Vector3(0, 1, 0), BAND_V = new Vector3(0.3, 0, 1).normalize(), BAND_N = new Vector3(1, 0, -0.3).normalize();
 const starField = (n: number, band: boolean, seed: number) => {
   const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) {
     let d: Vector3;
     if (band) {
       // a great circle tilted across the sky, stars spread round it (the Milky Way)
-      const a = rnd(i + seed) * Math.PI * 2, off = (rnd(i + seed + 1) + rnd(i + seed + 2) + rnd(i + seed + 3) - 1.5) * 0.22;
-      d = V(Math.cos(a), off, Math.sin(a)).normalize().applyAxisAngle(V(1, 0, 0.4).normalize(), 1.05);
+      const a = rnd(i + seed) * Math.PI, off = (rnd(i + seed + 1) + rnd(i + seed + 2) + rnd(i + seed + 3) - 1.5) * 0.2;
+      d = BAND_U.clone().multiplyScalar(Math.sin(a)).addScaledVector(BAND_V, Math.cos(a)).addScaledVector(BAND_N, off);
     } else d = V(rnd(i + seed) * 2 - 1, rnd(i + seed + 1) * 2 - 1, rnd(i + seed + 2) * 2 - 1).normalize();
     if (d.y < 0.02) d.y = Math.abs(d.y) + 0.02;
     d.normalize().multiplyScalar(600);
     pos.set([d.x, d.y, d.z], i * 3);
     const warm = rnd(i + seed + 9);
-    const k = band ? 0.45 + 0.4 * rnd(i + seed + 7) : 0.5 + 0.5 * rnd(i + seed + 7);
+    const k = band ? 0.6 + 0.6 * rnd(i + seed + 7) : 0.6 + 0.6 * rnd(i + seed + 7);
     col.set(warm > 0.8 ? [k, k * 0.9, k * 0.75] : warm < 0.2 ? [k * 0.8, k * 0.88, k] : [k, k, k], i * 3);
   }
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(pos, 3));
   g.setAttribute("color", new BufferAttribute(col, 3));
-  const m = new PointsMaterial({ size: band ? 2.2 : 3.4, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
+  const m = new PointsMaterial({ size: band ? 3.0 : 4.2, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
   const p = new Points(g, m);
   p.layers.set(SKY);
   p.frustumCulled = false;
@@ -75,13 +76,13 @@ const Sky: React.FC<{ F: number; moon: boolean }> = ({ F, moon }) => {
   const camera = useThree((s) => s.camera);
   const sky = useMemo(() => {
     const g = new Group();
-    const stars = starField(1400, false, 11), milky = starField(5000, true, 77);
+    const stars = starField(1800, false, 11), milky = starField(11000, true, 77);
     const haze = new Group();
-    for (let i = 0; i < 26; i++) {
-      const a = (i / 26) * Math.PI * 2;
-      const d = V(Math.cos(a), 0, Math.sin(a)).applyAxisAngle(V(1, 0, 0.4).normalize(), 1.05);
+    for (let i = 0; i < 40; i++) {
+      const a = (i / 40) * Math.PI;
+      const d = BAND_U.clone().multiplyScalar(Math.sin(a)).addScaledVector(BAND_V, Math.cos(a)).addScaledVector(BAND_N, (rnd(i + 3) - 0.5) * 0.12).normalize();
       if (d.y < 0.05) continue;
-      haze.add(glowSprite(d.multiplyScalar(560), i % 3 ? "#7a6ad8" : "#c8a8e8", 140, 0.16));
+      haze.add(glowSprite(d.multiplyScalar(560), ["#7a74c8", "#a898e0", "#7aa0d8", "#c8b8d8"][i % 4], 190 + 90 * rnd(i), 0.11));
     }
     const disc = sunDisc(14, "#fffdf2", "#e6dcc0", "#c8d4ff");
     g.add(stars, milky, haze, disc);
@@ -109,8 +110,8 @@ const beachPracticals = (dark: boolean): Practical[] => [
   ...(dark ? [] : [{ pos: LAMP_GLOW.clone().add(V(0, -0.3, 0)), kind: "lamp" as const, glowAt: LAMP_GLOW, group: "lamp" as const }]),
   { pos: BULB_MID.clone().add(V(0, -0.2, -0.6)), kind: "shop", color: ["#ffc27a", 2.2], glowAt: BULB_MID, group: "shack" },
   { pos: SHACK_LIGHTS.neon.clone().add(V(0, 0, -0.3)), kind: "shop", color: ["#ff6a9a", 1.4], glowAt: SHACK_LIGHTS.neon, group: "shack" },
-  { pos: BEACH.hatch.clone().add(V(-0.6, -0.1, 0.3)), kind: "screen", color: ["#bfe4ff", 1.2], group: "shack" },
-  ...[0, 1].map((i) => ({ pos: FLOOD_HEAD(i).clone().add(V(0, -0.4, -1.4)), kind: "lamp" as const, color: ["#fff2d8", 3] as [string, number], glowAt: FLOOD_HEAD(i) })),
+  { pos: BEACH.hatch.clone().add(V(-0.6, -0.1, 0.3)), kind: "screen", color: ["#bfe4ff", 0.7], group: "shack" },
+  ...[0, 1].map((i) => ({ pos: FLOOD_HEAD(i).clone().add(V(0, -1.2, -4.5)), kind: "lamp" as const, color: ["#fff2d8", 1.6] as [string, number], glowAt: FLOOD_HEAD(i) })),
 ];
 const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> = ({ F, dark, preset, s }) => {
   const world = useMemo(() => beach(!dark), [dark]);
@@ -156,12 +157,13 @@ const FlashlightRiver: React.FC<{ F: number }> = ({ F }) => {
   const g = useMemo(() => {
     const spots = Array.from({ length: 46 }, () => new Vector3());
     const grp = new Group();
-    spots.forEach((p, i) => grp.add(glowSprite(p, i % 5 ? "#fff2c8" : "#ffd08a", 0.9, 0.55)));
+    spots.forEach((p, i) => grp.add(glowSprite(p, i % 5 ? "#fff2c8" : "#ffd08a", 1.2, 1.2)));
     return { grp, spots };
   }, []);
   g.spots.forEach((p, i) => {
-    const t = ((i / 46) + F * 0.0016 + rnd(i) * 0.012) % 1;
+    const t = 0.18 + 0.82 * (((i / 46) + F * 0.0016 + rnd(i) * 0.012) % 1); // from the dune top up (near ones bloomed into blobs)
     p.copy(pathAt(t).add(V((rnd(i + 5) - 0.5) * 1.6, 0.2 * Math.sin(F * 0.3 + i), 0)));
+    g.grp.children[i].position.copy(p);
   });
   return <primitive object={g.grp} />;
 };
@@ -172,7 +174,7 @@ const Moths: React.FC<{ F: number; trail?: boolean }> = ({ F, trail }) => {
   const pts = useMemo(() => {
     const g = new BufferGeometry();
     g.setAttribute("position", new BufferAttribute(new Float32Array(N * 3), 3));
-    const m = new PointsMaterial({ size: 0.09, map: mothTex(), transparent: true, depthWrite: false, alphaTest: 0.3, color: "#fff4e0" });
+    const m = new PointsMaterial({ size: 0.13, map: mothTex(), transparent: true, depthWrite: false, alphaTest: 0.3, color: "#fff4e0" });
     const p = new Points(g, m);
     p.frustumCulled = false;
     return p;
@@ -230,7 +232,6 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       {s.w !== "bedroom" && <Sky F={F} moon={!!s.moon} />}
       {s.w !== "bedroom" && <Beach F={F} dark={s.w === "dark"} preset={light} s={s} />}
       {s.w === "bedroom" && <Bedroom F={F} preset={light} />}
-      {s.w === "beach" && <Dust center={BEACH.shack.clone().add(V(-2, 1.4, -3))} size={V(9, 2.6, 7)} color="#ffe2b0" strength={0.45} count={120} />}
       {moving.map((p) => <Moving key={p.name} prop={p} f={F} />)}
       {s.cast?.map((c) => {
         const lk = (c as { lookAt?: (F: number) => Look }).lookAt;

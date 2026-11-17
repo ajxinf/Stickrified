@@ -44,19 +44,19 @@ const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.ma
 export const HILL = { from: 16, to: 50, h: 15 };
 /** The hill behind the beach: height at (x, z). */
 export const hillY = (x: number, z: number) => HILL.h * smooth(HILL.from, HILL.to, z) * (1 + 0.12 * Math.sin(x * 0.09));
-export const BEACH = {
-  shack: V(3.4, 0, 7.6), // centre; its front (hatch) faces the sea at z = 6.4
-  hatch: V(3.4, 1.15, 6.35),
+export const BEACH = { // see the layout notes above
+  shack: V(5.0, 0, 7.6), // centre; its front (hatch) faces the sea at z = 6.3
+  hatch: V(5.0, 1.15, 6.35),
   chair: V(0.6, 0, 4.2),
   seat: V(0.6, -0.42, 4.25), // seated card: sunk so the chair's towel hides the legs
-  mia: V(-0.45, 0, 4.0),
+  mia: V(-0.2, 0, 4.0),
   stick: V(1.1, 0, 0.2),
   pierX: -11,
   tower: V(-5.2, 0, 5.4),
-  lamp: V(-1.6, 0, 9.4),
+  lamp: V(-5.6, 0, 9.6),
   brad: V(-12, 0, 47), // y = hillY + the pyramid's top
 };
-export const PYRAMID_TOP = 2.05;
+export const PYRAMID_TOP = 2.18; // the plank on the top row of bags
 export const BRAD_AT = V(BEACH.brad.x, hillY(BEACH.brad.x, BEACH.brad.z) + PYRAMID_TOP, BEACH.brad.z);
 /** The flashlight river: the path from the dune boardwalk up the hill (t 0..1). */
 export const pathAt = (t: number) => {
@@ -98,7 +98,7 @@ const sandTex = () =>
   });
 const wetTex = () =>
   canvasTex(256, 256, (g) => {
-    g.fillStyle = "#7a6650"; g.fillRect(0, 0, 256, 256);
+    g.fillStyle = "#6a4c32"; g.fillRect(0, 0, 256, 256);
     for (let k = 0; k < 1800; k++) { g.fillStyle = rnd(k) > 0.5 ? "rgba(200,220,255,0.12)" : "rgba(40,30,20,0.15)"; g.fillRect(rnd(k + 3) * 256, rnd(k + 4) * 256, 2, 2); }
     g.strokeStyle = "rgba(220,235,255,0.18)"; g.lineWidth = 2;
     for (let k = 0; k < 14; k++) { const y = rnd(k + 9) * 256; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(80, y - 6, 170, y + 6, 256, y); g.stroke(); }
@@ -118,10 +118,14 @@ const seaTex = () =>
 const foamTex = () =>
   canvasTex(1024, 64, (g) => {
     g.clearRect(0, 0, 1024, 64);
-    g.fillStyle = "rgba(240,248,255,0.95)";
+    // a lacy edge: scallops of foam with holes, never a solid bar
+    g.fillStyle = "rgba(240,248,255,0.85)";
     g.beginPath(); g.moveTo(0, 64);
-    for (let x = 0; x <= 1024; x += 8) g.lineTo(x, 26 + 9 * Math.sin(x / 37) + 5 * Math.sin(x / 11));
+    for (let x = 0; x <= 1024; x += 8) g.lineTo(x, 40 + 9 * Math.sin(x / 37) + 5 * Math.sin(x / 11));
     g.lineTo(1024, 64); g.fill();
+    g.globalCompositeOperation = "destination-out";
+    for (let k = 0; k < 220; k++) { g.beginPath(); g.ellipse(rnd(k + 90) * 1024, 46 + rnd(k + 91) * 16, 4 + 10 * rnd(k + 92), 3 + 3 * rnd(k + 93), 0, 0, 7); g.fill(); }
+    g.globalCompositeOperation = "source-over";
     g.fillStyle = "rgba(240,248,255,0.5)";
     for (let k = 0; k < 160; k++) { g.beginPath(); g.ellipse(rnd(k + 2) * 1024, 6 + rnd(k + 3) * 22, 3 + 6 * rnd(k + 4), 2, 0, 0, 7); g.fill(); }
   });
@@ -213,7 +217,7 @@ const houseTex = (col: string, lit: boolean, seed: number) =>
 // ================================================================== the beach
 const MATS = {
   sand: () => M("sand", () => toonMaterial({ map: sandTex(), repeat: [12, 12], mottle: 0.08 })),
-  wet: () => M("wetSand", () => toonMaterial({ map: wetTex(), repeat: [60, 1], gloss: 0.5, spec: 0.4 })),
+  wet: () => M("wetSand", () => toonMaterial({ map: wetTex(), repeat: [175, 4], gloss: 0.5, spec: 0.4 })),
   sea: () => M("sea", () => toonMaterial({ map: seaTex(), repeat: [14, 10], spec: 0.7, gloss: 0.6 })),
   grass: () => M("dune", () => toonMaterial({ map: grassTex(), repeat: [10, 6], mottle: 0.1 })),
   shack: () => M("shackWood", () => toonMaterial({ map: planks("#e8d2a8"), repeat: [1, 1] })),
@@ -230,10 +234,11 @@ export const seaPlane = () => {
   sea.name = "sea";
   sea.receiveShadow = true;
   // The wet sand the sea leaves behind, from the waterline up to the old high mark (z 0.9).
-  const wet = new Mesh(new PlaneGeometry(700, 1), MATS.wet());
+  const wet = new Mesh(new PlaneGeometry(700, 16), MATS.wet());
   wet.rotation.x = -Math.PI / 2;
+  wet.position.set(0, 0.012, 0.9 - 8);
   wet.name = "wet";
-  const foam = new Mesh(new PlaneGeometry(700, 0.9), unlit("foam", foamTex, true, "#c8d6f0"));
+  const foam = new Mesh(new PlaneGeometry(700, 0.5), unlit("foam", foamTex, true, "#b8c8e8"));
   foam.rotation.x = -Math.PI / 2;
   foam.name = "foam";
   foam.layers.set(SKY);
@@ -244,14 +249,11 @@ export const seaPlane = () => {
 };
 /** Place the sea for a tide (z of the edge). */
 export const setTide = (g: Object3D, t: Tide, F: number) => {
-  const sea = g.getObjectByName("sea")!, wet = g.getObjectByName("wet")!, foam = g.getObjectByName("foam") as Mesh, foam2 = g.getObjectByName("foam2") as Mesh;
+  const sea = g.getObjectByName("sea")!, foam = g.getObjectByName("foam") as Mesh, foam2 = g.getObjectByName("foam2") as Mesh;
   sea.position.z = t.z - 200;
-  const hi = 0.9, len = Math.max(hi - t.z, 0.05);
-  wet.position.set(0, 0.012, t.z + len / 2);
-  wet.scale.set(1, len, 1);
   foam.position.set(((F * 0.004) % 4) - 2, 0.045, t.z + 0.15);
   foam2.position.set(-((F * 0.006) % 4) + 1, 0.04, t.z - 0.9 - 0.3 * Math.sin(F / 13));
-  (foam2.material as MeshBasicMaterial).opacity = 0.6;
+  (foam.material as MeshBasicMaterial).opacity = 0.75;
 };
 
 /** The hill: a displaced grass mound with the town path, from z 16 up to the crest at z 50. */
@@ -275,7 +277,7 @@ const house = (i: number, lit: boolean) => {
   const wall = M(`house${i}${lit}`, () => toonMaterial({ map: houseTex(col, lit, i * 13), repeat: [0.25, 0.33] }));
   const w = 4 + rnd(i) * 2, h = 3 + rnd(i + 1) * 1.6, d = 4;
   k.box(wall, w, h, d, 0, h / 2, 0);
-  k.add(MAT.color(["#6a3a3a", "#3a4a6a", "#4a5a3a"][i % 3]), new CylinderGeometry(d * 0.62, d * 0.62, w + 0.4, 3), 0, h + d * 0.3, 0, { rz: Math.PI / 2, rx: Math.PI / 2 });
+  k.add(MAT.color(["#6a3a3a", "#3a4a6a", "#4a5a3a"][i % 3]), new CylinderGeometry(d * 0.64, d * 0.64, w + 0.4, 3), 0, h + d * 0.32, 0, { rx: -Math.PI / 2, ry: Math.PI / 2 }); // a prism along x, apex up
   k.box(MAT.darkWood(), 0.9, 1.9, 0.08, w * 0.2, 0.95, -d / 2 - 0.04);
   const g = k.build();
   g.userData.collider = `house ${i}`;
@@ -283,17 +285,18 @@ const house = (i: number, lit: boolean) => {
 };
 export const HOUSES: [number, number][] = [[-30, 24], [-21, 22], [9, 23], [18, 26], [27, 22], [-26, 32], [-4, 30], [14, 34], [24, 36], [-18, 38], [4, 40], [-28, 42], [20, 44]];
 /** Brad's fortress on the crest: a pink mansion, a stepped pyramid of sandbags, two floodlight towers, a billboard. */
-export const FLOOD = [V(-15.6, 0, 46.2), V(-8.4, 0, 46.2)].map((p) => p.setY(hillY(p.x, p.z)));
+export const FLOOD = [V(-14.4, 0, 46.6), V(-9.6, 0, 46.6)].map((p) => p.setY(hillY(p.x, p.z)));
 export const FLOOD_HEAD = (i: number) => FLOOD[i].clone().add(V(i ? -0.6 : 0.6, 5.2, -0.5));
 const fortress = () => {
   const g = new Group();
   const base = hillY(BEACH.brad.x, BEACH.brad.z);
   const k = new Kit();
   // mansion behind
-  const pink = M("mansion", () => toonMaterial({ map: houseTex("#f2b8c8", true, 77), repeat: [0.2, 0.25] }));
-  k.box(pink, 12, 6, 7, BEACH.brad.x, base + 3, BEACH.brad.z + 6.5);
-  k.box(MAT.color("#f6f0ea"), 12.6, 0.4, 7.6, BEACH.brad.x, base + 6.2, BEACH.brad.z + 6.5);
-  for (const x of [-4, -1.4, 1.4, 4]) k.add(MAT.color("#f6f0ea"), new CylinderGeometry(0.28, 0.32, 5.6, 10), BEACH.brad.x + x, base + 2.8, BEACH.brad.z + 2.6);
+  const pink = M("mansion", () => toonMaterial({ map: houseTex("#f2b8c8", true, 77), repeat: [0.34, 0.45] }));
+  const mz = BEACH.brad.z + 10;
+  k.box(pink, 12, 4.4, 7, BEACH.brad.x, base + 2.2, mz);
+  k.box(MAT.color("#f6f0ea"), 12.6, 0.4, 7.6, BEACH.brad.x, base + 4.6, mz);
+  for (const x of [-4, -1.4, 1.4, 4]) k.add(MAT.color("#f6f0ea"), new CylinderGeometry(0.26, 0.3, 4.2, 10), BEACH.brad.x + x, base + 2.1, mz - 3.9);
   // the sandbag pyramid (5 rows), top at PYRAMID_TOP
   const bag = MAT.color("#c8b48a");
   const rows = 5;
@@ -319,8 +322,11 @@ const fortress = () => {
   k.add(MAT.metal(), new CylinderGeometry(0.02, 0.02, 1.5, 6), BRAD_AT.x + 0.9, BRAD_AT.y + 0.75, BRAD_AT.z - 0.2);
   k.add(MAT.glow("#ffffff", 5), new TorusGeometry(0.28, 0.035, 6, 24), BRAD_AT.x + 0.9, BRAD_AT.y + 1.6, BRAD_AT.z - 0.2);
   const gk = k.build();
-  gk.userData.collider = "fortress";
-  g.add(gk);
+  // The plank alone is Brad's ground (its own mesh, so the guard's ray finds it under his feet).
+  const plank = new Mesh(new PlaneGeometry(1.6, 1.4), MAT.wood());
+  plank.rotation.x = -Math.PI / 2;
+  plank.position.set(BEACH.brad.x, base + PYRAMID_TOP, BEACH.brad.z);
+  g.add(gk, plank);
   const bb = plane(6.4, 2.6, unlit("billboard", billboardTex), V(BEACH.brad.x + 7.5, base + 5.2, BEACH.brad.z + 1.5), 0.15 + Math.PI);
   bb.rotation.y = Math.PI - 0.35;
   const posts = new Kit();
@@ -370,14 +376,17 @@ const shack = () => {
   // surfboards leaning on the side wall, a cooler
   k.add(MAT.color("#f2c23a"), new CylinderGeometry(0.28, 0.28, 2.2, 14), x + w / 2 + 0.25, 1.1, z - 0.4, { rz: -0.12 });
   k.add(MAT.color("#3ab0c8"), new CylinderGeometry(0.26, 0.26, 2.0, 14), x + w / 2 + 0.25, 1.0, z + 0.3, { rz: -0.1 });
-  k.box(MAT.color("#3a7ad8"), 0.7, 0.45, 0.42, x - w / 2 - 0.6, 0.225, z - 0.6);
-  k.box(MAT.color("#f2ece2"), 0.74, 0.08, 0.46, x - w / 2 - 0.6, 0.47, z - 0.6);
+  k.box(MAT.color("#3a7ad8"), 0.7, 0.45, 0.42, x + w / 2 + 0.7, 0.225, z + 1.0);
+  k.box(MAT.color("#f2ece2"), 0.74, 0.08, 0.46, x + w / 2 + 0.7, 0.47, z + 1.0);
   const body = k.build();
   body.userData.collider = "shack";
   g.add(body);
   // signs and pictures (unlit faces)
   // Faces toward the sea (-z): planes face +z, so turn them round.
   g.add(plane(3.2, 0.94, unlit("shackSign", shackSignTex), V(x, 2.88, fz - 0.95), Math.PI));
+  const board = new Kit();
+  board.box(MAT.wood(), 3.3, 1.02, 0.06, x, 2.88, fz - 0.91);
+  g.add(board.build());
   g.add(plane(0.5, 0.7, unlit("menu", menuTex), V(x - 1.62, 1.6, fz - 0.07), Math.PI));
   g.add(plane(0.36, 0.45, unlit("grandma", grandmaTex), V(x + 1.55, 1.55, fz - 0.07), Math.PI));
   // fridge door panel (lit/unlit swapped per frame), string bulbs, neon
@@ -449,12 +458,10 @@ const dressing = (lit: boolean) => {
   // rowboat upside-down on the sand
   const hull = new SphereGeometry(1, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2);
   hull.scale(0.8, 0.5, 1.9);
-  k.add(MAT.color("#2a6ad8"), hull, -3.2, 0.0, 1.4, { ry: 0.5 });
-  k.box(MAT.color("#f2ece2"), 0.06, 0.1, 3.4, -3.2, 0.45, 1.4);
+  k.add(MAT.color("#2a6ad8"), hull, -7.6, 0.0, 1.6, { ry: 0.5 });
+  k.box(MAT.color("#f2ece2"), 0.06, 0.1, 3.4, -7.6, 0.45, 1.6);
   // bin and its lid
-  k.add(MAT.color("#2a8a5a"), new CylinderGeometry(0.32, 0.28, 0.9, 10), 6.6, 0.45, 5.0);
-  // boardwalk from the sand to the dune path
-  k.box(MATS.boardwalk(), 2.2, 0.12, 8, 0.6, 0.06, 13);
+  k.add(MAT.color("#2a8a5a"), new CylinderGeometry(0.32, 0.28, 0.9, 10), 9.6, 0.45, 7.4);
   // dune grass tufts
   for (let i = 0; i < 70; i++) {
     const x = -40 + rnd(i) * 80, z = 11 + rnd(i + 3) * 5;
@@ -471,14 +478,17 @@ const dressing = (lit: boolean) => {
   }
   const body = k.build();
   body.userData.collider = "beach props";
-  g.add(body);
+  // boardwalk from the sand to the dune path: flush planks (2 cm), the town runs over it
+  const bw = new Kit();
+  bw.box(MATS.boardwalk(), 2.2, 0.016, 8, 0.6, 0.0, 13);
+  g.add(body, bw.build());
   // buoys bobbing far out (fixed)
   const bk = new Kit();
   for (let i = 0; i < 5; i++) bk.add(MAT.color(i % 2 ? "#e85a2a" : "#f2ece2"), new SphereGeometry(0.3, 10, 6), -20 + i * 9, 0.15, -32 - (i % 2) * 6);
   g.add(bk.build());
-  const sign = plane(1.3, 0.65, unlit("noSwim", () => signBoard(["NO SWIMMING", "AFTER DARK"], "#f2ece2", "#c8282a")), V(-1.9, 1.7, 2.0));
+  const sign = plane(1.3, 0.65, unlit("noSwim", () => signBoard(["NO SWIMMING", "AFTER DARK"], "#f2ece2", "#c8282a")), V(-6.0, 1.7, 0.9));
   const signPost = new Kit();
-  signPost.add(MAT.darkWood(), new CylinderGeometry(0.05, 0.05, 1.8, 6), -1.9, 0.9, 2.05);
+  signPost.add(MAT.darkWood(), new CylinderGeometry(0.05, 0.05, 1.8, 6), -6.0, 0.9, 0.95);
   const sp = signPost.build();
   sp.userData.collider = "sign";
   g.add(sp, sign);
@@ -572,7 +582,7 @@ export const bedroom = () => {
     c.fillStyle = "#1a2050"; c.fillRect(0, 0, 256, 330);
     c.fillStyle = "#fff4d0"; c.beginPath(); c.arc(128, 140, 80, 0, 7); c.fill();
     c.fillStyle = "rgba(160,150,120,0.5)"; [[100, 120, 16], [150, 170, 22], [140, 100, 10]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
-    c.fillStyle = "#fbf7ee"; c.font = `900 40px "Nunito", sans-serif`; c.textAlign = "center"; c.fillText("GOODNIGHT", 128, 290);
+    c.fillStyle = "#fbf7ee"; c.font = `900 31px "Nunito", sans-serif`; c.textAlign = "center"; c.fillText("GOODNIGHT", 128, 290);
   })), V(-1.6, 2.2, -2.14));
   g.add(poster, sheetMesh());
   return g;
@@ -594,9 +604,7 @@ export const lawnChair = () => {
   const towel = M("towel", () => toonMaterial({ map: stripeTex(["#f2c23a", "#e85a8a", "#f2ece2"], 9, false), repeat: [1, 1] }));
   k.box(towel, 0.68, 0.46, 0.02, 0, 0.18, -0.27); // the towel hanging from the seat front to the sand
   k.box(towel, 0.68, 0.02, 0.3, 0, 0.375, -0.12);
-  const g = k.build();
-  g.userData.collider = "chair";
-  return g;
+  return k.build(); // not a collider: a moving prop the seated card sits in
 };
 /** The folded chair carried under the arm (line 1): a flat bundle of frame and stripes. Origin at the grip. */
 export const foldedChair = () => {
@@ -607,11 +615,12 @@ export const foldedChair = () => {
   k.add(MAT.color("#c8ccd4"), new CylinderGeometry(0.02, 0.02, 1.0, 5), 0.3, -0.1, 0.03);
   return k.build();
 };
-/** The stick: driftwood with a red rag tied on top. Origin at its foot. */
+/** The stick: driftwood with a red rag tied on top. Origin at the grip, STICK_GRIP above its foot. */
+export const STICK_GRIP = 0.75;
 export const stick = () => {
   const k = new Kit();
-  k.add(MAT.color("#8a6a4a"), new CylinderGeometry(0.025, 0.035, 1.5, 6), 0, 0.75, 0, { rz: 0.04 });
-  k.box(MAT.color("#d83a2a"), 0.22, 0.13, 0.01, 0.12, 1.38, 0);
+  k.add(MAT.color("#8a6a4a"), new CylinderGeometry(0.025, 0.035, 1.5, 6), 0, 0.75 - STICK_GRIP, 0, { rz: 0.04 });
+  k.box(MAT.color("#d83a2a"), 0.22, 0.13, 0.01, 0.12, 1.38 - STICK_GRIP, 0);
   return k.build();
 };
 /** Popcorn bucket: red and white stripes, popcorn heaped on top. Origin at the grip (its middle). */
@@ -623,14 +632,14 @@ export const popcornBucket = () => {
   return k.build();
 };
 /** One popcorn kernel (popping in the pan, into your mouth). */
-export const kernel = () => { const k = new Kit(); k.add(MAT.color("#fff6d8"), new SphereGeometry(0.04, 6, 5), 0, 0, 0); return k.build(); };
+export const kernel = () => { const k = new Kit(); k.add(MAT.color("#fff6d8"), new SphereGeometry(0.02, 6, 5), 0, 0, 0); return k.build(); };
 /** The pan on the stove (line 11). Origin at its base. */
 export const pan = () => {
   const k = new Kit();
   k.add(MAT.metal(), new CylinderGeometry(0.17, 0.14, 0.08, 14, 1, true), 0, 0.04, 0);
   k.add(MAT.metal(), new CylinderGeometry(0.14, 0.14, 0.01, 14), 0, 0.005, 0);
   k.box(MAT.color("#2a2a30"), 0.3, 0.03, 0.04, 0.3, 0.06, 0);
-  for (let i = 0; i < 18; i++) { const a = rnd(i + 40) * 7, r = rnd(i + 41) * 0.12; k.add(MAT.color("#fff6d8"), new SphereGeometry(0.03, 6, 5), Math.cos(a) * r, 0.04, Math.sin(a) * r); }
+  for (let i = 0; i < 18; i++) { const a = rnd(i + 40) * 7, r = rnd(i + 41) * 0.12; k.add(MAT.color("#fff6d8"), new SphereGeometry(0.018, 6, 5), Math.cos(a) * r, 0.03, Math.sin(a) * r); }
   return k.build();
 };
 /** Mia's goldfish in its bag. Origin at the knot (the grip). */
@@ -662,7 +671,7 @@ export const alertPhone = (i: number) => {
     c.fillStyle = "#fbf7ee"; c.font = `900 34px "Nunito", sans-serif`; c.textAlign = "center"; c.fillText("ALERT", 80, 44);
     c.fillStyle = "#3a8ae8"; c.beginPath(); c.moveTo(10, 220); c.quadraticCurveTo(40, 90, 120, 110); c.quadraticCurveTo(70, 130, 80, 180); c.quadraticCurveTo(110, 220, 150, 220); c.fill();
     c.fillStyle = "#fbf7ee"; c.beginPath(); c.arc(100, 120, 12, 0, 7); c.fill();
-    c.fillStyle = "#ffd23a"; c.font = `900 26px "Nunito", sans-serif`; c.fillText("NO MOON =", 80, 262); c.fillText("MEGA WAVE?!", 80, 300);
+    c.fillStyle = "#ffd23a"; c.font = `900 21px "Nunito", sans-serif`; c.fillText("NO MOON =", 80, 262); c.fillText("MEGA WAVE?!", 80, 298);
   }), false, "#ffffff"), V(0, 0.085, 0.007));
   g.add(scr);
   g.userData.screen = scr;
@@ -721,6 +730,16 @@ export const dog = () => {
   head.add(hk.build());
   g.add(head);
   return g;
+};
+/** The tiniest wave in history (line 17): a short curl of water with a foam crest, rolling along local x. */
+export const tinyWave = () => {
+  const k = new Kit();
+  // a lip of water leaning forward with a frothy crest of foam balls (a pipe of blue read as a pipe)
+  const lip = new SphereGeometry(1, 14, 8, 0, Math.PI, 0, Math.PI / 2);
+  lip.scale(0.32, 0.16, 0.12);
+  k.add(MAT.color("#3a72d8"), lip, 0, 0, 0, { rx: -0.35 });
+  for (let i = 0; i < 9; i++) k.add(MAT.color("#f2f6ff"), new SphereGeometry(0.035 + 0.015 * rnd(i + 70), 6, 5), -0.28 + i * 0.07, 0.13 + 0.02 * rnd(i + 71), -0.06 + 0.03 * rnd(i + 72));
+  return k.build();
 };
 /** The toy boat that rides the sheet (line 15-16). Origin at its keel. */
 export const toyBoat = () => {

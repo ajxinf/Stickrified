@@ -1,4 +1,4 @@
-import { Object3D, Vector3 } from "three";
+﻿import { Object3D, Vector3 } from "three";
 import { perform } from "../../../kit/toon/acting";
 import { CamPose, frameOn, glide, impact, telephoto } from "../../../kit/toon/camera";
 import { exprAt, handWorld } from "../../../kit/toon/cast";
@@ -17,7 +17,7 @@ import { youLook } from "../../../kit/toon/protagonist";
 import { stampBox } from "../../../kit/toon/Stamp";
 import MOUTH from "../../../videos/moon-disappeared-tonight/voice/mouth.json";
 import WORDS from "../../../videos/moon-disappeared-tonight/voice/words.json";
-import { BEACH, BED, BRAD_AT, FLOOD_HEAD, PIER_END, alertPhone, bradLook, crab, fishBag, fleeProp, foldedChair, kernel, lawnChair, miaLook, pan, pathAt, popcornBucket, selfieStick, sheetHeight, stick, tideAt } from "./world";
+import { BEACH, BED, BRAD_AT, FLOOD_HEAD, PIER_END, STICK_GRIP, alertPhone, tinyWave, bradLook, crab, fishBag, fleeProp, foldedChair, kernel, lawnChair, miaLook, pan, pathAt, popcornBucket, selfieStick, sheetHeight, stick, tideAt } from "./world";
 
 /**
  * moon-disappeared-tonight (episode 4, scenario), shot plan. Every beat is locked to words.json (composition frames,
@@ -43,7 +43,7 @@ export const B = {
   because: W("because"), moon0: W("moon"), blinked: W("blinked"), out: W("out"),
   and0: W("and"), phone: W("phone"), giant: W("giant"), wave0: W("wave"),
   but0: W("but"), grandmas: W("grandma's"), shack0: W("shack"),
-  up0: W("up"), brad0: W("brad"), n500: W("500"), sandbags: W("sandbags"), flood0: W("floodlights"), live: W("live"), stream: W("stream"),
+  up0: W("up", 1), brad0: W("brad"), n500: W("500"), sandbags: W("sandbags"), flood0: W("floodlights"), live: W("live"), stream: W("stream"),
   enjoy: W("enjoy"), wave1: W("wave", 1), guy: W("guy"), guyEnd: E("guy"),
   even: W("even"), sister: W("sister"), mia0: W("mia"), lost: W("lost"),
   were: W("we're"), drown: W("drown"), drownEnd: E("drown"),
@@ -51,8 +51,8 @@ export const B = {
   then0: W("then"), sw: W("switch"), every1: W("every", 1), light: W("light"), shack1: W("shack", 1),
   make: W("make"), popcorn: W("popcorn"),
   then1: W("then", 1), ocean1: W("ocean", 1), back0: W("back"),
-  it0: W("it"), tsunami: W("tsunami"), tsunamiEnd: E("tsunami"),
-  ten: W("ten"), twenty: W("twenty"), thirty: W("thirty"), stick1: W("stick", 1), sand1: W("sand", 1),
+  it0: W("it", 1), tsunami: W("tsunami"), tsunamiEnd: E("tsunami"),
+  ten: W("ten", 1), twenty: W("twenty"), thirty: W("thirty"), stick1: W("stick", 1), sand1: W("sand", 1),
   see: W("see"), moon1: W("moon", 1), bump: W("bump"), hand: W("hand"), bedsheet: W("bedsheet"),
   letgo: W("let"), sheet: W("sheet"), slam: W("slam"), settles: W("settles"),
   water1: W("water", 1), stops0: W("stops"), no: W("no"), boring: W("boring"), tide: W("tide"),
@@ -60,7 +60,7 @@ export const B = {
   but1: W("but", 1), moon2: W("moon", 2), nightlight: W("nightlight"), without: W("without"), darker: W("darker"),
   so: W("so"), flood1: W("floodlights", 1), brightest: W("brightest"), moth: W("moth"), finds: W("finds"), brad1: W("brad", 1),
   down1: W("down", 1), mia1: W("mia", 1), looks: W("looks"), exploding: W("exploding"), stars: W("stars"),
-  next: W("next"), n4000b: W("4000", 1), bring: W("bring"), chair1: W("chair", 1),
+  next: W("next"), n4000b: W("4000", 1), bring: W("bring"), chair1: W("chair", 2),
 };
 const TIDE_K = { back: B.back0, stops: B.stops0, comes: B.comes, stick: B.stick2 };
 export const tide = (F: number) => tideAt(F, TIDE_K);
@@ -104,7 +104,7 @@ const STICK_PUSH: Pose = { ...POSES.idle, arms: [{ at: [-0.1, 0.5], grip: "fist"
 const FLICK: Pose = { ...POSES.idle, arms: [POSES.idle.arms[0], { at: [0.62, 0.1], grip: "fist" }], sway: 6 };
 const SWITCH: Pose = { ...POSES.idle, arms: [POSES.idle.arms[0], { at: [0.55, -0.35], grip: "point" }], look: 0.4 };
 /** Where you are: walking down the path (line 1), at the chair, seated, walking to the water, inside the shack. */
-const WALK_A = V(0.3, 0, 8.4), WALK_B = V(0.55, 0, 5.2);
+const WALK_A = V(0.3, 0, 9.6), WALK_B = V(0.55, 0, 6.2);
 const STAND_CHAIR = V(-0.05, 0, 4.35);
 const WATER_A = V(0.95, 0, 3.4), WATER_B = V(1.25, 0, 0.75);
 export const IN_SHACK = V(BEACH.shack.x + 0.1, 0.1, BEACH.shack.z - 0.55);
@@ -127,12 +127,12 @@ const youState = (F: number): CharState => {
   if (F < B.but0 + 26) {
     // Line 4: one flick and the chair snaps open.
     const p = pose([[0, CARRY], [B.but0 + 4, FLICK], [B.but0 + 12, { ...POSES.hips }]], F);
-    return st({ ...p, squash: reactSquash(F - (B.but0 + 6)) }, F, seed, [[0, "determined"], [B.but0 + 6, "smug"]], { heading: SEA + 0.6 });
+    return st({ ...p, squash: reactSquash(F - (B.but0 + 6)) }, F, seed, [[0, "determined"], [B.but0 + 6, "smug"], [B.grandmas, "proud"]], { heading: SEA + 0.6 });
   }
   if (F < B.dont) {
     // Seated like a king: arms crossed; the doubter beat; Brad's jeer.
     const p = pose([[0, { ...POSES.crossed, sway: -4 }], [B.enjoy, { ...POSES.crossed, tilt: -9 }], [B.even, POSES.crossed]], F);
-    return st(alive(p, F, seed, [0, 0.4, -0.3]), F, seed, [[0, "smug"], [B.grandmas, "proud"], [B.up0, "suspicious"], [B.guy, "deadpan"], [B.sister, "neutral"], [B.lost, "smirk"], [B.drown, "determined"]]);
+    return st(alive(p, F, seed, [0, 0.4, -0.3]), F, seed, [[0, "proud"], [B.up0, "suspicious"], [B.guy, "deadpan"], [B.sister, "neutral"], [B.lost, "smirk"], [B.drown, "determined"]]);
   }
   if (F < B.push) {
     const d = ((F - B.dont) / FPS) * 1.3;
@@ -227,14 +227,13 @@ const look = (i: number, seed: number): Look => ({ ...EXTRAS[i % EXTRAS.length].
 /** Line 1: the town runs up the path toward the lens (and the hill), three of them carrying a fridge, a TV, a fish tank. */
 type Runner = { start: Vector3; end: Vector3; carry?: "fridge" | "tv" | "tank" };
 export const RUNNERS: Runner[] = [
-  { start: V(-2.2, 0, 1.0), end: V(-4.4, 0, 9.6), carry: "fridge" },
-  { start: V(2.9, 0, 0.0), end: V(5.2, 0, 9.4), carry: "tv" },
-  { start: V(-1.4, 0, -1.8), end: V(-3.1, 0, 8.2) },
-  { start: V(3.4, 0, 2.6), end: V(4.9, 0, 10.0), carry: "tank" },
-  { start: V(-3.6, 0, -0.6), end: V(-4.8, 0, 7.4) },
-  { start: V(2.0, 0, -2.6), end: V(3.6, 0, 6.6) },
-  { start: V(-0.9, 0, -4.0), end: V(-2.2, 0, 5.0) },
-  { start: V(1.6, 0, -4.6), end: V(2.6, 0, 4.4) },
+  { start: V(-1.3, 0, 3.4), end: V(-2.3, 0, 11.6), carry: "fridge" },
+  { start: V(1.6, 0, 2.4), end: V(2.1, 0, 11.8), carry: "tv" },
+  { start: V(-2.0, 0, 1.8), end: V(-2.9, 0, 10.4) },
+  { start: V(2.3, 0, 4.4), end: V(2.5, 0, 12.4), carry: "tank" },
+  { start: V(-3.4, 0, 2.6), end: V(-4.7, 0, 10.0) },
+  { start: V(1.3, 0, 0.9), end: V(1.7, 0, 10.0) },
+  { start: V(-0.6, 0, 0.8), end: V(-1.1, 0, 9.0) },
 ];
 const HOLD_UP: Pose = { ...POSES.panic, arms: [{ at: [0.25, -0.75], grip: "open" }, { at: [0.25, -0.75], grip: "open" }] };
 const runnerAt = (r: Runner) => (F: number) => r.start.clone().lerp(r.end, clamp01(F / B.n4000));
@@ -247,7 +246,7 @@ const RUNNER_ROLES: Role[] = RUNNERS.map((r, i) => ({
   },
 }));
 /** Line 3: three of them on the hill road holding their phones up at the lens. */
-const PHONE_AT = [V(-1.2, 0, 0), V(0, 0, 0.5), V(1.25, 0, 0.1)].map((p) => p.add(V(-2, 0, 26)).setY(0));
+const PHONE_AT = [V(-0.85, 0, 0), V(0, 0, 0.45), V(0.85, 0, 0.1)].map((p) => p.add(V(-2, 0, 26)).setY(0));
 const PHONE_UP: Pose = { ...POSES.idle, arms: [POSES.idle.arms[0], { at: [0.3, -0.2], grip: "fist" }] };
 const PHONERS: Role[] = PHONE_AT.map((p, i) => ({
   name: `phone${i}`, look: look(i + 3, 230 + i), at: () => p.clone(),
@@ -258,7 +257,7 @@ export const CROWD_SPOTS: Vector3[] = Array.from({ length: 36 }, (_, i) => {
   const r = i % 6, c = Math.floor(i / 6);
   const x = -9 + c * 3.1 + (r % 2) * 1.4, z = -1.8 + r * 1.55;
   return V(x, 0, z);
-}).filter((p) => p.distanceTo(BEACH.chair) > 2.2 && p.distanceTo(BEACH.mia) > 1.6 && Math.abs(p.x - BEACH.pierX) > 2 && p.distanceTo(V(-3.2, 0, 1.4)) > 2.4 && p.distanceTo(V(-5.2, 0, 5.4)) > 1.8 && p.distanceTo(V(-1.9, 0, 2.0)) > 1 && p.distanceTo(BRAD_SNEAK_A) > 1 && p.distanceTo(BRAD_SNEAK_B) > 1);
+}).filter((p) => p.z < 5.0 && p.distanceTo(BEACH.chair) > 2.2 && p.distanceTo(BEACH.mia) > 1.6 && Math.abs(p.x - BEACH.pierX) > 2 && p.distanceTo(V(-7.6, 0, 1.6)) > 2.4 && p.distanceTo(V(-5.2, 0, 5.4)) > 1.8 && p.distanceTo(V(-6.0, 0, 0.9)) > 1 && p.distanceTo(BRAD_SNEAK_A) > 1 && p.distanceTo(BRAD_SNEAK_B) > 1);
 const CROWD: Role[] = CROWD_SPOTS.slice(0, 12).map((p, i) => ({
   name: `town${i}`, look: look(i, 260 + i), at: () => p.clone().add(V(0.55, 0, 0.05)),
   state: (F: number) => st(alive(posed(i % 3 ? "idle" : "crossed", (F + i * 9) / FPS, i % 2 ? -0.4 : 0.4), F, 260 + i, [0.3, -0.2]), F, 260 + i, [[0, i % 2 ? "excited" : "grin"]], {}, 0.5),
@@ -274,7 +273,7 @@ export const WORLDS: Record<World, { light: keyof typeof LIGHTS; scene: string; 
 };
 const P = (pos: Vector3, look: Vector3, fov: number, roll = 0): CamPose => ({ pos, look, fov, roll });
 const castIn = (from: number, roles: Role[]) => roles.map((r) => ({ name: r.name, look: typeof r.look === "function" ? r.look(from) : r.look, lookAt: typeof r.look === "function" ? r.look : undefined, at: (f: number) => r.at(f + from), state: (f: number) => r.state(f + from), sit: r.sit }));
-const SEATED = { "Feet on the ground": "seated in the lawn chair: the card stands sunk so the chair's towel hides the legs", Shadows: "seated: the contact blob is under the sand", "Card penetration": "seated: the sunk card passes into the sand and the chair" };
+const SEATED = { "Feet on the ground": "seated in the lawn chair: the card stands sunk so the chair's towel hides the legs", Shadows: "seated: the contact blob is under the sand", "Card penetration": "seated: the sunk card passes into the sand and the chair", "Moving props": "seated: the lawn chair holds the seated card (its back passes behind the head)" };
 let cursor = 0;
 const shot = (id: string, to: number, w: World, roles: Role[], cam: (F: number) => CamPose, o: Partial<S> & { dof: (F: number) => Dof }): S => {
   const from = cursor;
@@ -289,9 +288,9 @@ const shot = (id: string, to: number, w: World, roles: Role[], cam: (F: number) 
 const close = (d: number) => DOF.closeup(d), mid = (d: number) => DOF.medium(d);
 const NONE: Dof = { maxPx: 0, near: 40, far: 80 };
 /** A framing that creeps from `a` to `b` (push ~10 %). */
-const creep = (f0: { pos: Vector3; look: Vector3; fov: number }, F: number, a: number, b: number, push = 0.1, rise = 0) => {
-  const t = span(F, a, b), d = f0.look.clone().sub(f0.pos);
-  return P(f0.pos.clone().addScaledVector(d, push * t).add(V(0, rise * t, 0)), f0.look.clone(), f0.fov);
+const creep = (f0: { pos: Vector3; look: Vector3; fov: number }, F: number, a: number, b: number, push = 0.1, rise = 0, drift = 0.18) => {
+  const t = span(F, a, b), d = f0.look.clone().sub(f0.pos), side = V(-d.z, 0, d.x).normalize();
+  return P(f0.pos.clone().addScaledVector(d, push * t).add(V(0, rise * t, 0)).addScaledVector(side, drift * (t - 0.5)), f0.look.clone().addScaledVector(side, drift * 0.4 * (t - 0.5)), f0.fov);
 };
 const SEAT_HEAD = 1.55 - 0.42;
 const seatFrame = (from: Vector3, size: "cu" | "mcu" | "ms", side = 0) => {
@@ -299,26 +298,32 @@ const seatFrame = (from: Vector3, size: "cu" | "mcu" | "ms", side = 0) => {
   return f;
 };
 const SEA_SIDE = V(0.6, 0, -6); // a point on the sea side of the chair (lens looking at you and the shack)
+/** You in the chair and Mia beside you, from the sea side: both heads in, creeping in. */
+const twoShot = (F: number, a: number, b: number, dist = 3.2, dx = 0) => {
+  const mid0 = BEACH.seat.clone().add(MIA_AT).multiplyScalar(0.5).setY(0);
+  const t = span(F, a, b);
+  return P(mid0.clone().add(V(dx - 0.25 + 0.2 * t, 0.92, -dist + 0.35 * t)), mid0.clone().add(V(dx, 0.82, 0)), 50);
+};
 
 // --- line 1: the cold open and the river of flashlights
-const A1 = shot("A1-down-to-the-sea", B.n4000, "beach", [YOU, ...RUNNER_ROLES], (F) => P(V(0.4, 1.35, 11.6).lerp(V(0.4, 1.25, 10.9), span(F, 0, B.n4000)), V(0.5, 0.95, -4), 50), { wide: true, dof: () => NONE, subjectFrom: 0, allow: { "Cast overlap": "the town runs past the lens on both sides of you; the gag is the crowd going the other way" } });
-const A2 = shot("A2-flashlight-river", B.because, "beach", [], (F) => P(V(1.8, 1.6, 2.0).lerp(V(1.8, 2.4, 2.6), span(F, B.n4000, B.because)), V(-1.5, 8.5, 34), 52), { subject: undefined, wide: true, dof: () => NONE });
+const A1 = shot("A1-down-to-the-sea", B.n4000, "beach", [YOU, ...RUNNER_ROLES], (F) => P(V(0.5, 1.5, 14.6).lerp(V(0.5, 1.42, 13.9), span(F, 0, B.n4000)), V(0.5, 1.0, -2), 50), { wide: true, dof: () => NONE, subjectFrom: 0, allow: { "Cast overlap": "the town runs past the lens on both sides of you; the gag is the crowd going the other way" } });
+const A2 = shot("A2-flashlight-river", B.because, "beach", [], (F) => P(V(1.2, 1.6, 2.0).lerp(V(2.0, 2.8, 3.2), span(F, B.n4000, B.because)), V(-1.5, 8.5 + 1.5 * span(F, B.n4000, B.because), 34), 52), { subject: undefined, wide: true, dof: () => NONE });
 // --- line 2: ten minutes ago, the dog howls and the moon blinks out
-const DOG_CAM = PIER_END.clone().add(V(1.0, 0.55, 3.2));
+const DOG_CAM = PIER_END.clone().add(V(0.6, 0.55, 3.2));
 const B1 = shot("B1-moon-blinks-out", B.and0, "beach", [], (F) => {
-  const t = span(F, B.because, B.moon0 + 8);
-  return P(DOG_CAM.clone(), PIER_END.clone().add(V(0, 0.55, 0)).lerp(PIER_END.clone().add(V(-6, 14, -40)), t * 0.55), 50);
+  const t = span(F, B.because, B.blinked - 4);
+  return P(DOG_CAM.clone(), PIER_END.clone().add(V(0, 0.9, 0)).lerp(PIER_END.clone().add(V(-6, 14, -40)), t * 0.42), 50);
 }, { subject: undefined, wide: true, dof: () => NONE, moon: true });
 // --- line 3: every phone says the same thing
 const PH_MID = PHONE_AT[1];
 const C1 = shot("C1-phones", B.wave0 - 14, "beach", PHONERS, (F) => {
-  const f0 = frameOn(PH_MID, PH_MID.clone().add(V(0.4, 0, -5)), "ms", { fov: 44 });
-  return P(f0.pos.clone().add(V(-1.2 + 2.0 * span(F, B.and0, B.wave0 - 14), 0, 0)), f0.look.clone().add(V(-0.8 + 1.4 * span(F, B.and0, B.wave0 - 14), 0.2, 0)), f0.fov);
+  const f0 = frameOn(PH_MID, PH_MID.clone().add(V(0.2, 0, -5)), "fs", { fov: 44 });
+  return creep({ ...f0, look: f0.look.clone().add(V(0, 0.35, 0)) }, F, B.and0, B.wave0 - 14, 0.18);
 }, { subject: "phone1", dof: () => mid(3.2) });
-const C2 = shot("C2-alert", B.but0, "beach", PHONERS, (F) => {
-  const scr = phoneScreen(1, F);
-  return P(scr.clone().add(V(0.05, 0.02, -0.42)).lerp(scr.clone().add(V(0.03, 0.01, -0.32)), span(F, B.wave0 - 14, B.but0)), scr.clone(), 40);
-}, { subject: undefined, dof: () => close(0.36) });
+const C2 = shot("C2-alert", B.but0, "beach", [PHONERS[1]], (F) => {
+  const scr = phoneScreen(1, B.wave0);
+  return P(scr.clone().add(V(0.05, 0.02, -0.56)).lerp(scr.clone().add(V(0.04, 0.01, -0.46)), span(F, B.wave0 - 14, B.but0)), scr.clone(), 40);
+}, { subject: undefined, dof: () => close(0.5), allow: { "Caption vs face": "insert on the phone screen held up in front of his face (soft behind it)" } });
 // --- line 4: Grandma's snack shack
 const D1 = shot("D1-flick-open", B.but0 + 26, "beach", [YOU], (F) => {
   const f0 = frameOn(STAND_CHAIR, STAND_CHAIR.clone().add(V(-0.6, 0, -5)), "ms", { side: -0.3 });
@@ -333,23 +338,19 @@ const BRAD_HEAD = 1.72;
 const brad = (from: Vector3, spanM: number) => telephoto(from, BRAD_POS, BRAD_HEAD, spanM);
 const BRAD_LENS = BRAD_POS.clone().add(V(1.6, -0.6, -9.5));
 const E1 = shot("E1-brad-crane", B.n500, "beach", [BRAD], (F) => {
-  const t = span(F, B.up0, B.brad0 + 10);
+  const t = span(F, B.up0, B.n500 - 4);
   const low = BRAD_POS.clone().add(V(0.3, -1.6, 0)), hi = BRAD_POS.clone().add(V(0, 1.1, 0));
-  return P(BRAD_LENS.clone().add(V(0, 2.2 * t, 0)), low.lerp(hi, t), 40);
+  return P(BRAD_LENS.clone().add(V(0, 1.2 * t, 0)), low.lerp(hi, t), 40);
 }, { subject: "brad", subjectFrom: 18, wide: true, dof: () => NONE });
 const E2 = shot("E2-sandbags-floodlights", B.live - 6, "beach", [BRAD], (F) => {
   const t = span(F, B.n500, B.live);
-  return P(BRAD_POS.clone().add(V(-3.6, -1.4, -6.4)).lerp(BRAD_POS.clone().add(V(-2.6, -1.2, -6.0)), t), BRAD_POS.clone().add(V(0.6, 0.4, 0)), 50);
+  return P(BRAD_POS.clone().add(V(-1.4, -1.9, -9.6)).lerp(BRAD_POS.clone().add(V(-0.8, -1.8, -9.0)), t), BRAD_POS.clone().add(V(0.2, 1.6, 0)), 50);
 }, { subject: "brad", wide: true, dof: () => NONE });
-const E3 = shot("E3-live-stream", B.enjoy, "beach", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(0.9, 0.9, -3.4)), 1.9); return creep(b, F, B.live - 6, B.enjoy, 0.08); }, { subject: "brad", dof: () => mid(3.3) });
+const E3 = shot("E3-live-stream", B.enjoy, "beach", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(0.6, 1.5, 2.2)), 1.9); return creep(b, F, B.live - 6, B.enjoy, 0.08); }, { subject: "brad", dof: () => mid(3.3) });
 // --- line 6: "Enjoy the wave, chair guy!"
-const F1 = shot("F1-brad-mocks", B.even, "beach", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(-0.7, 0.7, -3.0)), 1.6); return creep(b, F, B.enjoy, B.even, 0.12); }, { subject: "brad", dof: () => close(3.0) });
+const F1 = shot("F1-brad-mocks", B.even, "beach", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(-0.5, 1.4, 2.1)), 1.6); return creep(b, F, B.enjoy, B.even, 0.12); }, { subject: "brad", dof: () => close(3.0) });
 // --- lines 7-8: Mia
-const G1 = shot("G1-mia-tugs", B.were, "beach", [YOU_SEATED, MIA], (F) => {
-  const mid0 = BEACH.seat.clone().add(MIA_AT).multiplyScalar(0.5).setY(0);
-  const f0 = frameOn(mid0, mid0.clone().add(V(-0.5, 0, -5)), "ms", { head: 1.3, fov: 46 });
-  return creep(f0, F, B.even, B.were, 0.1);
-}, { subject: "mia", dof: () => mid(2.6) });
+const G1 = shot("G1-mia-tugs", B.were, "beach", [YOU_SEATED, MIA], (F) => twoShot(F, B.even, B.were, 3.2, -0.15), { subject: "mia", dof: () => mid(3.0) });
 const G2 = shot("G2-we-re-gonna-drown", B.dont, "beach", [MIA], (F) => {
   const f0 = frameOn(MIA_AT, MIA_AT.clone().add(V(-0.9, 0, -4)), "cu", { head: 1.3, height: 0.95 });
   return creep(f0, F, B.were, B.dont, 0.14);
@@ -360,13 +361,9 @@ const H1 = shot("H1-walk-to-water", B.push, "beach", [YOU], (F) => {
   const f0 = frameOn(at, at.clone().add(V(0.8, 0, -5)), "ms", { fov: 44 });
   return P(f0.pos, f0.look, f0.fov);
 }, { dof: () => mid(2.6) });
-const STICK_TOP = BEACH.stick.clone().add(V(0, 0.5, 0));
-const H2 = shot("H2-stick-macro", B.then0, "beach", [YOU], (F) => P(BEACH.stick.clone().add(V(0.7, 0.42, -1.25)).lerp(BEACH.stick.clone().add(V(0.6, 0.38, -1.05)), span(F, B.push, B.then0)), STICK_TOP.clone().add(V(0, -0.15, 0)), 46), { subject: undefined, dof: () => close(1.3), allow: { "Subject in frame": "macro on the stick going into the sand at the foam: your legs and hands are the frame" } });
+const H2 = shot("H2-stick-macro", B.then0, "beach", [YOU], (F) => P(BEACH.stick.clone().add(V(0.45, 0.85, -2.7)).lerp(BEACH.stick.clone().add(V(0.4, 0.8, -2.4)), span(F, B.push, B.then0)), BEACH.stick.clone().add(V(0.12, 0.62, 0.3)), 46), { dof: () => mid(2.7) });
 // --- line 10: the lights go off
-const I1 = shot("I1-lights-off", B.make, "beach", [{ ...YOU, at: () => IN_SHACK.clone() }], (F) => {
-  const f0 = frameOn(IN_SHACK.clone().setY(0), IN_SHACK.clone().add(V(-1.0, 0, -5)), "ms", { fov: 46 });
-  return creep({ ...f0, pos: f0.pos.add(V(0, 0.15, 0)), look: f0.look.add(V(0, 0.2, 0)) }, F, B.then0, B.make, 0.08);
-}, { dof: () => mid(3.6) });
+const I1 = shot("I1-lights-off", B.make, "beach", [{ ...YOU, at: () => IN_SHACK.clone() }], (F) => creep(P(BEACH.hatch.clone().add(V(-0.4, -0.1, -3.7)), BEACH.hatch.clone().add(V(0, 0.2, 0)), 46), F, B.then0, B.make, 0.08), { dof: () => mid(3.7) });
 // --- line 11: popcorn
 export const STOVE = V(BEACH.shack.x + 0.55, 1.19, BEACH.shack.z - 1.45);
 const J1 = shot("J1-popping", B.popcorn + 8, "beach", [], (F) => P(STOVE.clone().add(V(-0.35, 0.32, -0.62)).lerp(STOVE.clone().add(V(-0.3, 0.28, -0.52)), span(F, B.make, B.popcorn + 8)), STOVE.clone().add(V(0, 0.05, 0)), 44), { subject: undefined, dof: () => close(0.75) });
@@ -374,50 +371,42 @@ const J2 = shot("J2-kernel-in-mouth", B.then1, "beach", [YOU_SEATED], (F) => { c
 // --- line 12-13: the sea pulls back; Brad screams
 const K1 = shot("K1-sea-pulls-back", B.it0, "beach", [], (F) => {
   const t = span(F, B.then1, B.it0);
-  return P(BEACH.stick.clone().add(V(1.6, 0.35, 1.2)), BEACH.stick.clone().add(V(-0.8, 0.25, -3.2 - 3 * t)), 48);
+  return P(BEACH.stick.clone().add(V(0.9, 0.7, 2.2)), BEACH.stick.clone().add(V(-0.3, 0.3, -2.5 - 2.5 * t)), 48);
 }, { subject: undefined, wide: true, dof: () => NONE });
-const K2 = shot("K2-tsunami", B.ten, "beach", [BRAD], (F) => impact((f) => { const b = brad(BRAD_POS.clone().add(V(0.5, 0.6, -2.8)), 1.45); return creep(b, f, B.it0, B.ten, 0.1); }, B.tsunami + 1, 0.03, 7)(F), { subject: "brad", kicks: [[B.tsunami + 1 - B.it0, B.tsunami + 8 - B.it0]], dof: () => close(2.8) });
+const K2 = shot("K2-tsunami", B.ten, "beach", [BRAD], (F) => impact((f) => { const b = brad(BRAD_POS.clone().add(V(0.4, 1.3, 2.0)), 1.75); return creep(b, f, B.it0, B.ten, 0.1); }, B.tsunami + 1, 0.03, 7)(F), { subject: "brad", kicks: [[B.tsunami + 1 - B.it0, B.tsunami + 8 - B.it0]], dof: () => close(2.8) });
 // --- line 14: ten steps, twenty, thirty
-const L1 = shot("L1-ten", B.twenty, "beach", [], (F) => P(BEACH.stick.clone().add(V(0.5, 0.5, 0.9)), BEACH.stick.clone().add(V(-0.3, 0.2, -5)), 46), { subject: undefined, wide: true, dof: () => NONE });
-const L2 = shot("L2-twenty", B.thirty, "beach", [YOU_SEATED, MIA], (F) => P(V(4.5, 2.6, 4.8).lerp(V(4.6, 2.9, 5.0), span(F, B.twenty, B.thirty)), V(-0.4, 0.2, -4.0), 50), { subject: undefined, wide: true, dof: () => NONE });
-const L3 = shot("L3-thirty", B.stick1 - 4, "beach", [YOU_SEATED, MIA], (F) => P(V(6, 8.5, 9).lerp(V(6.2, 9.4, 9.6), span(F, B.thirty, B.stick1)), V(-0.5, 0, -5.5), 50), { subject: undefined, wide: true, dof: () => NONE });
-const L4 = shot("L4-dry-sand", B.see, "beach", [YOU_SEATED, MIA], (F) => {
-  const mid0 = BEACH.seat.clone().add(MIA_AT).multiplyScalar(0.5).setY(0);
-  const f0 = frameOn(mid0, mid0.clone().add(V(0.4, 0, -5)), "ms", { head: 1.25, fov: 44 });
-  return creep(f0, F, B.stick1 - 4, B.see, 0.14);
-}, { dof: () => mid(2.4) });
+const L1 = shot("L1-ten", B.twenty, "beach", [], (F) => P(BEACH.stick.clone().add(V(0.15, 0.75, 1.9)).lerp(BEACH.stick.clone().add(V(0.2, 0.8, 2.0)), span(F, B.ten, B.twenty)), BEACH.stick.clone().add(V(-0.2, 0.25, -4)), 46), { subject: undefined, wide: true, dof: () => NONE });
+const L2 = shot("L2-twenty", B.thirty, "beach", [YOU_SEATED, MIA], (F) => P(V(1.9, 2.8, 6.6).lerp(V(2.0, 3.1, 6.8), span(F, B.twenty, B.thirty)), V(0.6, 0, -6), 50), { subject: undefined, wide: true, dof: () => NONE });
+const L3 = shot("L3-thirty", B.stick1 - 4, "beach", [YOU_SEATED, MIA], (F) => P(V(3.0, 9.0, 9.5).lerp(V(3.1, 9.6, 10.0), span(F, B.thirty, B.stick1)), V(0.4, 0, -6), 50), { subject: undefined, wide: true, dof: () => NONE });
+const L4 = shot("L4-dry-sand", B.see, "beach", [YOU_SEATED, MIA], (F) => twoShot(F, B.stick1 - 4, B.see, 2.9, 0.1), { dof: () => mid(2.7) });
 // --- lines 15-16: the bedsheet
 const BED_TOP = V(0, BED.sheetY, 0);
 const M1 = shot("M1-bedsheet-lifts", B.letgo, "bedroom", [], (F) => P(V(0.9, 1.75, 3.1).lerp(V(0.7, 1.6, 2.5), span(F, B.see, B.letgo)), BED_TOP.clone().add(V(0, 0.45, 0)), 46), { subject: undefined, dof: () => NONE });
 const M2 = shot("M2-sheet-settles", B.water1 - 2, "bedroom", [], (F) => P(V(-0.6, 1.4, 2.2).lerp(V(-0.5, 1.15, 1.9), span(F, B.letgo, B.water1)), BED_TOP.clone().add(V(0, 0.2 - 0.12 * span(F, B.letgo, B.settles + 10), 0)), 44), { subject: undefined, dof: () => NONE });
 // --- line 17: the water stops
-const N1 = shot("N1-calm-bay", B.boring - 22, "beach", [YOU_SEATED, MIA], (F) => P(V(7.8, 1.5, 6.2).lerp(V(7.5, 1.5, 5.8), span(F, B.water1, B.boring)), V(-1.0, 0.8, -3.5), 50), { subject: undefined, wide: true, dof: () => NONE });
+const N1 = shot("N1-calm-bay", B.boring - 22, "beach", [YOU_SEATED, MIA], (F) => P(V(0.45, 2.7, 7.6).lerp(V(0.3, 2.5, 6.7), span(F, B.water1, B.boring)), V(0.1, 1.2, -5), 50), { subject: undefined, wide: true, dof: () => NONE });
 const N2 = shot("N2-tiny-wave", B.when - 6, "beach", [], (F) => { const z = tide(F).z; return P(V(1.4, 0.32, z + 1.6), V(0.4, 0.05, z - 0.4), 46); }, { subject: undefined, dof: () => close(1.8) });
 // --- line 18: four hours later, a third of the way
-const O1 = shot("O1-a-third", B.now, "beach", [], (F) => P(BEACH.stick.clone().add(V(0.9, 0.55, 1.6)).lerp(BEACH.stick.clone().add(V(0.85, 0.75, 1.4)), span(F, B.when, B.now)), BEACH.stick.clone().add(V(-0.4, 0.15, -6.0)), 44), { subject: undefined, wide: true, dof: () => NONE });
-const O2 = shot("O2-top-down", B.but1, "beach", [YOU_SEATED, MIA], (F) => P(V(2.2, 17, -1.0).lerp(V(2.2, 15.5, -1.5), span(F, B.now, B.but1)), V(1.0, 0, -4.2), 50), { subject: undefined, wide: true, dof: () => NONE });
+const O1 = shot("O1-a-third", B.now, "beach", [], (F) => P(BEACH.stick.clone().add(V(0.15, 0.8, 1.8)).lerp(BEACH.stick.clone().add(V(0.15, 0.95, 1.6)), span(F, B.when, B.now)), BEACH.stick.clone().add(V(-0.1, 0.1, -8)), 44), { subject: undefined, wide: true, dof: () => NONE });
+const O2 = shot("O2-stick-and-you", B.but1, "beach", [YOU_SEATED, MIA], (F) => P(BEACH.stick.clone().add(V(-0.15, 0.6, -2.2)).lerp(BEACH.stick.clone().add(V(-0.12, 0.65, -1.9)), span(F, B.now, B.but1)), V(0.6, 0.85, 4.2), 40), { subject: undefined, wide: true, dof: () => NONE });
 // --- line 19: the world's biggest nightlight
 const P1 = shot("P1-pull-out", B.without, "beach", [YOU_SEATED, MIA], (F) => {
   const t = span(F, B.but1, B.without);
-  return P(V(1.5, 1.6, -2.5).lerp(V(-2, 6.5, -24), t), V(0.6, 1.0, 4.2).lerp(V(-2, 7, 30), t), 46);
-}, { subject: undefined, wide: true, dof: () => NONE });
+  return P(V(1.5, 3.4, -3.5).lerp(V(-2, 6.5, -24), t), V(0.6, -0.2, 4.2).lerp(V(-2, 7, 30), t), 46);
+}, { subject: undefined, wide: true, dof: () => NONE, allow: { ...SEATED, "Caption vs face": "the pull-out leaves you two as specks under the caption (heads < 3 % of the frame)" } });
 const P2 = shot("P2-nightlight-wide", B.darker, "beach", [], (F) => P(V(-2, 6.5, -24).lerp(V(-2, 6.4, -23), span(F, B.without, B.darker)), V(-2, 7, 30), 46), { subject: undefined, wide: true, dof: () => NONE });
 const Q1 = shot("Q1-darker", B.brightest, "dark", [], (F) => P(V(-2, 6.4, -23).lerp(V(-4, 9, -12), span(F, B.darker, B.brightest)), V(-6, 12, 40), 46), { subject: undefined, wide: true, dof: () => NONE });
 // --- line 20: every moth finds Brad
-const Q2 = shot("Q2-moths-arrive", B.moth + 6, "dark", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(1.6, -0.2, -8.5)), 3.2); return creep(b, F, B.brightest, B.moth + 6, 0.12); }, { subject: "brad", dof: () => NONE, wide: true });
-const Q3 = shot("Q3-finds-brad", B.down1, "dark", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(-0.6, 0.5, -3.0)), 1.6); return creep(b, F, B.moth + 6, B.down1, 0.12); }, { subject: "brad", dof: () => close(2.9) });
+const Q2 = shot("Q2-moths-arrive", B.moth + 6, "dark", [BRAD], (F) => { return creep(P(BRAD_POS.clone().add(V(1.2, -2.2, -6.5)), BRAD_POS.clone().add(V(0, 1.4, 0)), 50), F, B.brightest, B.moth + 6, 0.12); }, { subject: "brad", dof: () => NONE, wide: true });
+const Q3 = shot("Q3-finds-brad", B.down1, "dark", [BRAD], (F) => { const b = brad(BRAD_POS.clone().add(V(-0.5, 1.4, 2.1)), 1.7); return creep(b, F, B.moth + 6, B.down1, 0.12); }, { subject: "brad", dof: () => close(2.9) });
 // --- line 21: the stars
-const R1 = shot("R1-mia-looks-up", B.exploding, "dark", [YOU_SEATED, MIA], (F) => {
-  const mid0 = BEACH.seat.clone().add(MIA_AT).multiplyScalar(0.5).setY(0);
-  const f0 = frameOn(mid0, mid0.clone().add(V(-0.3, 0, -5)), "ms", { head: 1.25, fov: 44 });
-  return creep(f0, F, B.down1, B.exploding, 0.1);
-}, { subject: "mia", dof: () => mid(2.4) });
+const R1 = shot("R1-mia-looks-up", B.exploding, "dark", [YOU_SEATED, MIA], (F) => twoShot(F, B.down1, B.exploding, 3.0, -0.18), { subject: "mia", dof: () => mid(2.8) });
 const R2 = shot("R2-milky-way", B.next, "dark", [YOU_SEATED, MIA], (F) => {
-  const t = span(F, B.exploding, B.stars + 10);
-  return P(V(0.1, 0.55, 1.6), V(0.05, 1.1, 4.0).lerp(V(-0.4, 9, -6), t), 52);
+  const t = span(F, B.exploding, B.next - 4);
+  return P(V(0.1, 0.45, 3.0), V(0.05, 3.0, 4.6).lerp(V(0, 8.6, 6.0), t), 52);
 }, { subject: undefined, wide: true, dof: () => NONE });
 // --- line 22: the next night (mirror of the opening: the town comes DOWN to the sea, toward the lens)
-const S1 = shot("S1-lawn-chairs", B.chair1 - 2, "dark", [YOU_SEATED, MIA, BRAD_LATE, ...CROWD], (F) => P(V(0.6, 1.6, -9.0).lerp(V(0.6, 1.5, -8.0), span(F, B.next, B.chair1)), V(0.5, 1.2, 6), 52), { subject: undefined, wide: true, dof: () => NONE, allow: { "Cast overlap": "a beach packed with the town: heads stack into the distance (the gag is how many came)" } });
+const S1 = shot("S1-lawn-chairs", B.chair1 - 2, "dark", [YOU_SEATED, MIA, BRAD_LATE, ...CROWD], (F) => P(V(0.6, 1.6, -9.0).lerp(V(0.6, 1.5, -8.0), span(F, B.next, B.chair1)), V(0.5, 1.2, 6), 52), { subject: undefined, wide: true, dof: () => NONE, allow: { ...SEATED, "Cast overlap": "a beach packed with the town: heads stack into the distance (the gag is how many came)" } });
 const S2 = shot("S2-smug", FRAMES, "dark", [YOU_SEATED, MIA], (F) => { const f0 = seatFrame(SEA_SIDE.clone().add(V(0.3, 0, 0)), "cu"); return creep(f0, F, B.chair1 - 2, FRAMES, 0.06); }, { dof: () => close(1.5) });
 
 export const SHOTS: S[] = [A1, A2, B1, C1, C2, D1, D2, E1, E2, E3, F1, G1, G2, H1, H2, I1, J1, J2, K1, K2, L1, L2, L3, L4, M1, M2, N1, N2, O1, O2, P1, P2, Q1, Q2, Q3, R1, R2, S1, S2];
@@ -443,10 +432,11 @@ export const propsFor = (s: S): MovingProp[] => {
   if (s.w === "bedroom") return [];
   const names = new Set(s.cast?.map((c) => c.name));
   const out: MovingProp[] = [];
+  out.push({ name: "stick", make: stick, pose: (o, F) => { if (F < B.push + 10) return false; o.position.copy(BEACH.stick).add(V(0, STICK_GRIP - 0.35 * clamp01((F - (B.push + 10)) / 12), 0)); return true; } });
   out.push({ name: "chair", make: lawnChair, pose: (o, F) => { if (F < CHAIR_OPEN) return false; o.position.copy(BEACH.chair); o.rotation.set(0, 0, 0); return true; }, heldBy: "you", hand: "none" });
   if (names.has("you")) {
     out.push({ name: "folded", make: foldedChair, pose: (o, F) => { if (F >= CHAIR_OPEN || F >= B.because && F < B.but0) return false; o.position.copy(youHand(s, F, "right")); o.rotation.set(0, youState(F).heading ?? 0, 0); return true; }, heldBy: "you", hand: "right" });
-    out.push({ name: "stick", make: stick, pose: (o, F) => { if (F < B.dont || F >= B.then0) return false; if (F < B.push + 10) { o.position.copy(youHand(s, F, "right")).add(V(0, -0.75, 0)); } else o.position.copy(BEACH.stick).add(V(0, -0.35 * clamp01((F - (B.push + 10)) / 12), 0)); return true; }, heldBy: "you", hand: "right" });
+    out.push({ name: "stickHeld", make: stick, pose: (o, F) => { if (F < B.dont || F >= B.push + 10) return false; o.position.copy(youHand(s, F, "right")); return true; }, heldBy: "you", hand: "right" });
     out.push({ name: "bucket", make: popcornBucket, pose: (o, F) => { if (F < B.popcorn + 8 || F >= B.next) return false; o.position.copy(youHand(s, F, "both")); return true; }, heldBy: "you", hand: "both" });
     out.push({ name: "kernel", make: kernel, pose: (o, F) => {
       const k = F - (B.popcorn + 2);
@@ -457,7 +447,7 @@ export const propsFor = (s: S): MovingProp[] => {
     }, heldBy: "you", hand: "none" });
   }
   if (names.has("mia")) out.push({ name: "fish", make: fishBag, pose: (o, F) => { o.position.copy(miaHand(s, F)); return true; }, heldBy: "mia", hand: "left" });
-  if (names.has("brad") && s.id !== "moon/S1-lawn-chairs") out.push({ name: "selfie", make: selfieStick, pose: (o, F) => { o.position.copy(bradHand(s, F)); o.rotation.set(0, Math.PI + 0.3, 0.15); return true; }, heldBy: "brad", hand: "right" });
+  if (names.has("brad") && s.id !== "moon/S1-lawn-chairs") out.push({ name: "selfie", make: selfieStick, pose: (o, F) => { o.position.copy(bradHand(s, F)); o.rotation.set(0, 0.2, 0.15); return true; }, heldBy: "brad", hand: "right" });
   if (s.id === "moon/S1-lawn-chairs") out.push({ name: "bradChair", make: foldedChair, pose: (o, F) => { o.position.copy(handWorld(bradLook, BRAD_LATE.state(F).pose, BRAD_LATE.at(F), lensOf(s, F), "right", 0.05)); return true; }, heldBy: "brad", hand: "right" });
   PHONERS.forEach((r, i) => {
     if (names.has(r.name)) out.push({ name: `phone${i}`, make: () => alertPhone(i), pose: (o, F) => { o.position.copy(phonePos(i, F, lensOf(s, F))); o.rotation.set(0, Math.atan2(lensOf(s, F).x - o.position.x, lensOf(s, F).z - o.position.z), 0); return true; }, heldBy: r.name, hand: "right" });
@@ -473,7 +463,16 @@ export const propsFor = (s: S): MovingProp[] => {
       return true;
     }, touches: ["shack"] });
   }
-  if (s.id === "moon/K1-sea-pulls-back") out.push({ name: "crab", make: crab, pose: (o, F) => { const z = tide(F).z; o.position.set(BEACH.stick.x - 0.9, 0, Math.min(z + 0.9, 0.0) + 0.35 * Math.sin(F * 1.4) * 0.1); o.rotation.y = Math.PI / 2; return true; } });
+  if (s.id === "moon/N2-tiny-wave") out.push({ name: "tinyWave", make: tinyWave, pose: (o, F) => {
+    const k = F - (B.tide - 24);
+    if (k < 0 || k > 34) return false;
+    const z = tide(F).z;
+    o.position.set(0.6, 0.02, z - 0.5 + 0.55 * clamp01(k / 24));
+    o.scale.set(1, k < 24 ? 0.4 + 0.6 * clamp01(k / 8) : Math.max(1 - (k - 24) / 6, 0.05), 1);
+    o.rotation.x = k < 24 ? 0 : 0.5;
+    return true;
+  } });
+  if (s.id === "moon/K1-sea-pulls-back") out.push({ name: "crab", make: crab, pose: (o, F) => { const z = tide(F).z; o.position.set(BEACH.stick.x - 0.7, 0, Math.min(z + 0.9, -0.3) + 0.035 * Math.sin(F * 1.4)); o.rotation.y = Math.PI / 2; return true; } });
   return out;
 };
 /** The dog's head on the pier: tipped up howling, then (moon gone) turned to the lens. */
