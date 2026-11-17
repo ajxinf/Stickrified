@@ -9,9 +9,9 @@ Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work 
 
 ## Stack
 - Remotion + `@remotion/three` (React Three Fiber). Every motion (characters, camera, shaders) must be driven by `useCurrentFrame()`, never by clocks or `useFrame` time.
-- ElevenLabs **Eleven v4** TTS (one narrator voice, audio tags only on beats). API key in `.env` as `ELEVENLABS_API_KEY` (never commit it).
+- ElevenLabs **Eleven v4** TTS (one narrator voice; each speaking character gets its own ElevenLabs voice for its dialogue lines, user 2026-11-17; audio tags only on beats). API key in `.env` as `ELEVENLABS_API_KEY` (never commit it).
 - Assets: CC0 only (Kenney, Quaternius, similar); fonts may be SIL OFL 1.1 (approved 2026-11-14: Nunito for captions). Record each asset's source + license in `assets/CREDITS.md`.
-- Sound: ElevenLabs sound effects and ambience beds (approved 2026-11-14; shared library `assets/sfx/library.json`), synthesized SFX, and an original score (Python scripts). Stereo mix with a continuous scene bed under every shot. No commercial music.
+- Sound: ElevenLabs sound effects and ambience beds (approved 2026-11-14; shared library `assets/sfx/library.json`), synthesized SFX, and background music from the user's library `assets/bgm/` (user 2026-11-16: pick the best fit per episode from `assets/bgm/library.json`; "In this world..." uses `in_this_world(default).mp3`), fitted as a seamless loop by `scripts/audio/bgm.py`. Stereo mix with a continuous scene bed under every shot. No other commercial music.
 - Lip sync: on-screen characters move their mouths on the words they speak (`scripts/audio/mouth.py`, approved 2026-11-14).
 
 ## Pipeline (audio-first)
@@ -19,7 +19,7 @@ Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, 
 
 ## Formats
 - Shorts: 61–90 s, 1080×1920 composition, 30 fps, final export 1080×1920 (default since 2026-11-13; 2K 1440×2560 only on request).
-- Shorts: burned-in captions, at most 2 white words at a time, no colour highlight (R13 restyle, 2026-11-14; see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
+- Shorts: burned-in captions, at most 2 white words at a time, no pop; the `*key*` word is coloured: yellow in narration, the speaker's colour on dialogue (user request 2026-11-16; see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
 
 ## Content rules
 - Advertiser-friendly, evergreen. No graphic true crime; violence stays off-screen.
@@ -36,7 +36,7 @@ templates/base/    starting point for new videos (made after the pilot)
 docs/STYLE.md      style bible + approved frames in docs/style/frames/
 scripts/           tts, audio, stills, QA helpers
 ```
-Rendered output (`out/`, `*.mp4`) is git-ignored.
+Rendered output (`out/`, `*.mp4`) is git-ignored. Finished episodes reach `Episodes/Episode_<N>_<Title>.mp4` only through `scripts/deliver.py` (gates: QA layers 1-3, richness, video-review; user rule 2026-11-17 after episode 3 shipped with defects) (title words joined by underscores, from the chosen title in PUBLISH.md; user request 2026-11-16) so the user never digs through `out/`. Episode 1 = zombie-supermarket-30-days, 2 = trapped-in-this-world, 3 = gta-started-as-race-n-chase.
 
 ## Current phase
 Weeks 1–2: Phase 0 of the skill (build the toon kit) and a pilot Short ("What if you were trapped in a supermarket for 30 days during a zombie apocalypse" unless the user picks another). Daily posting starts week 3.

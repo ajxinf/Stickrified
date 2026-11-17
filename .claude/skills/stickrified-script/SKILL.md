@@ -91,7 +91,8 @@ references peak at 73-86 %. The second half must be the best half.
 
 ## Plain words (how the references talk)
 - Spoken, simple English: nearly every word one or two syllables; contractions everywhere. The checker warns when
-  more than 7 % of words have 8+ letters (references: 1.7-6.8 %).
+  more than 10 % of words have 8+ letters (references: 1.7-10 %; the long ones are concrete nouns like
+  "basketball", never abstractions).
 - Physical verbs carry the story (drill, slam, tape, kick, crack, grab, stomp). No abstract verbs ("develops",
   "experiences", "investigators found").
 - Sentences 10-14 words on average, mixed with 2-4 word punches ("It works.", "Not really."). Over 25 words only
@@ -123,6 +124,42 @@ Each formula is the story engine dressed for its pillar.
     act, "In this world...", "Everyone gets <X> at 18. You get <worse X>.", "You wake up and...". Not the same
     opener 3 videos in a row.
   - Our own worlds only: never adapt a book, film, show, game or another channel's story.
+
+### "In this world..." craft (R21 study of script_ref1-3, evidence in `docs/scripts/IN_THIS_WORLD_STUDY.md`)
+Principles, not a template: use the ones the world needs, in the order the story needs.
+- **One rule the viewer gets in one breath** (≤ 15 words, an image a child could draw), plus at most one
+  constraint ("But there's one rule: it can never leave you."; "if the train ever stops, we all die"). A second
+  magic mechanic only if it falls out of the first. Ep 2 needed three rules and a jar; the user found it confusing.
+- **Rule + your stake in the opening sentence or the next**: "In this world, your biggest fear follows you around
+  as a monster, and yours has been trying to take your little sister for six years." The stake is a person or a
+  need, never a mechanic.
+- **A world tour before the story** (~10-15 s): "You see," + three quick examples of the rule in ordinary lives,
+  escalating, the third the funniest or the personal one (spider -> floating cliff -> a wallet with teeth). Name
+  the people ("your neighbour Linda", "Grandma, who goes dancing on Tuesdays").
+- **Give "you" a wound in one line**: an age, a loss, a lack ("You've never seen the sky."; "You lost her at the
+  mall once, for four hours."). The ending fills it or turns it. One loaded object can carry it (her empty pink
+  backpack) and comes back at the end.
+- **Routine, then the break**: 2-3 sentences of how the world always goes ("Every morning... Every night..."), then a
+  turn marker ("Then last Friday, something happened." / "But one morning..."). Allowed curiosity gaps (they are not
+  setup words): "and what you see next...", "Then you notice something." Each is paid within ~2 s; 2-4 per video.
+- **Escalate with obstacles, in fragments at the peak only**: "The exit. Locked. You pull the handle. Nothing." Sound
+  words (boom, crack) at the peak. Elsewhere sentences of 6-12 words; keep 4-word-or-shorter sentences under ~40 %
+  (refs 8-41 %, ep 2 53 %: when everything is a punch, nothing lands; `check_script.py` warns above 45 %).
+- **The twist reframes the rule or the opponent with a planted detail** (the monster was protecting her; the frozen
+  world was a lie the rich told; the party town turns into a practising town because of you). Plant it as an odd
+  detail in the first third.
+- **The ending answers the hook's lack or calls back a throwaway** (a real flower for someone who never saw outside;
+  the mayor's goldfish as the only party guest). Emotion is allowed here: the refs end warm or eerie, not only on a
+  joke.
+- **Story first, jokes as seasoning**: the world's logic is the comedy; 2-4 real jokes per video. The 5-8 s picture
+  rule stays, but the picture can be a reveal.
+- **Dialogue only at emotional turns**, short, from people who matter ("Lily, run." / "While you were out
+  partying."). Never a narrator-as-character explaining mechanics.
+- **Person**: second person, always (user 2026-11-16: "Keep you"). Borrow the first-person intimacy of the references through names, an age
+  and a wound for "you"; the generic "you" of the rule sentence pulls the viewer in.
+- **Worlds of everyday stakes** (parties, fears, food, family, school, money) need no explaining; meta worlds
+  (captions, narrators, progress bars) do, so keep them rare.
+- A world too big for 90 s (ref2 runs 167 s) is a Part 1 that ends on a cliffhanger built from a planted memory.
 - Every script: the first frame shows the strange act on the first word; at least one POV shot (POV only until a
   back-view card exists: cards always face the camera, so an over-the-shoulder shot would show your face); end on
   the last word (no outro, no "subscribe").
@@ -159,8 +196,12 @@ Goal: the most entertaining 61-90 s possible. A swipe-away means a line was bori
   only on a single punchline, then switch back with the next line's tag.
 - **Tag most lines** (energy drops without them): `audioTag` is sent in front of the line; extra inline tags go in
   `spoken`. Good set: `excited`, `playful`, `amused`, `mischievous`, `urgent`, `quick`, `rushed`, `panicked`,
-  `nervous`, `tense, hushed`, `whispers`, `relieved`, `amazed`, `building excitement`, `sneaky, quick`, `deadpan`,
-  `sighs`. Free text works ("realizing, excited"). Stack with commas in one bracket; one tag per clause; never two
+  `nervous`, `dramatic`, `dramatic, booming`, `exasperated`, `relieved`, `amazed`, `building excitement`, `proud`,
+  `deadpan` (once), `sighs`.
+- **Never quiet tags** (user, 2026-11-16: "way too quiet, I genuinely can't hear it"): no `whispers`, `hushed`,
+  `quiet`, `soft`, `murmur`, `under breath`, and avoid `sneaky`, `tired`, `dry`, `tense` and `slow` alone (they came
+  out 5-8 dB under the other lines). For suspense use loud tension: `urgent, building`, `dramatic, alarmed`.
+  `check_script.py` warns on them; after the voice, `scripts/audio/line_loudness.py` must pass. Free text works ("realizing, excited"). Stack with commas in one bracket; one tag per clause; never two
   contrasting tags on the same words.
 - **Pace through punctuation**: commas, not full stops, between related beats ("Day 3, the power's still on, so
   you..."). Full stops and colons add pauses: keep them for the deliberate stop before a punchline. `...` = a
@@ -198,6 +239,18 @@ Goal: the most entertaining 61-90 s possible. A swipe-away means a line was bori
 ```
 - `loop` (required, checker ERROR if missing) = one line on how the last line returns to the first.
 - `narration` = caption text: normal case, numerals, one `*key word*` per sentence, **never** a tag.
+- `speaker` (optional) = who says the line when it is not plain storytelling: `narrator` (the narrator talking as
+  himself or casting a spell), `you`, or a side character's id (`gary`). Its key word takes that speaker's caption
+  colour. Split a line so the quote and "he says..." are separate lines.
+- `voices` (top level, user 2026-11-17) = `{speaker: voiceId}`: every character with quoted lines gets its own
+  ElevenLabs voice picked to fit them (age, gender, attitude), with a one-line why in `voiceNotes`. A quoted line
+  goes on its own line with its `speaker` so it gets that voice; the narrator keeps `voiceId` for everything else
+  (`narrator` and `you` stay in the narrator's voice unless `voices` names them). Never reuse the narrator's voice
+  for a character. `tts.ts` generates each run of same-voice lines separately (0.25 s apart) and only regenerates
+  a run whose text or voice changed. The `.env` key lacks `voices_read`, so pick from the ElevenLabs premade voices
+  by ID (e.g. Eric `cjVigY5qzO86Huf0OWal` smooth adult man, Laura `FGY2WhTYpPnrIDTdsKH5` bright young woman,
+  Liam `TX3LPaxmHKxFdv7VOQHJ` young man, Brian `nPczCjzI2devNBz1zQrb` deep older man, Lily `pFZP5JQG7iQjIQuC4Bku`
+  warm British woman, Callum `N2lVS1w4EtoT3dr4eOWO` husky trickster) or a library voice the user adds.
 - `spoken` (optional) = what the voice reads when it differs: numbers written out, inline tags, CAPS, `...`.
 - `audioTag` = the line's lead tag without brackets. `onScreenText` = stamp cards ("DAY 3", "1831"). `gag` = the
   literal visual gag on that line (empty if none).

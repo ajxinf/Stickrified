@@ -26,10 +26,15 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
 ## House rules
 - English only. Narration in second person. One narrator voice (ElevenLabs Eleven v4, voice ID
   `zfc8CJQpe8Kqyl0vvCzo`, every video): a fast, energetic storyteller, deadpan only on single punchlines.
+  **Dialogue gets the character's own voice** (user 2026-11-17): every side character with quoted lines gets an
+  ElevenLabs voice that fits them, in `script.json` `voices` (see the script skill); `tts.ts` voices those lines
+  with it.
 - **Scripts: follow the `stickrified-script` skill** (`.claude/skills/stickrified-script/SKILL.md`): pillars,
   formulas, entertainment and exaggeration rules, Eleven v4 tags, length (200-270 words), `script.json` format.
-- Captions (R13 restyle, user decision 2026-11-14: no coloured key word, no pop; `*word*` marks stay in `script.json`
-  for the audio tags and are stripped from the captions): at most 2 words at a time from `words.json`, all white `#ffffff` bold rounded sans (e.g. Nunito Black or
+- Captions (R13 restyle 2026-11-14: no pop; key colours, user request 2026-11-16): the `*word*` key word is yellow
+  `#ffd23f` in narration and the speaker's colour on a line with `speaker` (narrator `#ff4a3d`, you `#7ce86a`, a
+  video's own cast via `<Captions speakers={{ gary: "#5fb8ff" }}>`; pick hues far from yellow and from each other);
+  double quotes are dropped. At most 2 words at a time from `words.json`, otherwise white `#ffffff` bold rounded sans (e.g. Nunito Black or
   Poppins ExtraBold, bundled locally), dark outline `#141014` ~0.006 W plus a soft drop shadow (offset 0.003 W, blur
   0.006 W, 60 % black), centred horizontally at y = 0.70 H, font size 0.055 W (~60 px at 1080 wide), punctuation kept,
   no pop or bounce: each group appears instantly on its first word and holds until the next (median 10 f). Never over
@@ -37,7 +42,9 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
 - Mix (`scripts/audio/mix.py`), gains relative to these stem reference levels: music bed RMS -20 dBFS
   (`music.py`), every SFX peaking at -3 dBFS (`sfx_gen.py`), voice as ElevenLabs delivers it.
   - Voice 0 dB.
-  - Music bed -3 dB, ducked a further 16 dB while the voice speaks (30 ms attack, 250 ms release).
+  - Music bed -3 dB, ducked a further 16 dB while the voice speaks (30 ms attack, 250 ms release). A library
+    track also gets a -6 dB dip at 300-4000 Hz (`TRACK_CARVE_DB`: its keys sit in the speech band), and the bed is
+    ridden 15 dB under the last word (no button hit to end on).
   - Button (final hit, its own `button.wav`) -3 dB, not ducked: above the bed, below the voice.
   - SFX -6 dB.
   - **Check (FAIL below 15 dB):** voice over music in the speech band (200-4000 Hz) during the words of
@@ -160,6 +167,11 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
    `tts.ts` fails when a non-verbal tag (`[laughs]`, `[gasps]`...) left less than 0.3 s between its words (not
    performed: Eleven v4 skips tags now and then, more often mid-sentence) and cuts each tag to
    `voice/tag_<name>_<n>.wav` for the ear check. Put tags after a full stop and retake with `--new` until it passes.
+   Then `python scripts/audio/line_loudness.py videos/<slug>`: no line may sit 4+ dB under the median (hushed and
+   whispered deliveries are inaudible under music, user 2026-11-16). Retag and retake; for a line or two just under,
+   `--lift` raises lines 3+ dB under the median in voice.wav (rerun `mouth.py` after; redo after every new take).
+   Also check that no word's time lands in silence (the mix report's "lowest word" going negative): Eleven's
+   alignment drifted 0.3 s on "That's me" in trapped-in-this-world and on 8 sentence-final words in ep 3: run `python scripts/audio/fix_word_drift.py videos/<slug>` (pulls words in silence back onto their speech), then rerun `mouth.py`.
 4. **Shot plan** in `src/videos/<slug>/story.ts` (copy `templates/base/`, or until the pilot
    `src/videos/_pipeline-test/`; register the composition in `src/Root.tsx`):
    - `SHOTS`: id, a/b frames, light day/golden, crowd mode, `tau` story time.
@@ -205,7 +217,13 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      effects in that room (interiors ~1.1, streets ~0.45).
    - `python scripts/audio/sfx_gen.py videos/<slug>` -> `sfx.wav` (stereo) + `amb.wav` (the beds). `shots.json` must
      carry scene tags (any stills/render pass writes them).
-   - `python scripts/audio/music.py videos/<slug>` -> `music.wav` (bed) + `button.wav`.
+   - **Music is a library track** (user, 2026-11-16): pick the best fit from `assets/bgm/library.json` (default for
+     "In this world..." fiction: `in_this_world(default).mp3`) and set `"music": {"track": "<file>", ...}` in
+     `events.json`. `python scripts/audio/music.py videos/<slug>` hands it to `bgm.py`, which cuts a seamless loop of
+     the exact video length (the last frame flows into the first when the Short replays; the tempo moves up to 8 %,
+     pitch kept), mutes `stop`/`stops` spans, and writes `music.wav` (stereo) + a silent `button.wav`. Listen to
+     `audio/bgm_seam.wav` (the wrap). A WARN means the track has no clean loop at this length: pick another or accept
+     the 2 s end fade. Without `"track"`, `music.py` still synthesizes the old plucked score.
    - `python scripts/audio/mix.py videos/<slug>` -> `mix.wav` (48 kHz, exact length), `loudness.json` (LUFS, true
      peak, voice-vs-music gap), and `public/<slug>/mix.wav`, which `Video.tsx` mounts with `<Audio>` in Studio only.
    - Stereo master (`mix.py`): voice centre, score widened and warmed (+3 dB below 160 Hz), beds at -9 dB ducked 13 dB
@@ -229,7 +247,9 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
     `measure.py` on the final, then a fresh reviewer agent). Fix everything, then a final verifier audit.
 10b. **Review**: run the `video-review` skill (QA + three audience critics, fixes, re-review); it writes
     `videos/<slug>/REVIEW.md`. Deliver only at READY TO PUBLISH or READY WITH MINOR IMPROVEMENTS.
-11. **Deliver**: SendUserFile `final.mp4`; 3 title options; description with "Narration: AI voice" (+ sources for
+11. **Deliver**: `python scripts/deliver.py <slug> <N> "<Title>"` (never copy by hand: it refuses unless layer 1,
+    QA.md `Verdict: PASS`, richness and REVIEW.md `Production quality: PASS` + a READY decision are all on disk;
+    episode 3 skipped steps 10-10b and shipped glare, a door onto a wall and cut text), SendUserFile it; 3 title options; description with "Narration: AI voice" (+ sources for
     history); add minutes per step to `videos/TIMELOG.md`; mark the topic done in `BACKLOG.md`; commit and push.
 
 ## Visual storytelling (from the R5-R7 study)
@@ -254,6 +274,35 @@ The look values below make a frame pretty; these rules make the frames tell the 
     excited, pleading) let `alive()` glances show, so point `gazes` at what the character would look at;
   - layer effects on the peaks: `sweat`, `blush`, `tears`, `steam`, `fill`, `bang`, `ringEyes`;
   - the body follows the face (pose change or `reactSquash` on the same frame); listeners never freeze (`alive`).
+- **Never cheap next to the refs (R21b, user 2026-11-16; `docs/style/VISUAL_DIRECTION.md` "R21b").** The set stays
+  readable behind the character (DOF presets are 4-5 px now: never push `maxPx` back up), heads take at most ~35 %
+  of the frame width except the 1-3 biggest reactions (mediums with the set around them, like every ref), every set
+  carries small many-coloured detail at several distances (bunting, signs, posters, plants, clutter) so no frame is
+  one colour, and the sunset/golden frames keep cool local colour against the warm light. Before the final render,
+  `python scripts/richness.py <stills or render>` must land inside the refs' ranges (crisp 8.5-21.6, edges
+  .050-.093, hue entropy 2.0-2.7, warm share <= .77).
+- **Bodies act, not just faces (R21, user 2026-11-16: "characters should not feel stiff, robotic, weightless";
+  study of visual-ref7 in `docs/style/VISUAL_DIRECTION.md` "R21").** Ep 2 laughed, panicked and gloated with a
+  statue body under a changing face; the reference rocks the whole body on a laugh, leans 25 deg into a cart it
+  drags, falls off a bench laughing. Rules:
+  - **Every role's state goes through `perform(state, F, seed, exprAt(...))`** (kit acting.ts) as the last step of the
+    video's `st()`: each face brings its body (laughing rocks +-7 deg with the head a beat behind and a bounce;
+    crying shakes the shoulders; shocked jumps and stretches; scared/nervous shrink and tremble; sad/tired droop;
+    proud/smug lift the chest; scheming/sneaky hunch and rock), crossfading over 8 frames from the previous
+    emotion, and speaking characters (`fx.talk`) nod on open syllables. It never moves the hands, so held props stay
+    in them. Crowds and extras: `amount` 0.5.
+  - **Pose changes anticipate, overshoot and overlap**: `poseAt` (and `moveCurve`/`movePose` for hand-made
+    timelines) dips 3 frames the other way, moves over ~5 frames to an 8 % overshoot, settles over 5, with the arms
+    1 frame and the head 2 frames behind the body; hands travel on arcs. A video's own `pose()` helper should call
+    `movePose(a, b, moveCurve(d), moveCurve(d - 1), moveCurve(d - 2))`, not a plain `blendPose`.
+  - **Physical effort shows in the body**: pulling, pushing, carrying and climbing lean INTO the load (in a profile
+    view `sway` is the forward lean: 15-25 deg toward the facing side); a heavy object makes the walk slower and
+    lower (`walkPose(d, amount)` with bigger `bob` dips), never a normal walk beside a moving prop.
+  - **Bodies touch**: laughing people lean on each other, a friend's hand lands on a shoulder, a character leans on a
+    wall or a post with a hand on it. Two people side by side for more than ~2 s share at least one contact.
+  - **The biggest physical beats get speed lines** (ref 4.77 s: radial streaks behind the arm whip on "run."):
+    `<Sequence from={word} durationInFrames={12}><SpeedLines center={[x, y]} /></Sequence>` (kit SpeedLines.tsx,
+    centre on the actor's head), on 1-3 beats per video, never on every move.
 - **Words live in the world.** Signs, labels, banners, name tags, calendars, screens and placards carry text
   (a "DO NOT PUSH" sign, a "SHAKE ME!" box, a scoreboard number rolling over). Floating cards only for the
   identity stamps (DAY N, year) and effect cards. Sign faces use an unlit material (Readability traps).
@@ -264,6 +313,12 @@ The look values below make a frame pretty; these rules make the frames tell the 
   pull-out or dissolve in and a match cut back to the story.
 - **Time of day follows the story**, not the clock: bright day for the setup, blue night or rain for the scheme or
   setback (warm practicals), a clean bright morning or golden light for the payoff. Change it on a dissolve.
+- **Every action the narration names is shown on screen, on its word** (user, 2026-11-16: "in this world your shoes
+  are full of soup does not show a close-up of the shoe full of soup"). Soup in the shoes = a close-up of the
+  sneaker pouring soup into a puddle; "the red bar crawls, 90 %" = a fat bar with a big 90 % on it; "then I notice" =
+  the eyes snapping onto you; "his ladder smashes your jar" = the smash in frame on "jar", not a cut away before
+  it. A reaction shot of a face is not the action. On every render, `python scripts/line_sheet.py` makes a contact sheet of every line (2 frames
+  per line) and check each line's verb is visible.
 - **Exaggerate literally.** A big number becomes a big picture: 400 heads turning at once, a cart bristling with
   212 toys, a crowd that fills the frame edge to edge (instanced extras).
 - **Object POVs**: besides "your" POV, ride on the thing that matters (the cart down the ramp, the bridge deck,
@@ -344,7 +399,8 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
   of the subject distance per shot, plus a little drift), then a quick motivated move: `reframe(pose, to, a, b)`
   glides to a new framing over 20-30 f. Moves faster than 25 px/f are declared as `whips` and get the Composer's
   camera motion blur automatically (180 deg shutter, from the shot's previous-frame camera).
-- **Poses ease**: `poseAt([[frame, pose], ...], f)` blends 4-5 frames between poses; never pop a pose in one frame.
+- **Poses ease**: `poseAt([[frame, pose], ...], f)` anticipates, moves over 5 frames, overshoots and settles (R21);
+  never pop a pose in one frame.
 - **Held lights**: a `lantern` prop gets a `glowSprite` at the hand (0.6 m up, 0.24 m to screen right); keep that hand
   still for the shot (a pose that lifts it leaves the glow behind). Crane `reveal`s must start above the ground.
 - **Characters never share a spot**: the QA guard fails two characters closer than 0.5 m (bodies through bodies).

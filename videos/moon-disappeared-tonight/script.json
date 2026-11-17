@@ -6,6 +6,14 @@
   "loop": "Line 1: you carry a lawn chair down to the sea while 4,000 people run up the hill. Last: the next night, all 4,000 people bring a lawn chair (down to your beach).",
   "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
   "model": "eleven_v4",
+  "voices": {
+    "brad": "cjVigY5qzO86Huf0OWal",
+    "mia": "FGY2WhTYpPnrIDTdsKH5"
+  },
+  "voiceNotes": {
+    "brad": "Eric (ElevenLabs premade): smooth middle-aged American, a slick realtor",
+    "mia": "Laura (ElevenLabs premade): bright, quirky young American female, the closest premade to a 9-year-old (no child premades)"
+  },
   "facts": [
     "Without the moon only the sun raises tides; its tidal pull is ~46% of the moon's, leaving roughly a third of today's tidal range (ScienceABC, Astronoo; ZME Science says 50-75% lower). Script: 'stops a third of the way'.",
     "No giant wave: the moon's tidal bulge would settle like an ordinary ebb over hours, not surge (Live Science / Space.com 'what if the moon disappeared'; forum physics agrees). The bedsheet analogy is ours.",
@@ -18,7 +26,7 @@
   "lines": [
     {
       "narration": "You carry a lawn chair down to the ocean, while 4,000 people run up the *hill*.",
-      "spoken": "You carry a lawn chair DOWN to the ocean, while four thousand people run up the hill.",
+      "spoken": "You carry a lawn chair DOWN to the ocean, while four-thousand people run up the hill.",
       "audioTag": "fast-paced, energetic storyteller",
       "scene": "Cold open, night beach town: you walk down the beach path with a folding lawn chair under your arm, against a stream of townsfolk with flashlights, suitcases, a fish tank, a grandpa carrying a TV, all running uphill.",
       "camera": "Low wide on the path, you walking toward the lens against the crowd; hard cut on '4,000' to a high wide of the hill road, a river of flashlights",
@@ -53,7 +61,7 @@
     },
     {
       "narration": "Up on the hill, Brad the realtor has 500 sandbags, floodlights, and a *live stream*.",
-      "spoken": "Up on the hill, Brad the realtor has five hundred sandbags, floodlights, and a live stream.",
+      "spoken": "Up on the hill, Brad the realtor has five-hundred sandbags, floodlights, and a live stream.",
       "audioTag": "playful",
       "scene": "Brad's hilltop fortress: a pyramid of sandbags round his big house, two blazing floodlights, Brad in a pastel suit and a bike helmet on top, phone on a selfie stick, a screen behind him: 'LIVE 12K'.",
       "camera": "Telephoto from the beach up to Brad, crane up the sandbag pyramid",
@@ -195,7 +203,7 @@
     },
     {
       "narration": "The next night, 4,000 people bring a lawn *chair*.",
-      "spoken": "The next night, four thousand people bring a lawn chair.",
+      "spoken": "The next night, four-thousand people bring a lawn chair.",
       "audioTag": "proud",
       "scene": "Next night: the beach packed edge to edge with lawn chairs under the stars, the shack hatch open and selling popcorn; end on your smug face in close-up, chairs blurred behind.",
       "camera": "Mirror of the opening low wide (now everyone walks DOWN with chairs), then a CU of your smug face",
