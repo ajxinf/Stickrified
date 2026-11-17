@@ -1,6 +1,7 @@
 import { Composition } from "remotion";
 import { CastLineup, CloseUp } from "./CastLineup";
 import { CharacterTest } from "./CharacterTest";
+import { MOTION_TEST_FRAMES, MotionTest } from "./MotionTest";
 import { CharacterLineup } from "./CharacterLineup";
 import { CastSheet } from "./CastSheet";
 import { ExpressionSheet } from "./ExpressionSheet";
@@ -16,13 +17,16 @@ import { FRAMES as PT2_FRAMES } from "./videos/_pipeline-test-2/story";
 import { STRESS_FRAMES, StressTest } from "./videos/_stress-test/Video";
 import { VISUAL_TEST_FRAMES, VisualTest } from "./videos/_visual-test/Video";
 import { TRAPPED_FRAMES, TrappedInThisWorld } from "./videos/trapped-in-this-world/Video";
+import { GTA_FRAMES, GtaStartedAsRaceNChase } from "./videos/gta-started-as-race-n-chase/Video";
+import { MOON_FRAMES, MoonDisappearedTonight } from "./videos/moon-disappeared-tonight/Video";
 import { ZOMBIE_FRAMES, ZombieSupermarket } from "./videos/zombie-supermarket-30-days/Video";
 
 export const RemotionRoot: React.FC = () => (
   <>
     <Composition id="ToonTest" component={ToonTest} fps={30} durationInFrames={150} width={1080} height={1920} />
     <Composition id="CharacterTest" component={CharacterTest} fps={30} durationInFrames={240} width={1080} height={1920} />
-    <Composition id="CastLineup" component={CastLineup} fps={30} durationInFrames={30} width={1080} height={1920} />
+    <Composition id="MotionTest" component={MotionTest} fps={30} durationInFrames={MOTION_TEST_FRAMES} width={1080} height={1920} />
+    <Composition id="CastLineup"component={CastLineup} fps={30} durationInFrames={30} width={1080} height={1920} />
     <Composition id="CloseUp" component={CloseUp} fps={30} durationInFrames={30} width={1080} height={1920} />
     <Composition id="StreetWide" component={StreetWide} fps={30} durationInFrames={90} width={1080} height={1920} />
     <Composition id="StreetMedium" component={StreetMedium} fps={30} durationInFrames={90} width={1080} height={1920} />
@@ -41,6 +45,8 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="PipelineTest" component={PipelineTest} fps={30} durationInFrames={450} width={1080} height={1920} />
       <Composition id="PipelineTest2" component={PipelineTest2} fps={30} durationInFrames={PT2_FRAMES} width={1080} height={1920} />
       <Composition id="StressTest" component={StressTest} fps={30} durationInFrames={STRESS_FRAMES} width={1080} height={1920} />
+      <Composition id="GtaStartedAsRaceNChase" component={GtaStartedAsRaceNChase} fps={30} durationInFrames={GTA_FRAMES} width={1080} height={1920} />
+      <Composition id="MoonDisappearedTonight" component={MoonDisappearedTonight} fps={30} durationInFrames={MOON_FRAMES} width={1080} height={1920} />
       <Composition id="TrappedInThisWorld" component={TrappedInThisWorld} fps={30} durationInFrames={TRAPPED_FRAMES} width={1080} height={1920} />
       <Composition id="VisualTest" component={VisualTest} fps={30} durationInFrames={VISUAL_TEST_FRAMES} width={1080} height={1920} />
       <Composition id="ZombieSupermarket" component={ZombieSupermarket} fps={30} durationInFrames={ZOMBIE_FRAMES} width={1080} height={1920} />
