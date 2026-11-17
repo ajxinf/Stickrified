@@ -65,7 +65,7 @@ export const B = {
 const TIDE_K = { back: B.back0, stops: B.stops0, comes: B.comes, stick: B.stick2 };
 export const tide = (F: number) => tideAt(F, TIDE_K);
 /** Stars visible (0..1): a few under the moon, more once it is gone, the Milky Way on "exploding". */
-export const starsAt = (F: number) => (F < B.blinked && F >= B.because ? 0.12 : F < B.darker ? 0.45 : F < B.exploding - 4 ? 0.7 : Math.min(0.7 + (F - (B.exploding - 4)) / 20, 1));
+export const starsAt = (F: number) => (F < B.blinked && F >= B.because ? 0.12 : F < B.without ? 0.95 : F < B.exploding - 4 ? 0.95 : Math.min(0.85 + (F - (B.exploding - 4)) / 30, 1));
 export const milkyAt = (F: number) => (F < B.exploding - 4 ? 0 : Math.min((F - (B.exploding - 4)) / 24, 1));
 /** The shack's lights: on until line 10 switches them off one by one; back on the next night. */
 export const shackOn = (F: number) => {
@@ -418,7 +418,7 @@ const R2 = shot("R2-milky-way", B.next, "dark", [YOU_SEATED, MIA], (F) => {
 }, { subject: undefined, wide: true, dof: () => NONE });
 // --- line 22: the next night (mirror of the opening: the town comes DOWN to the sea, toward the lens)
 const S1 = shot("S1-lawn-chairs", B.chair1 - 2, "dark", [YOU_SEATED, MIA, BRAD_LATE, ...CROWD], (F) => P(V(0.6, 1.6, -9.0).lerp(V(0.9, 1.5, -8.0), span(F, B.next, B.chair1)), V(2.8, 1.2, 6), 52), { subject: undefined, wide: true, dof: () => NONE, allow: { ...SEATED, "Cast overlap": "a beach packed with the town: heads stack into the distance (the gag is how many came)" } });
-const S2 = shot("S2-smug", FRAMES, "dark", [YOU_SEATED, MIA], (F) => { const f0 = seatFrame(SEA_SIDE.clone().add(V(0.3, 0, 0)), "cu"); return creep(f0, F, B.chair1 - 2, FRAMES, 0.06, 0, 0.08); }, { dof: () => close(1.5) });
+const S2 = shot("S2-smug", FRAMES, "dark", [YOU_SEATED, MIA], (F) => { const f0 = seatFrame(SEA_SIDE.clone().add(V(0.3, 0, 0)), "cu"); return creep(f0, F, B.chair1 - 2, FRAMES, 0.06, 0, 0.08); }, { dof: () => mid(1.5) });
 
 export const SHOTS: S[] = [A1, A2, B1, C1, C2, D1, D2, E1, E2, E3, F1, G1, G2, H1, H2, H3, I1, J1, J2, K1, K2, L1, L2, L3, L4, M1, M2, N1, N2, O1, O2, P1, P2, Q1, Q2, Q3, R1, R2, S1, S2];
 /** Dissolves: into and out of the bedroom (time and place change for the analogy). */

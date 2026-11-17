@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Display-referred grade after the tone map (vendor/cartoon-3d-short/reports/grade.md section 4-5):
  * 1. one RGB tone curve, monotone cubic Hermite through knots at x = 0, .1, .25, .5, .75, .9, 1;
  * 2. saturation around luma per zone (shadows / mids / highlights);
@@ -49,7 +49,7 @@ export const GRADE: Record<GradeName, Grade> = {
   night: { ...DEEP_CURVE, ...FILM, exposure: 1.85, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
   // Ep 4 (a whole video outdoors at night): night's toe, but a lighter vignette and top (corners measured .62 and
   // crushed), less blue saturation (C*p90 66) and a warm shadow tint so the warm practicals hold their colour.
-  moonlit: { ...DEEP_CURVE, ...FILM, exposure: 1.9, sat: [1.05, 1.12, 1.0], tint: { s: [9, 2, 4], m: [3, 0, 2], h: [2, 0, -2] }, vig: [0.3, 0.3], top: 0.14, amount: 1 },
+  moonlit: { ...DEEP_CURVE, ...FILM, exposure: 2.0, sat: [1.05, 1.12, 1.0], tint: { s: [9, 2, 4], m: [3, 0, 2], h: [2, 0, -2] }, vig: [0.3, 0.3], top: 0.14, amount: 1, grain: 0.034, halation: 0.15 },
   interior: { ...DEEP_CURVE, ...FILM, exposure: 1.2, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },
 };
 

@@ -1,4 +1,4 @@
-import { useFrame, useThree } from "@react-three/fiber";
+﻿import { useFrame, useThree } from "@react-three/fiber";
 import { ThreeCanvas } from "@remotion/three";
 import { useMemo } from "react";
 import { AbsoluteFill, Audio, Sequence, getRemotionEnvironment, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
@@ -35,12 +35,15 @@ const V = (x: number, y: number, z: number) => new Vector3(x, y, z);
  * black and crushed), so the stars can carry it.
  */
 const NIGHT: LightPreset = {
-  ...LIGHTS.night, lit: [0.66, 0.64, 0.86], shade: [0.2, 0.2, 0.35], lift: [0.02, 0.02, 0.04], litTint: "#d4d0f2", sat: 1.0,
-  clouds: { lit: "#6a78b8", shade: "#28306a", cover: 0.42 }, grade: "moonlit",
+  // The moon is gone: what light is left is the town's (warm sodium key), the shade stays cool; the sky is near-black
+  // navy with cloud bellies lit orange by the town, and stars come out.
+  ...LIGHTS.night, lit: [0.8, 0.68, 0.58], shade: [0.17, 0.19, 0.33], lift: [0.02, 0.02, 0.04], litTint: "#f0d8c0", sat: 1.0,
+  skyTop: "#0a0d1e", skyMid: "#161b3c", skyHorizon: "#4a3c5e", fog: "#2a2840", haze: { color: "#3a3450", start: 30, amount: 0.3 },
+  clouds: { lit: "#d08a60", shade: "#24243f", cover: 0.62 }, grade: "moonlit",
 };
 const DARK: LightPreset = {
-  ...NIGHT, lit: [0.5, 0.52, 0.8], shade: [0.16, 0.17, 0.32], skyTop: "#0b1232", skyMid: "#172156", skyHorizon: "#2c3a74",
-  fog: "#1c2650", haze: { color: "#2c3a74", start: 30, amount: 0.3 }, clouds: undefined,
+  ...NIGHT, lit: [0.56, 0.5, 0.5], shade: [0.14, 0.15, 0.28], skyTop: "#0a0e24", skyMid: "#141c44", skyHorizon: "#2a3466",
+  fog: "#1c2448", haze: { color: "#2a3466", start: 30, amount: 0.3 }, clouds: undefined,
 };
 const BEDROOM: LightPreset = { ...LIGHTS.interior, lamp: ["#ffc27a", 2.2], lit: [0.95, 0.86, 0.74], litTint: "#ffe2c0" };
 const presetOf = (s: S): LightPreset => (s.w === "dark" ? DARK : s.w === "bedroom" ? BEDROOM : NIGHT);
@@ -74,7 +77,7 @@ const starField = (n: number, band: boolean, seed: number) => {
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(pos, 3));
   g.setAttribute("color", new BufferAttribute(col, 3));
-  const m = new PointsMaterial({ size: band ? 3.4 : 4.6, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
+  const m = new PointsMaterial({ size: band ? 3.6 : 5.6, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
   const p = new Points(g, m);
   p.layers.set(SKY);
   p.frustumCulled = false;
@@ -85,7 +88,7 @@ const Sky: React.FC<{ F: number; moon: boolean }> = ({ F, moon }) => {
   const camera = useThree((s) => s.camera);
   const sky = useMemo(() => {
     const g = new Group();
-    const stars = starField(1800, false, 11), milky = starField(11000, true, 77);
+    const stars = starField(12000, false, 11), milky = starField(11000, true, 77);
     const haze = new Group();
     for (let i = 0; i < 40; i++) {
       const a = (i / 40) * Math.PI;

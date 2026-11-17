@@ -88,10 +88,10 @@ const sandTex = () =>
     g.fillStyle = "#cdb48a"; g.fillRect(0, 0, 512, 512);
     for (let k = 0; k < 60; k++) { g.fillStyle = rnd(k) > 0.5 ? "rgba(255,240,210,0.08)" : "rgba(120,90,60,0.08)"; g.beginPath(); g.ellipse(rnd(k + 1) * 512, rnd(k + 2) * 512, 30 + 60 * rnd(k + 3), 10 + 20 * rnd(k + 4), rnd(k + 5) * 3, 0, 7); g.fill(); }
     // wind ripples and footprints
-    g.strokeStyle = "rgba(110,80,50,0.16)"; g.lineWidth = 3;
+    g.strokeStyle = "rgba(90,60,35,0.34)"; g.lineWidth = 3;
     for (let y = 10; y < 512; y += 22) { g.beginPath(); for (let x = 0; x <= 512; x += 16) g.lineTo(x, y + 5 * Math.sin(x / 40 + y)); g.stroke(); }
     for (let k = 0; k < 7000; k++) { g.fillStyle = rnd(k) > 0.5 ? "rgba(255,255,240,0.12)" : "rgba(90,60,40,0.12)"; g.fillRect(rnd(k + 7) * 512, rnd(k + 8) * 512, 2, 2); }
-    g.fillStyle = "rgba(100,70,45,0.18)";
+    g.fillStyle = "rgba(80,55,35,0.32)";
     for (let k = 0; k < 9; k++) { const x = 60 + rnd(k + 30) * 400, y = 40 + k * 52; g.beginPath(); g.ellipse(x, y, 9, 15, 0.3, 0, 7); g.fill(); g.beginPath(); g.ellipse(x + 26, y + 24, 9, 15, 0.3, 0, 7); g.fill(); }
     // shells and pebbles
     for (let k = 0; k < 22; k++) { g.fillStyle = ["#f2e6d0", "#e8b8a0", "#9aa0a8", "#f6d8c0"][k % 4]; g.beginPath(); g.ellipse(rnd(k + 50) * 512, rnd(k + 51) * 512, 5, 3.5, rnd(k + 52) * 3, 0, 7); g.fill(); }
@@ -100,8 +100,9 @@ const wetTex = () =>
   canvasTex(256, 256, (g) => {
     g.fillStyle = "#6a4c32"; g.fillRect(0, 0, 256, 256);
     for (let k = 0; k < 1800; k++) { g.fillStyle = rnd(k) > 0.5 ? "rgba(200,220,255,0.12)" : "rgba(40,30,20,0.15)"; g.fillRect(rnd(k + 3) * 256, rnd(k + 4) * 256, 2, 2); }
-    g.strokeStyle = "rgba(220,235,255,0.18)"; g.lineWidth = 2;
-    for (let k = 0; k < 14; k++) { const y = rnd(k + 9) * 256; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(80, y - 6, 170, y + 6, 256, y); g.stroke(); }
+    g.strokeStyle = "rgba(230,240,255,0.4)"; g.lineWidth = 2;
+    for (let k = 0; k < 30; k++) { const y = rnd(k + 9) * 256; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(80, y - 6, 170, y + 6, 256, y); g.stroke(); }
+    for (let k = 0; k < 60; k++) { g.fillStyle = rnd(k + 40) > 0.5 ? "rgba(240,230,210,0.7)" : "rgba(30,20,10,0.5)"; g.beginPath(); g.ellipse(rnd(k + 41) * 256, rnd(k + 42) * 256, 2 + 3 * rnd(k + 43), 1.5, rnd(k + 44) * 3, 0, 7); g.fill(); } // shells, pebbles, bubbles
   });
 const seaTex = () =>
   canvasTex(512, 512, (g) => {
@@ -109,9 +110,9 @@ const seaTex = () =>
     for (let k = 0; k < 40; k++) { g.fillStyle = rnd(k) > 0.5 ? "rgba(90,140,210,0.25)" : "rgba(10,30,70,0.25)"; g.beginPath(); g.ellipse(rnd(k + 1) * 512, rnd(k + 2) * 512, 90, 18, 0, 0, 7); g.fill(); }
     // painted wavelets: short pale strokes in rows
     g.lineCap = "round";
-    for (let k = 0; k < 420; k++) {
+    for (let k = 0; k < 900; k++) {
       const x = rnd(k + 5) * 512, y = rnd(k + 6) * 512, w = 10 + 26 * rnd(k + 7);
-      g.strokeStyle = rnd(k + 8) > 0.6 ? "rgba(190,215,255,0.55)" : "rgba(120,160,225,0.5)"; g.lineWidth = 3;
+      g.strokeStyle = rnd(k + 8) > 0.55 ? "rgba(220,235,255,0.85)" : rnd(k + 9) > 0.5 ? "rgba(120,160,225,0.7)" : "rgba(8,20,50,0.6)"; g.lineWidth = 3;
       g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + w / 2, y - 5, x + w, y); g.stroke();
     }
   });
@@ -133,7 +134,9 @@ const grassTex = () =>
   canvasTex(512, 512, (g) => {
     g.fillStyle = "#4e6a48"; g.fillRect(0, 0, 512, 512);
     g.lineWidth = 2;
-    for (let k = 0; k < 2600; k++) { const x = rnd(k) * 512, y = rnd(k + 1) * 512; g.strokeStyle = rnd(k + 2) > 0.5 ? "rgba(120,160,100,0.45)" : "rgba(30,50,30,0.45)"; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 3 * (rnd(k + 3) - 0.5) * 4, y - 8 - 8 * rnd(k + 4)); g.stroke(); }
+    for (let k = 0; k < 2600; k++) { const x = rnd(k) * 512, y = rnd(k + 1) * 512; g.strokeStyle = rnd(k + 2) > 0.5 ? "rgba(140,180,110,0.6)" : "rgba(20,40,25,0.6)"; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 3 * (rnd(k + 3) - 0.5) * 4, y - 8 - 8 * rnd(k + 4)); g.stroke(); }
+    // wild flowers and stones in the dune grass
+    for (let k = 0; k < 90; k++) { g.fillStyle = ["#f2e86a", "#f6f0f0", "#e87aa0", "#b8a0e8", "#8a8a90"][k % 5]; g.beginPath(); g.arc(rnd(k + 300) * 512, rnd(k + 301) * 512, 2.5 + 3 * rnd(k + 302), 0, 7); g.fill(); }
   });
 const stripeTex = (cols: string[], n = 8, vertical = true) =>
   canvasTex(256, 256, (g) => {
@@ -292,7 +295,7 @@ const fortress = () => {
   const base = hillY(BEACH.brad.x, BEACH.brad.z);
   const k = new Kit();
   // mansion behind
-  const pink = M("mansion", () => toonMaterial({ map: houseTex("#f2b8c8", true, 77), repeat: [0.34, 0.45] }));
+  const pink = M("mansion", () => toonMaterial({ map: houseTex("#f2b8c8", true, 77), repeat: [0.6, 0.7] }));
   const mz = BEACH.brad.z + 10;
   k.box(pink, 12, 4.4, 7, BEACH.brad.x, base + 2.2, mz);
   k.box(MAT.color("#f6f0ea"), 12.6, 0.4, 7.6, BEACH.brad.x, base + 4.6, mz);
