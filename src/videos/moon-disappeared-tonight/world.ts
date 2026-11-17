@@ -216,10 +216,10 @@ const houseTex = (col: string, lit: boolean, seed: number) =>
 
 // ================================================================== the beach
 const MATS = {
-  sand: () => M("sand", () => toonMaterial({ map: sandTex(), repeat: [12, 12], mottle: 0.08 })),
+  sand: () => M("sand", () => toonMaterial({ map: sandTex(), repeat: [175, 30], mottle: 0.08 })), // 4 m tiles
   wet: () => M("wetSand", () => toonMaterial({ map: wetTex(), repeat: [175, 4], gloss: 0.5, spec: 0.4 })),
-  sea: () => M("sea", () => toonMaterial({ map: seaTex(), repeat: [14, 10], spec: 0.7, gloss: 0.6 })),
-  grass: () => M("dune", () => toonMaterial({ map: grassTex(), repeat: [10, 6], mottle: 0.1 })),
+  sea: () => M("sea", () => toonMaterial({ map: seaTex(), repeat: [88, 50], spec: 0.7, gloss: 0.6 })), // 8 m tiles
+  grass: () => M("dune", () => toonMaterial({ map: grassTex(), repeat: [55, 20], mottle: 0.1 })), // 4 m tiles
   shack: () => M("shackWood", () => toonMaterial({ map: planks("#e8d2a8"), repeat: [1, 1] })),
   trim: () => M("shackTrim", () => toonMaterial({ map: rough("#2a7a8a"), repeat: [1, 1] })),
   roof: () => M("shackRoof", () => toonMaterial({ map: stripeTex(["#c83a3a", "#f2ece2"], 8), repeat: [1, 1] })),
@@ -362,6 +362,9 @@ const shack = () => {
   // inside: shelves, the fridge (its glow is the practical), the camping stove on the counter
   k.box(MAT.color("#e8e8ec"), 0.8, 1.7, 0.6, x - 0.6, 0.85, z + 0.6);
   k.box(MAT.wood(), 1.4, 0.06, 0.4, x + 1.0, 1.7, z + 1.05);
+  k.box(MAT.wood(), 1.4, 0.06, 0.4, x + 1.0, 1.25, z + 1.05);
+  const snacks = ["#e8402a", "#f2c23a", "#3ab048", "#2a8ad8", "#e85a8a", "#ff8a2a", "#8a5ad8"];
+  for (let i = 0; i < 10; i++) for (const y of [1.25, 1.7]) k.box(MAT.color(snacks[(i + (y > 1.5 ? 3 : 0)) % snacks.length]), 0.1, 0.2 + 0.06 * rnd(i + y * 10), 0.08, x + 0.4 + i * 0.13, y + 0.13, z + 1.05);
   k.box(MAT.color("#3a3a40"), 0.36, 0.1, 0.28, x + 0.55, 1.14, fz - 0.15); // stove
   // giant hot dog on the roof
   k.add(MAT.color("#e0a050"), new CylinderGeometry(0.42, 0.42, 2.6, 14), x, h + 0.7, z - 0.2, { rz: Math.PI / 2 });
@@ -499,6 +502,60 @@ const dressing = (lit: boolean) => {
   return g;
 };
 export const LAMP_GLOW = BEACH.lamp.clone().add(V(0.55, 3.55, 0));
+export const LANTERN_AT = V(1.3, 0, 3.75);
+/** The promenade along the dune top: more lamps (town lights: off on "darker") with festoon bulbs strung between. */
+export const PROM_LAMPS = [V(-12, 0, 10.2), V(9.0, 0, 9.8), V(13.5, 0, 10.0)];
+export const PROM_GLOWS = PROM_LAMPS.map((p) => p.clone().add(V(0.55, 3.55, 0)));
+const FESTOON: [Vector3, Vector3][] = [[V(-11.6, 3.9, 10.2), V(-5.2, 3.9, 9.6)], [V(9.4, 3.9, 9.8), V(13.9, 3.9, 10.0)], [V(-0.9, 3.5, 11), V(3.4, 3.5, 11)]];
+export const FESTOON_BULBS = FESTOON.flatMap(([a, b]) => {
+  const n = Math.round(a.distanceTo(b) / 0.45);
+  return Array.from({ length: n + 1 }, (_, i) => a.clone().lerp(b, i / n).add(V(0, -0.45 * Math.sin((i / n) * Math.PI), 0)));
+});
+const BULB_COLS = ["#ffd27a", "#ff9a6a", "#ffe8a0", "#ff7a8a", "#a8f08a", "#8ad0ff"];
+/** The bulbs (named "festoon": Video.tsx lights or darkens them) and the arch over the boardwalk. */
+export const promenade = (lit: boolean) => {
+  const g = new Group();
+  PROM_LAMPS.forEach((p) => { const l = lampPost(lit); l.position.copy(p); l.userData.collider = "lamp"; g.add(l); });
+  const bulbs = new Kit();
+  FESTOON_BULBS.forEach((p, i) => bulbs.add(lit ? MAT.glow(BULB_COLS[i % BULB_COLS.length], 3.2) : MAT.color("#5a5a66"), new SphereGeometry(0.07, 8, 6), p.x, p.y, p.z));
+  const wire = new Kit();
+  FESTOON_BULBS.forEach((p, i) => { if (i % 2 === 0) wire.add(MAT.color("#2a2a30"), new SphereGeometry(0.015, 4, 3), p.x, p.y + 0.06, p.z); });
+  const arch = new Kit();
+  for (const x of [-0.9, 3.4]) arch.add(MAT.color("#f2ece2"), new CylinderGeometry(0.09, 0.11, 3.6, 8), x, 1.8, 11);
+  arch.box(MAT.color("#2a7a8a"), 4.6, 0.12, 0.12, 1.25, 3.55, 11);
+  const archBody = arch.build();
+  archBody.userData.collider = "arch";
+  const sign = plane(2.6, 0.62, unlit("coveSign", () => signBoard(["SANDY COVE"], "#f2c23a", "#2a2a5a")), V(1.25, 3.95, 10.96), Math.PI);
+  g.add(bulbs.build(), wire.build(), archBody, sign);
+  return g;
+};
+/** What the town dropped running up the hill (shown from line 1's cut on): a beach ball, a bucket and spade, a
+ * towel, flip-flops, a sandcastle, a radio, a teddy. Decor, not colliders: nobody walks over these spots. */
+export const clutter = () => {
+  const k = new Kit();
+  const ball = (x: number, z: number) => ["#e8402a", "#f2ece2", "#2a8ad8", "#f2c23a"].forEach((c, i) => k.add(MAT.color(c), new SphereGeometry(0.2, 10, 8, (i * Math.PI) / 2, Math.PI / 2), x, 0.2, z));
+  ball(-1.3, 5.7);
+  k.add(MAT.color("#3ab048"), new CylinderGeometry(0.13, 0.1, 0.22, 10), 2.0, 0.11, 5.2);
+  k.box(MAT.color("#f2c23a"), 0.05, 0.02, 0.32, 2.2, 0.03, 5.0);
+  k.box(M("beachTowel", () => toonMaterial({ map: stripeTex(["#e85a8a", "#f2ece2", "#3ab0c8"], 7, false), repeat: [1, 1] })), 0.8, 0.012, 1.6, -2.3, 0.006, 6.6, false);
+  k.box(MAT.color("#ff7a3a"), 0.11, 0.02, 0.26, 0.9, 0.01, 6.9);
+  k.box(MAT.color("#ff7a3a"), 0.11, 0.02, 0.26, 1.08, 0.01, 7.05);
+  // a sandcastle with three towers and a paper flag
+  k.add(MAT.color("#d8bf8e"), new CylinderGeometry(0.34, 0.4, 0.22, 10), -2.9, 0.11, 3.5);
+  for (const [dx, dz] of [[-0.18, 0.1], [0.2, 0.08], [0, -0.18]]) k.add(MAT.color("#d8bf8e"), new CylinderGeometry(0.09, 0.11, 0.26, 8), -2.9 + dx, 0.35, 3.5 + dz);
+  k.add(MAT.color("#2a2a30"), new CylinderGeometry(0.006, 0.006, 0.22, 4), -2.9, 0.58, 3.32);
+  k.box(MAT.color("#e8402a"), 0.1, 0.06, 0.005, -2.85, 0.66, 3.32);
+  // a boombox
+  k.box(MAT.color("#c83a8a"), 0.42, 0.22, 0.14, 2.6, 0.11, 3.0);
+  k.add(MAT.color("#2a2a30"), new CylinderGeometry(0.06, 0.06, 0.02, 10), 2.48, 0.11, 2.93, { rx: Math.PI / 2 });
+  k.add(MAT.color("#2a2a30"), new CylinderGeometry(0.06, 0.06, 0.02, 10), 2.72, 0.11, 2.93, { rx: Math.PI / 2 });
+  // a teddy face-down in the sand
+  const body = new SphereGeometry(0.14, 8, 6);
+  body.scale(1, 0.6, 1.3);
+  k.add(MAT.color("#b0784a"), body, -0.6, 0.08, 7.6);
+  k.add(MAT.color("#b0784a"), new SphereGeometry(0.1, 8, 6), -0.6, 0.08, 7.35);
+  return k.build();
+};
 /** The whole beach world. `lit` = the town's windows (they go dark on "darker"). */
 export const beach = (lit: boolean) => {
   const g = new Group();
@@ -507,7 +564,9 @@ export const beach = (lit: boolean) => {
   sand.position.set(0, 0, -20);
   sand.receiveShadow = true;
   sand.name = "sand";
-  g.add(sand, seaPlane(), hillMesh(), shack(), pier(), tower(), dressing(lit), fortress());
+  const junk = clutter();
+  junk.name = "clutter";
+  g.add(sand, seaPlane(), hillMesh(), shack(), pier(), tower(), dressing(lit), fortress(), promenade(lit), junk);
   HOUSES.forEach(([x, z], i) => {
     const h = house(i, lit);
     h.position.set(x, hillY(x, z) - 0.3, z);
@@ -582,7 +641,6 @@ export const bedroom = () => {
     c.fillStyle = "#1a2050"; c.fillRect(0, 0, 256, 330);
     c.fillStyle = "#fff4d0"; c.beginPath(); c.arc(128, 140, 80, 0, 7); c.fill();
     c.fillStyle = "rgba(160,150,120,0.5)"; [[100, 120, 16], [150, 170, 22], [140, 100, 10]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); });
-    c.fillStyle = "#fbf7ee"; c.font = `900 31px "Nunito", sans-serif`; c.textAlign = "center"; c.fillText("GOODNIGHT", 128, 290);
   })), V(-1.6, 2.2, -2.14));
   g.add(poster, sheetMesh());
   return g;
@@ -615,8 +673,9 @@ export const foldedChair = () => {
   k.add(MAT.color("#c8ccd4"), new CylinderGeometry(0.02, 0.02, 1.0, 5), 0.3, -0.1, 0.03);
   return k.build();
 };
-/** The stick: driftwood with a red rag tied on top. Origin at the grip, STICK_GRIP above its foot. */
-export const STICK_GRIP = 0.75;
+/** The stick: driftwood with a red rag tied on top. Origin at the grip, STICK_GRIP above its foot (near the top, so
+ * the rag sits at the hand, never over the face: R1 review, the rag covered your face at f840-915). */
+export const STICK_GRIP = 1.28;
 export const stick = () => {
   const k = new Kit();
   k.add(MAT.color("#8a6a4a"), new CylinderGeometry(0.025, 0.035, 1.5, 6), 0, 0.75 - STICK_GRIP, 0, { rz: 0.04 });

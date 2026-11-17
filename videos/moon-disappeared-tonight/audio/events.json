@@ -29,8 +29,8 @@
   {"word": "tide", "n": 0, "lead": 2, "sfx": "tiny_wave", "note": "the tiniest wave in history flops onto the sand"},
   {"word": "when", "n": 0, "lead": 4, "sfx": "stamp_thump", "note": "4 HOURS LATER stamp"},
   {"word": "stick", "n": 2, "lead": 2, "sfx": "tiny_wave", "gain_db": -3, "note": "the tide gives up a third of the way to the stick"},
-  {"word": "darker", "n": 0, "lead": 1, "sfx": "flood_off", "gain_db": 2, "note": "hard cut: the town goes dark"},
-  {"word": "moth", "n": 0, "lead": 8, "sfx": "moth_swarm", "pan": -0.2, "note": "the moths stream in to the floodlights"},
+  {"word": "without", "n": 0, "lead": 1, "sfx": "flood_off", "gain_db": 2, "note": "hard cut: the town goes dark on 'Without it'"},
+  {"word": "brightest", "n": 0, "lead": 0, "sfx": "moth_swarm", "pan": -0.2, "note": "the moths stream in to the floodlights"},
   {"word": "brad", "n": 1, "lead": 2, "sfx": "hand_slap", "note": "Brad swats at the moths"},
   {"word": "exploding", "n": 0, "lead": 2, "sfx": "star_shimmer", "note": "the Milky Way blazes across the sky"},
   {"word": "next", "n": 0, "lead": 4, "sfx": "crowd_beach", "note": "the next night: the beach packed with lawn chairs"}

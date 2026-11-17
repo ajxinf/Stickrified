@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { ThreeCanvas } from "@remotion/three";
 import { useMemo } from "react";
 import { AbsoluteFill, Audio, Sequence, getRemotionEnvironment, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { AdditiveBlending, BufferAttribute, BufferGeometry, Group, Mesh, Points, PointsMaterial, PointLight, Vector3 } from "three";
+import { AdditiveBlending, BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Points, PointsMaterial, PointLight, Vector3 } from "three";
 import { Captions } from "../../../kit/toon/Captions";
 import { Character } from "../../../kit/toon/cast";
 import type { Look } from "../../../kit/toon/cast";
@@ -14,10 +14,11 @@ import { LIGHTS, LightPreset } from "../../../kit/toon/lights";
 import { practicalLights } from "../../../kit/toon/shade";
 import type { PracticalKind } from "../../../kit/toon/shade";
 import { SpeedLines } from "../../../kit/toon/SpeedLines";
+import { lantern } from "../../../kit/toon/build/storyprops";
 import { Stamp } from "../../../kit/toon/Stamp";
 import { ToonWorld } from "../../../kit/toon/world";
-import { B, BRAD_HEAD, BRAD_POS, CHAIR_OPEN, CROWD_SPOTS, FLOOD_HEAD, FRAMES, PLAN, S, SHOTS, STAMPS, WORLDS, XFADE, boatAt, dogHead, handAt, humpAt, milkyAt, mothsAt, pathAt, propsFor, shackOn, starsAt, tide, words } from "./story";
-import { BED_LAMP, BEACH, LAMP_GLOW, PIER_END, SHACK_LIGHTS, beach, bedroom, canvasTex, chairRows, dog, giantHand, setSheet, setTide, shackLights, toyBoat } from "./world";
+import { B, BRAD_HEAD, BRAD_POS, CHAIR_OPEN, bradLateAt, CROWD_SPOTS, FLOOD_HEAD, FRAMES, PLAN, S, SHOTS, STAMPS, WORLDS, XFADE, boatAt, dogHead, handAt, humpAt, milkyAt, mothsAt, pathAt, propsFor, shackOn, starsAt, tide, words } from "./story";
+import { BED_LAMP, BEACH, LAMP_GLOW, LANTERN_AT, PIER_END, PROM_GLOWS, SHACK_LIGHTS, beach, bedroom, canvasTex, chairRows, dog, giantHand, setSheet, setTide, shackLights, toyBoat } from "./world";
 
 /**
  * moon-disappeared-tonight (episode 4): what if the moon vanished tonight. Each shot is its own canvas (hard cuts;
@@ -28,13 +29,21 @@ export const MOON_FRAMES = FRAMES;
 const rnd = (n: number) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 const V = (x: number, y: number, z: number) => new Vector3(x, y, z);
 
-/** The darkest night: the moon's light gone (line 19 on). */
+/**
+ * Moonlit beach (ep 4 look pass): the kit night, less blue in the key (sand stays sand), night clouds in the sky, the
+ * lighter "moonlit" grade. The darkest night (line 19 on): a lower key and a navy, cloudless sky (it measured near
+ * black and crushed), so the stars can carry it.
+ */
+const NIGHT: LightPreset = {
+  ...LIGHTS.night, lit: [0.66, 0.64, 0.86], shade: [0.2, 0.2, 0.35], lift: [0.02, 0.02, 0.04], litTint: "#d4d0f2", sat: 1.0,
+  clouds: { lit: "#6a78b8", shade: "#28306a", cover: 0.42 }, grade: "moonlit",
+};
 const DARK: LightPreset = {
-  ...LIGHTS.night, lit: [0.36, 0.44, 0.8], shade: [0.11, 0.13, 0.28], skyTop: "#04071a", skyMid: "#0a1238", skyHorizon: "#1c2756",
-  fog: "#131b3c", haze: { color: "#1c2756", start: 30, amount: 0.3 },
+  ...NIGHT, lit: [0.5, 0.52, 0.8], shade: [0.16, 0.17, 0.32], skyTop: "#0b1232", skyMid: "#172156", skyHorizon: "#2c3a74",
+  fog: "#1c2650", haze: { color: "#2c3a74", start: 30, amount: 0.3 }, clouds: undefined,
 };
 const BEDROOM: LightPreset = { ...LIGHTS.interior, lamp: ["#ffc27a", 2.2], lit: [0.95, 0.86, 0.74], litTint: "#ffe2c0" };
-const presetOf = (s: S): LightPreset => (s.w === "dark" ? DARK : s.w === "bedroom" ? BEDROOM : LIGHTS.night);
+const presetOf = (s: S): LightPreset => (s.w === "dark" ? DARK : s.w === "bedroom" ? BEDROOM : NIGHT);
 
 const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
   const o = useMemo(prop.make, [prop]);
@@ -65,7 +74,7 @@ const starField = (n: number, band: boolean, seed: number) => {
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(pos, 3));
   g.setAttribute("color", new BufferAttribute(col, 3));
-  const m = new PointsMaterial({ size: band ? 3.0 : 4.2, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
+  const m = new PointsMaterial({ size: band ? 3.4 : 4.6, sizeAttenuation: false, map: starTex(), vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: AdditiveBlending, toneMapped: false });
   const p = new Points(g, m);
   p.layers.set(SKY);
   p.frustumCulled = false;
@@ -82,17 +91,24 @@ const Sky: React.FC<{ F: number; moon: boolean }> = ({ F, moon }) => {
       const a = (i / 40) * Math.PI;
       const d = BAND_U.clone().multiplyScalar(Math.sin(a)).addScaledVector(BAND_V, Math.cos(a)).addScaledVector(BAND_N, (rnd(i + 3) - 0.5) * 0.12).normalize();
       if (d.y < 0.05) continue;
-      haze.add(glowSprite(d.multiplyScalar(560), ["#7a74c8", "#a898e0", "#7aa0d8", "#c8b8d8"][i % 4], 190 + 90 * rnd(i), 0.11));
+      haze.add(glowSprite(d.multiplyScalar(560), ["#7a74c8", "#a898e0", "#7aa0d8", "#e0c0b0"][i % 4], 190 + 90 * rnd(i), 0.16));
     }
     const disc = sunDisc(14, "#fffdf2", "#e6dcc0", "#c8d4ff");
-    g.add(stars, milky, haze, disc);
-    return { g, stars, milky, haze, disc };
+    const gone = new Mesh(new PlaneGeometry(40, 40), new MeshBasicMaterial({ map: canvasTex(256, 256, (c) => {
+      c.strokeStyle = "rgba(235,240,255,0.85)"; c.lineWidth = 7; c.setLineDash([16, 13]);
+      c.beginPath(); c.arc(128, 128, 104, 0, Math.PI * 2); c.stroke();
+    }), transparent: true, depthWrite: false, fog: false, toneMapped: false }));
+    gone.layers.set(SKY);
+    g.add(stars, milky, haze, disc, gone);
+    return { g, stars, milky, haze, disc, gone };
   }, []);
   const MOON_DIR = useMemo(() => V(-0.18, 0.42, -1).normalize(), []);
   useFrame(() => {
     sky.g.position.copy(camera.position);
     sky.disc.position.copy(MOON_DIR).multiplyScalar(500);
     sky.disc.lookAt(camera.position.clone().sub(sky.g.position));
+    sky.gone.position.copy(sky.disc.position);
+    sky.gone.lookAt(0, 0, 0);
   });
   (sky.stars.material as PointsMaterial).opacity = starsAt(F);
   (sky.milky.material as PointsMaterial).opacity = milkyAt(F);
@@ -100,18 +116,21 @@ const Sky: React.FC<{ F: number; moon: boolean }> = ({ F, moon }) => {
   sky.haze.children.forEach((c) => ((c as Mesh).visible = milkyAt(F) > 0));
   sky.haze.scale.setScalar(1);
   sky.disc.visible = moon && F < B.blinked;
+  sky.gone.visible = F >= B.blinked || !moon; // where the moon was: a dotted outline, like a missing sticker
   return <primitive object={sky.g} />;
 };
 
 // ------------------------------------------------------------------ the beach
-type Practical = { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3; group?: "shack" | "lamp" };
+type Practical = { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3; group?: "shack" | "lamp" | "lantern" };
 const BULB_MID = SHACK_LIGHTS.string[5];
 const beachPracticals = (dark: boolean): Practical[] => [
-  ...(dark ? [] : [{ pos: LAMP_GLOW.clone().add(V(0, -0.3, 0)), kind: "lamp" as const, glowAt: LAMP_GLOW, group: "lamp" as const }]),
+  ...(dark ? [] : [LAMP_GLOW, ...PROM_GLOWS].map((g) => ({ pos: g.clone().add(V(0, -0.3, 0)), kind: "lamp" as const, glowAt: g, group: "lamp" as const }))),
   { pos: BULB_MID.clone().add(V(0, -0.2, -0.6)), kind: "shop", color: ["#ffc27a", 2.2], glowAt: BULB_MID, group: "shack" },
   { pos: SHACK_LIGHTS.neon.clone().add(V(0, 0, -0.3)), kind: "shop", color: ["#ff6a9a", 1.4], glowAt: SHACK_LIGHTS.neon, group: "shack" },
   { pos: BEACH.hatch.clone().add(V(-0.6, -0.1, 0.3)), kind: "screen", color: ["#bfe4ff", 0.7], group: "shack" },
   ...[0, 1].map((i) => ({ pos: FLOOD_HEAD(i).clone().add(V(0, -1.2, -4.5)), kind: "lamp" as const, color: ["#fff2d8", 1.6] as [string, number], glowAt: FLOOD_HEAD(i) })),
+  { pos: LANTERN_AT.clone().add(V(0, 0.5, 0)), kind: "fire", color: ["#ffb35c", 0.85], glowAt: LANTERN_AT.clone().add(V(0, 0.15, 0)), group: "lantern" },
+  { pos: BRAD_POS.clone().add(V(0.9, 1.6, -0.2)), kind: "screen", color: ["#f4f4ff", 1.4] },
 ];
 const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> = ({ F, dark, preset, s }) => {
   const world = useMemo(() => beach(!dark), [dark]);
@@ -133,10 +152,18 @@ const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> =
     const k = shackIdx.indexOf(i);
     if (k >= 0) g.visible = k === 0 ? on.bulbs : k === 1 ? on.neon >= 0.5 : on.fridge;
   });
+  // Your lantern: on the sand by the chair from the moment you sit (light + glow follow it).
+  const lanternOn = F >= CHAIR_OPEN;
+  const lanternObj = useMemo(() => { const l = lantern(); l.position.copy(LANTERN_AT); return l; }, []);
+  lanternObj.visible = lanternOn;
+  list.forEach((l, i) => { if (l.group === "lantern") { (lights.children[i] as PointLight).intensity = lanternOn ? l.color![1] : 0; glows.children[i].visible = false; } });
+  const lanternGlow = useMemo(() => glowSprite(LANTERN_AT.clone().add(V(0, 0.14, 0)), "#ffb35c", 0.55, 0.7), []);
+  lanternGlow.visible = lanternOn;
   const dogObj = useMemo(() => { const d = dog(); d.position.copy(PIER_END); d.rotation.y = 0.3; return d; }, []);
   const h = dogHead(F), head = dogObj.getObjectByName("head")!;
   head.rotation.set(h.rx, h.ry, 0);
   dogObj.visible = F < B.and0;
+  world.getObjectByName("clutter")!.visible = F >= B.n4000; // dropped by the town as it ran
   const chairs = useMemo(() => chairRows(CROWD_SPOTS), []);
   chairs.visible = F >= B.next - 2;
   return (
@@ -145,10 +172,13 @@ const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> =
       <primitive object={lights} />
       <primitive object={glows} />
       <primitive object={dogObj} />
+      <primitive object={lanternObj} />
+      <primitive object={lanternGlow} />
       <primitive object={chairs} />
       {s.id === "moon/A2-flashlight-river" && <FlashlightRiver F={F} />}
       {(s.id.startsWith("moon/Q2") || s.id.startsWith("moon/Q3")) && <Moths F={F} />}
       {s.id === "moon/S1-lawn-chairs" && <Moths F={F} trail />}
+      {s.id === "moon/S1-lawn-chairs" && <FlashlightRiver F={-F} />}
     </>
   );
 };
@@ -161,13 +191,13 @@ const FlashlightRiver: React.FC<{ F: number }> = ({ F }) => {
     return { grp, spots };
   }, []);
   g.spots.forEach((p, i) => {
-    const t = 0.18 + 0.82 * (((i / 46) + F * 0.0016 + rnd(i) * 0.012) % 1); // from the dune top up (near ones bloomed into blobs)
+    const t = 0.18 + 0.82 * (((((i / 46) + F * 0.0016 + rnd(i) * 0.012) % 1) + 1) % 1); // dune top up (near ones bloomed); F < 0 runs downhill
     p.copy(pathAt(t).add(V((rnd(i + 5) - 0.5) * 1.6, 0.2 * Math.sin(F * 0.3 + i), 0)));
     g.grp.children[i].position.copy(p);
   });
   return <primitive object={g.grp} />;
 };
-const mothTex = () => canvasTex(32, 32, (g) => { g.fillStyle = "rgba(255,248,230,0.95)"; g.beginPath(); g.ellipse(10, 14, 8, 5, -0.5, 0, 7); g.ellipse(22, 14, 8, 5, 0.5, 0, 7); g.fill(); g.fillStyle = "rgba(90,70,60,1)"; g.fillRect(15, 10, 2, 12); });
+const mothTex = () => canvasTex(32, 32, (g) => { g.fillStyle = "rgba(255,248,230,0.95)"; g.strokeStyle = "#1c1210"; g.lineWidth = 2; g.beginPath(); g.ellipse(10, 14, 7, 5, -0.5, 0, 7); g.fill(); g.stroke(); g.beginPath(); g.ellipse(22, 14, 7, 5, 0.5, 0, 7); g.fill(); g.stroke(); g.fillStyle = "#1c1210"; g.fillRect(15, 9, 2, 13); });
 /** Line 20: moths stream in from the dark, circle the floodlights, then swarm Brad. `trail`: a few still on him the next night. */
 const Moths: React.FC<{ F: number; trail?: boolean }> = ({ F, trail }) => {
   const N = trail ? 40 : 260;
@@ -188,7 +218,7 @@ const Moths: React.FC<{ F: number; trail?: boolean }> = ({ F, trail }) => {
     const ring = FLOOD_HEAD(i % 2).clone().add(V(Math.cos(a + F * 0.15) * (0.6 + rnd(i + 3)), Math.sin(F * 0.2 + i) * 0.5, Math.sin(a + F * 0.15) * (0.6 + rnd(i + 3))));
     const onB = bradHead.clone().add(V(Math.cos(a + F * 0.3) * (0.18 + 0.35 * rnd(i + 4)), (rnd(i + 5) - 0.3) * 1.3 + 0.08 * Math.sin(F * 0.5 + i), Math.sin(a + F * 0.3) * 0.25 - 0.15));
     let p: Vector3;
-    if (trail) p = BRAD_POS.clone().setY(0).add(V(4.5 - 1.4 * Math.min(Math.max((F - B.next) / (B.chair1 - B.next), 0), 1), 1.3 + (rnd(i) - 0.3) * 0.9, 2.6 + (rnd(i + 1) - 0.5) * 0.6)).add(V(Math.cos(a + F * 0.3) * 0.3, 0, Math.sin(a + F * 0.3) * 0.2));
+    if (trail) p = bradLateAt(F).add(V(Math.cos(a + F * 0.3) * 0.32, 1.25 + (rnd(i) - 0.3) * 0.9, Math.sin(a + F * 0.3) * 0.22));
     else {
       const c = Math.min(Math.max(k.come * 1.6 - rnd(i + 6) * 0.6, 0), 1);
       p = far.lerp(ring, c).lerp(onB, Math.min(Math.max(k.onBrad * 1.5 - rnd(i + 7) * 0.5, 0), 1));

@@ -26,7 +26,7 @@ export type Grade = {
   /** Linear exposure after bloom, before the tone map (backlit dusk frames are mostly shade). */
   exposure?: number;
 };
-export type GradeName = "day" | "golden" | "night" | "interior" | "sunset";
+export type GradeName = "day" | "golden" | "night" | "interior" | "sunset" | "moonlit";
 
 /**
  * One house S-curve for every preset: black point at sRGB ~(20,12,14) (curve 0.045 + a small warm shadow tint, no
@@ -47,6 +47,9 @@ export const GRADE: Record<GradeName, Grade> = {
   sunset: { ...S_CURVE, ...FILM, exposure: 1.2, sat: [1.06, 1.1, 1.0], tint: { s: [-3, 0, 9], m: [3, 1, -2], h: [5, 2, -6] }, vig: [0.4, 0.32], top: 0.08, amount: 1, halation: 0.12 },
   // R14: refs keep night readable (navy, not black; ref1/ref2 night rooms luma ~.3); the pilot night aisle measured .16.
   night: { ...DEEP_CURVE, ...FILM, exposure: 1.85, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
+  // Ep 4 (a whole video outdoors at night): night's toe, but a lighter vignette and top (corners measured .62 and
+  // crushed), less blue saturation (C*p90 66) and a warm shadow tint so the warm practicals hold their colour.
+  moonlit: { ...DEEP_CURVE, ...FILM, exposure: 1.9, sat: [1.05, 1.12, 1.0], tint: { s: [9, 2, 4], m: [3, 0, 2], h: [2, 0, -2] }, vig: [0.3, 0.3], top: 0.14, amount: 1 },
   interior: { ...DEEP_CURVE, ...FILM, exposure: 1.2, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },
 };
 
