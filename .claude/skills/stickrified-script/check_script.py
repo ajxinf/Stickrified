@@ -10,11 +10,11 @@ Exit code 1 if any hard rule fails (length, missing fields, banned markup, histo
 """
 import json, re, sys, os, argparse
 
-WPS_DEFAULT = 3.1          # measured on voice zfc8CJQpe8Kqyl0vvCzo, Eleven v4, stability 0.3 (2026-11-12)
+WPS_DEFAULT = 2.7          # full takes on voice zfc8CJQpe8Kqyl0vvCzo, Eleven v4, stability 0.3 (2026-11-22; 3.1 was a 31 s test)
 # Non-verbal tags are performed as sounds and take time (measured on _pipeline-test: [gasps] 0.52 s, [laughs] 0.60 s).
 NONVERBAL = {"gasps": 0.5, "laughs": 0.6, "sighs": 0.5, "chuckles": 0.5, "giggles": 0.5, "exhales": 0.4, "inhales": 0.4, "clears throat": 0.5}
-WORDS_MIN, WORDS_MAX = 200, 270
-SEC_MIN, SEC_MAX = 61, 90
+WORDS_MIN, WORDS_MAX = 170, 400
+SEC_MIN, SEC_MAX = 61, 150  # user 2026-11-22 (was 61-90)
 MAX_GAG_GAP = 8.0
 FIELDS = ["narration", "audioTag", "scene", "camera", "onScreenText", "gag"]
 SFX_TAGS = ["footsteps", "thunder", "door", "applause", "gunshot", "explosion", "barking", "clapping",

@@ -95,8 +95,8 @@ def fit(d, cfg):
     m = x.mean(1)
     n = round(cfg["frames"] / 30 * SR)
     a0, a1 = body(m)
-    # shortcut: a track whose full-level part is shorter than the video is not supported (every library track is
-    # 116 s+, Shorts are <= 90 s); chain several loops when long-form starts.
+    # shortcut: a track whose full-level part is shorter than the video + 8 % + 4 s is not supported; Shorts run up to
+    # 150 s (2026-11-22): in_this_world(default) and relaxing cover 150 s, lofi1-3 only ~98-117 s. Chain loops for longer.
     assert a1 - a0 > (1 + MAX_TEMPO) * n + 4 * SR, f"{cfg['track']}: full-level part {(a1 - a0) / SR:.0f} s is too short for {n / SR:.1f} s"
     score, s, P = seam(features(m), a0 // HOP + 1, a1 // HOP, n / HOP)
     sim = score + 0.01 * abs(P * HOP / n - 1) * 100

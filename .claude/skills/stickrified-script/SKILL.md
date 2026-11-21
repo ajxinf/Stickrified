@@ -1,6 +1,6 @@
 ---
 name: stickrified-script
-description: Write, revise or punch up a Stickrified Short script (scenario "what if", strange true history, or "In this world..." fiction) - SCRIPT.md + script.json + sources.md with Eleven v4 audio tags, 200-270 words. Use for "write the script", "next script", script feedback or rewrites, new topics, or before any voiceover. toon-world-short calls this for its script step.
+description: Write, revise or punch up a Stickrified Short script (scenario "what if", strange true history, or "In this world..." fiction) - SCRIPT.md + script.json + sources.md with Eleven v4 audio tags, 170-400 words (61-150 s). Use for "write the script", "next script", script feedback or rewrites, new topics, or before any voiceover. toon-world-short calls this for its script step.
 ---
 
 # Stickrified script
@@ -26,9 +26,12 @@ Writes the script for one Stickrified Short: `videos/<slug>/script.json` (single
    (conflicting sources, a joke you're unsure of). Revise from their notes, re-run the check each time.
 
 ## Length
-- **200-270 words** (aim ~235). The narrator reads at **~3.1 words/s** (measured 2026-11-12 on the production voice:
-  96 words in 31 s), so that is ~65-87 s inside the 61-90 s window. If a real voice take lands outside 61-90 s,
-  re-measure (words / seconds), update `WPS_DEFAULT` in `check_script.py` and this line.
+- **61-150 s, 170-400 words** (user 2026-11-22: was 61-90 s; the extra room goes to story and setup, not padding).
+  Write to the length the story needs; a full "In this world..." story with a world tour, routine and setup lands
+  ~300-360 words (~1:50-2:15). Every line still earns its place: a longer video swipes away just as fast.
+- The narrator reads at **~2.7 words/s** on full takes (measured 2026-11-22 on promise-flowers: 265 words in 95.3 s,
+  236 in 87.9 s, inter-voice gaps included; the old 3.1 came from a 31 s test). If a real voice take lands outside
+  61-150 s, cut or add lines, re-measure (words / seconds), update `WPS_DEFAULT` in `check_script.py` and this line.
 
 ## The story engine (every pillar)
 Measured on three strong reference shorts (`docs/style/REFERENCE_NOTES.md`, "Story study"). The video is **one
@@ -160,16 +163,16 @@ Principles, not a template: use the ones the world needs, in the order the story
   and a wound for "you"; the generic "you" of the rule sentence pulls the viewer in.
 - **Worlds of everyday stakes** (parties, fears, food, family, school, money) need no explaining; meta worlds
   (captions, narrators, progress bars) do, so keep them rare.
-- A world too big for 90 s (ref2 runs 167 s) is a Part 1 that ends on a cliffhanger built from a planted memory.
+- A world too big for 150 s (ref2 runs 167 s) is a Part 1 that ends on a cliffhanger built from a planted memory.
 - Every script: the first frame shows the strange act on the first word; at least one POV shot (POV only until a
   back-view card exists: cards always face the camera, so an over-the-shoulder shot would show your face); end on
   the last word (no outro, no "subscribe").
 - "Luckily... / Unluckily..." is a tool, not a requirement: at most once per video, and only when both halves are
   true and the second half moves the story.
-- Too big for 90 s: Part 1 / Part 2. Part 1 stops mid-sentence on the cliffhanger; Part 2 opens by replaying it.
+- Too big for 150 s: Part 1 / Part 2. Part 1 stops mid-sentence on the cliffhanger; Part 2 opens by replaying it.
 
 ## Entertainment rules
-Goal: the most entertaining 61-90 s possible. A swipe-away means a line was boring.
+Goal: the most entertaining 61-150 s possible. A swipe-away means a line was boring.
 - **Something new to see every 5-8 s**: a reveal, a reaction, a step of the plan, or a gag. Every one is a picture:
   put it in the line's `gag` field. The checker flags any gap over 8 s. Every gag grows out of the story's own
   people and objects; an aside that could be cut without changing the plot (a fish with a personality) gets cut.

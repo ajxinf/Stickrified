@@ -1,6 +1,6 @@
 ---
 name: toon-world-short
-description: Make a Stickrified vertical Short (61-90 s) - flat 2D cartoon characters in a softly lit 3D world (primary refs visual-ref8/9), second-person ElevenLabs narration, word-synced shots, foley and library music - rendered with three.js inside Remotion. Use for any new Stickrified video, "make the next short", a what-if, strange-true-history or "In this world..." short, kit/look work, or "use the toon world skill".
+description: Make a Stickrified vertical Short (61-150 s) - flat 2D cartoon characters in a softly lit 3D world (primary refs visual-ref8/9), second-person ElevenLabs narration, word-synced shots, foley and library music - rendered with three.js inside Remotion. Use for any new Stickrified video, "make the next short", a what-if, strange-true-history or "In this world..." short, kit/look work, or "use the toon world skill".
 ---
 
 # Toon-world short (three.js + Remotion)
@@ -47,7 +47,7 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
   ElevenLabs voice that fits them, in `script.json` `voices` (see the script skill); `tts.ts` voices those lines
   with it.
 - **Scripts: follow the `stickrified-script` skill** (`.claude/skills/stickrified-script/SKILL.md`): pillars,
-  formulas, entertainment and exaggeration rules, Eleven v4 tags, length (200-270 words), `script.json` format.
+  formulas, entertainment and exaggeration rules, Eleven v4 tags, length (170-400 words, 61-150 s), `script.json` format.
 - Captions (R13 restyle 2026-11-14: no pop; key colours, user request 2026-11-16): the `*word*` key word is yellow
   `#ffd23f` in narration and the speaker's colour on a line with `speaker` (narrator `#ff4a3d`, you `#7ce86a`, a
   video's own cast via `<Captions speakers={{ gary: "#5fb8ff" }}>`; pick hues far from yellow and from each other);
