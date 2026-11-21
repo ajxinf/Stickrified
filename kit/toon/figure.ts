@@ -1,4 +1,6 @@
 import { drawFace, drawFill } from "./face";
+import { drawFlower } from "./flowers";
+import type { Flower } from "./flowers";
 import type { Effects, Expr, Head } from "./face";
 import { REST } from "./poses";
 import type { Arm, Pose } from "./poses";
@@ -51,7 +53,8 @@ export type Look = {
 export type PropName = "phone" | "flashlight" | "box" | "can" | "mug" | "lantern" | "tape";
 /** `heading`: world yaw (rad, three.js rotation.y) the character faces; the card turns it into `pose.yaw` against the
  * camera (cast.ts), so a turning look shows the right view in every shot. */
-export type CharState = { pose: Pose; expr: Expr; blink: boolean; fx: Effects; prop?: PropName; heading?: number };
+/** `flowers` (promise-flowers): things growing out of the body, drawn in their body part's frame (kit flowers.ts). */
+export type CharState = { pose: Pose; expr: Expr; blink: boolean; fx: Effects; prop?: PropName; heading?: number; flowers?: Flower[] };
 
 /**
  * The view angle (deg, figure.ts `pose.yaw`) of a character facing world `heading` (rad, three.js rotation.y) at `at`,
@@ -223,7 +226,7 @@ export const handsOf = (look: Look, pose: Pose): [P2, P2] => {
 /** Draws a whole character in its view (front unless the look `turns`): legs, back arms, torso + clothing, props,
  * front arms, head, face. */
 export const drawPerson = (p: Pen, look: Look, s: CharState) => {
-  const g = p.g, pose = s.pose, L = layout(look, pose), B = look.build;
+  const g = p.g, pose = s.pose, L = layout(look, pose), B = look.build, flowers = s.flowers ?? [];
   const { H, W, HH, u, torsoBot, chin, facing, fwd, stoop, V } = L;
   const ow = 3 * u; // R28: refs' outline is ~2 % of the head width (was 5u, twice as heavy)
   p.weight = inkWeight(B, look.seed);
@@ -276,6 +279,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
       p.stroke([heel, toe], 4.4 * u, look.shoes);
       if (look.shoeStripe) p.stroke([[heel[0] + (toe[0] - heel[0]) * 0.25, heel[1] - 0.6 * u], [heel[0] + (toe[0] - heel[0]) * 0.65, toe[1] - 0.6 * u]], 1.6 * u, look.shoeStripe);
     } else p.stroke([heel, toe], 6 * u, mix(look.shoes, INK, 0.55));
+    for (const f of flowers) if (f.at.part === "leg" && f.at.side === i) { const [x, y] = along(f.at.t); drawFlower(p, x, y, u, f); }
   });
   const lap = sit >= 0.5 && V.cs >= -0.3; // from behind, the body hides the lap
   if (!lap) drawLegs();
@@ -297,6 +301,11 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   const drawArm = (a: Solved) => {
     p.stroke([a.S, a.E, a.H], LIMB * 0.95, INK);
     hand(p, a, u);
+    const side = arms.indexOf(a); // 0 = the card-left arm, whatever the view
+    for (const f of flowers) if (f.at.part === "arm" && f.at.side === side) {
+      const t = f.at.t, [q, r, k] = t < 0.5 ? [a.S, a.E, t * 2] : [a.E, a.H, t * 2 - 1];
+      drawFlower(p, q[0] + (r[0] - q[0]) * k, q[1] + (r[1] - q[1]) * k, u, f);
+    }
   };
   const over = (a: Solved) => a.a.layer === "front" && !back; // from behind, even a face-layer arm is behind him
   arms.filter((a) => !a.front && !over(a)).forEach(drawArm);
@@ -315,6 +324,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   });
   if (look.rim) p.rimLight(tp, mix(look.jacket, "#ffffff", 0.45), 2 * u);
   p.inkRing(tp, ow);
+  for (const f of flowers) if (f.at.part === "torso") drawFlower(p, tcx + f.at.x * T.a, tcy + f.at.y * T.b, u, f);
   if (lap) {
     // The legs hang from the hips, which the upper body's sway rotates about: undo it so the shins stay plumb.
     g.save(); g.translate(CX, torsoBot); g.rotate(-rad(pose.sway + stoop * 4 * fwd)); g.translate(-CX, -torsoBot);
@@ -355,13 +365,15 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   p.inkRing(hp, ow);
   look.hair?.(p, head);
   // Turned heads show an ear (over the hair, which tucks behind it): behind the face at 3/4, mid-head in profile, toward the front from 3/4 behind.
-  if (V.sn > 0.35 && Math.abs(V.yaw) < 165) {
+  // (promise-flowers: not past 125 deg: on a faceless back view a lone ear read as an eye)
+  if (V.sn > 0.35 && Math.abs(V.yaw) < 125) {
     const ex = L.hx - V.side * H.a * (0.1 + (V.cs >= 0 ? 0.73 : 1.02) * V.cs), ey = L.hc + 4 * u;
     p.ell(ex, ey, 7 * u, 10 * u, skin, 2.6 * u);
     p.arc(ex + V.side * 1.5 * u, ey, 3.2 * u, 5 * u, V.side > 0 ? 120 : -60, V.side > 0 ? 240 : 60, 1.8 * u);
   }
   drawFace(p, head, s.expr, { blink: s.blink, fx: s.fx, brim: look.brim });
   look.face?.(p, head);
+  for (const f of flowers) if (f.at.part === "head") drawFlower(p, L.hx + f.at.x * H.a, L.hc + f.at.y * H.b, u, f);
   g.restore();
 
   arms.filter(over).forEach(drawArm);

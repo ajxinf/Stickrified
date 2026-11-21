@@ -1,8 +1,18 @@
 {
+ "asphalt_02": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
  "bark_brown_02": {
   "arm": true,
   "nor": true,
   "res": "1k"
+ },
+ "brick_wall_001": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
  },
  "clay_roof_tiles": {
   "arm": true,
@@ -13,6 +23,11 @@
   "arm": true,
   "nor": true,
   "res": "1k"
+ },
+ "concrete_pavement": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
  },
  "damp_beach_sand_02": {
   "arm": true,
@@ -29,12 +44,37 @@
   "nor": true,
   "res": "2k"
  },
+ "floor_tiles_06": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "grey_plaster": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
  "grey_roof_tiles": {
   "arm": true,
   "nor": true,
   "res": "2k"
  },
+ "herringbone_pavement": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
  "hessian_230": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "laminate_floor": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "leafy_grass": {
   "arm": true,
   "nor": true,
   "res": "2k"
@@ -65,6 +105,11 @@
   "res": "2k"
  },
  "white_planks_clean": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "white_stucco": {
   "arm": true,
   "nor": true,
   "res": "2k"

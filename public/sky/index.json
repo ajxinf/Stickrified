@@ -1,4 +1,21 @@
 {
+ "kloofendal_48d_partly_cloudy_puresky": {
+  "bright": [
+   34.1,
+   48.2
+  ],
+  "crop": 0.55556,
+  "horizon": [
+   0.6014,
+   0.6194,
+   0.6767
+  ],
+  "zenith": [
+   0.5698,
+   0.6119,
+   0.7121
+  ]
+ },
  "kloppenheim_07_puresky": {
   "bright": [
    27.8,
@@ -14,6 +31,23 @@
    0.5624,
    0.6101,
    0.6649
+  ]
+ },
+ "qwantani_late_afternoon_puresky": {
+  "bright": [
+   35.5,
+   19.3
+  ],
+  "crop": 0.55556,
+  "horizon": [
+   0.7341,
+   0.7312,
+   0.7173
+  ],
+  "zenith": [
+   0.3788,
+   0.4716,
+   0.5977
   ]
  },
  "qwantani_moonrise_puresky": {

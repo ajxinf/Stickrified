@@ -101,6 +101,12 @@ const hairInk = (p: Pen, h: Head, pts: P2[], col: string) => insideHead(p, h, ()
 });
 
 export const capHair = (col: string, k: number, sides = 0.35, spikes = 0) => (p: Pen, h: Head) => hairInk(p, h, capPts(h, k, sides, spikes), col);
+/** promise-flowers (2026-11-22): capHair for looks with `turns`: from behind (|yaw| > 100) the cap comes down over the
+ * back of the head (no hairline across a faceless head); in profile it reaches a little lower at the back. */
+export const turnHair = (col: string, k: number, sides = 0.35, spikes = 0) => (p: Pen, h: Head) => {
+  const ay = Math.abs(h.yaw ?? 0);
+  hairInk(p, h, capPts(h, ay > 100 ? -0.55 : ay > 60 ? k - 0.25 : k, ay > 100 ? 0.15 : sides, spikes), col);
+};
 
 /** Half-ellipse dome (crown of a hat) standing on y0. */
 const dome = (cx: number, y0: number, rx: number, ry: number, flat = 2.4): P2[] => {
