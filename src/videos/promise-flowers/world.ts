@@ -1,9 +1,10 @@
-import { BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SRGBColorSpace, SphereGeometry, Vector3 } from "three";
+import { BoxGeometry, BufferGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SRGBColorSpace, SphereGeometry, Vector3 } from "three";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { photo } from "../../../kit/toon/build/photo";
 import { grassTufts } from "../../../kit/toon/build/ground";
 import { toonMaterial } from "../../../kit/toon/shade";
+import { lightPatch, lightShafts } from "../../../kit/toon/glow";
 
 /**
  * promise-flowers (episode 5, "In this world..."): the sets.
@@ -59,8 +60,11 @@ const boardTex = (lines: string[], bg: string, fg: string, w = 1024, h = 512, ac
     g.fillStyle = fg;
     g.textAlign = "center";
     g.textBaseline = "middle";
-    const fs = Math.min(h / (lines.length + 0.5), (w / Math.max(...lines.map((l) => l.length))) * 1.6);
+    // fit: the widest line inside 88 % of the board (QA: text drawn past the canvas edge reads cut)
+    let fs = h / (lines.length + 0.5);
     g.font = `900 ${fs}px ${FONT}`;
+    const widest = Math.max(...lines.map((l) => g.measureText(l).width));
+    if (widest > w * 0.88) { fs *= (w * 0.88) / widest; g.font = `900 ${fs}px ${FONT}`; }
     lines.forEach((l, i) => g.fillText(l, w / 2, h / 2 + (i - (lines.length - 1) / 2) * fs * 1.08));
   });
 
@@ -96,9 +100,9 @@ export const APPLE = V(-9.4, 0, 6.6);
 export const GRANDMA_HOUSE = { x: -9, front: -8.6 };
 /** The door (and porch steps) sit off-centre by the house seed (house() `dx`). */
 export const GRANDMA_DOOR_X = -9 + (rnd(1) - 0.5) * 0.8;
-export const PORCH = { x: -9, z0: -8.6, z1: -7.3, y: 0.42 };
+export const PORCH = { x: -9, z0: -8.6, z1: -7.0, y: 0.42 };
 export const YOUR_HOUSE = { x: -17.5, front: -8.6 };
-export const STORE = { x: -1, front: -8.6 };
+export const STORE = { x: 2.6, front: -8.6 }; // centred behind the plaza bench (its name board stays whole in the bench shots)
 export const STAGE = { x: 2, z: 19.5, w: 7.5, d: 3.6, h: 0.8 };
 export const STAGE_TOP = STAGE.h;
 export const PODIUM = V(STAGE.x - 0.3, STAGE.h, STAGE.z - 0.7);
@@ -296,7 +300,7 @@ const hive = (p: Vector3, i: number) => {
 };
 /** The stage: plank deck on a skirted platform, steps, a podium with a star, the backdrop banner on two posts, the
  * campaign board (3 panels: pizza, water park, Monday crossed out) and the plan board (NEW PARKING LOT). */
-export const BANNER_AT = V(STAGE.x, STAGE.h + 2.0, STAGE.z + STAGE.d / 2 - 0.15);
+export const BANNER_AT = V(STAGE.x, STAGE.h + 3.6, STAGE.z + STAGE.d / 2 - 0.15); // high: clear of Derek's close-ups
 const banner = (debate: boolean) => unlit(`pf-banner-${debate}`, () => boardTex(debate ? ["MAYOR DEBATE"] : ["DEREK FOR MAYOR"], debate ? "#2a3a7a" : "#f2a8c8", debate ? "#ffffff" : "#ffffff", 1536, 420, (g) => {
   g.fillStyle = debate ? "#c8342c" : "#ffffff";
   g.fillRect(0, 380, 1536, 40);
@@ -331,7 +335,7 @@ const stage = () => {
   k.box(MAT.color("#2a3a6a"), w, h - 0.1, d, x, (h - 0.1) / 2, z); // skirt
   for (let i = 0; i < 3; i++) k.box(MATS.deck(), 1.6, h * (3 - i) / 3, 0.34, x, (h * (3 - i)) / 6, z - d / 2 - 0.17 - i * 0.34); // steps (front centre)
   k.box(MATS.darkWood(), 0.7, 1.15, 0.45, PODIUM.x, h + 0.575, PODIUM.z); // podium
-  for (const sx of [-1, 1]) k.box(MATS.darkWood(), 0.12, 3.3, 0.12, x + sx * 3.3, h + 1.65, BANNER_AT.z + 0.05);
+  for (const sx of [-1, 1]) k.box(MATS.darkWood(), 0.12, 4.75, 0.12, x + sx * 3.3, h + 2.375, BANNER_AT.z + 0.05);
   // campaign board on an easel at stage right, plan board at stage left
   k.box(MATS.darkWood(), 2.0, 1.5, 0.06, BOARD.x, h + 1.15, BOARD.z + 0.03);
   for (const sx of [-0.7, 0.7]) k.box(MATS.darkWood(), 0.06, 1.0, 0.06, BOARD.x + sx, h + 0.4, BOARD.z + 0.1);
@@ -402,12 +406,12 @@ const trees = (g: Group) => {
   for (const [x, z, s, ry] of [[-16, 22, 0.42, 0.3], [17, 26, 0.38, 1.9]] as const) g.add(tree("jacaranda_tree", "jacaranda", x, z, s, ry, 0.6));
   for (const [x, z, s] of [[12, 7, 1.2], [-4, 14.5, 1.0], [10, 31, 1.4], [-6, 30, 1.3], [24, 12, 1.3], [-22, 10, 1.25], [30, 30, 1.5]] as const) g.add(tree("island_tree_01", "tree", x, z, s, x));
   // street trees in the house-side walk, between the houses
-  for (const x of [-13.2, -5.2, 3.6, 13.5]) g.add(tree("island_tree_01", "street tree", x, -7.0, 0.85, x, 0.3));
+  for (const x of [-13.2, -5.2, 6.3, 13.9]) g.add(tree("island_tree_01", "street tree", x, -7.0, 0.85, x, 0.3));
 };
 const streetDressing = (g: Group) => {
   for (const x of [-24, -12, 0.2, 12, 24]) g.add(place(model("street_lamp_01", { collider: "street lamp" }), x, 0, 1.0, Math.PI));
   g.add(place(model("painted_wooden_bench", { collider: "bench" }), BENCH.x, 0, BENCH.z, 0));
-  g.add(place(model("metal_trash_can", { part: "metal_trash_can", collider: "trash can" }), BENCH.x + 1.25, 0, BENCH.z - 0.2, 0));
+  g.add(place(model("metal_trash_can", { part: "metal_trash_can", collider: "trash can" }), BENCH.x + 1.7, 0, BENCH.z - 0.2, 0));
   g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), -4.6, 0, 1.15, 0.3));
   // planters full of flowers round the plaza (Poly Haven flower models)
   for (let i = 0; i < 6; i++) {
@@ -419,7 +423,7 @@ const streetDressing = (g: Group) => {
   g.add(place(model("flower_ursinia", { collider: false, scale: 0.8 }), APPLE.x + 1.6, 0, APPLE.z + 0.8, 0.2));
   g.add(place(model("flower_gazania", { collider: false, scale: 0.7 }), GRANDMA_HOUSE.x + 2.5, 0, STREET.walkHouse - 0.55, 0));
   g.add(place(model("potted_plant_01", { collider: "potted plant" }), GRANDMA_HOUSE.x - 2.4, PORCH.y, PORCH.z0 + 0.55, 0));
-  g.add(place(model("Rockingchair_01", { collider: "rocking chair" }), GRANDMA_DOOR_X + 1.5, PORCH.y, PORCH.z0 + 0.72, 0.3));
+  g.add(place(model("Rockingchair_01", { collider: "rocking chair" }), GRANDMA_DOOR_X + 1.5, PORCH.y, PORCH.z0 + 0.95, 0.3));
   // a few grass tufts along the park's edges and round the hives
   g.add(...grassTufts(900, (_t, r) => {
     const k = r();
@@ -429,6 +433,38 @@ const streetDressing = (g: Group) => {
   }, ["#4e6a34", "#6e8a44", "#a8b06a"], 31, 0.28));
 };
 
+/** Bunting: a sagging line of bright triangle flags from a to b (both faces coloured, unlit cloth). */
+const BUNT = ["#e84a3a", "#f2c23a", "#3a8ad8", "#4ab86a", "#f28ac0", "#f6f0ea", "#f28a3a"];
+const bunting = (a: Vector3, b: Vector3, n: number, seed: number) => {
+  const g = new Group(), k = new Kit();
+  const at = (u: number) => a.clone().lerp(b, u).add(V(0, -0.45 * Math.sin(Math.PI * u), 0));
+  for (let i = 0; i < 24; i++) k.add(MAT.color("#2a2a30"), new CylinderGeometry(0.008, 0.008, at(i / 24).distanceTo(at((i + 1) / 24)), 4).rotateZ(Math.PI / 2).rotateY(-Math.atan2(b.z - a.z, b.x - a.x)), (at(i / 24).x + at((i + 1) / 24).x) / 2, (at(i / 24).y + at((i + 1) / 24).y) / 2, (at(i / 24).z + at((i + 1) / 24).z) / 2);
+  g.add(k.build());
+  for (let i = 0; i < n; i++) {
+    const u = (i + 0.5) / n, p = at(u), col = BUNT[(i + seed) % BUNT.length];
+    const geo = new BufferGeometry().setFromPoints([V(-0.14, 0, 0), V(0.14, 0, 0), V(0, -0.3, 0)]);
+    geo.computeVertexNormals();
+    const m = new Mesh(geo, M(`pf-flag-${col}`, () => new MeshBasicMaterial({ color: col, side: DoubleSide })));
+    m.position.copy(p);
+    m.rotation.y = -Math.atan2(b.z - a.z, b.x - a.x);
+    m.rotation.x = 0.15 * Math.sin(i * 1.7);
+    g.add(m);
+  }
+  return g;
+};
+/** Two flag poles at the plaza's mouth carrying bunting across it, and bunting along the stage front. */
+const festive = (g: Group) => {
+  const k = new Kit();
+  const P1 = V(PLAZA.x - 3.6, 0, PLAZA.z - 3.0), P2 = V(PLAZA.x + 3.9, 0, PLAZA.z - 2.6), P3 = V(PLAZA.x + 6.6, 0, PLAZA.z + 2.0); // right of the chair block, out of the debate wides
+  for (const p of [P1, P2, P3]) k.add(MATS.trim(), new CylinderGeometry(0.05, 0.06, 4.2, 10), p.x, 2.1, p.z);
+  const poles = k.build();
+  poles.userData.collider = "flag poles";
+  g.add(poles);
+  g.add(bunting(P1.clone().setY(4.0), P2.clone().setY(4.0), 18, 0));
+  g.add(bunting(P2.clone().setY(3.6), P3.clone().setY(3.6), 20, 3));
+  g.add(bunting(V(STAGE.x - 3.3, STAGE.h + 4.7, BANNER_AT.z - 0.02), V(STAGE.x + 3.3, STAGE.h + 4.7, BANNER_AT.z - 0.02), 20, 5));
+};
+
 /** The whole town. `debate` shows the folding chairs and the debate banner. */
 export const town = () => {
   const g = new Group();
@@ -436,8 +472,8 @@ export const town = () => {
   g.add(house({ x: GRANDMA_HOUSE.x, front: GRANDMA_HOUSE.front, w: 6.2, d: 7, h: 4.2, wall: MATS.siding("#9ad0c0"), roof: MATS.roofRed(), door: "#c8582c", seed: 1, porch: true }));
   g.add(house({ x: YOUR_HOUSE.x, front: YOUR_HOUSE.front, w: 6.6, d: 7, h: 5.4, wall: MATS.stucco("#f2d58a"), roof: MATS.roofGrey(), door: "#3a6ab8", seed: 2, fence: true }));
   g.add(store());
-  g.add(house({ x: 7.2, front: -8.6, w: 6, d: 7, h: 5.2, wall: MATS.stucco("#e8a87c"), roof: MATS.roofRed(), door: "#2f8a6a", seed: 3, fence: true }));
-  g.add(house({ x: 15.2, front: -8.6, w: 5.6, d: 7, h: 4.2, wall: MATS.siding("#c8a0d8"), roof: MATS.roofGrey(), door: "#f2c23a", seed: 4 }));
+  g.add(house({ x: 9.8, front: -8.6, w: 6, d: 7, h: 5.2, wall: MATS.stucco("#e8a87c"), roof: MATS.roofRed(), door: "#2f8a6a", seed: 3, fence: true }));
+  g.add(house({ x: 17.6, front: -8.6, w: 5.6, d: 7, h: 4.2, wall: MATS.siding("#c8a0d8"), roof: MATS.roofGrey(), door: "#f2c23a", seed: 4 }));
   g.add(house({ x: -26.5, front: -8.6, w: 6, d: 7, h: 4.6, wall: MATS.siding("#a8c8f0"), roof: MATS.roofRed(), door: "#d8423a", seed: 5, fence: true }));
   // the far side of the park: a row of houses whose backs face us (seen behind the stage)
   [[-24, 40], [-15, 41], [-6, 39.5], [4, 41], [13, 40], [22, 41.5]].forEach(([x, z], i) => {
@@ -451,19 +487,20 @@ export const town = () => {
   g.add(stage(), newsCam());
   trees(g);
   streetDressing(g);
+  festive(g);
   return g;
 };
 
 // ================================================================== home (kitchen + living room)
 export const HOME = { x0: -3.6, x1: 3.6, z0: -2.6, z1: 2.8, h: 2.7 };
 export const SINK = V(-1.7, 0.92, -2.3);
-export const BUCKET = V(-1.7, 0, -2.0);
+export const BUCKET = V(-1.7, 0, -1.82);
 export const TABLE = V(-0.7, 0, 0.6);
 export const DAD_SEAT = V(-0.75, 0, -0.35); // Dad sits at the table's far side, facing the lens (+z)
 export const SOFA = V(2.15, 0, -1.9);
 export const YOU_SOFA = V(2.15, 0, -1.55); // seated card on the sofa, facing +z
 export const TV = V(1.15, 0.72, 1.4); // facing -z (the sofa)
-export const FLOOR_LAMP = V(3.15, 1.55, -2.1);
+export const FLOOR_LAMP = V(3.3, 1.55, -2.2);
 export const WINDOW = V(0.6, 1.55, HOME.z0 + 0.01);
 export const CLOCK = V(-0.2, 2.15, HOME.z0 + 0.03);
 const windowTex = (night: boolean) => canvasTex(512, 512, (c) => {
@@ -537,9 +574,14 @@ export const home = (night: boolean) => {
   })), V(TABLE.x, 0.006, TABLE.z), 0, -Math.PI / 2);
   rug.userData.ground = true;
   g.add(rug);
+  // the warm side of the room: by day a sun patch from the window across floor and rug, dusty shafts in the air
+  if (!night) {
+    g.add(lightPatch(V(WINDOW.x - 0.2, 0.012, z0 + 1.6), V(0, 1, 0), 1.5, 1.3, "#ffc98a", 0.55, [2, 2]));
+    g.add(lightShafts(WINDOW.clone().add(V(0, 0.1, 0.15)), V(-0.15, -0.75, 1).normalize(), { length: 2.6, width: 1.1, color: "#ffd9a0", strength: 0.16, count: 5 }));
+  }
   g.add(place(model("dining_table", { collider: "dining table", scale: 0.7 }), TABLE.x, 0, TABLE.z, 0));
   g.add(place(model("dining_chair_02", { collider: "chair" }), DAD_SEAT.x, 0, DAD_SEAT.z - 0.12, 0));
-  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 0.9, 0, TABLE.z + 0.75, Math.PI));
+  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 0.9, 0, TABLE.z + 0.85, Math.PI));
   g.add(place(model("sofa_02", { collider: "sofa" }), SOFA.x, 0, SOFA.z, 0));
   g.add(place(model("television_02", { collider: "tv", scale: 1.5 }), TV.x, 0.5, TV.z, Math.PI));
   g.add(place(model("wooden_bookshelf_worn", { collider: "bookshelf", scale: 0.9 }), x0 + 0.32, 0, 1.3, Math.PI / 2));
@@ -617,8 +659,7 @@ export const notebook = (page: number) => {
   const g = new Group();
   const back = new Mesh(new BoxGeometry(0.36, 0.012, 0.24), MAT.color("#2f5ab8"));
   const p = plane(0.34, 0.225, unlit(`pf-page-${page}`, () => pageTex(page)), V(0, 0.008, 0), 0, -Math.PI / 2);
-  p.rotation.z = Math.PI / 2;
-  g.add(back, p);
+  g.add(back, p); // flat, text upright for a lens on the +z side
   return g;
 };
 /** The sneaker shoebox (origin at its base centre): rubber bands, air holes, the sticker; its lid (child "lid") hops

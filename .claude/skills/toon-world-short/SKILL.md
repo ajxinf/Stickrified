@@ -15,6 +15,11 @@ Three pillars, all narrated in **second person ("you")**, all built to be as ent
 
 **Current style (R27-R28, user-approved direction 2026-11-21; wins over every older rule, value or reference note in
 this file, LOOK_SPEC and REFERENCE_NOTES):**
+- **Never lifeless** (user 2026-11-22 on the promise-flowers stills: "dull and looks lifeless, add some sort of vibe or
+  warm light"): every scene has a mood: a warm key (late-morning / golden sun, never flat noon grey), warm practicals
+  and bounce on faces, coloured shadow, atmosphere (dust motes, pollen, haze, god rays), saturated set dressing, and
+  something alive moving in the background. A neutral, evenly lit, empty frame only when the story wants it bleak,
+  and then say so in the shot comment.
 - **World**: section "R27" below: photo skies (`photoSky`, never the painted gradient), moving rippled water
   (`water`/`shoreFoam`), a different photo material with normal/ARM maps on every surface, CC0 models at three depths,
   motivated light pools, fire life (`fire.tsx`). Worked example: `src/videos/_look-test-r27` (LookTestR27).
@@ -87,7 +92,8 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
   templates: this protects against YouTube's inauthentic-content policy).
 
 ## Machine (Windows 11, PowerShell)
-- i5-11400H, RTX 3050 4 GB, 16 GB RAM. Render with `--gl=angle --concurrency=1` (the default; 2 ran out of memory on the pilot).
+- i5-11400H, RTX 3050 4 GB, 16 GB RAM. Render with `--gl=angle --concurrency=2` (the default since 2026-11-22, user: faster; drop to 1 if a render crashes or goes black).
+- **One full-frame QA per round** (user 2026-11-22): QA layer 1 scans every frame of every shot (~45 min on a 2-min episode). `preflight.py` runs it once with frame 0 and renders the review stills with `--no-guard`; a render straight after a clean preflight on unchanged code passes `--no-guard` too (`render.mjs`, which also turns the in-render shot checks off). Never run it twice in a round.
 - Before any render in a new terminal: `$env:TEMP='C:\remotion-tmp'; $env:TMP='C:\remotion-tmp'`
   (use another drive if it has more space). See Gotchas: Disk.
 - Python 3 is needed for the sound and QA scripts (`pip install numpy scipy soundfile pillow`).
@@ -269,7 +275,7 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
    colour with `python scripts/richness.py out/<slug>/pre/p_<frame>.png`. For a look question, one side-by-side against
    the R24 frames: `python scripts/sbs_sheet.py out.jpg --ours ... --ref docs/style/r24/...`.
 10. **Final render**:
-    `node scripts/render.mjs <Comp> out/<slug>/video.mp4 4/3` (2K, concurrency 1) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
+    `node scripts/render.mjs <Comp> out/<slug>/video.mp4 4/3 [--no-guard]` (2K, concurrency 2) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
     mux with `npx remotion ffmpeg -i out/<slug>/video.mp4 -i videos/<slug>/audio/mix.wav -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 320k out/<slug>/final.mp4`.
     QA: the **video-qa** layers 2, 2b and 3 on the final (`video_qa.py`, `short_qa.py`, `measure.py`, `richness.py`,
     `frames.py` sheets, `line_sheet.py`), written to `out/<slug>/QA.md`. Fix, re-render only the changed part, re-QA

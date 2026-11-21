@@ -5,7 +5,7 @@ Faceless channel **Stickrified** (YouTube Shorts, TikTok, Facebook Reels; long-f
 **How to make a video: follow `.claude/skills/toon-world-short/SKILL.md`.** It holds the pipeline, look values, protagonist spec and gotchas. **Scripts (formulas, jokes, Eleven v4 tags, length): follow `.claude/skills/stickrified-script/SKILL.md`.** **QA (visual defects, before and after the render): follow `.claude/skills/video-qa/SKILL.md`.** No AI critics or verifier agents (removed 2026-11-21): the user reviews finished videos by eye. This file only holds the project-wide rules.
 
 ## Machine
-Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work in PowerShell. Render with `--gl=angle` and `--concurrency=1` (default since 2026-11-13: concurrency 2 ran the laptop out of memory on the 80 s pilot). Set `$env:TEMP`/`$env:TMP` to `C:\remotion-tmp` before rendering.
+Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work in PowerShell. Render with `--gl=angle` and `--concurrency=2` (user 2026-11-22: faster; the default in `scripts/render.mjs`. If a render crashes or goes black, retry with `--concurrency 1`). The full-frame QA (layer 1) runs once per round: preflight runs it, the review stills and the render after it pass `--no-guard`. Set `$env:TEMP`/`$env:TMP` to `C:\remotion-tmp` before rendering.
 
 ## Stack
 - Remotion + `@remotion/three` (React Three Fiber). Every motion (characters, camera, shaders) must be driven by `useCurrentFrame()`, never by clocks or `useFrame` time.

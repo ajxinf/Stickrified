@@ -927,6 +927,7 @@ export const QAPlan: React.FC<{ plan: Plan }> = ({ plan }) => {
   useLayoutEffect(() => {
     if (done.current) return;
     done.current = true;
+    if (getInputProps().qa === "off") return; // this round's full-frame QA already ran (stills/render --no-guard)
     const w = plan.words;
     captionOn = w?.length ? [w[0].start * fps, (w[w.length - 1].end + 0.3) * fps] : null;
     emit("plan", plan.slug, planChecks(plan, fps, width / height), { slug: plan.slug, plan: exportPlan(plan) });
@@ -949,6 +950,7 @@ export const ShotCamera: React.FC<Shot> = (shot) => {
   useEffect(() => {
     if (checked.current) return;
     checked.current = true;
+    if (getInputProps().qa === "off") return;
     emit("shot", shot.id, sceneChecks(shot, scene, width / height));
   }, [scene, shot, width, height]);
   useLayoutEffect(() => {

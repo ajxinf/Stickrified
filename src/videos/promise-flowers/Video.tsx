@@ -4,6 +4,7 @@ import { Captions } from "../../../kit/toon/Captions";
 import { Character } from "../../../kit/toon/cast";
 import type { Look } from "../../../kit/toon/cast";
 import { Composer } from "../../../kit/toon/Composer";
+import { Dust } from "../../../kit/toon/dust";
 import { QAPlan, ShotCamera } from "../../../kit/toon/guard";
 import { SpeedLines } from "../../../kit/toon/SpeedLines";
 import { ToonWorld } from "../../../kit/toon/world";
@@ -32,6 +33,9 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <ShotCamera {...s} />
       <ToonWorld preset={preset} sunDir={sunOf(s)} shadow={s.w === "town" ? { center: look.clone().setY(0), size: 24 } : { center: V(0, 0, 0), size: 8 }} />
       {s.w === "town" ? <Town F={F} debate={!!s.debate} signFlip={Math.min(Math.max((F - B.signFlip) / 8, 0), 1)} /> : <Home night={s.lit === "homeNight"} preset={preset} puddle={puddleAt(F)} tv={s.lit === "homeNight" && F >= L(18, 0)} />}
+      {/* never lifeless (user 2026-11-22): sunlit dust and pollen drifting in front of every set; motes in the window shafts at home */}
+      {s.w === "town" && <Dust center={look.clone().setY(Math.max(look.y, 1.2))} size={V(6, 3, 6)} count={280} color={s.lit === "golden" ? "#ffd8a0" : "#fff2d0"} strength={1.1} />}
+      {s.w === "home" && <Dust center={s.lit === "homeDay" ? V(0.4, 1.2, -1.0) : V(2.6, 1.4, -1.4)} size={V(2.6, 2.0, 2.4)} count={160} color={s.lit === "homeDay" ? "#fff0c8" : "#ffcf90"} strength={s.lit === "homeDay" ? 1.0 : 0.7} />}
       {(s.moving ?? []).map((p) => <Moving key={p.name} prop={p} f={F} />)}
       {fx.includes("petal") && <Moving prop={petalProp} f={F} />}
       {fx.includes("hiveBees") && <Bees n={36} F={F} at={hiveBee} />}

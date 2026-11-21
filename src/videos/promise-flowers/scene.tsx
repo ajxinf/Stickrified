@@ -13,15 +13,17 @@ import { CLOCK, FLOOR_LAMP, TV, V, canvasTex, debateChairs, home, town } from ".
  * clouds) as point sprites on the SKY layer (colour pass only: no ink, and the QA ground rays ignore them).
  */
 // ------------------------------------------------------------------ light
-// Day: the partly-cloudy photo sky turned so its sun stands east (+x, az 90) 48 deg up: raking side light for the lens
-// looking south at the houses and north at the stage alike.
-const DAY_SKY = photoSky({ ...LIGHTS.day, lit: [1.3, 1.25, 1.14], shade: [0.56, 0.55, 0.68], haze: { color: "#b8d0ec", start: 45, amount: 0.22 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.0, yaw: 56 });
+// Day (user 2026-11-22: the first stills read "dull and lifeless"): a low warm morning sun. The late-afternoon photo sky
+// turned so its sun stands east (+x, az 90) only 19 deg up: honey light raking across every set, long cool-lavender
+// shadows, warm haze; the lens looking south at the houses and north at the stage both get it from the side.
+const DAY_SKY = photoSky({ ...LIGHTS.sunset, lit: [1.5, 1.24, 0.94], shade: [0.42, 0.45, 0.72], lift: [0.02, 0.016, 0.034], litTint: "#ffd9aa", sat: 1.18, haze: { color: "#f0c8a8", start: 40, amount: 0.18 }, char: { tint: [1.0, 0.95, 0.88], shade: 0.93 }, glow: 0.4 }, "qwantani_late_afternoon_puresky", { exposure: 1.05, yaw: 54 });
 export const DAY = DAY_SKY.preset, SUN = DAY_SKY.key;
 // Golden (last line): the late-afternoon photo sky, its sun turned to rake in from the front-right of the hives lens.
-const GOLD_SKY = photoSky({ ...LIGHTS.sunset, lit: [1.38, 1.0, 0.7], shade: [0.36, 0.38, 0.62] }, "qwantani_late_afternoon_puresky", { exposure: 1.0, yaw: 100 });
+const GOLD_SKY = photoSky({ ...LIGHTS.sunset, lit: [1.58, 0.96, 0.58], shade: [0.34, 0.35, 0.64], litTint: "#ffb878", sat: 1.22, char: { tint: [1.0, 0.9, 0.78], shade: 0.93 } }, "qwantani_late_afternoon_puresky", { exposure: 0.95, tint: "#ffdcb8", yaw: 100 });
 export const GOLD = GOLD_SKY.preset, GOLD_SUN = GOLD_SKY.key;
-export const HOME_DAY: LightPreset = { ...LIGHTS.interior, lit: [0.98, 0.94, 0.86], shade: [0.46, 0.43, 0.5], litTint: "#fff2dc", lamp: ["#ffd9a8", 0.8] };
-export const HOME_NIGHT: LightPreset = { ...LIGHTS.interior, lit: [0.42, 0.44, 0.6], shade: [0.16, 0.17, 0.28], lift: [0.012, 0.014, 0.03], litTint: "#b8c8f0", lamp: ["#ffb35c", 2.6], grade: "night" };
+// Home: day = warm window sun (a patch on the floor, dusty shafts), night = a warm lamp pool + the TV's blue, half the room dark.
+export const HOME_DAY: LightPreset = { ...LIGHTS.interior, lit: [1.08, 0.96, 0.8], shade: [0.44, 0.4, 0.5], litTint: "#ffe2bc", lamp: ["#ffc98a", 1.2], sat: 1.18, char: { tint: [1.0, 0.95, 0.88], shade: 0.92 } };
+export const HOME_NIGHT: LightPreset = { ...LIGHTS.interior, lit: [0.4, 0.42, 0.6], shade: [0.14, 0.15, 0.26], lift: [0.012, 0.014, 0.03], litTint: "#b8c8f0", lamp: ["#ffa850", 3.4], grade: "night", sat: 1.12 };
 export const HOME_SUN = V(0.35, 0.85, 0.4).normalize();
 
 // ------------------------------------------------------------------ worlds

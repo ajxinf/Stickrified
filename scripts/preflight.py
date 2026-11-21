@@ -63,8 +63,8 @@ def framing_flags(shots, pre):
     return out
 
 
-def stills(comp, prefix, frames, scale, draft):
-    cmd = ["node", "scripts/stills.mjs", comp, prefix, ",".join(map(str, frames)), str(scale)] + (["--draft"] if draft else [])
+def stills(comp, prefix, frames, scale, draft, guard=True):
+    cmd = ["node", "scripts/stills.mjs", comp, prefix, ",".join(map(str, frames)), str(scale)] + (["--draft"] if draft else []) + ([] if guard else ["--no-guard"])
     if subprocess.run(cmd).returncode:
         sys.exit("preflight: stills.mjs failed (QA layer 1 above, or a render error); fix it or pass --draft")
 
@@ -87,11 +87,12 @@ def main():
     os.makedirs(pre, exist_ok=True)
     for old in os.scandir(pre):  # a re-run must not mix old frames into the sheets
         os.remove(old.path)
-    if not os.path.exists(f"out/{slug}/shots.json"):
-        stills(comp, f"{pre}/p_", [0], scale, draft)
+    # QA layer 1 runs exactly once per round (user 2026-11-22): here, with frame 0, which also writes shots.json; the
+    # review stills after it skip the guard (--no-guard).
+    stills(comp, f"{pre}/p_", [0], scale, draft)
     shots = json.load(open(f"out/{slug}/shots.json", encoding="utf-8"))["shots"]
     picks = frames_for(shots)
-    stills(comp, f"{pre}/p_", [f for f, _ in picks], scale, draft)
+    stills(comp, f"{pre}/p_", [f for f, _ in picks], scale, draft, guard=False)
 
     per = COLS * ROWS
     names = []
