@@ -46,3 +46,10 @@ Episode 5, "In this world, every promise grows a flower out of your skin." Stopp
 - `public/models/island_tree_01` (64 MB) and `island_tree_02` (45 MB) are heavy; frame loads got a 120 s timeout.
   The 205 MB jacaranda was removed for timing out.
 - Not yet checked by eye: the full set of shots after the round-2/3 fixes (only 6 look stills seen).
+
+## Push blocked (do first tomorrow)
+`git push` was declined: commit b7c4e65 added `assets/models/jacaranda_tree/jacaranda_tree.bin` (199 MB > GitHub's 100 MB
+limit; later deleted, still in history). 11 local commits are unpushed. Strip that folder from the unpushed commits
+only (e.g. `git filter-repo --path assets/models/jacaranda_tree --path public/models/jacaranda_tree --invert-paths
+--refs origin/main..main`, or an interactive-free rebase that amends b7c4e65), confirm with the user before rewriting,
+then push. `island_tree_01.bin` (58 MB) only warns.
