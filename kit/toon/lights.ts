@@ -30,6 +30,8 @@ export type LightPreset = {
   sunDisc?: string;
   /** Warm glow in the sky around the sun (colour, strength). */
   sunGlow?: [string, number];
+  /** R27: a CC0 photo sky (public/sky/<id>.jpg) instead of the painted gradient; set through kit sky.ts `photoSky()`. */
+  skyPhoto?: { id: string; exposure: number; tint: string; yaw: number };
   /** Painted clouds: lit underside and shaded top colours. */
   clouds?: { lit: string; shade: string; cover: number };
   /** Street lamps and lit windows: colour and HDR strength of their light pools. */

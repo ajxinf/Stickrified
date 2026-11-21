@@ -5,6 +5,7 @@ Usage:
   python scripts/polyhaven.py tex <id> [<id> ...] [--res 2k]   PBR texture: diffuse + normal (GL) at --res (default 1k;
                                                                2k for the 2K master, R26) + 1K ARM (AO/rough/metal)
   python scripts/polyhaven.py model <id> [<id> ...]   1K glTF model with its textures
+  python scripts/polyhaven.py sky <id> [<id> ...]     R27 photo sky: a "_puresky" HDRI's tonemapped 8K equirect
   python scripts/polyhaven.py --selftest
 
 Textures: diffuse -> assets/tex/<id>.jpg (raw; run scripts/tex_level.py to level it into public/tex/), normal and ARM ->
@@ -13,6 +14,9 @@ lists which maps exist; kit build/photo.ts loads them next to the diffuse, so ev
 roughness without a code change.
 Models: assets/models/<id>/ (original download) -> public/models/<id>/ (served). public/models/index.json records each
 model's bounding box (from the glTF accessors) so kit build/models.ts can place a collider before the file has loaded.
+Skies: assets/sky/<id>.jpg (original) -> public/sky/<id>.jpg (the dome above 10 deg below the horizon, 8192 wide) and
+public/sky/index.json: the horizon colour (fog and haze match it, so the world melts into the photo), the zenith colour,
+and the brightest spot's direction (the sun or moon: put the key light there). kit/toon/sky.ts `photoSky()` uses them.
 Every asset is CC0 (polyhaven.com/license); add the ids to assets/CREDITS.md (the script prints the line).
 """
 import json
@@ -131,6 +135,33 @@ def model(i):
     print(f"model {i}: size {[round(h - l, 3) for l, h in zip(lo, hi)]} m")
 
 
+CROP = 100 / 180  # keep elevations +90 .. -10 deg
+
+
+def sky(i):
+    from PIL import Image, ImageFilter
+    Image.MAX_IMAGE_PIXELS = None
+    src = get(get(f"{API}/files/{i}")["tonemapped"]["url"], f"assets/sky/{i}.jpg")
+    im = Image.open(src).convert("RGB")
+    W, H = im.size
+    top = im.crop((0, 0, W, round(H * CROP)))
+    os.makedirs("public/sky", exist_ok=True)
+    top.save(f"public/sky/{i}.jpg", quality=92)
+    a = np.asarray(im.resize((W // 16, H // 16)), float) / 255
+    h = a.shape[0]
+    row = lambda el: a[int((90 - el) / 180 * h)]  # elevation (deg) -> pixel row
+    horizon = np.mean([row(e) for e in (0.5, 1.5, 3)], axis=(0, 1))
+    zenith = np.mean([row(e) for e in (70, 80)], axis=(0, 1))
+    lum = np.asarray(Image.fromarray((a[: h // 2] * 255).astype(np.uint8)).convert("L").filter(ImageFilter.GaussianBlur(3)), float)
+    y, x = np.unravel_index(np.argmax(lum), lum.shape)
+    az, el = (x + 0.5) / lum.shape[1] * 360 - 180, 90 - (y + 0.5) / h * 180
+    index = "public/sky/index.json"
+    m = json.load(open(index)) if os.path.exists(index) else {}
+    m[i] = {"crop": round(CROP, 5), "horizon": [round(v, 4) for v in horizon], "zenith": [round(v, 4) for v in zenith], "bright": [round(az, 1), round(el, 1)]}
+    json.dump(m, open(index, "w"), indent=1, sort_keys=True)
+    print(f"sky {i}: horizon {m[i]['horizon']}, brightest at az {az:.0f} el {el:.0f}")
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         # a child rotated 90 deg about y under a parent moved +1 x and scaled 2: x/z swap, then scale and move
@@ -143,11 +174,11 @@ if __name__ == "__main__":
         assert np.allclose(lo, [0.5, 0, -1]) and np.allclose(hi, [1.5, 2, 1]), (lo, hi)
         print("selftest ok")
         sys.exit()
-    if len(sys.argv) < 3 or sys.argv[1] not in ("tex", "model"):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("tex", "model", "sky"):
         print(__doc__)
         sys.exit(2)
     res = sys.argv[sys.argv.index("--res") + 1] if "--res" in sys.argv else "1k"
     kind, ids = sys.argv[1], [a for a in sys.argv[2:] if a not in ("--res", res)]
     for i in ids:
-        tex(i, res) if kind == "tex" else model(i)
+        tex(i, res) if kind == "tex" else sky(i) if kind == "sky" else model(i)
     print(f"CREDITS: Poly Haven {kind}s {', '.join(ids)} | https://polyhaven.com/a/<id> | CC0 1.0")

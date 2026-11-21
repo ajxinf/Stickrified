@@ -1,15 +1,28 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { LOOK_FEATURES } from "./lookdev";
 import { useLayoutEffect, useMemo, useRef } from "react";
-import { BackSide, DirectionalLight, Fog, Mesh, Object3D, ShaderMaterial, Vector3 } from "three";
+import { BackSide, Color, DirectionalLight, Fog, Mesh, Object3D, ShaderMaterial, Vector3 } from "three";
 import { CASTER, SKY } from "./ink";
 import { LightPreset, linear } from "./lights";
-import { applyLight } from "./shade";
+import { applyLight, shared } from "./shade";
+import { skyCrop, skyTexture } from "./sky";
+
+const photoGain = (p: LightPreset) => (p.skyPhoto ? new Color(p.skyPhoto.tint).multiplyScalar(p.skyPhoto.exposure) : new Color(1, 1, 1));
 
 const skyFrag = /* glsl */ `
 uniform vec3 uTop, uMid, uHorizon, uSun, uSunDisc, uGlow, uCloudLit, uCloudShade;
-uniform float uHasSun, uCloudCover, uBand;
+uniform float uHasSun, uCloudCover, uBand, uHasPhoto, uYaw, uCrop;
+uniform vec3 uPhotoGain;
+uniform sampler2D uPhoto;
 varying vec3 vDir;
+// R27 photo sky: equirect panorama cropped below the horizon (kit sky.ts). Azimuth 0 = -z, +x to the right.
+vec3 photoSky(vec3 d) {
+  float u = atan(d.x, -d.z) / 6.2831853 + 0.5 - uYaw;
+  float v = (1.5707963 - asin(clamp(d.y, -1.0, 1.0))) / 3.1415927 / uCrop;
+  // The wrap at u = 0/1 jumps the derivative (a 1-px seam line from the mip choice): take the copy that does not wrap here.
+  float u1 = fract(u), u2 = fract(u + 0.5) - 0.5;
+  return texture2D(uPhoto, vec2(fwidth(u1) <= fwidth(u2) ? u1 : u2, 1.0 - min(v, 1.0))).rgb * uPhotoGain;
+}
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
   vec2 i = floor(p), f = fract(p);
@@ -21,9 +34,14 @@ void main() {
   vec3 d = normalize(vDir);
   float h = pow(clamp(d.y / 0.75, 0.0, 1.0), 0.6);
   vec3 c = mix(mix(uHorizon, uMid, smoothstep(0.0, uBand, h)), uTop, smoothstep(0.45, 1.0, h));
+  if (uHasPhoto > 0.5) {
+    c = photoSky(d);
+    // The last degrees melt into the fog colour (= the photo's graded horizon), so far sea and land meet it with no line.
+    c = mix(c, uHorizon, (1.0 - smoothstep(-0.01, 0.09, d.y)) * 0.85);
+  }
   c += uGlow * pow(max(dot(d, uSun), 0.0), 6.0) * (1.0 - h);
 #ifdef REAL
-  if (uCloudCover > 0.0 && d.y > 0.0) {
+  if (uCloudCover > 0.0 && d.y > 0.0 && uHasPhoto < 0.5) {
     // R25 real look (visual-ref9 night, ref8 day): a soft cloud layer overhead in perspective (p = d.xz / d.y), billowy
     // fbm with feathered edges, lit from above, thinning into the horizon haze. No hard painted edge.
     vec2 p = d.xz / (d.y + 0.12) * 1.3 + vec2(4.1, 2.7);
@@ -46,7 +64,12 @@ void main() {
     c = mix(c, cc, m * 0.92);
   }
 #endif
-  if (uHasSun > 0.5) c = mix(c, uSunDisc * 4.0, smoothstep(0.99965, 0.99975, dot(d, uSun)));
+  if (uHasSun > 0.5) {
+    float m = dot(d, uSun);
+    // Photo sky: the moon/sun behind thin cloud gets a soft halo around the disc (visual-ref9 night).
+    if (uHasPhoto > 0.5) c += uSunDisc * (0.5 * exp(-(1.0 - m) * 9000.0) + 0.12 * exp(-(1.0 - m) * 600.0));
+    c = mix(c, uSunDisc * 4.0, smoothstep(0.99965, 0.99975, m));
+  }
   gl_FragColor = vec4(c, 1.0);
 }`;
 
@@ -90,6 +113,11 @@ export const ToonWorld: React.FC<{ preset: LightPreset; sunDir: Vector3; shadow?
         uCloudShade: { value: linear(preset.clouds?.shade ?? "#ffffff") },
         uCloudCover: { value: preset.clouds?.cover ?? 0 },
         uBand: { value: preset.horizonBand ?? 0.5 },
+        uPhoto: { value: preset.skyPhoto ? skyTexture(preset.skyPhoto.id) : null },
+        uHasPhoto: { value: preset.skyPhoto ? 1 : 0 },
+        uPhotoGain: { value: photoGain(preset) },
+        uYaw: { value: (preset.skyPhoto?.yaw ?? 0) / 360 },
+        uCrop: { value: preset.skyPhoto ? skyCrop(preset.skyPhoto.id) : 1 },
       },
     });
   }, [preset, sunDir]);
@@ -114,6 +142,12 @@ export const ToonWorld: React.FC<{ preset: LightPreset; sunDir: Vector3; shadow?
   useLayoutEffect(() => {
     scene.fog = new Fog(linear(preset.fog), preset.fogNear, preset.fogFar);
     applyLight(preset, sunDir);
+    // Water reflects the same photo (shade.ts `reflect`).
+    Object.assign(shared.uSkyMap, { value: preset.skyPhoto ? skyTexture(preset.skyPhoto.id) : null });
+    shared.uSkyOn.value = preset.skyPhoto ? 1 : 0;
+    shared.uSkyGain.value.copy(photoGain(preset));
+    shared.uSkyYaw.value = (preset.skyPhoto?.yaw ?? 0) / 360;
+    shared.uSkyCrop.value = preset.skyPhoto ? skyCrop(preset.skyPhoto.id) : 1;
     sky.current?.layers.set(SKY);
     scene.add(key, key.target);
     return () => void scene.remove(key, key.target);

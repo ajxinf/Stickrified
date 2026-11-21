@@ -20,7 +20,8 @@ export const onPhotoLoaded = (fn: () => void) => {
 };
 /** Repaint the current frame (a model or texture arrived after it was drawn). */
 export const repaint = () => redraws.forEach((f) => f());
-const load = (file: string, color: boolean) => {
+/** Load public/<dir>/<file>.jpg as a texture; the frame waits for it. */
+export const load = (file: string, color: boolean, dir = "tex") => {
   const t = new Texture();
   t.wrapS = t.wrapT = RepeatWrapping;
   t.colorSpace = color ? SRGBColorSpace : NoColorSpace; // normal and ARM maps are data
@@ -33,8 +34,8 @@ const load = (file: string, color: boolean) => {
     repaint();
     continueRender(handle);
   };
-  img.onerror = () => cancelRender(new Error(`photo texture: public/tex/${file}.jpg did not load`));
-  img.src = staticFile(`tex/${file}.jpg`);
+  img.onerror = () => cancelRender(new Error(`photo texture: public/${dir}/${file}.jpg did not load`));
+  img.src = staticFile(`${dir}/${file}.jpg`);
   return t;
 };
 

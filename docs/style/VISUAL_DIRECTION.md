@@ -344,10 +344,24 @@ test composition `LookTestR27` (`src/videos/_look-test-r27`) and on the moon pre
 | Even lighting, lamps that light nothing (§2) | P0 | skill: one lighting line per scene in build.ts, every practical in frame throws a pool | rule **done**; kit falloff unchanged (the test fire pool reads; no evidence for a global change) |
 | Thin environments, flat surfaces (§1, §3) | P0/P1 | skill: material list per scene, `mottle` on large surfaces, mid-scale construction first; R26 photo maps + models | rule **done**; per episode |
 | Water as flat bands (§1) | P1 | kit `build/water.ts` (frame-driven ripple normals) + `toonMaterial({ reflect })` Fresnel sky reflection | **done** |
-| Generic costumes (§4) | P1 | kit `wardrobe.ts` `pocket`, `seams`; skill: one construction detail per speaking role | **done** |
+| Generic costumes (§4) | P1 | kit `wardrobe.ts` `seams` (a chest `pocket` was tried and removed, user 2026-11-21); skill: one construction detail per speaking role | **done** |
 | Story props without close beats or effects (§8) | P1 | skill rule | **done** (rule) |
 | Captions over the named object (§9) | P2 | existing "Caption vs face", "Text in frame"; preflight checklist | unchanged (already covered) |
 | Wide crowds frozen (§5) | P2 | "Static hold" covers it; skill rule | **done** |
 
 Not done: a global practical-falloff change (needs a night episode to judge, not a test scene), a second fine ripple
 octave for water seen from under 2 m, a guard check for depth layers (richness.py edges already gates density).
+
+## R27b: user notes on the first test (2026-11-21)
+"Remove the pocket from the character, water looks way too smooth, sky looks so low quality and does not blend in, make
+sure to fully utilize materials for the world." Done in the kit (all future episodes) and shown in a 10 s 2K
+`LookTestR27` render (`out/_look-test-r27/video.mp4`), still not an episode:
+- pocket: removed from `wardrobe.ts`;
+- sky: Poly Haven pure-sky photo panoramas (`scripts/polyhaven.py sky`, kit `sky.ts`, `world.tsx`), fog/haze/horizon
+  matched to the photo, moon disc + halo, the key light from the photo's bright spot;
+- water: 256 px map of 18 wave trains (slope ~.12 each, mean tilt 10-30 deg, self-checked), a second rotated sample
+  against tiling, the photo sky in the reflections (calmer normal, blurred), rippled light streaks, a moon glitter path;
+  new shore wash texture (streaks, not round holes: the first read as camouflage up close);
+- materials: the test set uses 14 photo materials (+ dark_rock, bark_brown_02, coast_sand_rocks_02) and 13 Poly Haven
+  models (+ coast rocks, modular pier, driftwood, grass clumps) at three depths;
+- fire: `fire.tsx` Flames / Embers / Smoke (the first flames were glowing cones that blew out to white in close-up).

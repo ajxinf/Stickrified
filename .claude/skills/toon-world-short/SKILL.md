@@ -428,10 +428,22 @@ the new ones, and each has a check or a kit piece. **Future episodes only: never
 - **A material list per scene** (also at the top of `build.ts`): 4-6 materials, each a different photo texture with its
   normal/ARM maps (`photo()`, `scripts/polyhaven.py tex`), `mottle` on every large surface so no ground or wall is one
   flat colour. Mid-scale construction before small detail: trim, frames, supports, seams, then chips and pebbles.
-- **Water moves**: `water()` + `setWater(mesh, F)` (kit `build/water.ts`): frame-driven ripples, the sky mirrored into
-  them by Fresnel, glints and practical streaks. Shore foam and wet sand per world (moon `seaPlane` is the worked example).
+- **Photo skies, never the painted gradient** (user 2026-11-21: "sky looks so low quality and does not blend in"):
+  `photoSky(preset, id, { exposure, tint, yaw })` (kit `sky.ts`) with a Poly Haven pure-sky panorama
+  (`python scripts/polyhaven.py sky <id>_puresky`; ~60 ids cover dawn, day, overcast, dusk and night). It sets fog,
+  horizon and haze to the photo's own graded horizon colour so the world melts into it, and returns `key`: the photo's
+  brightest spot (sun or moon), which is the scene's key light direction. Night: `kloppenheim_07_puresky` at
+  exposure ~.3, tint `#bccbe8` (visual-ref9's navy cloud cover, stars). `yaw` turns the sky (and the key) to suit the
+  shots; put the sun or moon where it rims the characters or makes a glint path on water.
+- **Water moves and is never smooth** (user 2026-11-21: "water looks way too smooth"): `water()` + `setWater(mesh, F)`
+  (kit `build/water.ts`): 18 frame-driven wave trains from swell to fine chop, the photo sky mirrored in by Fresnel,
+  lights broken into dancing streaks, a moon/sun glitter path. `shoreFoam()` + `setShoreFoam(g, F, z, lap)` lays the
+  wash at the waterline; move the sea level a few cm per wave (`lap`) on a sloped beach so the waterline runs up and
+  drains, with a glossy wet-sand band above it.
+- **Fire lives** (kit `fire.tsx`): `Flames` (noise tongues, never glowing cones), `Embers` (+ `burst` sparks on an
+  impact frame), `Smoke` (+ `puffAt`); drive the fire's point light from the same flicker and flare.
 - **Clothes look made**: besides the pattern and the signature accessory, each speaking role gets one construction
-  detail that reads at phone size: `pocket`, `seams` (side seams + hem band), `campCollar`, `belt`, `overalls`
+  detail that reads at phone size (no chest pocket: user 2026-11-21): `seams` (side seams + hem band), `campCollar`, `belt`, `overalls`
   (kit `wardrobe.ts`). Never a plain colour fill.
 - **Story props get a close beat and an effect**: each story-critical prop has one insert, and its action leaves a
   physical trace (dust, debris, a dent, the light it throws or blocks, a reaction on the nearest face).

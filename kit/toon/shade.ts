@@ -7,6 +7,12 @@ import { INK } from "./toon";
 // Shared by every toon material, so one applyLight() relights the whole world.
 export const shared = {
   uSunDir: { value: new Vector3(0, 1, 0) },
+  /** R27 photo sky for reflections (set by world.tsx ToonWorld from the preset's skyPhoto). */
+  uSkyMap: { value: null as Texture | null },
+  uSkyOn: { value: 0 },
+  uSkyGain: { value: new Color(1, 1, 1) },
+  uSkyYaw: { value: 0 },
+  uSkyCrop: { value: 1 },
   uLit: { value: new Vector3(1, 1, 1) },
   uShade: { value: new Vector3(0.3, 0.3, 0.3) },
   uLift: { value: new Vector3() },
@@ -169,6 +175,9 @@ uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss, uRough, uBump, uHa
 uniform vec3 uSunDir, uLit, uShade, uLift, uHazeColor;
 uniform float uEmissiveK, uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
 uniform vec2 uRepeat;
+uniform sampler2D uSkyMap;
+uniform float uSkyOn, uSkyYaw, uSkyCrop;
+uniform vec3 uSkyGain;
 varying vec3 vN;
 varying vec3 vW;
 varying vec2 vUv;
@@ -223,6 +232,11 @@ void main() {
   if (uHasNor > 0.5) {
     // R26: real relief from the texture's normal map (visual-ref10 gravel, standard-ref mine rock and planks).
     vec3 mapN = texture2D(uNor, vUv).xyz * 2.0 - 1.0;
+    if (uReflect > 0.0) {
+      // R27 water: a second, larger rotated sample (whiteout blend) hides the tile repeat and adds swell under the chop.
+      vec3 m2 = texture2D(uNor, mat2(0.8, 0.6, -0.6, 0.8) * vUv * 0.29 + 0.17).xyz * 2.0 - 1.0;
+      mapN = normalize(vec3(mapN.xy + m2.xy * 1.3, mapN.z * m2.z));
+    }
     mapN.xy *= uNorK;
     float face = gl_FrontFacing ? 1.0 : -1.0;
     n = perturb(vW, n * face, mapN);
@@ -293,6 +307,9 @@ void main() {
     // R20 (visual-ref5 wet street, ref6 saloon boards): a polished or wet floor mirrors the practicals and a low sun as
     // soft streaks that run toward the lens (a grazing Blinn lobe stretches them on its own).
     vec3 V = normalize(-vView), N = normalize(vNV), g = vec3(0.0);
+    #ifdef REAL
+    if (uReflect > 0.0) N = vnN; // water: the ripples break the lights' reflections into dancing streaks
+    #endif
     #if NUM_POINT_LIGHTS > 0
     for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
       vec3 L = pointLights[i].position - vView;
@@ -301,16 +318,28 @@ void main() {
     }
     #endif
     vec3 Ls = normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz);
-    g += uLit * 0.16 * pow(max(dot(N, normalize(Ls + V)), 0.0), 80.0) * t; // a narrow glare path, not a wash
+    g += uLit * 0.16 * pow(max(dot(N, normalize(Ls + V)), 0.0), 80.0) * t * step(uReflect, 0.0); // a narrow glare path, not a wash (water: its own glitter path)
     c += uGloss * g;
   }
   #ifdef REAL
   if (uReflect > 0.0) {
     // R27 water (opt-in): the sky in the ripples by Fresnel, the fog (horizon) colour low, darker overhead, so ripples
     // read as moving bands of sky tone instead of a flat mirror colour.
-    vec3 Vw = normalize(cameraPosition - vW), R = reflect(-Vw, n);
-    float fr = 0.02 + 0.98 * pow(1.0 - max(dot(n, Vw), 0.0), 5.0);
-    c = mix(c, fogColor * mix(1.0, 0.45, clamp(R.y * 1.6, 0.0, 1.0)), clamp(fr * uReflect, 0.0, 1.0));
+    // Reflections take a calmer normal than the glints: full ripple normals flipped rays between zenith and horizon
+    // and turned the sea into black and white camouflage (R27 test).
+    vec3 Vw = normalize(cameraPosition - vW), nr = normalize(mix(normalize(vN), n, 0.5)), R = reflect(-Vw, nr);
+    float fr = 0.02 + 0.98 * pow(1.0 - max(dot(nr, Vw), 0.0), 5.0);
+    vec3 sky = fogColor * mix(1.0, 0.45, clamp(R.y * 1.6, 0.0, 1.0));
+    if (uSkyOn > 0.5) {
+      // The photo sky itself in the ripples (clouds, the moon's bright patch), same mapping as world.tsx photoSky.
+      vec3 Rs = normalize(vec3(R.x, max(R.y, 0.02), R.z));
+      float u = atan(Rs.x, -Rs.z) / 6.2831853 + 0.5 - uSkyYaw, v = (1.5707963 - asin(Rs.y)) / 3.1415927 / uSkyCrop;
+      sky = mix(texture2D(uSkyMap, vec2(fract(u), 1.0 - v), 3.0).rgb * uSkyGain, fogColor, 0.25);
+    }
+    c = mix(c, sky, clamp(fr * uReflect, 0.0, 1.0));
+    // The moon (or sun) on rippled water: a glitter path from the full ripple normals, the key light's colour.
+    vec3 Rg = reflect(-Vw, n);
+    c += uReflect * uLit * 4.0 * pow(max(dot(Rg, uSunDir), 0.0), 700.0) * smoothstep(-0.05, 0.1, uSunDir.y);
   }
   #endif
   c = max(mix(vec3(dot(c, W)), c, uSat), 0.0);

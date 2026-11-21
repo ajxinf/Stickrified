@@ -106,16 +106,6 @@ export const overalls = (col: string, patch: string): Layer => (p, t) => {
   p.stroke([[px + 2 * u, py + 2 * u], [px + 16 * u, py + 2 * u], [px + 16 * u, py + 14 * u], [px + 2 * u, py + 14 * u], [px + 2 * u, py + 2 * u]], 0.7 * u, INK, [1.8 * u, 1.6 * u]);
 };
 
-/** R27 (refs' uniforms: pockets, seams, trim read as made clothes, not a colour fill): a chest pocket with a flap,
- * a button and dashed stitching. `side` +1 = the card's right. */
-export const pocket = (col: string, side = 1, button = WHITE): Layer => (p, t) => {
-  const { cx, chin, u, a, top, bot } = t, w = 17 * u, h = 15 * u, x = cx + side * 0.42 * a - w / 2, y = chin + 0.22 * (bot - top);
-  p.poly(rect(x, y, w, h), col, 1.2 * u);
-  p.stroke([[x + 2 * u, y + 4 * u], [x + 2 * u, y + h - 2 * u], [x + w - 2 * u, y + h - 2 * u], [x + w - 2 * u, y + 4 * u]], 0.7 * u, INK, [1.8 * u, 1.6 * u]);
-  p.poly([[x - 1 * u, y - 1 * u], [x + w + 1 * u, y - 1 * u], [x + w + 1 * u, y + 4 * u], [x + w / 2, y + 7 * u], [x - 1 * u, y + 4 * u]], mul(col, [0.86, 0.86, 0.86]), 1.2 * u);
-  p.ell(x + w / 2, y + 4.5 * u, 1.8 * u, 1.8 * u, button, 0.7 * u);
-};
-
 /** R27: made-garment detail: dashed side seams and a contrasting hem band (`hem` colour; null = seams only). */
 export const seams = (hem: string | null, at = 0.9): Layer => (p, t) => {
   const { cx, top, bot, u, a } = t, h = bot - top;

@@ -561,7 +561,8 @@ const glareCheck = (r: Report, shot: Shot, scene: Object3D, cams: PerspectiveCam
 const DOOR_BEYOND = 1.5;
 const doorCheck = (r: Report, shot: Shot, scene: Object3D) => {
   const doors: Object3D[] = [];
-  scene.traverseVisible((o) => void (/door/i.test(o.name) && !/sign|tex|frame|knob|handle/i.test(o.name) && doors.push(o)));
+  // A "door" under 1 m tall is a lantern, cabinet or oven door (Poly Haven wooden_lantern_01_door), never a doorway.
+  scene.traverseVisible((o) => void (/door/i.test(o.name) && !/sign|tex|frame|knob|handle/i.test(o.name) && new Box3().setFromObject(o).getSize(new Vector3()).y >= 1 && doors.push(o)));
   if (!doors.length) return void (r.na["Door logic"] = "no objects named door");
   r.ran.add("Door logic");
   const setup: Shot = { ...shot, id: "setup", from: 0 };

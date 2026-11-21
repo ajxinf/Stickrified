@@ -1,13 +1,28 @@
 {
+ "bark_brown_02": {
+  "arm": true,
+  "nor": true,
+  "res": "1k"
+ },
  "clay_roof_tiles": {
   "arm": true,
   "nor": true,
   "res": "2k"
  },
+ "coast_sand_rocks_02": {
+  "arm": true,
+  "nor": true,
+  "res": "1k"
+ },
  "damp_beach_sand_02": {
   "arm": true,
   "nor": true,
   "res": "2k"
+ },
+ "dark_rock": {
+  "arm": true,
+  "nor": true,
+  "res": "1k"
  },
  "dense_sand": {
   "arm": true,

@@ -20,3 +20,6 @@ public/*/mix.wav
 vendor/cartoon-3d-short/references/frames/
 vendor/cartoon-3d-short/references/sheets/
 .claude/settings.local.json
+
+# 8K sky originals (20-30 MB each): re-downloaded by scripts/polyhaven.py sky; public/sky/ holds the served crops
+assets/sky/
