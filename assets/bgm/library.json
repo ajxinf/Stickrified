@@ -1,0 +1,26 @@
+{
+  "_about": "Background music library (user-supplied, 2026-11-16). Pick one track per episode: set \"music\": {\"track\": \"<file>\"} in videos/<slug>/audio/events.json and run scripts/audio/music.py (bgm.py fits it). 'loops' = measured by bgm.py: phrase-based tracks loop seamlessly at any Short length; through-composed ones only at some lengths, otherwise bgm.py falls back to a 2 s end fade. Moods are not listened to: titles and measurements only. Licence of each track: confirm with the user before publishing (see assets/CREDITS.md).",
+  "tracks": {
+    "in_this_world(default).mp3": {
+      "use_for": "default for the \"In this world...\" fiction pillar (user, 2026-11-16); episode 2",
+      "seconds": 184.5, "body_s": [0.0, 179.7], "phrase_s": 20.46,
+      "loops": "clean at every Short length (seam 0.97-0.99; tempo change 0.7-5.5 %)"
+    },
+    "lofi1.mp3": {
+      "title": "Time", "artist": "Avanti", "seconds": 116.2, "body_s": [0.0, 110.0],
+      "loops": "clean near 61 s (0.92); not at 77-90 s"
+    },
+    "lofi2.mp3": {
+      "title": "Florida Keys", "artist": "Hoffy Beats", "seconds": 147.5, "body_s": [14.5, 128.9],
+      "loops": "none clean (0.82-0.90); a hot master (-13 dB RMS), normalised by bgm.py"
+    },
+    "lofi3.mp3": {
+      "title": "Mindwave", "artist": "Avanti", "seconds": 151.1, "body_s": [16.5, 146.6],
+      "loops": "clean near 77 s (0.905); not at 61 or 90 s"
+    },
+    "relaxing.mp3": {
+      "title": "Serenity", "artist": "Pufino", "seconds": 180.0, "body_s": [6.3, 174.4],
+      "loops": "clean at 61-90 s (0.91-0.97); soft, almost no highs"
+    }
+  }
+}
