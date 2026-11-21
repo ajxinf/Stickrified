@@ -1,7 +1,7 @@
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { Vector3 } from "three";
 import type { CamPose } from "../../../kit/toon/camera";
-import { CAPTION_FONT } from "../../../kit/toon/Captions";
+import { CAPTION_FONT, KEY_COLOR, SPEAKER_COLORS } from "../../../kit/toon/Captions";
 import { handWorld } from "../../../kit/toon/cast";
 import { youLook } from "../../../kit/toon/protagonist";
 import { B, REWIND, S, SHOTS, youAtF, youStateF } from "./story";
@@ -12,7 +12,7 @@ import { B, REWIND, S, SHOTS, youAtF, youStateF } from "./story";
  * climax caption made of them, and the flash through the crack into the next video. Frame-driven (composition F).
  * Sizes are fractions of the frame, so stills and finals match.
  */
-const RED = "#ff2b2b", INKC = "#141014";
+const RED = "#ff2b2b", INKC = "#141014", NARRATOR = SPEAKER_COLORS.narrator;
 const clamp01 = (x: number) => Math.min(Math.max(x, 0), 1);
 const ease = (x: number) => { const t = clamp01(x); return t * t * (3 - 2 * t); };
 
@@ -30,7 +30,7 @@ export const barAt = (F: number) => {
   return 0.02 * ((F - B.into) / 60);
 };
 /** The bar is the threat: thicker and glowing while it counts down (line 2 and line 16). */
-const barBig = (F: number) => (F >= B.because && F < B.loops ? 1 : F >= B.red && F < B.but + 20 ? 1 : 0);
+const barBig = (F: number) => (F >= B.because && F < B.loops ? 1 : F >= B.red && F < B.andAt + 20 ? 2.2 : 0);
 
 /** Project a world point through a shot camera (vertical fov, 9:16) to frame fractions [x, y]. */
 export const project = (cam: CamPose, p: Vector3, aspect = 1080 / 1920): [number, number] => {
@@ -76,34 +76,51 @@ const Rewind: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => {
 };
 
 /** A caption-style word tile (white bold on a dark rounded plate, the captions' own look). */
-const Tile: React.FC<{ text: string; x: number; y: number; s: number; w: number; glow?: number; rot?: number }> = ({ text, x, y, s, w, glow = 0, rot = 0 }) => (
+const Tile: React.FC<{ text: string; x: number; y: number; s: number; w: number; glow?: number; rot?: number; color?: string }> = ({ text, x, y, s, w, glow = 0, rot = 0, color = "#ffffff" }) => (
   <div style={{
     position: "absolute", left: x, top: y, transform: `translate(-50%, -50%) rotate(${rot}deg) scale(${s})`,
-    fontFamily: CAPTION_FONT, fontWeight: 900, fontSize: 0.075 * w, color: "#ffffff", background: INKC, borderRadius: 0.025 * w,
+    fontFamily: CAPTION_FONT, fontWeight: 900, fontSize: 0.075 * w, color, background: INKC, borderRadius: 0.025 * w,
     padding: `${0.006 * w}px ${0.022 * w}px`, whiteSpace: "nowrap",
     boxShadow: `0 0 ${0.05 * w * glow}px ${0.012 * w * glow}px rgba(255,214,120,${0.85 * glow}), ${0.004 * w}px ${0.006 * w}px 0 rgba(0,0,0,0.6)`,
   }}>{text}</div>
 );
 
-/** Line 10: "grab" appears in the caption, then you yank it up out of the caption bar into your fist. */
+/** You yank a word out of the caption into your fist: "captions" (line 11) and FREE out of his gloat (line 18). */
+const GRABS = [
+  { text: "captions", from: B.captions, until: B.keep, x0: 0.5, y0: 0.7, color: KEY_COLOR },
+  { text: "FREE", from: B.snatch + 6, until: B.mid - 2, x0: 0.5, y0: 0.78, color: NARRATOR },
+];
 const GrabWord: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => {
-  const k = F - B.grab;
-  if (k < 0 || F >= B.hide) return null;
+  const g = GRABS.find((x) => F >= x.from && F < x.until);
+  if (!g) return null;
   const cam = camAt(F), hand = handWorld(youLook, youStateF(F).pose, youAtF(F), cam.pos, "right", 0.08, youStateF(F).heading);
   const [hx, hy] = project(cam, hand);
-  const t = ease((k - 3) / 7);
-  return <Tile text="grab" x={(0.5 + (hx - 0.5) * t) * w} y={(0.7 + (hy - 0.7) * t) * h} s={1 - 0.45 * t} w={w} rot={-8 * t} />;
+  const t = ease((F - g.from - 3) / 7);
+  return <Tile text={g.text} x={(g.x0 + (hx - g.x0) * t) * w} y={(g.y0 + (hy - g.y0) * t) * h} s={0.8 - 0.3 * t} w={w} rot={-8 * t} color={g.color} glow={0.5} />;
 };
 
-/** Line 17: the spilled words fall into a row above the captions, one per beat. */
+/** Line 17: his gloat pops up in the caption whole, before he reads it; FREE glows at the end until you yank it. */
+const GloatCaption: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => {
+  if (F < B.gIn - 1 || F >= B.out - 1) return null;
+  const pop = (k: number) => (k >= 0 && k < 6 ? 1.12 - 0.12 * (k / 6) : 1);
+  return (
+    <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <Tile text="In this world," x={0.5 * w} y={0.64 * h} s={0.72 * pop(F - B.gIn)} w={w} />
+      <Tile text="you'll never be" x={0.5 * w} y={0.71 * h} s={0.72 * pop(F - B.gIn)} w={w} />
+      {F < B.snatch + 6 && <Tile text="FREE" x={0.5 * w} y={0.78 * h} s={0.8 * pop(F - B.gIn)} w={w} color={NARRATOR} glow={0.4 + 0.3 * Math.sin(F * 0.4)} />}
+    </AbsoluteFill>
+  );
+};
+
+/** Line 24: the spilled words fall into a row above the captions, one per beat. */
 const ROW = ["IN", "THIS", "WORLD", "YOU'RE", "FREE"];
 const TileRow: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => {
-  if (F < B.they || F >= B.inThis) return null;
-  const step = (B.help - B.they) / ROW.length;
+  if (F < B.your || F >= B.inThis) return null;
+  const step = (B.help - B.your) / ROW.length;
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
       {ROW.map((word, i) => {
-        const t0 = B.they + i * step, k = F - t0;
+        const t0 = B.your + i * step, k = F - t0;
         if (k < 0) return null;
         // Two rows above the caption band: IN THIS WORLD / YOU'RE FREE.
         const row = i < 3 ? 0 : 1, col = i < 3 ? i - 1 : i - 3.5;
@@ -114,10 +131,10 @@ const TileRow: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => 
   );
 };
 
-/** Line 19: the narrator reads the stolen words; the caption itself is the tiles, glowing, word by word. */
-const CLIMAX = [{ text: "In this world...", at: () => B.inThis }, { text: "you're...", at: () => B.inThis + 34 }, { text: "free.", at: () => B.free }];
+/** Line 25: the narrator reads the stolen words; the caption itself is the tiles, glowing, word by word. */
+const CLIMAX = [{ text: "In this world...", at: () => B.inThis }, { text: "you're...", at: () => B.youre2 }, { text: "free.", at: () => B.free }];
 const ClimaxCaption: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => {
-  if (F < B.inThis - 2 || F >= B.loops9000) return null;
+  if (F < B.inThis - 2 || F >= B.youDive - 1) return null;
   const cur = [...CLIMAX].reverse().find((c) => F >= c.at() - 2);
   if (!cur) return null;
   const k = F - cur.at(), s = k < 4 ? 1.25 - 0.25 * (k / 4) : 1;
@@ -145,6 +162,20 @@ const Shatter: React.FC<{ F: number; w: number; h: number }> = ({ F, w, h }) => 
   );
 };
 
+/** Line 21: a big red percentage rides the bar tip, jumping 90 / 95 / 99 on the words. */
+const Percent: React.FC<{ F: number; w: number; h: number; v: number }> = ({ F, w, h, v }) => {
+  if (F < B.p90 - 2 || F >= B.andAt + 20) return null;
+  const n = F < B.p95 - 2 ? 90 : F < B.p99 - 2 ? 95 : 99, at = n === 90 ? B.p90 : n === 95 ? B.p95 : B.p99, k = F - (at - 2);
+  const s = k < 6 ? 1.3 - 0.3 * (k / 6) : 1;
+  return (
+    <div style={{
+      position: "absolute", left: Math.min(Math.max(v * w, 0.2 * w), 0.82 * w), bottom: 0.035 * h, transform: `translateX(-50%) scale(${s})`,
+      fontFamily: CAPTION_FONT, fontWeight: 900, fontSize: 0.12 * w, color: RED, WebkitTextStroke: `${0.006 * w}px ${INKC}`,
+      textShadow: `0 ${0.006 * w}px 0 ${INKC}`,
+    }}>{n}%</div>
+  );
+};
+
 export const Meta: React.FC = () => {
   const F = useCurrentFrame();
   const { width: w, height: h } = useVideoConfig();
@@ -154,9 +185,11 @@ export const Meta: React.FC = () => {
       <Rewind F={F} w={w} h={h} />
       <Edge F={F} w={w} h={h} />
       <GrabWord F={F} w={w} h={h} />
+      <GloatCaption F={F} w={w} h={h} />
       <TileRow F={F} w={w} h={h} />
       <ClimaxCaption F={F} w={w} h={h} />
       <Shatter F={F} w={w} h={h} />
+      <Percent F={F} w={w} h={h} v={v} />
       {v >= 0 && (
         <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: bh, background: "rgba(255,255,255,0.28)" }}>
           <div style={{ width: `${v * 100}%`, height: "100%", background: RED, boxShadow: big ? `0 0 ${0.02 * w}px ${RED}` : undefined }} />
@@ -166,5 +199,5 @@ export const Meta: React.FC = () => {
     </AbsoluteFill>
   );
 };
-/** Frames with no normal captions: "grab" is in your fist (until the next word), and line 19 is the tile caption. */
-export const captionsOff = (F: number) => (F >= B.grab - 1 && F < B.something - 1) || (F >= B.inThis - 1 && F < B.loops9000 - 1);
+/** Frames with no normal captions: a grabbed word, his whole gloat (line 17), and line 25 (the tile caption). */
+export const captionsOff = (F: number) => (F >= B.captions - 1 && F < B.keep - 1) || (F >= B.gIn - 1 && F < B.out - 1) || (F >= B.inThis - 1 && F < B.youDive - 1);

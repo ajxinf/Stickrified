@@ -12,1051 +12,1252 @@
  {
   "text": "the",
   "start": 0.64,
-  "end": 0.72
+  "end": 0.68
  },
  {
   "text": "edge",
-  "start": 0.8,
-  "end": 0.96
+  "start": 0.72,
+  "end": 0.88
  },
  {
   "text": "of",
+  "start": 0.92,
+  "end": 0.96
+ },
+ {
+  "text": "the",
   "start": 1,
   "end": 1.04
  },
  {
-  "text": "the",
-  "start": 1.12,
-  "end": 1.2
- },
- {
   "text": "*screen*.",
-  "start": 1.44,
-  "end": 1.8
+  "start": 1.12,
+  "end": 1.68
  },
  {
   "text": "Because",
-  "start": 2.112,
-  "end": 2.16
+  "start": 2.032,
+  "end": 2.08
  },
  {
   "text": "you're",
-  "start": 2.2,
-  "end": 2.32
+  "start": 2.12,
+  "end": 2.24
  },
  {
   "text": "stuck",
-  "start": 2.4,
-  "end": 2.56
+  "start": 2.32,
+  "end": 2.48
  },
  {
   "text": "inside",
   "start": 2.64,
-  "end": 2.96
+  "end": 2.8
  },
  {
   "text": "an",
-  "start": 3.04,
-  "end": 3.12
+  "start": 2.88,
+  "end": 3.04
  },
  {
   "text": "\"In",
-  "start": 3.2,
-  "end": 3.36
+  "start": 3.08,
+  "end": 3.2
  },
  {
   "text": "this",
-  "start": 3.44,
-  "end": 3.6
+  "start": 3.28,
+  "end": 3.44
  },
  {
   "text": "world\"",
-  "start": 3.68,
-  "end": 3.92
+  "start": 3.52,
+  "end": 3.8
  },
  {
   "text": "video,",
-  "start": 4.12,
-  "end": 4.36
+  "start": 3.84,
+  "end": 4.24
  },
  {
   "text": "and",
-  "start": 4.4,
-  "end": 4.48
+  "start": 4.32,
+  "end": 4.4
  },
  {
   "text": "when",
+  "start": 4.44,
+  "end": 4.48
+ },
+ {
+  "text": "the",
   "start": 4.56,
   "end": 4.64
  },
  {
-  "text": "it",
-  "start": 4.68,
-  "end": 4.72
+  "text": "red",
+  "start": 4.72,
+  "end": 4.8
  },
  {
-  "text": "ends,",
-  "start": 4.8,
-  "end": 5.413
+  "text": "bar",
+  "start": 4.88,
+  "end": 4.96
  },
  {
-  "text": "it",
-  "start": 5.467,
-  "end": 5.52
- },
- {
-  "text": "*loops*.",
-  "start": 5.6,
-  "end": 6.2
- },
- {
-  "text": "This",
-  "start": 6.48,
-  "end": 6.64
- },
- {
-  "text": "is",
-  "start": 6.72,
-  "end": 6.8
- },
- {
-  "text": "loop",
-  "start": 6.88,
-  "end": 7.12
- },
- {
-  "text": "*9,000*.",
-  "start": 7.2,
-  "end": 8.64
- },
- {
-  "text": "Gary,",
-  "start": 9.053,
-  "end": 9.2
+  "text": "hits",
+  "start": 5.04,
+  "end": 5.2
  },
  {
   "text": "the",
-  "start": 9.28,
+  "start": 5.28,
+  "end": 5.36
+ },
+ {
+  "text": "end,",
+  "start": 5.44,
+  "end": 5.8
+ },
+ {
+  "text": "it",
+  "start": 6,
+  "end": 6.16
+ },
+ {
+  "text": "*loops*.",
+  "start": 6.24,
+  "end": 6.8
+ },
+ {
+  "text": "This",
+  "start": 7.04,
+  "end": 7.2
+ },
+ {
+  "text": "is",
+  "start": 7.28,
+  "end": 7.36
+ },
+ {
+  "text": "loop",
+  "start": 7.44,
+  "end": 7.68
+ },
+ {
+  "text": "*9,000*.",
+  "start": 7.88,
+  "end": 9.051
+ },
+ {
+  "text": "Gary",
+  "start": 9.12,
   "end": 9.36
  },
  {
-  "text": "extra",
+  "text": "walks",
   "start": 9.44,
   "end": 9.68
  },
  {
-  "text": "who",
+  "text": "by",
   "start": 9.76,
   "end": 9.84
  },
  {
-  "text": "walks",
-  "start": 9.96,
-  "end": 10.12
- },
- {
-  "text": "by",
-  "start": 10.16,
-  "end": 10.24
- },
- {
   "text": "with",
-  "start": 10.32,
-  "end": 10.4
+  "start": 9.92,
+  "end": 10
  },
  {
-  "text": "a",
-  "start": 10.44,
-  "end": 10.48
+  "text": "his",
+  "start": 10.08,
+  "end": 10.16
  },
  {
   "text": "ladder",
-  "start": 10.56,
-  "end": 10.8
- },
- {
-  "text": "every",
-  "start": 10.88,
-  "end": 11.12
- },
- {
-  "text": "loop,",
-  "start": 11.24,
-  "end": 11.44
- },
- {
-  "text": "gave",
-  "start": 11.52,
-  "end": 11.68
- },
- {
-  "text": "up",
-  "start": 11.76,
-  "end": 11.84
- },
- {
-  "text": "*years*",
-  "start": 12,
-  "end": 12.16
- },
- {
-  "text": "ago.",
-  "start": 12.32,
-  "end": 12.64
- },
- {
-  "text": "\"Nobody",
-  "start": 12.867,
-  "end": 13.2
- },
- {
-  "text": "leaves",
-  "start": 13.24,
-  "end": 13.44
- },
- {
-  "text": "before",
-  "start": 13.6,
-  "end": 13.76
- },
- {
-  "text": "the",
-  "start": 13.8,
-  "end": 13.84
- },
- {
-  "text": "end,",
-  "start": 13.92,
-  "end": 14.12
- },
- {
-  "text": "kid,\"",
-  "start": 14.16,
-  "end": 14.64
- },
- {
-  "text": "he",
-  "start": 14.72,
-  "end": 14.8
- },
- {
-  "text": "says,",
-  "start": 14.96,
-  "end": 15.28
- },
- {
-  "text": "for",
-  "start": 15.32,
-  "end": 15.36
- },
- {
-  "text": "the",
-  "start": 15.44,
-  "end": 15.6
- },
- {
-  "text": "9,000th",
-  "start": 15.76,
-  "end": 16.4
- },
- {
-  "text": "*time*.",
-  "start": 16.56,
-  "end": 17.04
- },
- {
-  "text": "And",
-  "start": 17.12,
-  "end": 17.36
- },
- {
-  "text": "nobody",
-  "start": 17.4,
-  "end": 17.84
- },
- {
-  "text": "beats",
-  "start": 17.88,
-  "end": 18.08
- },
- {
-  "text": "the",
-  "start": 18.133,
-  "end": 18.187
- },
- {
-  "text": "narrator.",
-  "start": 18.24,
-  "end": 19.013
- },
- {
-  "text": "That's",
-  "start": 19.067,
-  "end": 19.2
- },
- {
-  "text": "*me*.",
-  "start": 19.28,
-  "end": 19.68
- },
- {
-  "text": "Whatever",
-  "start": 19.76,
-  "end": 20
- },
- {
-  "text": "I",
-  "start": 20.24,
-  "end": 20.293
- },
- {
-  "text": "say",
-  "start": 20.347,
-  "end": 20.4
- },
- {
-  "text": "after",
-  "start": 20.48,
-  "end": 20.72
- },
- {
-  "text": "\"In",
-  "start": 20.8,
-  "end": 20.96
- },
- {
-  "text": "this",
-  "start": 21.04,
-  "end": 21.2
- },
- {
-  "text": "world\"",
-  "start": 21.28,
-  "end": 21.68
- },
- {
-  "text": "comes",
-  "start": 21.84,
-  "end": 22
- },
- {
-  "text": "*true*.",
-  "start": 22.12,
-  "end": 22.64
- },
- {
-  "text": "In",
-  "start": 22.72,
-  "end": 22.8
- },
- {
-  "text": "this",
-  "start": 22.88,
-  "end": 22.96
- },
- {
-  "text": "world,",
-  "start": 23.04,
-  "end": 23.44
- },
- {
-  "text": "every",
-  "start": 23.52,
-  "end": 23.76
- },
- {
-  "text": "door",
-  "start": 23.84,
-  "end": 24
- },
- {
-  "text": "is",
-  "start": 24.08,
-  "end": 24.16
- },
- {
-  "text": "painted",
-  "start": 24.24,
-  "end": 24.4
- },
- {
-  "text": "*on*.",
-  "start": 24.48,
-  "end": 24.96
- },
- {
-  "text": "In",
-  "start": 25.04,
-  "end": 25.12
- },
- {
-  "text": "this",
-  "start": 25.2,
-  "end": 25.36
- },
- {
-  "text": "world,",
-  "start": 25.52,
-  "end": 25.84
- },
- {
-  "text": "your",
-  "start": 25.96,
-  "end": 26.08
- },
- {
-  "text": "shoes",
-  "start": 26.12,
-  "end": 26.32
- },
- {
-  "text": "are",
-  "start": 26.4,
-  "end": 26.48
- },
- {
-  "text": "full",
-  "start": 26.52,
-  "end": 26.56
- },
- {
-  "text": "of",
-  "start": 26.64,
-  "end": 26.72
- },
- {
-  "text": "*soup*.",
-  "start": 26.8,
-  "end": 27.36
- },
- {
-  "text": "So",
-  "start": 27.58,
-  "end": 27.6
- },
- {
-  "text": "every",
-  "start": 27.68,
-  "end": 27.92
- },
- {
-  "text": "loop,",
-  "start": 28.04,
-  "end": 28.2
+  "start": 10.24,
+  "end": 10.48
  },
  {
   "text": "at",
-  "start": 28.24,
-  "end": 28.32
+  "start": 10.52,
+  "end": 10.56
  },
  {
   "text": "the",
-  "start": 28.4,
-  "end": 28.48
+  "start": 10.64,
+  "end": 10.8
  },
  {
   "text": "same",
-  "start": 28.56,
-  "end": 28.8
+  "start": 10.96,
+  "end": 11.12
  },
  {
   "text": "second,",
-  "start": 28.88,
-  "end": 29.36
+  "start": 11.2,
+  "end": 11.68
  },
  {
-  "text": "you",
-  "start": 29.44,
-  "end": 29.52
+  "text": "every",
+  "start": 11.76,
+  "end": 12.08
  },
  {
-  "text": "jump",
-  "start": 29.6,
-  "end": 29.84
+  "text": "single",
+  "start": 12.16,
+  "end": 12.4
+ },
+ {
+  "text": "*loop*.",
+  "start": 12.48,
+  "end": 12.88
+ },
+ {
+  "text": "\"Nobody",
+  "start": 13.12,
+  "end": 13.44,
+  "speaker": "gary"
+ },
+ {
+  "text": "leaves",
+  "start": 13.52,
+  "end": 13.68,
+  "speaker": "gary"
+ },
+ {
+  "text": "before",
+  "start": 13.76,
+  "end": 14,
+  "speaker": "gary"
+ },
+ {
+  "text": "the",
+  "start": 14.08,
+  "end": 14.16,
+  "speaker": "gary"
+ },
+ {
+  "text": "end,",
+  "start": 14.24,
+  "end": 14.44,
+  "speaker": "gary"
+ },
+ {
+  "text": "*kid*,\"",
+  "start": 14.48,
+  "end": 14.96,
+  "speaker": "gary"
+ },
+ {
+  "text": "he",
+  "start": 15.04,
+  "end": 15.2
+ },
+ {
+  "text": "says,",
+  "start": 15.36,
+  "end": 15.56
+ },
+ {
+  "text": "for",
+  "start": 15.6,
+  "end": 15.76
+ },
+ {
+  "text": "the",
+  "start": 15.84,
+  "end": 15.92
+ },
+ {
+  "text": "9,000th",
+  "start": 16,
+  "end": 16.8
+ },
+ {
+  "text": "*time*.",
+  "start": 16.88,
+  "end": 17.28
+ },
+ {
+  "text": "And",
+  "start": 17.52,
+  "end": 17.76,
+  "speaker": "narrator"
+ },
+ {
+  "text": "nobody",
+  "start": 17.8,
+  "end": 18.24,
+  "speaker": "narrator"
+ },
+ {
+  "text": "beats",
+  "start": 18.32,
+  "end": 18.48,
+  "speaker": "narrator"
+ },
+ {
+  "text": "the",
+  "start": 18.56,
+  "end": 18.64,
+  "speaker": "narrator"
+ },
+ {
+  "text": "narrator.",
+  "start": 18.68,
+  "end": 19.493,
+  "speaker": "narrator"
+ },
+ {
+  "text": "That's",
+  "start": 19.42,
+  "end": 19.6,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*me*.",
+  "start": 19.62,
+  "end": 19.86,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 20.32,
+  "end": 20.4,
+  "speaker": "narrator"
+ },
+ {
+  "text": "read",
+  "start": 20.52,
+  "end": 20.64,
+  "speaker": "narrator"
+ },
+ {
+  "text": "every",
+  "start": 20.72,
+  "end": 20.96,
+  "speaker": "narrator"
+ },
+ {
+  "text": "caption",
+  "start": 21.04,
+  "end": 21.36,
+  "speaker": "narrator"
+ },
+ {
+  "text": "out",
+  "start": 21.44,
+  "end": 21.52,
+  "speaker": "narrator"
+ },
+ {
+  "text": "loud,",
+  "start": 21.72,
+  "end": 21.96,
+  "speaker": "narrator"
  },
  {
   "text": "and",
-  "start": 29.92,
-  "end": 30
+  "start": 22,
+  "end": 22.08,
+  "speaker": "narrator"
  },
  {
-  "text": "*grab*",
-  "start": 30.16,
-  "end": 30.32
+  "text": "whatever",
+  "start": 22.2,
+  "end": 22.32,
+  "speaker": "narrator"
  },
  {
-  "text": "something.",
-  "start": 30.52,
-  "end": 30.88
+  "text": "comes",
+  "start": 22.4,
+  "end": 22.56,
+  "speaker": "narrator"
  },
  {
-  "text": "You",
-  "start": 31.024,
+  "text": "after",
+  "start": 22.64,
+  "end": 22.88,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 22.96,
+  "end": 23.12,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 23.24,
+  "end": 23.36,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world\"",
+  "start": 23.52,
+  "end": 23.96,
+  "speaker": "narrator"
+ },
+ {
+  "text": "comes",
+  "start": 24,
+  "end": 24.24,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*true*.",
+  "start": 24.32,
+  "end": 24.973,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 25.107,
+  "end": 25.12,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 25.24,
+  "end": 25.36,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world,",
+  "start": 25.6,
+  "end": 25.88,
+  "speaker": "narrator"
+ },
+ {
+  "text": "every",
+  "start": 25.92,
+  "end": 26.16,
+  "speaker": "narrator"
+ },
+ {
+  "text": "door",
+  "start": 26.24,
+  "end": 26.48,
+  "speaker": "narrator"
+ },
+ {
+  "text": "is",
+  "start": 26.56,
+  "end": 26.72,
+  "speaker": "narrator"
+ },
+ {
+  "text": "painted",
+  "start": 26.76,
+  "end": 27.04,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*on*.\"",
+  "start": 27.12,
+  "end": 27.611,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 27.68,
+  "end": 27.84,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 27.92,
+  "end": 28,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world,",
+  "start": 28.08,
+  "end": 28.52,
+  "speaker": "narrator"
+ },
+ {
+  "text": "your",
+  "start": 28.56,
+  "end": 28.72,
+  "speaker": "narrator"
+ },
+ {
+  "text": "shoes",
+  "start": 28.76,
+  "end": 28.96,
+  "speaker": "narrator"
+ },
+ {
+  "text": "are",
+  "start": 29.04,
+  "end": 29.12,
+  "speaker": "narrator"
+ },
+ {
+  "text": "full",
+  "start": 29.16,
+  "end": 29.2,
+  "speaker": "narrator"
+ },
+ {
+  "text": "of",
+  "start": 29.28,
+  "end": 29.36,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*soup*.\"",
+  "start": 29.44,
+  "end": 30.08,
+  "speaker": "narrator"
+ },
+ {
+  "text": "So",
+  "start": 30.224,
+  "end": 30.24
+ },
+ {
+  "text": "for",
+  "start": 30.32,
+  "end": 30.4
+ },
+ {
+  "text": "9,000",
+  "start": 30.48,
   "end": 31.04
  },
  {
-  "text": "hide",
+  "text": "loops,",
   "start": 31.12,
-  "end": 31.2
+  "end": 31.48
  },
  {
-  "text": "it",
-  "start": 31.28,
-  "end": 31.36
- },
- {
-  "text": "in",
-  "start": 31.4,
-  "end": 31.44
- },
- {
-  "text": "a",
+  "text": "you've",
   "start": 31.52,
   "end": 31.6
  },
  {
-  "text": "jar",
-  "start": 31.72,
+  "text": "been",
+  "start": 31.68,
   "end": 31.84
  },
  {
-  "text": "under",
+  "text": "jumping",
   "start": 31.92,
-  "end": 32.08
- },
- {
-  "text": "your",
-  "start": 32.16,
   "end": 32.24
  },
  {
-  "text": "bed,",
-  "start": 32.36,
-  "end": 32.52
+  "text": "up",
+  "start": 32.32,
+  "end": 32.4
  },
  {
   "text": "and",
-  "start": 32.56,
+  "start": 32.52,
   "end": 32.64
  },
  {
-  "text": "you",
-  "start": 32.76,
-  "end": 32.88
+  "text": "stealing",
+  "start": 32.72,
+  "end": 33.04
  },
  {
-  "text": "never",
-  "start": 32.96,
-  "end": 33.2
- },
- {
-  "text": "let",
-  "start": 33.28,
+  "text": "words",
+  "start": 33.12,
   "end": 33.36
  },
  {
-  "text": "Gary",
+  "text": "out",
+  "start": 33.4,
+  "end": 33.44
+ },
+ {
+  "text": "of",
   "start": 33.48,
+  "end": 33.52
+ },
+ {
+  "text": "the",
+  "start": 33.56,
   "end": 33.6
  },
  {
-  "text": "*near*",
+  "text": "*captions*.",
   "start": 33.68,
-  "end": 33.84
+  "end": 34.408
  },
  {
-  "text": "it.",
-  "start": 33.92,
-  "end": 34.24
+  "text": "You",
+  "start": 34.48,
+  "end": 34.56
  },
  {
-  "text": "And",
-  "start": 34.373,
-  "end": 34.4
+  "text": "keep",
+  "start": 34.64,
+  "end": 34.72
  },
  {
-  "text": "you've",
-  "start": 34.44,
-  "end": 34.64
+  "text": "them",
+  "start": 34.76,
+  "end": 34.8
  },
  {
-  "text": "timed",
-  "start": 34.72,
-  "end": 34.88
+  "text": "in",
+  "start": 34.88,
+  "end": 34.92
  },
  {
-  "text": "his",
+  "text": "a",
   "start": 34.96,
   "end": 35.04
  },
  {
-  "text": "ladder,",
+  "text": "jar.",
   "start": 35.12,
-  "end": 35.52
+  "end": 35.72
  },
  {
-  "text": "to",
-  "start": 35.6,
-  "end": 35.68
- },
- {
-  "text": "the",
+  "text": "In.",
   "start": 35.76,
-  "end": 35.84
+  "end": 36.2
  },
  {
-  "text": "frame,",
-  "start": 35.92,
-  "end": 36.48
+  "text": "This.",
+  "start": 36.24,
+  "end": 36.6
  },
  {
-  "text": "9,000",
-  "start": 36.6,
-  "end": 37.28
+  "text": "World.",
+  "start": 36.64,
+  "end": 37.24
  },
  {
-  "text": "*times*.",
-  "start": 37.36,
-  "end": 38.08
- },
- {
-  "text": "A",
-  "start": 38.16,
-  "end": 38.24
- },
- {
-  "text": "word",
-  "start": 38.32,
-  "end": 38.48
- },
- {
-  "text": "a",
-  "start": 38.52,
-  "end": 38.56
- },
- {
-  "text": "loop,",
-  "start": 38.64,
-  "end": 39.12
- },
- {
-  "text": "9,000",
-  "start": 39.24,
-  "end": 39.76
- },
- {
-  "text": "loops,",
-  "start": 39.92,
-  "end": 40.32
- },
- {
-  "text": "and",
-  "start": 40.4,
-  "end": 40.48
- },
- {
-  "text": "today",
-  "start": 40.68,
-  "end": 40.88
- },
- {
-  "text": "you",
-  "start": 40.96,
-  "end": 41.04
- },
- {
-  "text": "need",
-  "start": 41.12,
-  "end": 41.28
- },
- {
-  "text": "just",
-  "start": 41.36,
-  "end": 41.44
- },
- {
-  "text": "*one*",
-  "start": 41.68,
-  "end": 41.84
- },
- {
-  "text": "more.",
-  "start": 41.92,
-  "end": 42.48
- },
- {
-  "text": "Then,",
-  "start": 42.74,
-  "end": 43.04
- },
- {
-  "text": "this",
-  "start": 43.12,
-  "end": 43.28
- },
- {
-  "text": "loop,",
-  "start": 43.36,
-  "end": 43.84
- },
- {
-  "text": "I",
-  "start": 43.92,
-  "end": 44
- },
- {
-  "text": "*notice*.",
-  "start": 44.08,
-  "end": 44.8
- },
- {
-  "text": "In",
-  "start": 44.88,
-  "end": 45.04
- },
- {
-  "text": "this",
-  "start": 45.16,
-  "end": 45.28
- },
- {
-  "text": "world,",
-  "start": 45.36,
-  "end": 46
- },
- {
-  "text": "you",
-  "start": 46.08,
-  "end": 46.24
- },
- {
-  "text": "can't",
-  "start": 46.32,
-  "end": 46.56
- },
- {
-  "text": "*move*.",
-  "start": 46.64,
-  "end": 47.44
- },
- {
-  "text": "The",
-  "start": 47.512,
-  "end": 47.52
- },
- {
-  "text": "red",
-  "start": 47.6,
-  "end": 47.76
- },
- {
-  "text": "bar",
-  "start": 47.84,
-  "end": 48
- },
- {
-  "text": "crawls.",
-  "start": 48.08,
-  "end": 48.96
- },
- {
-  "text": "90%.",
-  "start": 49.04,
-  "end": 50
- },
- {
-  "text": "95%.",
-  "start": 50.08,
-  "end": 51.04
- },
- {
-  "text": "*99*.",
-  "start": 51.08,
-  "end": 52
- },
- {
-  "text": "But",
-  "start": 52.144,
-  "end": 52.16
- },
- {
-  "text": "Gary",
-  "start": 52.24,
-  "end": 52.48
- },
- {
-  "text": "is",
-  "start": 52.56,
-  "end": 52.72
- },
- {
-  "text": "right",
-  "start": 52.8,
-  "end": 52.96
- },
- {
-  "text": "on",
-  "start": 53.04,
-  "end": 53.12
- },
- {
-  "text": "time,",
-  "start": 53.2,
-  "end": 53.52
- },
- {
-  "text": "and",
-  "start": 53.56,
-  "end": 53.6
- },
- {
-  "text": "his",
-  "start": 53.68,
-  "end": 53.76
- },
- {
-  "text": "ladder",
-  "start": 53.84,
-  "end": 54.08
- },
- {
-  "text": "clips",
-  "start": 54.16,
-  "end": 54.4
- },
- {
-  "text": "your",
-  "start": 54.48,
-  "end": 54.56
- },
- {
-  "text": "*jar*.",
-  "start": 54.64,
-  "end": 55.2
- },
- {
-  "text": "They",
-  "start": 55.337,
-  "end": 55.36
- },
- {
-  "text": "land",
-  "start": 55.44,
-  "end": 55.52
- },
- {
-  "text": "in",
-  "start": 55.56,
-  "end": 55.6
- },
- {
-  "text": "my",
-  "start": 55.68,
-  "end": 55.76
- },
- {
-  "text": "captions,",
-  "start": 55.88,
-  "end": 56.28
- },
- {
-  "text": "and",
-  "start": 56.32,
-  "end": 56.4
- },
- {
-  "text": "I",
-  "start": 56.44,
-  "end": 56.48
- },
- {
-  "text": "read",
-  "start": 56.56,
-  "end": 56.72
- },
- {
-  "text": "captions",
-  "start": 56.8,
-  "end": 57.12
- },
- {
-  "text": "out",
-  "start": 57.2,
-  "end": 57.28
- },
- {
-  "text": "loud.",
-  "start": 57.36,
-  "end": 57.84
- },
- {
-  "text": "I",
-  "start": 57.88,
-  "end": 57.92
- },
- {
-  "text": "can't",
-  "start": 58,
-  "end": 58.16
- },
- {
-  "text": "*help*",
-  "start": 58.24,
-  "end": 58.4
- },
- {
-  "text": "it.",
-  "start": 58.48,
-  "end": 58.64
- },
- {
-  "text": "\"In",
-  "start": 59.104,
-  "end": 59.12
- },
- {
-  "text": "this",
-  "start": 59.2,
-  "end": 59.36
- },
- {
-  "text": "world...",
-  "start": 59.44,
-  "end": 60.24
- },
- {
-  "text": "you're...",
-  "start": 60.28,
-  "end": 60.88
- },
- {
-  "text": "*free*.\"",
-  "start": 61.04,
-  "end": 61.6
- },
- {
-  "text": "9,000",
-  "start": 61.68,
-  "end": 62.32
- },
- {
-  "text": "loops,",
-  "start": 62.48,
-  "end": 62.8
- },
- {
-  "text": "because",
-  "start": 62.88,
-  "end": 63.04
- },
- {
-  "text": "I",
-  "start": 63.08,
-  "end": 63.12
- },
- {
-  "text": "almost",
-  "start": 63.2,
-  "end": 63.44
- },
- {
-  "text": "never",
-  "start": 63.6,
-  "end": 63.84
- },
- {
-  "text": "say",
-  "start": 63.92,
-  "end": 64.08
- },
- {
-  "text": "*free*.",
-  "start": 64.24,
-  "end": 64.8
+  "text": "*You're*.",
+  "start": 37.28,
+  "end": 37.847
  },
  {
   "text": "You",
-  "start": 64.88,
-  "end": 64.96
+  "start": 37.914,
+  "end": 37.921
  },
  {
-  "text": "dive",
-  "start": 65,
-  "end": 65.2
+  "text": "need",
+  "start": 38.001,
+  "end": 38.161
  },
  {
-  "text": "straight",
-  "start": 65.28,
-  "end": 65.52
+  "text": "just",
+  "start": 38.321,
+  "end": 38.481
  },
  {
-  "text": "through",
-  "start": 65.6,
-  "end": 65.68
+  "text": "one",
+  "start": 38.561,
+  "end": 38.721
+ },
+ {
+  "text": "more",
+  "start": 38.841,
+  "end": 38.961
+ },
+ {
+  "text": "*word*.",
+  "start": 39.041,
+  "end": 39.621
+ },
+ {
+  "text": "And",
+  "start": 39.741,
+  "end": 39.761,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 40.001,
+  "end": 40.041,
+  "speaker": "narrator"
+ },
+ {
+  "text": "never,",
+  "start": 40.081,
+  "end": 40.641,
+  "speaker": "narrator"
+ },
+ {
+  "text": "ever",
+  "start": 40.721,
+  "end": 41.041,
+  "speaker": "narrator"
+ },
+ {
+  "text": "say",
+  "start": 41.161,
+  "end": 41.281,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*free*.",
+  "start": 41.361,
+  "end": 41.932,
+  "speaker": "narrator"
+ },
+ {
+  "text": "So",
+  "start": 42.001,
+  "end": 42.081
+ },
+ {
+  "text": "this",
+  "start": 42.161,
+  "end": 42.321
+ },
+ {
+  "text": "loop,",
+  "start": 42.401,
+  "end": 42.721
+ },
+ {
+  "text": "you",
+  "start": 42.801,
+  "end": 42.881
+ },
+ {
+  "text": "look",
+  "start": 42.961,
+  "end": 43.041
+ },
+ {
+  "text": "up",
+  "start": 43.081,
+  "end": 43.121
+ },
+ {
+  "text": "at",
+  "start": 43.161,
+  "end": 43.201
  },
  {
   "text": "the",
-  "start": 65.72,
-  "end": 65.76
+  "start": 43.281,
+  "end": 43.361
  },
  {
-  "text": "crack",
-  "start": 65.84,
-  "end": 66.08
+  "text": "sign",
+  "start": 43.441,
+  "end": 43.681
  },
  {
   "text": "and",
-  "start": 66.16,
-  "end": 66.32
+  "start": 43.761,
+  "end": 43.841
+ },
+ {
+  "text": "*yell*,",
+  "start": 43.881,
+  "end": 44.241
+ },
+ {
+  "text": "\"I",
+  "start": 44.321,
+  "end": 44.561,
+  "speaker": "you"
+ },
+ {
+  "text": "never",
+  "start": 44.641,
+  "end": 44.881,
+  "speaker": "you"
+ },
+ {
+  "text": "want",
+  "start": 44.961,
+  "end": 45.041,
+  "speaker": "you"
+ },
+ {
+  "text": "to",
+  "start": 45.081,
+  "end": 45.121,
+  "speaker": "you"
+ },
+ {
+  "text": "*leave*!\"",
+  "start": 45.201,
+  "end": 45.774,
+  "speaker": "you"
+ },
+ {
+  "text": "And",
+  "start": 45.841,
+  "end": 45.921,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 46.161,
+  "end": 46.214,
+  "speaker": "narrator"
+ },
+ {
+  "text": "can't",
+  "start": 46.268,
+  "end": 46.401,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*resist*.",
+  "start": 46.481,
+  "end": 47.281,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 47.361,
+  "end": 47.441,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 47.561,
+  "end": 47.681,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world,",
+  "start": 47.761,
+  "end": 48.201,
+  "speaker": "narrator"
+ },
+ {
+  "text": "you'll",
+  "start": 48.241,
+  "end": 48.481,
+  "speaker": "narrator"
+ },
+ {
+  "text": "never",
+  "start": 48.561,
+  "end": 48.801,
+  "speaker": "narrator"
+ },
+ {
+  "text": "be...\"",
+  "start": 48.881,
+  "end": 49.321,
+  "speaker": "narrator"
+ },
+ {
+  "text": "You",
+  "start": 49.503,
+  "end": 49.521
+ },
+ {
+  "text": "snatch",
+  "start": 49.601,
+  "end": 49.921
+ },
+ {
+  "text": "*free*",
+  "start": 50.001,
+  "end": 50.241
  },
  {
   "text": "out",
-  "start": 66.4,
-  "end": 66.48
+  "start": 50.281,
+  "end": 50.321
  },
  {
   "text": "of",
-  "start": 66.52,
-  "end": 66.56
+  "start": 50.361,
+  "end": 50.401
  },
  {
   "text": "the",
-  "start": 66.6,
-  "end": 66.64
+  "start": 50.441,
+  "end": 50.481
+ },
+ {
+  "text": "caption,",
+  "start": 50.561,
+  "end": 51.121
+ },
+ {
+  "text": "mid-sentence.",
+  "start": 51.201,
+  "end": 51.921
+ },
+ {
+  "text": "Then",
+  "start": 52.161,
+  "end": 52.241,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 52.481,
+  "end": 52.721,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*notice*.",
+  "start": 52.961,
+  "end": 53.221,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 53.421,
+  "end": 53.441,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 53.561,
+  "end": 53.681,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world,",
+  "start": 53.761,
+  "end": 54.281,
+  "speaker": "narrator"
+ },
+ {
+  "text": "you",
+  "start": 54.321,
+  "end": 54.481,
+  "speaker": "narrator"
+ },
+ {
+  "text": "can't",
+  "start": 54.561,
+  "end": 54.881,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*move*.\"",
+  "start": 55.081,
+  "end": 55.601,
+  "speaker": "narrator"
+ },
+ {
+  "text": "The",
+  "start": 55.743,
+  "end": 55.761
+ },
+ {
+  "text": "red",
+  "start": 55.881,
+  "end": 56.001
+ },
+ {
+  "text": "bar",
+  "start": 56.121,
+  "end": 56.241
+ },
+ {
+  "text": "crawls.",
+  "start": 56.321,
+  "end": 57.081
+ },
+ {
+  "text": "90%.",
+  "start": 57.121,
+  "end": 58.121
+ },
+ {
+  "text": "95%.",
+  "start": 58.161,
+  "end": 59.148
+ },
+ {
+  "text": "*99*.",
+  "start": 59.174,
+  "end": 60.088
+ },
+ {
+  "text": "And",
+  "start": 60.155,
+  "end": 60.162
+ },
+ {
+  "text": "at",
+  "start": 60.242,
+  "end": 60.402
+ },
+ {
+  "text": "99,",
+  "start": 60.442,
+  "end": 61.242
+ },
+ {
+  "text": "Gary",
+  "start": 61.282,
+  "end": 61.602
+ },
+ {
+  "text": "walks",
+  "start": 61.722,
+  "end": 61.922
+ },
+ {
+  "text": "by.",
+  "start": 62.162,
+  "end": 62.442
+ },
+ {
+  "text": "Same",
+  "start": 62.482,
+  "end": 62.722
+ },
+ {
+  "text": "second",
+  "start": 62.802,
+  "end": 63.042
+ },
+ {
+  "text": "as",
+  "start": 63.122,
+  "end": 63.202
+ },
+ {
+  "text": "*always*.",
+  "start": 63.282,
+  "end": 64.032
+ },
+ {
+  "text": "His",
+  "start": 64.212,
+  "end": 64.242
+ },
+ {
+  "text": "ladder",
+  "start": 64.282,
+  "end": 64.642
+ },
+ {
+  "text": "smashes",
+  "start": 64.762,
+  "end": 65.122
+ },
+ {
+  "text": "your",
+  "start": 65.202,
+  "end": 65.362
+ },
+ {
+  "text": "*jar*.",
+  "start": 65.642,
+  "end": 65.933
+ },
+ {
+  "text": "Your",
+  "start": 66.002,
+  "end": 66.162,
+  "speaker": "narrator"
+ },
+ {
+  "text": "words",
+  "start": 66.242,
+  "end": 66.482,
+  "speaker": "narrator"
+ },
+ {
+  "text": "land",
+  "start": 66.562,
+  "end": 66.722,
+  "speaker": "narrator"
+ },
+ {
+  "text": "in",
+  "start": 66.762,
+  "end": 66.802,
+  "speaker": "narrator"
+ },
+ {
+  "text": "my",
+  "start": 66.882,
+  "end": 66.962,
+  "speaker": "narrator"
+ },
+ {
+  "text": "captions,",
+  "start": 67.042,
+  "end": 67.549,
+  "speaker": "narrator"
+ },
+ {
+  "text": "and",
+  "start": 67.575,
+  "end": 67.602,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 67.762,
+  "end": 67.815,
+  "speaker": "narrator"
+ },
+ {
+  "text": "read",
+  "start": 67.869,
+  "end": 67.922,
+  "speaker": "narrator"
+ },
+ {
+  "text": "captions",
+  "start": 68.002,
+  "end": 68.322,
+  "speaker": "narrator"
+ },
+ {
+  "text": "out",
+  "start": 68.402,
+  "end": 68.562,
+  "speaker": "narrator"
+ },
+ {
+  "text": "loud.",
+  "start": 68.802,
+  "end": 69.122,
+  "speaker": "narrator"
+ },
+ {
+  "text": "I",
+  "start": 69.202,
+  "end": 69.255,
+  "speaker": "narrator"
+ },
+ {
+  "text": "can't",
+  "start": 69.309,
+  "end": 69.442,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*help*",
+  "start": 69.562,
+  "end": 69.682,
+  "speaker": "narrator"
+ },
+ {
+  "text": "it!",
+  "start": 69.762,
+  "end": 70.169,
+  "speaker": "narrator"
+ },
+ {
+  "text": "\"In",
+  "start": 70.242,
+  "end": 70.402,
+  "speaker": "narrator"
+ },
+ {
+  "text": "this",
+  "start": 70.522,
+  "end": 70.642,
+  "speaker": "narrator"
+ },
+ {
+  "text": "world...",
+  "start": 70.722,
+  "end": 71.322,
+  "speaker": "narrator"
+ },
+ {
+  "text": "you're...",
+  "start": 71.362,
+  "end": 72.269,
+  "speaker": "narrator"
+ },
+ {
+  "text": "*free*.\"",
+  "start": 72.535,
+  "end": 72.832,
+  "speaker": "narrator"
+ },
+ {
+  "text": "You",
+  "start": 73.012,
+  "end": 73.042
+ },
+ {
+  "text": "dive",
+  "start": 73.082,
+  "end": 73.282
+ },
+ {
+  "text": "through",
+  "start": 73.362,
+  "end": 73.442
+ },
+ {
+  "text": "the",
+  "start": 73.482,
+  "end": 73.522
+ },
+ {
+  "text": "crack,",
+  "start": 73.602,
+  "end": 74.082
+ },
+ {
+  "text": "straight",
+  "start": 74.162,
+  "end": 74.402
+ },
+ {
+  "text": "out",
+  "start": 74.442,
+  "end": 74.482
+ },
+ {
+  "text": "of",
+  "start": 74.562,
+  "end": 74.602
+ },
+ {
+  "text": "the",
+  "start": 74.642,
+  "end": 74.722
  },
  {
   "text": "*video*.",
-  "start": 66.72,
-  "end": 67.36
+  "start": 75.042,
+  "end": 75.402
  },
  {
   "text": "Into",
-  "start": 67.566,
-  "end": 67.6
+  "start": 75.575,
+  "end": 75.602
  },
  {
   "text": "the",
-  "start": 67.64,
-  "end": 67.68
+  "start": 75.682,
+  "end": 75.762
  },
  {
   "text": "next",
-  "start": 67.76,
-  "end": 67.92
+  "start": 75.842,
+  "end": 76.002
  },
  {
   "text": "one.",
-  "start": 68,
-  "end": 68.48
+  "start": 76.082,
+  "end": 76.602
  },
  {
   "text": "Loop",
-  "start": 68.6,
-  "end": 68.72
+  "start": 76.642,
+  "end": 76.882
  },
  {
   "text": "*one*.",
-  "start": 68.8,
-  "end": 69.28
+  "start": 76.962,
+  "end": 77.442
  }
 ]

@@ -7,9 +7,10 @@
 
 ## Description
 You've watched this video 9,000 times. So have you. The narrator controls everything, Gary has given up, and the
-only way out is one word the narrator almost never says.
+only way out is one word the narrator never says.
 
 Narration: AI voice
+Music: see assets/CREDITS.md (licence and credit line to confirm before publishing)
 
 #shorts #animation #inthisworld #cartoon #story
 
