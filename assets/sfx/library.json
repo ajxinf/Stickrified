@@ -1,84 +1,453 @@
 {
- "amb_store_day": {"prompt": "Ambience of a large empty supermarket interior in daytime: fluorescent light hum, distant fridge compressors, soft room tone. No voices, no music.", "dur": 20, "loop": true},
- "amb_store_night": {"prompt": "Ambience of an empty supermarket at night: low fridge hum, quiet room tone, a very faint distant creak. No voices, no music.", "dur": 20, "loop": true},
- "amb_street_day": {"prompt": "Ambience of an abandoned small-town main street in daytime: light wind, a few birds, a crowd of zombies moaning faintly far away. No music.", "dur": 20, "loop": true},
- "amb_street_dawn": {"prompt": "Ambience of an empty town street at dawn: soft cold wind, a distant crow, a crowd of zombies groaning faintly far away. No music.", "dur": 20, "loop": true},
- "stamp_thump": {"prompt": "Heavy rubber stamp slammed onto a wooden desk, one deep punchy thump.", "dur": 0.6},
- "duck_quack": {"prompt": "Electronic toy rubber duck being shaken: two squeaky electronic quacks with a rattle.", "dur": 1.0},
- "battery_pop": {"prompt": "AA battery popping out of a plastic toy's battery compartment: a sharp plastic click and pop, then the battery tumbling.", "dur": 0.8},
- "cartoon_boing": {"prompt": "Short cartoon boing, a springy comedic bounce.", "dur": 0.5},
- "whoosh_big": {"prompt": "Fast deep cinematic whoosh, a camera swooping upward.", "dur": 1.2},
- "horde_groan": {"prompt": "Crowd of many zombies groaning and moaning together outdoors, cartoonish but creepy.", "dur": 3.0, "max_s": 1.2},
- "megaphone_on": {"prompt": "A megaphone switched on: a short electric click and a feedback chirp.", "dur": 0.6},
- "knock_steel": {"prompt": "Two knuckle knocks on a steel roller shutter, hollow metallic.", "dur": 0.8},
- "slot_open": {"prompt": "A small metal peephole slot in a steel door sliding open, metallic scrape.", "dur": 0.5},
- "slot_slam": {"prompt": "A metal peephole slot slammed shut hard: a loud sharp clang with a short ring.", "dur": 0.7},
- "megaphone_blast": {"prompt": "A loud distorted megaphone siren whoop, short, echoing down a street.", "dur": 1.2},
- "horde_shuffle": {"prompt": "A crowd of zombies shuffling and stumbling quickly on asphalt, many dragging footsteps.", "dur": 1.6},
- "fists_steel": {"prompt": "Many fists pounding on a steel roller shutter: rattling metal bangs, chaotic, then fading.", "dur": 2.0},
- "tape_rip": {"prompt": "Duct tape ripped fast off the roll, one loud tear.", "dur": 0.8},
- "reveal_pop": {"prompt": "Comedic reveal: a bright cartoon pop with a small sparkle.", "dur": 0.6},
- "generator_run": {"prompt": "Diesel generator running outdoors: steady chugging engine.", "dur": 2.0},
- "marker_circle": {"prompt": "Marker pen squeaking quickly in a circle on paper.", "dur": 0.6},
- "battery_slide": {"prompt": "An AA battery slid very slowly into a plastic toy compartment: a gentle scrape.", "dur": 0.9},
- "plastic_click": {"prompt": "A small plastic battery cover clicking shut.", "dur": 0.5},
- "generator_dies": {"prompt": "Diesel generator sputtering, coughing twice and dying out to silence.", "dur": 2.0},
- "flood_off": {"prompt": "A big floodlight switching off: a heavy electrical clunk and a fading buzz.", "dur": 0.6},
- "shutter_up": {"prompt": "Steel roller shutter rattling up fast and slamming into its top stop.", "dur": 2.0},
- "shock_sting": {"prompt": "Comedic shock sting: a short orchestral stab, cartoon surprise.", "dur": 0.8},
- "kick_cart": {"prompt": "A sneaker kicking a metal shopping cart: a solid clang and the cart starting to roll.", "dur": 0.8},
- "cart_rattle": {"prompt": "A shopping cart loaded with toys rattling fast down a concrete ramp, wheels clattering, toys bouncing.", "dur": 3.0},
- "toys_scream": {"prompt": "Dozens of electronic talking toys all going off at once: squeaks, beeps, jingles, toy laughter, chaotic.", "dur": 3.0},
- "xray_beep": {"prompt": "Electronic scanner beep and a short digital glitch.", "dur": 0.8},
- "stampede": {"prompt": "Huge crowd stampede: hundreds of running footsteps thundering past, rumbling.", "dur": 3.0},
- "cart_crash": {"prompt": "A shopping cart crashing through a shop doorway: metal crash, glass and toys clattering everywhere.", "dur": 1.6},
- "megaphone_rattle": {"prompt": "A metal megaphone rattling in trembling hands, small nervous metallic shakes.", "dur": 1.0},
- "amb_street_evening": {"prompt": "Ambience of a quiet old town high street at sunset: light breeze, a few distant birds, a faint far-off town hum. No voices, no music.", "dur": 20, "loop": true},
- "amb_bedroom_night": {"prompt": "Quiet small bedroom at night: soft room tone, a clock ticking faintly, distant crickets through an open window. No voices, no music.", "dur": 20, "loop": true},
- "amb_suburb_morning": {"prompt": "Pleasant suburban street on a sunny morning: birdsong and lots of pigeons cooing nearby, light breeze. No voices, no music.", "dur": 20, "loop": true},
- "glass_knock": {"prompt": "A fist punching a very thick pane of glass: one dull heavy thud with a short glassy ring.", "dur": 0.6},
- "tape_rewind": {"prompt": "An old VHS tape rewinding fast: whirring mechanical rewind with a warbly pitch-up squeal.", "dur": 1.5, "max_s": 0.9},
- "chalk_snap": {"prompt": "A stick of chalk snapping in half against a brick wall: one tiny dry crack, then two little bits tapping on stone.", "dur": 0.6},
- "sign_rise": {"prompt": "A huge heavy metal sign rising up out of the ground: low mechanical rumble and grinding, ending with a clunk.", "dur": 1.6, "max_s": 1.2},
- "wall_splat": {"prompt": "A cartoon character running face-first into a flat brick wall: a heavy comedic thud with a little squish.", "dur": 0.6},
- "soup_squelch": {"prompt": "A sneaker full of thick soup lifted off the ground: a wet slurpy squelch and a drip.", "dur": 0.8},
- "word_pluck": {"prompt": "A quick bright cartoon pluck-pop, like snatching something small out of the air.", "dur": 0.5, "max_s": 0.4},
- "hand_slap": {"prompt": "A quick light slap of one hand on another hand.", "dur": 0.5, "max_s": 0.4},
- "freeze_zap": {"prompt": "A magic freeze spell: a quick icy crystalline crackle that stops dead.", "dur": 0.8},
- "ladder_swing": {"prompt": "A long wooden ladder swung round fast and knocking a glass jar: a short wooden swish and a glassy clonk.", "dur": 0.7},
- "cork_pop": {"prompt": "A cork popping out of a glass jar: one bright pop with a little fizz.", "dur": 0.5},
- "tile_clicks": {"prompt": "Five small plastic tiles clicking into place one after another, evenly spaced, light and satisfying.", "dur": 1.4},
- "screen_shatter": {"prompt": "A huge pane of glass shattering: a big bright crash, then tinkling shards.", "dur": 1.6, "max_s": 1.2},
- "pigeon_sneeze": {"prompt": "A tiny cartoon pigeon sneeze: a high squeaky 'achoo' with a soft flutter of feathers.", "dur": 0.8},
- "lamps_on": {"prompt": "A row of old street lamps switching on at once: one electric clunk and a soft rising hum.", "dur": 1.0},
- "phone_slurp": {"prompt": "A cartoon slurp: a person sucked into a phone like a noodle, a wet stretchy zip ending in a pop.", "dur": 0.9},
- "swipe_whoosh": {"prompt": "A smartphone screen swipe turned into a big soft whoosh, airy, upward.", "dur": 0.7},
- "rubber_snap": {"prompt": "A giant rubber band stretched and snapping back: a twang and a fast boing.", "dur": 0.8},
- "cushion_land": {"prompt": "Someone flopping onto a sofa: a soft thump into cushions with a creak.", "dur": 0.6},
- "glass_tap": {"prompt": "A fingertip tapping a phone screen from very close: one hollow glassy tap.", "dur": 0.5},
- "head_bonk": {"prompt": "A cartoon head bonk on glass: a hollow dull knock with a tiny wobble.", "dur": 0.5},
- "retro_crash": {"prompt": "A chunky 16-bit video game car crash sound effect: a crunchy hit and a short descending bleep, no music.", "dur": 0.8},
- "siren_8bit": {"prompt": "A short 1990s video game police siren, bleepy and cartoonish, two notes alternating, no music.", "dur": 1.5, "max_s": 1.2},
- "error_buzz": {"prompt": "A harsh old computer error buzz with glitchy static, short.", "dur": 0.8},
- "door_open": {"prompt": "An office door swinging open with a creak and a soft thud against the wall.", "dur": 1.0},
- "paper_slap": {"prompt": "A thick folded newspaper slapped down flat on a wooden desk.", "dur": 0.5},
- "crowd_cheer": {"prompt": "A small group of five people cheering and laughing in an office, a short happy burst.", "dur": 1.5, "max_s": 1.3},
- "lords_uproar": {"prompt": "A chamber of old men grumbling and shouting in outrage, a short burst, no clear words.", "dur": 1.5, "max_s": 1.3},
- "counter_roll": {"prompt": "A mechanical number counter rolling fast with rapid clicks, ending in a bright ding.", "dur": 1.6},
- "eraser_rub": {"prompt": "A whiteboard eraser rubbing quickly back and forth on a whiteboard.", "dur": 0.8},
- "amb_office_night": {"prompt": "A quiet office at night: old computers humming and fans whirring, a faint ticking clock, light rain on a window, no voices.", "dur": 10, "loop": true},
- "amb_chamber_murmur": {"prompt": "A large old parliament chamber: a low murmur of many people talking, papers shuffling, no clear words.", "dur": 10, "loop": true},
- "amb_beach_night": {"prompt": "Calm beach at night: small waves lapping on sand, gentle surf wash, crickets in the dune grass, a very faint distant town murmur. No voices, no music.", "dur": 22, "loop": true},
- "dog_howl": {"prompt": "A single dog howling up at the moon at night, one long rising howl outdoors, then it cuts off.", "dur": 2.5, "max_s": 1.8},
- "phone_alerts": {"prompt": "Dozens of mobile phones blaring the same emergency alert tone at once, a harsh urgent electronic warble outdoors.", "dur": 1.5, "max_s": 1.2},
- "chair_snap": {"prompt": "An aluminium folding beach chair flicked open in one move: a quick metal clack-snap and fabric pulling tight.", "dur": 0.6},
- "stick_squelch": {"prompt": "A wooden stick pushed hard into wet sand at the edge of the sea: a soft gritty squelch.", "dur": 0.7},
- "neon_fizzle": {"prompt": "A small neon sign buzzing, flickering and fizzling out with a dying electrical crackle.", "dur": 1.0},
- "popcorn_pops": {"prompt": "Popcorn popping fast in a hot pan on a camping stove: quick bursts of pops.", "dur": 1.5, "max_s": 1.0},
- "sea_recede": {"prompt": "Shallow sea water slowly draining back off a sandy beach: a long hissing pull of retreating foam over sand and pebbles. No music.", "dur": 3.5},
- "heartbeat_thud": {"prompt": "One single deep tense heartbeat thump, cinematic, close and low.", "dur": 0.6},
- "tiny_wave": {"prompt": "A tiny weak wave flopping onto wet sand: a small, pathetic little splash.", "dur": 0.6},
- "moth_swarm": {"prompt": "A swarm of moths fluttering round a hot floodlight: thousands of soft papery wings buzzing.", "dur": 3.0},
- "star_shimmer": {"prompt": "A magical twinkling shimmer: soft glittering chimes rising, like a sky full of stars appearing. No melody.", "dur": 2.0},
- "crowd_beach": {"prompt": "A relaxed crowd on a beach at night: lots of people chatting and laughing softly, folding chairs clacking open.", "dur": 3.0, "max_s": 2.4}
+ "amb_store_day": {
+  "prompt": "Ambience of a large empty supermarket interior in daytime: fluorescent light hum, distant fridge compressors, soft room tone. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_store_night": {
+  "prompt": "Ambience of an empty supermarket at night: low fridge hum, quiet room tone, a very faint distant creak. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_street_day": {
+  "prompt": "Ambience of an abandoned small-town main street in daytime: light wind, a few birds, a crowd of zombies moaning faintly far away. No music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_street_dawn": {
+  "prompt": "Ambience of an empty town street at dawn: soft cold wind, a distant crow, a crowd of zombies groaning faintly far away. No music.",
+  "dur": 20,
+  "loop": true
+ },
+ "stamp_thump": {
+  "prompt": "Heavy rubber stamp slammed onto a wooden desk, one deep punchy thump.",
+  "dur": 0.6
+ },
+ "duck_quack": {
+  "prompt": "Electronic toy rubber duck being shaken: two squeaky electronic quacks with a rattle.",
+  "dur": 1.0
+ },
+ "battery_pop": {
+  "prompt": "AA battery popping out of a plastic toy's battery compartment: a sharp plastic click and pop, then the battery tumbling.",
+  "dur": 0.8
+ },
+ "cartoon_boing": {
+  "prompt": "Short cartoon boing, a springy comedic bounce.",
+  "dur": 0.5
+ },
+ "whoosh_big": {
+  "prompt": "Fast deep cinematic whoosh, a camera swooping upward.",
+  "dur": 1.2
+ },
+ "horde_groan": {
+  "prompt": "Crowd of many zombies groaning and moaning together outdoors, cartoonish but creepy.",
+  "dur": 3.0,
+  "max_s": 1.2
+ },
+ "megaphone_on": {
+  "prompt": "A megaphone switched on: a short electric click and a feedback chirp.",
+  "dur": 0.6
+ },
+ "knock_steel": {
+  "prompt": "Two knuckle knocks on a steel roller shutter, hollow metallic.",
+  "dur": 0.8
+ },
+ "slot_open": {
+  "prompt": "A small metal peephole slot in a steel door sliding open, metallic scrape.",
+  "dur": 0.5
+ },
+ "slot_slam": {
+  "prompt": "A metal peephole slot slammed shut hard: a loud sharp clang with a short ring.",
+  "dur": 0.7
+ },
+ "megaphone_blast": {
+  "prompt": "A loud distorted megaphone siren whoop, short, echoing down a street.",
+  "dur": 1.2
+ },
+ "horde_shuffle": {
+  "prompt": "A crowd of zombies shuffling and stumbling quickly on asphalt, many dragging footsteps.",
+  "dur": 1.6
+ },
+ "fists_steel": {
+  "prompt": "Many fists pounding on a steel roller shutter: rattling metal bangs, chaotic, then fading.",
+  "dur": 2.0
+ },
+ "tape_rip": {
+  "prompt": "Duct tape ripped fast off the roll, one loud tear.",
+  "dur": 0.8
+ },
+ "reveal_pop": {
+  "prompt": "Comedic reveal: a bright cartoon pop with a small sparkle.",
+  "dur": 0.6
+ },
+ "generator_run": {
+  "prompt": "Diesel generator running outdoors: steady chugging engine.",
+  "dur": 2.0
+ },
+ "marker_circle": {
+  "prompt": "Marker pen squeaking quickly in a circle on paper.",
+  "dur": 0.6
+ },
+ "battery_slide": {
+  "prompt": "An AA battery slid very slowly into a plastic toy compartment: a gentle scrape.",
+  "dur": 0.9
+ },
+ "plastic_click": {
+  "prompt": "A small plastic battery cover clicking shut.",
+  "dur": 0.5
+ },
+ "generator_dies": {
+  "prompt": "Diesel generator sputtering, coughing twice and dying out to silence.",
+  "dur": 2.0
+ },
+ "flood_off": {
+  "prompt": "A big floodlight switching off: a heavy electrical clunk and a fading buzz.",
+  "dur": 0.6
+ },
+ "shutter_up": {
+  "prompt": "Steel roller shutter rattling up fast and slamming into its top stop.",
+  "dur": 2.0
+ },
+ "shock_sting": {
+  "prompt": "Comedic shock sting: a short orchestral stab, cartoon surprise.",
+  "dur": 0.8
+ },
+ "kick_cart": {
+  "prompt": "A sneaker kicking a metal shopping cart: a solid clang and the cart starting to roll.",
+  "dur": 0.8
+ },
+ "cart_rattle": {
+  "prompt": "A shopping cart loaded with toys rattling fast down a concrete ramp, wheels clattering, toys bouncing.",
+  "dur": 3.0
+ },
+ "toys_scream": {
+  "prompt": "Dozens of electronic talking toys all going off at once: squeaks, beeps, jingles, toy laughter, chaotic.",
+  "dur": 3.0
+ },
+ "xray_beep": {
+  "prompt": "Electronic scanner beep and a short digital glitch.",
+  "dur": 0.8
+ },
+ "stampede": {
+  "prompt": "Huge crowd stampede: hundreds of running footsteps thundering past, rumbling.",
+  "dur": 3.0
+ },
+ "cart_crash": {
+  "prompt": "A shopping cart crashing through a shop doorway: metal crash, glass and toys clattering everywhere.",
+  "dur": 1.6
+ },
+ "megaphone_rattle": {
+  "prompt": "A metal megaphone rattling in trembling hands, small nervous metallic shakes.",
+  "dur": 1.0
+ },
+ "amb_street_evening": {
+  "prompt": "Ambience of a quiet old town high street at sunset: light breeze, a few distant birds, a faint far-off town hum. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_bedroom_night": {
+  "prompt": "Quiet small bedroom at night: soft room tone, a clock ticking faintly, distant crickets through an open window. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_suburb_morning": {
+  "prompt": "Pleasant suburban street on a sunny morning: birdsong and lots of pigeons cooing nearby, light breeze. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "glass_knock": {
+  "prompt": "A fist punching a very thick pane of glass: one dull heavy thud with a short glassy ring.",
+  "dur": 0.6
+ },
+ "tape_rewind": {
+  "prompt": "An old VHS tape rewinding fast: whirring mechanical rewind with a warbly pitch-up squeal.",
+  "dur": 1.5,
+  "max_s": 0.9
+ },
+ "chalk_snap": {
+  "prompt": "A stick of chalk snapping in half against a brick wall: one tiny dry crack, then two little bits tapping on stone.",
+  "dur": 0.6
+ },
+ "sign_rise": {
+  "prompt": "A huge heavy metal sign rising up out of the ground: low mechanical rumble and grinding, ending with a clunk.",
+  "dur": 1.6,
+  "max_s": 1.2
+ },
+ "wall_splat": {
+  "prompt": "A cartoon character running face-first into a flat brick wall: a heavy comedic thud with a little squish.",
+  "dur": 0.6
+ },
+ "soup_squelch": {
+  "prompt": "A sneaker full of thick soup lifted off the ground: a wet slurpy squelch and a drip.",
+  "dur": 0.8
+ },
+ "word_pluck": {
+  "prompt": "A quick bright cartoon pluck-pop, like snatching something small out of the air.",
+  "dur": 0.5,
+  "max_s": 0.4
+ },
+ "hand_slap": {
+  "prompt": "A quick light slap of one hand on another hand.",
+  "dur": 0.5,
+  "max_s": 0.4
+ },
+ "freeze_zap": {
+  "prompt": "A magic freeze spell: a quick icy crystalline crackle that stops dead.",
+  "dur": 0.8
+ },
+ "ladder_swing": {
+  "prompt": "A long wooden ladder swung round fast and knocking a glass jar: a short wooden swish and a glassy clonk.",
+  "dur": 0.7
+ },
+ "cork_pop": {
+  "prompt": "A cork popping out of a glass jar: one bright pop with a little fizz.",
+  "dur": 0.5
+ },
+ "tile_clicks": {
+  "prompt": "Five small plastic tiles clicking into place one after another, evenly spaced, light and satisfying.",
+  "dur": 1.4
+ },
+ "screen_shatter": {
+  "prompt": "A huge pane of glass shattering: a big bright crash, then tinkling shards.",
+  "dur": 1.6,
+  "max_s": 1.2
+ },
+ "pigeon_sneeze": {
+  "prompt": "A tiny cartoon pigeon sneeze: a high squeaky 'achoo' with a soft flutter of feathers.",
+  "dur": 0.8
+ },
+ "lamps_on": {
+  "prompt": "A row of old street lamps switching on at once: one electric clunk and a soft rising hum.",
+  "dur": 1.0
+ },
+ "phone_slurp": {
+  "prompt": "A cartoon slurp: a person sucked into a phone like a noodle, a wet stretchy zip ending in a pop.",
+  "dur": 0.9
+ },
+ "swipe_whoosh": {
+  "prompt": "A smartphone screen swipe turned into a big soft whoosh, airy, upward.",
+  "dur": 0.7
+ },
+ "rubber_snap": {
+  "prompt": "A giant rubber band stretched and snapping back: a twang and a fast boing.",
+  "dur": 0.8
+ },
+ "cushion_land": {
+  "prompt": "Someone flopping onto a sofa: a soft thump into cushions with a creak.",
+  "dur": 0.6
+ },
+ "glass_tap": {
+  "prompt": "A fingertip tapping a phone screen from very close: one hollow glassy tap.",
+  "dur": 0.5
+ },
+ "head_bonk": {
+  "prompt": "A cartoon head bonk on glass: a hollow dull knock with a tiny wobble.",
+  "dur": 0.5
+ },
+ "retro_crash": {
+  "prompt": "A chunky 16-bit video game car crash sound effect: a crunchy hit and a short descending bleep, no music.",
+  "dur": 0.8
+ },
+ "siren_8bit": {
+  "prompt": "A short 1990s video game police siren, bleepy and cartoonish, two notes alternating, no music.",
+  "dur": 1.5,
+  "max_s": 1.2
+ },
+ "error_buzz": {
+  "prompt": "A harsh old computer error buzz with glitchy static, short.",
+  "dur": 0.8
+ },
+ "door_open": {
+  "prompt": "An office door swinging open with a creak and a soft thud against the wall.",
+  "dur": 1.0
+ },
+ "paper_slap": {
+  "prompt": "A thick folded newspaper slapped down flat on a wooden desk.",
+  "dur": 0.5
+ },
+ "crowd_cheer": {
+  "prompt": "A small group of five people cheering and laughing in an office, a short happy burst.",
+  "dur": 1.5,
+  "max_s": 1.3
+ },
+ "lords_uproar": {
+  "prompt": "A chamber of old men grumbling and shouting in outrage, a short burst, no clear words.",
+  "dur": 1.5,
+  "max_s": 1.3
+ },
+ "counter_roll": {
+  "prompt": "A mechanical number counter rolling fast with rapid clicks, ending in a bright ding.",
+  "dur": 1.6
+ },
+ "eraser_rub": {
+  "prompt": "A whiteboard eraser rubbing quickly back and forth on a whiteboard.",
+  "dur": 0.8
+ },
+ "amb_office_night": {
+  "prompt": "A quiet office at night: old computers humming and fans whirring, a faint ticking clock, light rain on a window, no voices.",
+  "dur": 10,
+  "loop": true
+ },
+ "amb_chamber_murmur": {
+  "prompt": "A large old parliament chamber: a low murmur of many people talking, papers shuffling, no clear words.",
+  "dur": 10,
+  "loop": true
+ },
+ "amb_beach_night": {
+  "prompt": "Calm beach at night: small waves lapping on sand, gentle surf wash, crickets in the dune grass, a very faint distant town murmur. No voices, no music.",
+  "dur": 22,
+  "loop": true
+ },
+ "dog_howl": {
+  "prompt": "A single dog howling up at the moon at night, one long rising howl outdoors, then it cuts off.",
+  "dur": 2.5,
+  "max_s": 1.8
+ },
+ "phone_alerts": {
+  "prompt": "Dozens of mobile phones blaring the same emergency alert tone at once, a harsh urgent electronic warble outdoors.",
+  "dur": 1.5,
+  "max_s": 1.2
+ },
+ "chair_snap": {
+  "prompt": "An aluminium folding beach chair flicked open in one move: a quick metal clack-snap and fabric pulling tight.",
+  "dur": 0.6
+ },
+ "stick_squelch": {
+  "prompt": "A wooden stick pushed hard into wet sand at the edge of the sea: a soft gritty squelch.",
+  "dur": 0.7
+ },
+ "neon_fizzle": {
+  "prompt": "A small neon sign buzzing, flickering and fizzling out with a dying electrical crackle.",
+  "dur": 1.0
+ },
+ "popcorn_pops": {
+  "prompt": "Popcorn popping fast in a hot pan on a camping stove: quick bursts of pops.",
+  "dur": 1.5,
+  "max_s": 1.0
+ },
+ "sea_recede": {
+  "prompt": "Shallow sea water slowly draining back off a sandy beach: a long hissing pull of retreating foam over sand and pebbles. No music.",
+  "dur": 3.5
+ },
+ "heartbeat_thud": {
+  "prompt": "One single deep tense heartbeat thump, cinematic, close and low.",
+  "dur": 0.6
+ },
+ "tiny_wave": {
+  "prompt": "A tiny weak wave flopping onto wet sand: a small, pathetic little splash.",
+  "dur": 0.6
+ },
+ "moth_swarm": {
+  "prompt": "A swarm of moths fluttering round a hot floodlight: thousands of soft papery wings buzzing.",
+  "dur": 3.0
+ },
+ "star_shimmer": {
+  "prompt": "A magical twinkling shimmer: soft glittering chimes rising, like a sky full of stars appearing. No melody.",
+  "dur": 2.0
+ },
+ "crowd_beach": {
+  "prompt": "A relaxed crowd on a beach at night: lots of people chatting and laughing softly, folding chairs clacking open.",
+  "dur": 3.0,
+  "max_s": 2.4
+ },
+ "bud_pop": {
+  "prompt": "A tiny plant bud popping out of skin: one quick soft cartoon pip-pop with a springy little stem wobble. No music.",
+  "dur": 0.5
+ },
+ "bloom_burst": {
+  "prompt": "A flower bursting open into full bloom: a soft bright cartoon pop with a short sparkly chime. No music.",
+  "dur": 0.8
+ },
+ "wilt_droop": {
+  "prompt": "A flower wilting and rotting fast: a short descending sad cartoon slide whistle ending in a soggy droop. No music.",
+  "dur": 0.9
+ },
+ "stink_gag": {
+  "prompt": "A comedic cartoon gag reflex at a horrible smell: one short retching bleugh sound, no words. No music.",
+  "dur": 0.7
+ },
+ "stink_cloud": {
+  "prompt": "A thick cartoon stink cloud rolling in: a low gassy rumbling whoosh. No music.",
+  "dur": 1.5
+ },
+ "fly_buzz": {
+  "prompt": "A single housefly buzzing in circles close to the microphone, then drifting away. No music.",
+  "dur": 2.0,
+  "max_s": 1.4
+ },
+ "bee_buzz": {
+  "prompt": "A single honeybee buzzing past very close: a short bright buzz that rises and fades. No music.",
+  "dur": 1.0
+ },
+ "bees_swarm": {
+  "prompt": "A huge swarm of thousands of honeybees erupting out of a box all at once: a loud rising roar of buzzing. No music.",
+  "dur": 3.0
+ },
+ "box_buzz": {
+  "prompt": "A cardboard shoebox packed with angry buzzing bees, rattling and thumping in someone's hands. No music.",
+  "dur": 1.6
+ },
+ "sign_flip": {
+  "prompt": "A small cardboard OPEN/CLOSED sign flipped round on its string against a glass shop door: a light papery flap and a tap. No music.",
+  "dur": 0.5
+ },
+ "perfume_spritz": {
+  "prompt": "Two quick spritzes from a glass perfume bottle atomizer. No music.",
+  "dur": 0.6
+ },
+ "crowd_rally_cheer": {
+  "prompt": "A small-town crowd of forty people outdoors in a park cheering and clapping for a speaker, short burst. No music.",
+  "dur": 1.6,
+  "max_s": 1.4
+ },
+ "crowd_laugh": {
+  "prompt": "A crowd of forty people outdoors bursting into loud mocking laughter, short. No music.",
+  "dur": 2.0,
+  "max_s": 1.8
+ },
+ "crowd_gasp": {
+  "prompt": "A crowd of forty people outdoors gasping in shock all at once. No music.",
+  "dur": 1.2
+ },
+ "crowd_giggle": {
+  "prompt": "A crowd outdoors giggling and laughing in delight, warm and surprised. No music.",
+  "dur": 1.5,
+  "max_s": 1.3
+ },
+ "sticker_peel": {
+  "prompt": "Dozens of wet stickers peeling off and sliding down: sticky peeling, squelchy slithering, a soft wet flop at the end. No music.",
+  "dur": 2.0
+ },
+ "water_drip": {
+  "prompt": "A single water drop falling from a kitchen tap into a full bucket: one clear plip. No music.",
+  "dur": 0.5
+ },
+ "phone_send": {
+  "prompt": "A text message being sent on a smartphone: one short airy swoosh. No music.",
+  "dur": 0.5
+ },
+ "running_steps": {
+  "prompt": "A jogger running past on a concrete sidewalk: quick light sneaker footsteps passing by. No music.",
+  "dur": 2.0
+ },
+ "amb_kitchen_day": {
+  "prompt": "A quiet family kitchen on a weekday morning: a soft fridge hum, a wall clock ticking, a slow dripping tap, birds faint outside. No music.",
+  "dur": 12,
+  "loop": true
+ },
+ "amb_mall": {
+  "prompt": "Inside a small covered shopping arcade: muffled crowd chatter, footsteps on tiles, distant shop doors. No music.",
+  "dur": 12,
+  "loop": true
+ },
+ "amb_crowd_park": {
+  "prompt": "A small crowd waiting outdoors in a sunny town park before a speech: murmurs, plastic chairs creaking, birdsong. No music.",
+  "dur": 12,
+  "loop": true
+ },
+ "amb_bees_garden": {
+  "prompt": "Bees humming around wooden beehives in a sunny garden, gentle and constant, birds faint. No music.",
+  "dur": 12,
+  "loop": true
+ }
 }

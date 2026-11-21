@@ -22,6 +22,7 @@ import { TRAPPED_FRAMES, TrappedInThisWorld } from "./videos/trapped-in-this-wor
 import { GTA_FRAMES, GtaStartedAsRaceNChase } from "./videos/gta-started-as-race-n-chase/Video";
 import { LOOK_FRAMES, MOON_FRAMES, MoonDisappearedTonight, MoonLookTest } from "./videos/moon-disappeared-tonight/Video";
 import { PF_LOOK_FRAMES, PromiseLookTest } from "./videos/promise-flowers/LookTest";
+import { PROMISE_FRAMES, PromiseFlowers } from "./videos/promise-flowers/Video";
 import { ZOMBIE_FRAMES, ZombieSupermarket } from "./videos/zombie-supermarket-30-days/Video";
 
 export const RemotionRoot: React.FC = () => (
@@ -52,6 +53,7 @@ export const RemotionRoot: React.FC = () => (
       <Composition id="MoonDisappearedTonight" component={MoonDisappearedTonight} fps={30} durationInFrames={MOON_FRAMES} width={1080} height={1920} />
       <Composition id="MoonLookTest" component={MoonLookTest} fps={30} durationInFrames={LOOK_FRAMES} width={1080} height={1920} />
       <Composition id="TrappedInThisWorld" component={TrappedInThisWorld} fps={30} durationInFrames={TRAPPED_FRAMES} width={1080} height={1920} />
+      <Composition id="PromiseFlowers" component={PromiseFlowers} fps={30} durationInFrames={PROMISE_FRAMES} width={1080} height={1920} />
       <Composition id="PromiseLookTest" component={PromiseLookTest} fps={30} durationInFrames={PF_LOOK_FRAMES} width={1080} height={1920} />
       <Composition id="CharTest" component={CharTest} fps={30} durationInFrames={CHAR_TEST_FRAMES} width={1080} height={1920} />
       <Composition id="LookTestR27" component={LookTestR27} fps={30} durationInFrames={LOOK_TEST_R27_FRAMES} width={1080} height={1920} />
