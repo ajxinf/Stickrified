@@ -1,5 +1,7 @@
 # Stickrified look spec (read this before any look work)
 
+> **2026-11-21: superseded where it conflicts by the R27-R28 "Current style"** (toon-world-short SKILL.md top; `docs/style/VISUAL_DIRECTION.md` R27, R27b, R28): photo skies, rippled water, photo materials, character v3 build/ink/shading, fluid motion. New episodes start from `src/videos/_look-test-r27` and `src/videos/_char-test`.
+
 Two layers:
 1. **Craft parity**: measured numbers that make the picture look professional. Taken from the MIT-licensed study in
    `vendor/cartoon-3d-short/references/reports/` (20 reference shorts) and our own study in `docs/style/REFERENCE_NOTES.md`

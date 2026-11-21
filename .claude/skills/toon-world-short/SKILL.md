@@ -5,12 +5,25 @@ description: Make a Stickrified vertical Short (61-90 s) - flat 2D cartoon chara
 
 # Toon-world short (three.js + Remotion)
 
-Stickrified Shorts: flat 2D stickman cartoon **cards** (characters) living in a **painted 3D world** with black ink lines.
+Stickrified Shorts: flat 2D stickman cartoon **cards** (characters) living in a **realistic 3D world** (photo materials, photo
+skies, physical light) with black ink lines on the characters.
 Three pillars, all narrated in **second person ("you")**, all built to be as entertaining as possible:
 - **Scenario**: "What if you were trapped in a supermarket for 30 days during a zombie apocalypse?"
 - **Strange true history**: "You're one of 74 soldiers about to knock down an iron bridge just by walking across it."
 - **"In this world..." fiction**: an invented world with one changed rule, and you're stuck living in it.
   "In this world, everyone's lies float above their head as a number. Yours says 4,000."
+
+**Current style (R27-R28, user-approved direction 2026-11-21; wins over every older rule, value or reference note in
+this file, LOOK_SPEC and REFERENCE_NOTES):**
+- **World**: section "R27" below: photo skies (`photoSky`, never the painted gradient), moving rippled water
+  (`water`/`shoreFoam`), a different photo material with normal/ARM maps on every surface, CC0 models at three depths,
+  motivated light pools, fire life (`fire.tsx`). Worked example: `src/videos/_look-test-r27` (LookTestR27).
+- **Characters and motion**: "Character v3 + fluid motion (R28)" below: v3 build and ink, `flow` follow-through,
+  `turnTo` turns, `posesAt`/`poseAt` 10-frame moves, striding walks, tracked walkers. Worked example:
+  `src/videos/_char-test` (CharTest). No chest pocket on anyone (user).
+- **Every new episode starts from those two test compositions** (copy their world, light, cast and shot patterns into
+  `src/videos/<slug>/`), not from `_pipeline-test` or an older episode, whose look is superseded.
+- QA: the R27 guard checks (Subject covered, Empty sky, Static hold) and preflight framing flags run on every episode.
 
 **Primary visual references (R24, user 2026-11-21): `assets/visual-ref8.mp4` and `visual-ref9.mp4`.** What they do
 and what the kit took from them: `docs/style/VISUAL_DIRECTION.md` "R24" (frames in `docs/style/r24/`). Where they
@@ -87,8 +100,7 @@ kit/toon/          shared look: lights.ts shade.ts paint.ts world.tsx ink.ts cam
 kit/toon/build/    world library: building.ts props.ts ground.ts street.tsx presets.ts (era presets)
 src/videos/<slug>/ per video: story.ts (shots, cameras), build.ts (world layout), roles.ts (who is where), Video.tsx
 videos/<slug>/     SCRIPT.md, script.json, sources.md, voice/ (voice.wav, words.json), audio/ (mix.wav, stems, cues.md)
-templates/base/    clean copy of a finished video folder to start new ones from (made after the pilot; until then
-                   copy src/videos/_pipeline-test/)
+src/videos/_look-test-r27, _char-test   the current-style starting points for a new video (R27-R28)
 scripts/           stills.mjs, render.mjs, measure.py, video_qa.py, tts.ts, audio/ (sfx_gen.py music.py mix.py)
 docs/STYLE.md      our style bible: the look values below + approved frames in docs/style/frames/
 videos/BACKLOG.md  topic backlog (20+), videos/TIMELOG.md minutes per step per video
@@ -189,8 +201,8 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
    `--lift` raises lines 3+ dB under the median in voice.wav (rerun `mouth.py` after; redo after every new take).
    Also check that no word's time lands in silence (the mix report's "lowest word" going negative): Eleven's
    alignment drifted 0.3 s on "That's me" in trapped-in-this-world and on 8 sentence-final words in ep 3: run `python scripts/audio/fix_word_drift.py videos/<slug>` (pulls words in silence back onto their speech), then rerun `mouth.py`.
-4. **Shot plan** in `src/videos/<slug>/story.ts` (copy `templates/base/`, or until the pilot
-   `src/videos/_pipeline-test/`; register the composition in `src/Root.tsx`):
+4. **Shot plan** in `src/videos/<slug>/story.ts` (start from `src/videos/_look-test-r27/` for the world, light and
+   shots and `src/videos/_char-test/` for the cast and motion; register the composition in `src/Root.tsx`):
    - `SHOTS`: id, a/b frames, light day/golden, crowd mode, `tau` story time.
    - `XFADE` crossfades at place/time changes; `FLASH_AT` white flash after the hook.
    - `CAMS`: per-shot keys `{f, dur?, cut?, s: f => {pos, look, fov, roll}}`; `KICKS` impact flip-shakes;
@@ -306,10 +318,11 @@ The look values below make a frame pretty; these rules make the frames tell the 
     proud/smug lift the chest; scheming/sneaky hunch and rock), crossfading over 8 frames from the previous
     emotion, and speaking characters (`fx.talk`) nod on open syllables. It never moves the hands, so held props stay
     in them. Crowds and extras: `amount` 0.5.
-  - **Pose changes anticipate, overshoot and overlap**: `poseAt` (and `moveCurve`/`movePose` for hand-made
-    timelines) dips 3 frames the other way, moves over ~5 frames to an 8 % overshoot, settles over 5, with the arms
-    1 frame and the head 2 frames behind the body; hands travel on arcs. A video's own `pose()` helper should call
-    `movePose(a, b, moveCurve(d), moveCurve(d - 1), moveCurve(d - 2))`, not a plain `blendPose`.
+  - **Pose changes anticipate, overshoot and overlap** (R28 values): `poseAt`/`posesAt` (and `moveCurve`/`movePose`
+    for hand-made timelines) dip 4 frames the other way, move over 10 frames on a smootherstep to a 4 % overshoot,
+    settle over 8, with the arms 2 frames and the head 4 frames behind the body; hands travel on arcs. A video's own
+    `pose()` helper calls `movePose(a, b, moveCurve(d), moveCurve(d - 2), moveCurve(d - 4))`, never a plain
+    `blendPose`, and the role's state ends in `flow(raw, F)`.
   - **Physical effort shows in the body**: pulling, pushing, carrying and climbing lean INTO the load (in a profile
     view `sway` is the forward lean: 15-25 deg toward the facing side); a heavy object makes the walk slower and
     lower (`walkPose(d, amount)` with bigger `bob` dips), never a normal walk beside a moving prop.
@@ -468,8 +481,9 @@ the new ones, and each has a check or a kit piece. **Future episodes only: never
 - Test new kit look work on `LookTestR27` (`src/videos/_look-test-r27`), never on an episode.
 
 ## Look values (measured from the references; R24 notes win where they differ)
-Full measurements: `docs/style/REFERENCE_NOTES.md`. The house look is the **hand-inked painted world** (references
-R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR worlds.
+Full measurements: `docs/style/REFERENCE_NOTES.md`. **Superseded where they conflict by "Current style" at the top**:
+the world is realistic (R25-R27: photo materials and skies, physical light), not the old hand-inked painted world; the
+painted sky colours below apply only when no photo sky fits, and then only as the grade's palette.
 
 - **Colour script**: every scene gets one strong time-of-day palette and keeps it:
   - day: cobalt sky `#2f62d8` -> pale horizon `#cfe0f5`, warm sun, fog = horizon colour.

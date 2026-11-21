@@ -1,6 +1,6 @@
 # Stickrified — project instructions
 
-Faceless channel **Stickrified** (YouTube Shorts, TikTok, Facebook Reels; long-form later). **Style: flat 2D cartoon characters in a realistic 3D world (photo textures, physical light, haze; lookdev `real`, user 2026-11-21); primary visual refs `assets/visual-ref8.mp4` + `visual-ref9.mp4` (user 2026-11-21; they win over older refs).** Three pillars: survival "what if" scenarios, strange true history, and fictional "In this world..." stories. Entertainment first: comic exaggeration is welcome, but real facts in history videos stay true (see the skill's "Entertainment rules"). All narration in **second person ("you")**. Audience: US/UK/Canada, Gen Z + Millennials. English only.
+Faceless channel **Stickrified** (YouTube Shorts, TikTok, Facebook Reels; long-form later). **Style: flat 2D cartoon characters in a realistic 3D world (photo textures, physical light, haze; lookdev `real`, user 2026-11-21); primary visual refs `assets/visual-ref8.mp4` + `visual-ref9.mp4` (user 2026-11-21; they win over older refs).** **Current style = R27-R28 (user 2026-11-21): photo skies, rippled water, photo materials everywhere, character v3 with fluid motion; every new episode starts from `src/videos/_look-test-r27` + `src/videos/_char-test` (skill "Current style").** Three pillars: survival "what if" scenarios, strange true history, and fictional "In this world..." stories. Entertainment first: comic exaggeration is welcome, but real facts in history videos stay true (see the skill's "Entertainment rules"). All narration in **second person ("you")**. Audience: US/UK/Canada, Gen Z + Millennials. English only.
 
 **How to make a video: follow `.claude/skills/toon-world-short/SKILL.md`.** It holds the pipeline, look values, protagonist spec and gotchas. **Scripts (formulas, jokes, Eleven v4 tags, length): follow `.claude/skills/stickrified-script/SKILL.md`.** **QA (visual defects, before and after the render): follow `.claude/skills/video-qa/SKILL.md`.** No AI critics or verifier agents (removed 2026-11-21): the user reviews finished videos by eye. This file only holds the project-wide rules.
 
@@ -32,7 +32,7 @@ Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, 
 kit/toon/          shared toon look (world, lights, ink, paint, characters, post, captions)
 src/videos/<slug>/ per-video compositions (story.ts, build.ts, roles.ts)
 videos/<slug>/     script, sources, voice, audio
-templates/base/    starting point for new videos (made after the pilot)
+src/videos/_look-test-r27, _char-test   current-style starting points for new videos (R27-R28)
 docs/STYLE.md      style bible + approved frames in docs/style/frames/
 scripts/           tts, audio, stills, QA helpers
 ```
