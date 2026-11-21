@@ -1,0 +1,1200 @@
+[
+ {
+  "text": "In",
+  "start": 0.08,
+  "end": 0.16
+ },
+ {
+  "text": "this",
+  "start": 0.24,
+  "end": 0.32
+ },
+ {
+  "text": "world,",
+  "start": 0.4,
+  "end": 0.88
+ },
+ {
+  "text": "every",
+  "start": 1.04,
+  "end": 1.28
+ },
+ {
+  "text": "promise",
+  "start": 1.44,
+  "end": 1.6
+ },
+ {
+  "text": "you",
+  "start": 1.68,
+  "end": 1.84
+ },
+ {
+  "text": "make",
+  "start": 1.92,
+  "end": 2.16
+ },
+ {
+  "text": "grows",
+  "start": 2.24,
+  "end": 2.4
+ },
+ {
+  "text": "a",
+  "start": 2.64,
+  "end": 2.773
+ },
+ {
+  "text": "*flower*",
+  "start": 2.907,
+  "end": 3.04
+ },
+ {
+  "text": "out",
+  "start": 3.08,
+  "end": 3.12
+ },
+ {
+  "text": "of",
+  "start": 3.2,
+  "end": 3.28
+ },
+ {
+  "text": "your",
+  "start": 3.36,
+  "end": 3.44
+ },
+ {
+  "text": "skin.",
+  "start": 3.64,
+  "end": 4
+ },
+ {
+  "text": "Keep",
+  "start": 4.24,
+  "end": 4.4
+ },
+ {
+  "text": "it,",
+  "start": 4.48,
+  "end": 4.827
+ },
+ {
+  "text": "and",
+  "start": 4.853,
+  "end": 4.88
+ },
+ {
+  "text": "it",
+  "start": 4.96,
+  "end": 5.04
+ },
+ {
+  "text": "*blooms*.",
+  "start": 5.12,
+  "end": 5.88
+ },
+ {
+  "text": "Break",
+  "start": 6.187,
+  "end": 6.24
+ },
+ {
+  "text": "it,",
+  "start": 6.32,
+  "end": 6.587
+ },
+ {
+  "text": "and",
+  "start": 6.613,
+  "end": 6.64
+ },
+ {
+  "text": "it",
+  "start": 6.72,
+  "end": 6.96
+ },
+ {
+  "text": "rots",
+  "start": 7.04,
+  "end": 7.28
+ },
+ {
+  "text": "and",
+  "start": 7.4,
+  "end": 7.52
+ },
+ {
+  "text": "*stinks*.",
+  "start": 7.68,
+  "end": 8.28
+ },
+ {
+  "text": "You",
+  "start": 8.547,
+  "end": 8.56
+ },
+ {
+  "text": "see,",
+  "start": 8.64,
+  "end": 8.88
+ },
+ {
+  "text": "Linda",
+  "start": 9.04,
+  "end": 9.36
+ },
+ {
+  "text": "ran",
+  "start": 9.44,
+  "end": 9.6
+ },
+ {
+  "text": "the",
+  "start": 9.64,
+  "end": 9.68
+ },
+ {
+  "text": "marathon",
+  "start": 9.76,
+  "end": 10.16
+ },
+ {
+  "text": "she",
+  "start": 10.24,
+  "end": 10.32
+ },
+ {
+  "text": "promised:",
+  "start": 10.4,
+  "end": 11.173
+ },
+ {
+  "text": "a",
+  "start": 11.227,
+  "end": 11.28
+ },
+ {
+  "text": "sunflower",
+  "start": 11.4,
+  "end": 11.84
+ },
+ {
+  "text": "on",
+  "start": 11.92,
+  "end": 12
+ },
+ {
+  "text": "her",
+  "start": 12.08,
+  "end": 12.16
+ },
+ {
+  "text": "*knee*.",
+  "start": 12.2,
+  "end": 12.811
+ },
+ {
+  "text": "Dad's",
+  "start": 12.88,
+  "end": 13.2
+ },
+ {
+  "text": "sink",
+  "start": 13.28,
+  "end": 13.36
+ },
+ {
+  "text": "promise?",
+  "start": 13.44,
+  "end": 14.16
+ },
+ {
+  "text": "Six",
+  "start": 14.24,
+  "end": 14.4
+ },
+ {
+  "text": "years",
+  "start": 14.48,
+  "end": 14.64
+ },
+ {
+  "text": "old.",
+  "start": 14.72,
+  "end": 15.24
+ },
+ {
+  "text": "Dead",
+  "start": 15.28,
+  "end": 15.52
+ },
+ {
+  "text": "tulip,",
+  "start": 15.56,
+  "end": 16.12
+ },
+ {
+  "text": "on",
+  "start": 16.16,
+  "end": 16.24
+ },
+ {
+  "text": "his",
+  "start": 16.32,
+  "end": 16.4
+ },
+ {
+  "text": "*ear*.",
+  "start": 16.48,
+  "end": 17.05
+ },
+ {
+  "text": "And",
+  "start": 17.12,
+  "end": 17.2
+ },
+ {
+  "text": "the",
+  "start": 17.24,
+  "end": 17.28
+ },
+ {
+  "text": "guy",
+  "start": 17.36,
+  "end": 17.52
+ },
+ {
+  "text": "who",
+  "start": 17.6,
+  "end": 17.68
+ },
+ {
+  "text": "said",
+  "start": 17.84,
+  "end": 18
+ },
+ {
+  "text": "\"I'll",
+  "start": 18.04,
+  "end": 18.24
+ },
+ {
+  "text": "call",
+  "start": 18.36,
+  "end": 18.48
+ },
+ {
+  "text": "you\"?",
+  "start": 18.56,
+  "end": 18.96
+ },
+ {
+  "text": "You",
+  "start": 19.04,
+  "end": 19.12
+ },
+ {
+  "text": "can",
+  "start": 19.2,
+  "end": 19.36
+ },
+ {
+  "text": "smell",
+  "start": 19.44,
+  "end": 19.6
+ },
+ {
+  "text": "him",
+  "start": 19.68,
+  "end": 19.76
+ },
+ {
+  "text": "from",
+  "start": 19.84,
+  "end": 19.92
+ },
+ {
+  "text": "across",
+  "start": 20,
+  "end": 20.32
+ },
+ {
+  "text": "the",
+  "start": 20.4,
+  "end": 20.48
+ },
+ {
+  "text": "*mall*.",
+  "start": 20.56,
+  "end": 21.28
+ },
+ {
+  "text": "Then",
+  "start": 21.36,
+  "end": 21.6
+ },
+ {
+  "text": "there's",
+  "start": 21.68,
+  "end": 22
+ },
+ {
+  "text": "Derek:",
+  "start": 22.04,
+  "end": 22.64
+ },
+ {
+  "text": "a",
+  "start": 22.64,
+  "end": 22.76
+ },
+ {
+  "text": "thousand",
+  "start": 22.96,
+  "end": 23.44
+ },
+ {
+  "text": "perfect",
+  "start": 23.64,
+  "end": 23.84
+ },
+ {
+  "text": "flowers,",
+  "start": 24.08,
+  "end": 24.48
+ },
+ {
+  "text": "like",
+  "start": 24.56,
+  "end": 24.64
+ },
+ {
+  "text": "a",
+  "start": 24.693,
+  "end": 24.747
+ },
+ {
+  "text": "walking",
+  "start": 24.8,
+  "end": 25.12
+ },
+ {
+  "text": "wedding",
+  "start": 25.2,
+  "end": 25.52
+ },
+ {
+  "text": "*cake*.",
+  "start": 25.64,
+  "end": 26.08
+ },
+ {
+  "text": "He's",
+  "start": 26.149,
+  "end": 26.32
+ },
+ {
+  "text": "running",
+  "start": 26.44,
+  "end": 26.56
+ },
+ {
+  "text": "for",
+  "start": 26.64,
+  "end": 26.72
+ },
+ {
+  "text": "mayor,",
+  "start": 26.8,
+  "end": 27.12
+ },
+ {
+  "text": "promising",
+  "start": 27.2,
+  "end": 27.6
+ },
+ {
+  "text": "free",
+  "start": 27.68,
+  "end": 27.84
+ },
+ {
+  "text": "pizza,",
+  "start": 27.92,
+  "end": 28.4
+ },
+ {
+  "text": "a",
+  "start": 28.48,
+  "end": 28.52
+ },
+ {
+  "text": "water",
+  "start": 28.56,
+  "end": 28.8
+ },
+ {
+  "text": "park,",
+  "start": 28.88,
+  "end": 29.2
+ },
+ {
+  "text": "and",
+  "start": 29.32,
+  "end": 29.44
+ },
+ {
+  "text": "no",
+  "start": 29.52,
+  "end": 29.6
+ },
+ {
+  "text": "more",
+  "start": 29.68,
+  "end": 29.84
+ },
+ {
+  "text": "*Mondays*.",
+  "start": 29.92,
+  "end": 30.72
+ },
+ {
+  "text": "And",
+  "start": 30.864,
+  "end": 30.88
+ },
+ {
+  "text": "they",
+  "start": 31,
+  "end": 31.12
+ },
+ {
+  "text": "bloom",
+  "start": 31.16,
+  "end": 31.52
+ },
+ {
+  "text": "the",
+  "start": 31.64,
+  "end": 31.76
+ },
+ {
+  "text": "*second*",
+  "start": 31.92,
+  "end": 32.08
+ },
+ {
+  "text": "he",
+  "start": 32.16,
+  "end": 32.24
+ },
+ {
+  "text": "says",
+  "start": 32.32,
+  "end": 32.56
+ },
+ {
+  "text": "them.",
+  "start": 32.64,
+  "end": 33.12
+ },
+ {
+  "text": "Weirdly,",
+  "start": 33.2,
+  "end": 33.84
+ },
+ {
+  "text": "bees",
+  "start": 33.92,
+  "end": 34.24
+ },
+ {
+  "text": "never",
+  "start": 34.32,
+  "end": 34.56
+ },
+ {
+  "text": "land",
+  "start": 34.64,
+  "end": 34.8
+ },
+ {
+  "text": "on",
+  "start": 34.88,
+  "end": 34.96
+ },
+ {
+  "text": "*him*.",
+  "start": 35.04,
+  "end": 35.44
+ },
+ {
+  "text": "But",
+  "start": 35.507,
+  "end": 35.52
+ },
+ {
+  "text": "as",
+  "start": 35.6,
+  "end": 35.68
+ },
+ {
+  "text": "mayor,",
+  "start": 35.76,
+  "end": 36.24
+ },
+ {
+  "text": "he'll",
+  "start": 36.28,
+  "end": 36.56
+ },
+ {
+  "text": "bulldoze",
+  "start": 36.64,
+  "end": 37.04
+ },
+ {
+  "text": "Grandma's",
+  "start": 37.16,
+  "end": 37.44
+ },
+ {
+  "text": "*beehives*.",
+  "start": 37.48,
+  "end": 38.32
+ },
+ {
+  "text": "So",
+  "start": 38.387,
+  "end": 38.4
+ },
+ {
+  "text": "you",
+  "start": 38.48,
+  "end": 38.64
+ },
+ {
+  "text": "promise",
+  "start": 38.8,
+  "end": 38.96
+ },
+ {
+  "text": "to",
+  "start": 39.04,
+  "end": 39.12
+ },
+ {
+  "text": "save",
+  "start": 39.2,
+  "end": 39.36
+ },
+ {
+  "text": "them,",
+  "start": 39.44,
+  "end": 39.76
+ },
+ {
+  "text": "and",
+  "start": 39.8,
+  "end": 39.84
+ },
+ {
+  "text": "a",
+  "start": 39.88,
+  "end": 39.92
+ },
+ {
+  "text": "bud",
+  "start": 40.08,
+  "end": 40.32
+ },
+ {
+  "text": "pops",
+  "start": 40.36,
+  "end": 40.56
+ },
+ {
+  "text": "out",
+  "start": 40.64,
+  "end": 40.72
+ },
+ {
+  "text": "of",
+  "start": 40.76,
+  "end": 40.8
+ },
+ {
+  "text": "your",
+  "start": 40.84,
+  "end": 40.88
+ },
+ {
+  "text": "*hand*.",
+  "start": 40.96,
+  "end": 41.6
+ },
+ {
+  "text": "You",
+  "start": 41.68,
+  "end": 41.84
+ },
+ {
+  "text": "borrow",
+  "start": 42,
+  "end": 42.16
+ },
+ {
+  "text": "all",
+  "start": 42.24,
+  "end": 42.48
+ },
+ {
+  "text": "her",
+  "start": 42.56,
+  "end": 42.64
+ },
+ {
+  "text": "bees.",
+  "start": 42.72,
+  "end": 43.28
+ },
+ {
+  "text": "In",
+  "start": 43.32,
+  "end": 43.36
+ },
+ {
+  "text": "a",
+  "start": 43.44,
+  "end": 43.52
+ },
+ {
+  "text": "*shoebox*.",
+  "start": 43.6,
+  "end": 44.48
+ },
+ {
+  "text": "\"Sweetie,",
+  "start": 44.954,
+  "end": 45.73,
+  "speaker": "grandma"
+ },
+ {
+  "text": "he's",
+  "start": 45.93,
+  "end": 46.17,
+  "speaker": "grandma"
+ },
+ {
+  "text": "got",
+  "start": 46.25,
+  "end": 46.32,
+  "speaker": "grandma"
+ },
+ {
+  "text": "a",
+  "start": 46.32,
+  "end": 46.4,
+  "speaker": "grandma"
+ },
+ {
+  "text": "thousand",
+  "start": 46.57,
+  "end": 47.13,
+  "speaker": "grandma"
+ },
+ {
+  "text": "flowers.",
+  "start": 47.21,
+  "end": 48.05,
+  "speaker": "grandma"
+ },
+ {
+  "text": "You've",
+  "start": 48.25,
+  "end": 48.49,
+  "speaker": "grandma"
+ },
+ {
+  "text": "got",
+  "start": 48.57,
+  "end": 48.65,
+  "speaker": "grandma"
+ },
+ {
+  "text": "a",
+  "start": 48.73,
+  "end": 48.81,
+  "speaker": "grandma"
+ },
+ {
+  "text": "*bud*.\"",
+  "start": 49.05,
+  "end": 49.61,
+  "speaker": "grandma"
+ },
+ {
+  "text": "But",
+  "start": 49.94,
+  "end": 50.02
+ },
+ {
+  "text": "by",
+  "start": 50.1,
+  "end": 50.18
+ },
+ {
+  "text": "Thursday,",
+  "start": 50.34,
+  "end": 51.14
+ },
+ {
+  "text": "Derek's",
+  "start": 51.18,
+  "end": 51.5
+ },
+ {
+  "text": "at",
+  "start": 51.54,
+  "end": 51.7
+ },
+ {
+  "text": "99",
+  "start": 51.78,
+  "end": 52.18
+ },
+ {
+  "text": "percent,",
+  "start": 52.26,
+  "end": 52.9
+ },
+ {
+  "text": "and",
+  "start": 52.94,
+  "end": 52.98
+ },
+ {
+  "text": "your",
+  "start": 53.06,
+  "end": 53.22
+ },
+ {
+  "text": "bud's",
+  "start": 53.34,
+  "end": 53.54
+ },
+ {
+  "text": "turning",
+  "start": 53.62,
+  "end": 53.86
+ },
+ {
+  "text": "*brown*.",
+  "start": 53.94,
+  "end": 54.58
+ },
+ {
+  "text": "Friday's",
+  "start": 55.1,
+  "end": 55.22
+ },
+ {
+  "text": "debate.",
+  "start": 55.34,
+  "end": 55.82
+ },
+ {
+  "text": "You",
+  "start": 56.02,
+  "end": 56.1
+ },
+ {
+  "text": "lift",
+  "start": 56.18,
+  "end": 56.34
+ },
+ {
+  "text": "the",
+  "start": 56.38,
+  "end": 56.42
+ },
+ {
+  "text": "*lid*.",
+  "start": 56.5,
+  "end": 56.9
+ },
+ {
+  "text": "Ten",
+  "start": 57.14,
+  "end": 57.38
+ },
+ {
+  "text": "thousand",
+  "start": 57.54,
+  "end": 57.94
+ },
+ {
+  "text": "bees",
+  "start": 58.02,
+  "end": 58.34
+ },
+ {
+  "text": "pour",
+  "start": 58.42,
+  "end": 58.66
+ },
+ {
+  "text": "out,",
+  "start": 58.74,
+  "end": 59.1
+ },
+ {
+  "text": "onto",
+  "start": 59.14,
+  "end": 59.46
+ },
+ {
+  "text": "every",
+  "start": 59.54,
+  "end": 59.86
+ },
+ {
+  "text": "real",
+  "start": 59.94,
+  "end": 60.18
+ },
+ {
+  "text": "*flower*.",
+  "start": 60.26,
+  "end": 60.86
+ },
+ {
+  "text": "Every",
+  "start": 61.22,
+  "end": 61.46
+ },
+ {
+  "text": "flower...",
+  "start": 61.86,
+  "end": 62.34
+ },
+ {
+  "text": "except",
+  "start": 62.54,
+  "end": 62.74
+ },
+ {
+  "text": "*Derek's*.",
+  "start": 62.78,
+  "end": 63.46
+ },
+ {
+  "text": "\"Pfft.",
+  "start": 63.71,
+  "end": 64.19,
+  "speaker": "derek"
+ },
+ {
+  "text": "Bees?",
+  "start": 64.35,
+  "end": 65.11,
+  "speaker": "derek"
+ },
+ {
+  "text": "I",
+  "start": 65.31,
+  "end": 65.47,
+  "speaker": "derek"
+ },
+ {
+  "text": "promise",
+  "start": 65.55,
+  "end": 65.95,
+  "speaker": "derek"
+ },
+ {
+  "text": "these",
+  "start": 66.03,
+  "end": 66.19,
+  "speaker": "derek"
+ },
+ {
+  "text": "flowers",
+  "start": 66.27,
+  "end": 66.59,
+  "speaker": "derek"
+ },
+ {
+  "text": "are",
+  "start": 66.67,
+  "end": 66.83,
+  "speaker": "derek"
+ },
+ {
+  "text": "*real*!\"",
+  "start": 66.91,
+  "end": 67.63,
+  "speaker": "derek"
+ },
+ {
+  "text": "Pop!",
+  "start": 67.96,
+  "end": 68.44
+ },
+ {
+  "text": "A",
+  "start": 68.6,
+  "end": 68.68
+ },
+ {
+  "text": "new",
+  "start": 68.76,
+  "end": 68.92
+ },
+ {
+  "text": "flower",
+  "start": 69.08,
+  "end": 69.4
+ },
+ {
+  "text": "shoots",
+  "start": 69.56,
+  "end": 69.84
+ },
+ {
+  "text": "out",
+  "start": 69.88,
+  "end": 69.96
+ },
+ {
+  "text": "of",
+  "start": 70,
+  "end": 70.04
+ },
+ {
+  "text": "his",
+  "start": 70.12,
+  "end": 70.2
+ },
+ {
+  "text": "*nose*.",
+  "start": 70.24,
+  "end": 70.76
+ },
+ {
+  "text": "And",
+  "start": 71.062,
+  "end": 71.08
+ },
+ {
+  "text": "it",
+  "start": 71.16,
+  "end": 71.24
+ },
+ {
+  "text": "rots.",
+  "start": 71.4,
+  "end": 72.04
+ },
+ {
+  "text": "Right",
+  "start": 72.2,
+  "end": 72.44
+ },
+ {
+  "text": "there.",
+  "start": 72.6,
+  "end": 72.88
+ },
+ {
+  "text": "On",
+  "start": 73,
+  "end": 73.16
+ },
+ {
+  "text": "live",
+  "start": 73.24,
+  "end": 73.56
+ },
+ {
+  "text": "*TV*.",
+  "start": 73.64,
+  "end": 74.32
+ },
+ {
+  "text": "He",
+  "start": 74.653,
+  "end": 74.68
+ },
+ {
+  "text": "sweats,",
+  "start": 74.76,
+  "end": 75.24
+ },
+ {
+  "text": "so",
+  "start": 75.32,
+  "end": 75.4
+ },
+ {
+  "text": "the",
+  "start": 75.44,
+  "end": 75.48
+ },
+ {
+  "text": "glue",
+  "start": 75.56,
+  "end": 75.8
+ },
+ {
+  "text": "melts,",
+  "start": 75.88,
+  "end": 76.307
+ },
+ {
+  "text": "and",
+  "start": 76.333,
+  "end": 76.36
+ },
+ {
+  "text": "his",
+  "start": 76.48,
+  "end": 76.6
+ },
+ {
+  "text": "flowers",
+  "start": 76.84,
+  "end": 77.08
+ },
+ {
+  "text": "slide",
+  "start": 77.24,
+  "end": 77.4
+ },
+ {
+  "text": "off",
+  "start": 77.48,
+  "end": 77.64
+ },
+ {
+  "text": "like",
+  "start": 77.76,
+  "end": 77.88
+ },
+ {
+  "text": "wet",
+  "start": 77.92,
+  "end": 78.12
+ },
+ {
+  "text": "*stickers*.",
+  "start": 78.2,
+  "end": 78.88
+ },
+ {
+  "text": "Underneath?",
+  "start": 79.368,
+  "end": 79.84
+ },
+ {
+  "text": "A",
+  "start": 79.96,
+  "end": 80.2
+ },
+ {
+  "text": "thousand",
+  "start": 80.28,
+  "end": 80.76
+ },
+ {
+  "text": "*rotten*",
+  "start": 80.84,
+  "end": 81.16
+ },
+ {
+  "text": "ones.",
+  "start": 81.24,
+  "end": 81.76
+ },
+ {
+  "text": "Derek",
+  "start": 82.04,
+  "end": 82.44
+ },
+ {
+  "text": "loses.",
+  "start": 82.52,
+  "end": 83.2
+ },
+ {
+  "text": "You",
+  "start": 83.32,
+  "end": 83.4
+ },
+ {
+  "text": "can",
+  "start": 83.48,
+  "end": 83.56
+ },
+ {
+  "text": "smell",
+  "start": 83.64,
+  "end": 83.8
+ },
+ {
+  "text": "him",
+  "start": 83.88,
+  "end": 83.96
+ },
+ {
+  "text": "from",
+  "start": 84.04,
+  "end": 84.12
+ },
+ {
+  "text": "across",
+  "start": 84.2,
+  "end": 84.44
+ },
+ {
+  "text": "the",
+  "start": 84.52,
+  "end": 84.6
+ },
+ {
+  "text": "*mall*.",
+  "start": 84.68,
+  "end": 85.16
+ },
+ {
+  "text": "And",
+  "start": 85.4,
+  "end": 85.56
+ },
+ {
+  "text": "your",
+  "start": 85.64,
+  "end": 85.8
+ },
+ {
+  "text": "little",
+  "start": 85.88,
+  "end": 86.12
+ },
+ {
+  "text": "bud",
+  "start": 86.36,
+  "end": 86.6
+ },
+ {
+  "text": "finally",
+  "start": 86.68,
+  "end": 87.08
+ },
+ {
+  "text": "*blooms*.",
+  "start": 87.16,
+  "end": 87.88
+ }
+]
