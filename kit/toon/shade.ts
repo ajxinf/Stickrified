@@ -66,7 +66,8 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   // our diorama haze (from 14 m, up to .75) bleached everything past mid-ground to peach: the "milky" frame.
   // Depth now comes from light, DOF and value steps; the haze only cools the far distance.
   shared.uHazeStart.value = LOOK_FEATURES.haze ? Math.min(p.haze.start * 0.8, 24) : p.haze.start;
-  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(0.4, p.haze.amount * 1.1 + 0.05) : p.haze.amount;
+  // R25 real look (ref9: far tents and hills sink into blue air): haze may reach .6.
+  shared.uHazeAmount.value = LOOK_FEATURES.haze ? Math.min(LOOK_FEATURES.real ? 0.6 : 0.4, p.haze.amount * 1.1 + 0.05) : p.haze.amount;
   shared.uCharTint.value.set(...p.char.tint);
   shared.uCharShade.value = p.char.shade;
   shared.uCharInk.value.copy(linear(p.charInk ?? INK));
@@ -75,10 +76,11 @@ export const applyLight = (p: LightPreset, sunDir: Vector3) => {
   gradeState.current = GRADE[p.grade];
 };
 
-export type PracticalKind = "lamp" | "window" | "shop" | "fire";
+export type PracticalKind = "lamp" | "window" | "shop" | "fire" | "screen";
 /** Reach (m) and strength (x the preset's lamp strength) per kind. */
 // Reach up ~25 % (2026-11-13): pools wide enough to light a face and fall off across the frame, not a spot.
-const PRACTICAL = { lamp: [5.5, 1], window: [3.6, 0.45], shop: [4.4, 0.6], fire: [5.0, 1.2] } as const;
+// screen: a monitor or TV, a short cool spill on the face in front of it (ep 3: monitors as "window" washed every face).
+const PRACTICAL = { lamp: [5.5, 1], window: [3.6, 0.45], shop: [4.4, 0.6], fire: [5.0, 1.2], screen: [1.6, 0.4] } as const;
 
 /**
  * Real point lights for practicals (lamps, lit windows, shop fronts, fires). They light the world and the character
@@ -162,8 +164,8 @@ const fragment = /* glsl */ `
 #include <shadowmap_pars_fragment>
 #include <shadowmask_pars_fragment>
 uniform vec3 uColor, uEmissive;
-uniform sampler2D uMap;
-uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss;
+uniform sampler2D uMap, uNor, uArm;
+uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss, uRough, uBump, uHasNor, uNorK, uHasArm;
 uniform vec3 uSunDir, uLit, uShade, uLift, uHazeColor;
 uniform float uEmissiveK, uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
 uniform vec2 uRepeat;
@@ -176,6 +178,15 @@ varying vec3 vNV;
 ${POINT_LIGHTS}
 ${AERIAL}
 const vec3 W = vec3(0.2126, 0.7152, 0.0722);
+// three.js perturbNormal2Arb: a tangent-space normal map on any mesh, tangent frame from screen derivatives (no tangents).
+vec3 perturb(vec3 pos, vec3 N, vec3 mapN) {
+  vec3 q0 = dFdx(pos), q1 = dFdy(pos);
+  vec2 st0 = dFdx(vUv), st1 = dFdy(vUv);
+  vec3 q1p = cross(q1, N), q0p = cross(N, q0);
+  vec3 T = q1p * st0.x + q0p * st1.x, B = q1p * st0.y + q0p * st1.y;
+  float det = max(dot(T, T), dot(B, B)), sc = det == 0.0 ? 0.0 : inversesqrt(det);
+  return normalize(T * (mapN.x * sc) + B * (mapN.y * sc) + N * mapN.z);
+}
 float vh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vnoise(vec2 p) {
   vec2 i = floor(p), f = fract(p);
@@ -197,6 +208,70 @@ void main() {
     a *= 1.0 + uMottle * (m - 0.5) * 2.0;
   }
   vec3 n = normalize(vN);
+  #ifdef REAL
+  // R25 realistic world (visual-ref8/9): relief from the texture's own values (wood grain, sand ripples, shingles),
+  // soft Lambert light with soft shadows, sky-above / ground-bounce ambient, a roughness highlight with Fresnel, and
+  // practicals that pool and fall off like real lamps. uShade = the ambient (sky) light, uLit - uShade = the key.
+  vec3 vnN = normalize(vNV);
+  float ao = 1.0, rough = uRough;
+  if (uHasArm > 0.5) {
+    // Poly Haven ARM: R = ambient occlusion, G = roughness (B = metal: our props are painted, not bare metal).
+    vec3 arm = texture2D(uArm, vUv).rgb;
+    ao = mix(1.0, arm.r, 0.85);
+    rough = clamp(mix(uRough, arm.g, 0.7), 0.06, 1.0);
+  }
+  if (uHasNor > 0.5) {
+    // R26: real relief from the texture's normal map (visual-ref10 gravel, standard-ref mine rock and planks).
+    vec3 mapN = texture2D(uNor, vUv).xyz * 2.0 - 1.0;
+    mapN.xy *= uNorK;
+    float face = gl_FrontFacing ? 1.0 : -1.0;
+    n = perturb(vW, n * face, mapN);
+    vnN = perturb(vView, vnN * face, mapN);
+  } else if (uHasMap > 0.5 && uBump > 0.0) {
+    // Relief from a blurred mip (bias 2): per-pixel derivatives of fine grain (sand) flipped the light pixel by pixel.
+    float hgt = dot(texture2D(uMap, vUv, 2.0).rgb, W);
+    vec2 dH = vec2(dFdx(hgt), dFdy(hgt)) * uBump * 0.5;
+    vec3 sx = dFdx(vW), sy = dFdy(vW), r1 = cross(sy, n), r2 = cross(n, sx);
+    float det = dot(sx, r1);
+    n = normalize(abs(det) * n - sign(det) * (dH.x * r1 + dH.y * r2));
+    vec3 vx = dFdx(vView), vy = dFdy(vView), q1 = cross(vy, vnN), q2 = cross(vnN, vx);
+    float vdet = dot(vx, q1);
+    vnN = normalize(abs(vdet) * vnN - sign(vdet) * (dH.x * q1 + dH.y * q2));
+  }
+  float ndl = dot(n, uSunDir);
+  float t = clamp(ndl, 0.0, 1.0);
+  #ifdef USE_SHADOWMAP
+  t *= getShadowMask();
+  #endif
+  // Calibrated on the presets (tuned for the two-tone look): ground facing up gets the old lit value (the key divided
+  // by the light's own elevation), walls and slopes fall off with the angle; ambient keeps the old shade level.
+  vec3 key = max(uLit - uShade, vec3(0.0)) / max(uSunDir.y, 0.35);
+  vec3 amb = uShade * mix(0.7, 1.2, n.y * 0.5 + 0.5) * ao; // sky light from above, darker bounce from below
+  vec3 c = a * (amb + key * t) + uLift * (1.0 - t);
+  {
+    vec3 V = normalize(-vView), L = normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz), H = normalize(L + V);
+    float r = max(rough, 0.08), a2 = r * r * r * r;
+    float ndh = max(dot(vnN, H), 0.0), dd = ndh * ndh * (a2 - 1.0) + 1.0;
+    float D = a2 / (3.14159 * dd * dd);
+    float F = 0.04 + 0.96 * pow(1.0 - max(dot(V, H), 0.0), 5.0);
+    c += key * min(D * F * 0.25, 4.0) * t;
+    float rim = pow(1.0 - max(dot(vnN, V), 0.0), 4.0); // grazing sheen: surfaces catch the sky at the edges
+    c += amb * a * rim * 0.35 * (1.0 - r * 0.5);
+    c *= mix(1.0, ao, 0.35); // crevices stay a little dark in the key too
+  }
+  #if NUM_POINT_LIGHTS > 0
+  for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
+    vec3 Lp = pointLights[i].position - vView;
+    float rr = length(Lp), Dp = pointLights[i].distance;
+    float fall = pow(1.0 - smoothstep(0.0, Dp, rr), 2.0) * 2.6; // a bright pool near the lamp, a soft long tail (world only: cards keep the glare-calibrated light)
+    vec3 Ln = Lp / max(rr, 1e-3);
+    c += a * pointLights[i].color * fall * (0.08 + 0.92 * max(dot(vnN, Ln), 0.0));
+    vec3 Hp = normalize(Ln + normalize(-vView));
+    float rp = max(rough, 0.08), ap = rp * rp * rp * rp, dp = pow(max(dot(vnN, Hp), 0.0), 2.0) * (ap - 1.0) + 1.0;
+    c += pointLights[i].color * fall * min(ap / (3.14159 * dp * dp) * 0.04, 2.0);
+  }
+  #endif
+  #else
   // Two tones: a hard (1-2 px soft) terminator between lit and shade, then cast shadows.
   float t = smoothstep(-0.03, 0.03, dot(n, uSunDir));
   #ifdef USE_SHADOWMAP
@@ -205,12 +280,15 @@ void main() {
   vec3 c = a * mix(uShade, uLit, t) + uLift * (1.0 - t);
   // Practicals: real point lights (lamps, windows, fires).
   c += a * practicalLight(vView, normalize(vNV));
+  #endif
+  #ifndef REAL
   if (uSpec > 0.0) {
     // One soft toon highlight on metal (lighting.md 6: only metal props have specular), sunlit side only.
     vec3 V = normalize(-vView), L = normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz);
     float s = pow(max(dot(normalize(vNV), normalize(L + V)), 0.0), 36.0);
     c += uLit * uSpec * smoothstep(0.3, 0.55, s) * t;
   }
+  #endif
   if (uGloss > 0.0) {
     // R20 (visual-ref5 wet street, ref6 saloon boards): a polished or wet floor mirrors the practicals and a low sun as
     // soft streaks that run toward the lens (a grazing Blinn lobe stretches them on its own).
@@ -252,13 +330,26 @@ export type ToonOpts = {
   spec?: number;
   /** Wet/polished floor: mirrored streaks of the practicals and the sun, 0-1. */
   gloss?: number;
+  /** R25 real look: surface roughness 0 (mirror) .. 1 (chalk). Default .75; metal .35, wet/sea .15-.25. */
+  rough?: number;
+  /** R25 real look: relief from the map's values (0 = flat). Default 1 for photo textures, 0 for painted ones. */
+  bump?: number;
+  /** R26 real look: tangent-space normal map (OpenGL convention). Default: the photo texture's own (build/photo.ts). */
+  normalMap?: Texture | null;
+  /** Normal map strength (default 1). */
+  normalScale?: number;
+  /** R26 real look: Poly Haven ARM map (R AO, G roughness). Default: the photo texture's own. */
+  arm?: Texture | null;
 };
 
 /** Two-tone toon material. `mute` (0-1) pulls the map toward grey, then `color` tints it; `floor` lifts its darkest value. */
-export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0, gloss = 0 }: ToonOpts = {}) =>
-  new ShaderMaterial({
+export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0, gloss = 0, rough, bump, normalMap, normalScale = 1, arm }: ToonOpts = {}) => {
+  const nor = normalMap === undefined ? ((map?.userData.nor as Texture | undefined) ?? null) : normalMap;
+  const armT = arm === undefined ? ((map?.userData.arm as Texture | undefined) ?? null) : arm;
+  return new ShaderMaterial({
     vertexShader: vertex,
     fragmentShader: fragment,
+    defines: LOOK_FEATURES.real ? { REAL: "" } : {},
     fog: true,
     lights: true,
     uniforms: {
@@ -277,7 +368,16 @@ export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], o
       uMottle: { value: mottle },
       uSpec: { value: spec },
       uGloss: { value: gloss },
+      // spec/gloss callers are shiny surfaces: map them onto roughness in the real look.
+      uRough: { value: rough ?? (gloss > 0 ? 0.25 : spec > 0 ? 0.4 : 0.75) },
+      uBump: { value: bump ?? (map?.userData.photo ? 1 : 0) }, // painted canvas noise as relief read as glitter
+      uNor: { value: nor },
+      uHasNor: { value: nor ? 1 : 0 },
+      uNorK: { value: normalScale },
+      uArm: { value: armT },
+      uHasArm: { value: armT ? 1 : 0 },
       uWearC: { value: wear?.center ?? 0 },
       uWearW: { value: wear?.width ?? 1 },
     },
   });
+};

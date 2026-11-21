@@ -1,0 +1,57 @@
+{
+ "clay_roof_tiles": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "damp_beach_sand_02": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "dense_sand": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "grey_roof_tiles": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "hessian_230": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "painted_plaster_wall": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "rusty_metal_sheet": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "sparse_grass": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "weathered_plank_siding": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "weathered_planks": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "white_planks_clean": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ }
+}
