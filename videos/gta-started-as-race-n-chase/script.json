@@ -1,0 +1,214 @@
+{
+  "slug": "gta-started-as-race-n-chase",
+  "title": "GTA started as a game where you played the cop",
+  "pillar": "Strange true history",
+  "formula": "GTA named in the first 2 s (the first GTA started with you playing the cop) -> strange act (your own police cars try to kill you) -> why (a bug, about to change games) -> the engine story (Mike adds a floor: top-down) -> the plan (Race'n'Chase, you're the cop, 18 months) -> problems (boring, crashes, the publisher asks every week to cancel it) -> tension (months run over) -> the bug (cops ram you; testers love being chased) -> the flip (you're the robber; peak) -> doubter paid off (the publisher stops asking) -> kicker (new name, the press outrage, 400 million) -> loop (the cops still try to kill you)",
+  "loop": "Lines 1-2: the first GTA started with you playing the cop, and your own police cars keep trying to kill you. Last: and the cops? They still try to kill you, over the same pile-up shot.",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "facts": [
+    "True history: every claim is in sources.md. The police-AI bug is a widely told legend (not confirmed by the developers in any interview we could read), so the narration says 'as the legend goes'.",
+    "'You' is an unnamed tester/developer at DMA Design in Dundee (a viewpoint, not a real person); Mike = Mike Dailly, Dave = David Jones (real, public, facts only; Mike's 'add a floor' idea is from his own account).",
+    "No game logos, screenshots or characters: the game is drawn in our own style (a top-down toy city)."
+  ],
+  "lines": [
+    {
+      "narration": "The first GTA started with you playing the *cop*.",
+      "spoken": "The first G-T-A started with you playing the cop.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open on a top-down toy city at night, our own style: a getaway car tears round a corner with a pack of police cars behind it, and big painted letters GTA? hang over the street. Hard cut at ~1 s: the same city in 1995 on a chunky office monitor, and the car being chased is a police car: yours. Face: confused.",
+      "camera": "Crane down onto the chase, hard cut to the monitor",
+      "onScreenText": "1995",
+      "gag": "The car being chased is a police car"
+    },
+    {
+      "narration": "And your own police cars keep trying to *kill* you.",
+      "audioTag": "dramatic",
+      "scene": "You at the monitor in a cramped 1990s office: four police cars ram your little police car from every side. Face: shocked.",
+      "camera": "Push in over your shoulder onto the monitor",
+      "onScreenText": "DUNDEE",
+      "gag": "The police cars pile onto yours like a rugby scrum"
+    },
+    {
+      "narration": "It's a bug, and it's about to turn your cop game into Grand Theft *Auto*.",
+      "audioTag": "excited",
+      "scene": "Freeze on the pile-up; a big red BUG stamp slams onto the screen. You lean back, grinning.",
+      "camera": "Hold on the frozen screen, pull back to your face",
+      "onScreenText": "",
+      "gag": "A BUG stamp slams onto the monitor"
+    },
+    {
+      "narration": "A year earlier, your coworker Mike has a game engine that only sees the *side* of things.",
+      "audioTag": "playful",
+      "scene": "Flashback card 1994: Mike at his desk; on his monitor a side-on row of little buildings, like a stage set.",
+      "camera": "Slow push past Mike's shoulder",
+      "onScreenText": "1994",
+      "gag": "The buildings are flat cut-outs, like a puppet show"
+    },
+    {
+      "narration": "Then it hits him: all he needs is to add a *floor*.",
+      "audioTag": "amazed",
+      "scene": "Mike slides one floor tile under the side-on buildings; the whole city tips over backwards like a domino and lands flat.",
+      "camera": "Side view, the camera tips with the city",
+      "onScreenText": "",
+      "gag": "The whole city tips over and lands flat"
+    },
+    {
+      "narration": "Suddenly, you're looking straight *down* on a city.",
+      "audioTag": "excited",
+      "scene": "The camera rises straight up: a top-down city of tiny roofs and roads; little cars start moving.",
+      "camera": "Crane straight up into the top-down view",
+      "onScreenText": "",
+      "gag": "Tiny cars start zooming around the roofs"
+    },
+    {
+      "narration": "Your boss Dave, the man behind *Lemmings*, builds a game on it.",
+      "audioTag": "quick",
+      "scene": "Dave leans in, glasses flashing; he slaps a sticky note on Mike's monitor: NEW GAME.",
+      "camera": "Two-shot, quick push",
+      "onScreenText": "",
+      "gag": "Dave slaps a sticky note on the monitor"
+    },
+    {
+      "narration": "It's called Race'n'Chase. You're the cop, you chase robbers, done in *18* months.",
+      "spoken": "It's called Race-and-Chase. You're the cop, you chase robbers, done in eighteen months.",
+      "audioTag": "proud",
+      "scene": "A whiteboard: stick-figure cop chasing a stick-figure robber, a wall calendar with 18 months circled.",
+      "camera": "Pan across the whiteboard to the calendar",
+      "onScreenText": "",
+      "gag": "The calendar has 18 months circled in red"
+    },
+    {
+      "narration": "There's just one problem. Being the cop is *boring*.",
+      "audioTag": "amused",
+      "scene": "You as a cop car in the game, politely following a robber car at walking pace; both drivers yawn.",
+      "camera": "Top-down game view, then your yawning face",
+      "onScreenText": "",
+      "gag": "The cop and the robber yawn at the same time"
+    },
+    {
+      "narration": "And the game crashes. Constantly. The cars handle like *shopping carts*.",
+      "audioTag": "exasperated",
+      "scene": "The monitor freezes into a mess of pixels; in the game, a police car spins out like a runaway shopping cart.",
+      "camera": "Hard cuts: frozen screen, spinning car",
+      "onScreenText": "",
+      "gag": "A police car wobbles like a runaway shopping cart"
+    },
+    {
+      "narration": "Every week, the publisher asks one question: can we *cancel* it?",
+      "audioTag": "urgent",
+      "scene": "A man in a suit opens the office door, holding a giant rubber CANCEL stamp; the calendar flips a page; he opens the door again, and again.",
+      "camera": "Locked on the door, calendar flipping between",
+      "onScreenText": "",
+      "gag": "The publisher's CANCEL stamp gets bigger every week"
+    },
+    {
+      "narration": "Month 18 comes and goes. Then month 20. Then month *24*.",
+      "spoken": "Month eighteen comes and goes. Then month twenty. Then month twenty-four.",
+      "audioTag": "urgent, building",
+      "scene": "Calendar pages tear off and fly past your head; the coffee cups on your desk pile up into a tower.",
+      "camera": "Fast push on the calendar",
+      "onScreenText": "",
+      "gag": "Your coffee cups stack into a tower"
+    },
+    {
+      "narration": "Then, as the legend goes, the police *break*.",
+      "audioTag": "dramatic, alarmed",
+      "scene": "Close on the monitor: the police cars' little headlights flick to red, all at once.",
+      "camera": "Snap in on the screen",
+      "onScreenText": "",
+      "gag": "The cop cars' headlights turn red"
+    },
+    {
+      "narration": "The cop cars stop pulling you over. They ram you off the *road*.",
+      "audioTag": "dramatic",
+      "scene": "Top-down game: the police cars swerve straight at your car and ram it into a wall.",
+      "camera": "Top-down chase, shaking on each hit",
+      "onScreenText": "",
+      "gag": "The cops ram you into a wall"
+    },
+    {
+      "narration": "Testers skip the missions. They just let the cops *chase* them.",
+      "audioTag": "excited",
+      "scene": "A crowd of testers around one monitor, cheering and laughing as a police pack chases a little car round and round.",
+      "camera": "Wide on the cheering crowd",
+      "onScreenText": "",
+      "gag": "Testers cheer like it's a football match"
+    },
+    {
+      "narration": "So the team asks: if running is the fun part, why are we the *police*?",
+      "audioTag": "building excitement",
+      "scene": "Everyone turns to the whiteboard; Dave rubs out the stick-figure cop's hat.",
+      "camera": "Push in on the whiteboard",
+      "onScreenText": "",
+      "gag": "Dave rubs out the cop's hat"
+    },
+    {
+      "narration": "You flip it. You're not the cop anymore. You're the *robber*.",
+      "audioTag": "excited",
+      "scene": "In the game, your little car's police lights pop off and roll away; you, at the desk, swap a police cap for a striped robber's beanie.",
+      "camera": "Hard cut from the game to your cap swap",
+      "onScreenText": "",
+      "gag": "Your police lights fall off and roll away"
+    },
+    {
+      "narration": "Steal any car, and every cop in town comes after *you*.",
+      "audioTag": "excited, quick",
+      "scene": "Top-down city: your car steals away and a river of police cars pours after it down every street.",
+      "camera": "Crane up as the police pour after you",
+      "onScreenText": "",
+      "gag": "A river of police cars floods the streets"
+    },
+    {
+      "narration": "And the publisher? It finally stops asking to *cancel* it.",
+      "audioTag": "amused",
+      "scene": "The man in the suit lowers his giant CANCEL stamp and quietly stamps a coffee cup instead.",
+      "camera": "Two-shot, slow push",
+      "onScreenText": "",
+      "gag": "He stamps a coffee cup instead"
+    },
+    {
+      "narration": "Race'n'Chase gets a new name: Grand Theft *Auto*.",
+      "spoken": "Race-and-Chase gets a new name: Grand Theft Auto.",
+      "audioTag": "proud",
+      "scene": "A game box, our own painted design: a top-down city and a getaway car; the name painted across it.",
+      "camera": "Spin the box to the lens",
+      "onScreenText": "1997",
+      "gag": "The box spins into frame"
+    },
+    {
+      "narration": "Before it's even out, newspapers call it a game for thugs, and Parliament debates *banning* it.",
+      "audioTag": "dramatic, booming",
+      "scene": "A newspaper slams down with a screaming headline; cut to rows of old lords in robes, shaking their fists.",
+      "camera": "Newspaper insert, whip to the lords",
+      "onScreenText": "",
+      "gag": "The lords shake their fists in unison",
+      "spoken": "Before it's even out, newspapers call it a game for thugs, and Parliament debates banning it."
+    },
+    {
+      "narration": "Best free advert a game ever *had*.",
+      "audioTag": "deadpan",
+      "scene": "Outside a shop, a queue of players stretches round the block.",
+      "camera": "Wide on the queue",
+      "onScreenText": "",
+      "gag": "The queue wraps around the whole block"
+    },
+    {
+      "narration": "Today, the series has sold over 400 million *copies*.",
+      "spoken": "Today, the series has sold over four-hundred million copies.",
+      "audioTag": "amazed",
+      "scene": "A sales counter rolls past 100, 200, 300, 400 million; the digits smoke.",
+      "camera": "Push in on the counter",
+      "onScreenText": "",
+      "gag": "The sales counter smokes"
+    },
+    {
+      "narration": "And the cops? They still try to *kill* you.",
+      "audioTag": "playful",
+      "scene": "Back at the 1995 monitor: police cars ram your little car; you grin.",
+      "camera": "Same framing as line 1",
+      "onScreenText": "",
+      "gag": "The same pile-up as the first shot"
+    }
+  ]
+}

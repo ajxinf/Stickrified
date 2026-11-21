@@ -1,0 +1,239 @@
+{
+ "fps": 30,
+ "frames": "auto",
+ "events": [
+  {
+   "word": "gta",
+   "n": 0,
+   "lead": 0,
+   "sfx": "siren_8bit",
+   "gain_db": -4,
+   "note": "the game's chase under the GTA? letters"
+  },
+  {
+   "word": "kill",
+   "n": 0,
+   "lead": -2,
+   "sfx": "retro_crash",
+   "note": "the police cars ram yours on the monitor"
+  },
+  {
+   "word": "bug",
+   "n": 0,
+   "lead": 2,
+   "sfx": "stamp_thump",
+   "note": "BUG stamped on the screen"
+  },
+  {
+   "word": "year",
+   "n": 0,
+   "lead": 2,
+   "sfx": "stamp_thump",
+   "gain_db": -4,
+   "note": "1994 stamp"
+  },
+  {
+   "word": "floor",
+   "n": 0,
+   "lead": 8,
+   "sfx": "slot_slam",
+   "note": "the floor slides in, the row tips flat"
+  },
+  {
+   "word": "suddenly",
+   "n": 0,
+   "lead": -2,
+   "sfx": "whoosh_big",
+   "note": "crane straight up over the city (the only whoosh in 20 s)"
+  },
+  {
+   "word": "builds",
+   "n": 0,
+   "lead": 0,
+   "sfx": "hand_slap",
+   "note": "Dave slaps the sticky note on Mike's monitor"
+  },
+  {
+   "word": "18",
+   "n": 0,
+   "lead": 2,
+   "sfx": "marker_circle",
+   "note": "18 months circled"
+  },
+  {
+   "word": "crashes",
+   "n": 0,
+   "lead": 0,
+   "sfx": "error_buzz",
+   "note": "the monitor breaks into pixels"
+  },
+  {
+   "word": "shopping",
+   "n": 0,
+   "lead": 0,
+   "sfx": "cart_rattle",
+   "gain_db": -4,
+   "note": "the police car wobbles like a shopping cart"
+  },
+  {
+   "word": "week",
+   "n": 0,
+   "lead": 8,
+   "sfx": "door_open",
+   "note": "the publisher opens the door"
+  },
+  {
+   "word": "cancel",
+   "n": 0,
+   "lead": 0,
+   "sfx": "stamp_thump",
+   "note": "the CANCEL stamp slams down"
+  },
+  {
+   "word": "month",
+   "n": 0,
+   "lead": -6,
+   "sfx": "tape_rip",
+   "gain_db": -6,
+   "note": "a calendar page tears off"
+  },
+  {
+   "word": "20",
+   "n": 0,
+   "lead": 0,
+   "sfx": "tape_rip",
+   "gain_db": -6,
+   "note": "another page"
+  },
+  {
+   "word": "24",
+   "n": 0,
+   "lead": 0,
+   "sfx": "tape_rip",
+   "gain_db": -6,
+   "note": "another page"
+  },
+  {
+   "word": "break",
+   "n": 0,
+   "lead": 2,
+   "sfx": "shock_sting",
+   "note": "the cops' headlights turn red"
+  },
+  {
+   "word": "ram",
+   "n": 0,
+   "lead": -2,
+   "sfx": "retro_crash",
+   "note": "the cops ram you"
+  },
+  {
+   "word": "road",
+   "n": 0,
+   "lead": 0,
+   "sfx": "retro_crash",
+   "gain_db": -3,
+   "note": "into the wall"
+  },
+  {
+   "word": "testers",
+   "n": 0,
+   "lead": -4,
+   "sfx": "crowd_cheer",
+   "note": "testers cheering at the chase"
+  },
+  {
+   "word": "police",
+   "n": 2,
+   "lead": 4,
+   "sfx": "eraser_rub",
+   "note": "Dave rubs out the cop's hat"
+  },
+  {
+   "word": "flip",
+   "n": 0,
+   "lead": -10,
+   "sfx": "plastic_click",
+   "note": "your light bar pops off"
+  },
+  {
+   "word": "robber",
+   "n": 0,
+   "lead": 0,
+   "sfx": "reveal_pop",
+   "note": "the beanie goes on"
+  },
+  {
+   "word": "steal",
+   "n": 0,
+   "lead": 0,
+   "sfx": "siren_8bit",
+   "note": "every cop in town comes after you"
+  },
+  {
+   "word": "cancel",
+   "n": 1,
+   "lead": -2,
+   "sfx": "stamp_thump",
+   "gain_db": -3,
+   "note": "he stamps a coffee cup instead"
+  },
+  {
+   "word": "race'n'chase",
+   "n": 1,
+   "lead": -2,
+   "sfx": "stamp_thump",
+   "gain_db": -4,
+   "note": "1997 stamp as the box spins in"
+  },
+  {
+   "word": "thugs",
+   "n": 0,
+   "lead": 2,
+   "sfx": "paper_slap",
+   "note": "the newspaper slaps onto the desk"
+  },
+  {
+   "word": "banning",
+   "n": 0,
+   "lead": 6,
+   "sfx": "lords_uproar",
+   "note": "the lords shake their fists"
+  },
+  {
+   "word": "today",
+   "n": 0,
+   "lead": -2,
+   "sfx": "counter_roll",
+   "note": "the sales counter rolls up to 400 million"
+  },
+  {
+   "word": "kill",
+   "n": 1,
+   "lead": -2,
+   "sfx": "retro_crash",
+   "note": "the same pile-up as the opening"
+  }
+ ],
+ "music": {
+  "track": "lofi3.mp3",
+  "frames": "auto",
+  "button": {
+   "word": "kill",
+   "n": 1
+  },
+  "button_db": -26
+ },
+ "ambience": {
+  "office night": "amb_office_night",
+  "the game": "amb_street_day",
+  "the lords": "amb_chamber_murmur",
+  "street day": "amb_street_day"
+ },
+ "space": {
+  "office night": 0.6,
+  "the game": 0.3,
+  "the lords": 1.4,
+  "street day": 0.45
+ }
+}

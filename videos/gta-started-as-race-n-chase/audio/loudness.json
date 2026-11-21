@@ -1,0 +1,26 @@
+{
+ "integrated_lufs": -14.01,
+ "true_peak_dbtp": -1.3,
+ "samples": 4057600,
+ "seconds": 84.53333333333333,
+ "channels": 2,
+ "premaster": {
+  "lufs": -15.09,
+  "dbtp": -0.13
+ },
+ "levels_db": {
+  "voice": 0,
+  "music_bed": -3,
+  "button": -26,
+  "sfx": -12,
+  "duck": -16,
+  "ambience": -9,
+  "amb_duck": -13
+ },
+ "voice_music_gap_db": 25.8,
+ "voice_music_gap_min_word_db": 5.6,
+ "worst_word": "the",
+ "voice_button_gap_db": 15.5,
+ "sfx_loudest_vs_voice_db": -21.2,
+ "sfx_loudest_at_s": 74.1
+}
