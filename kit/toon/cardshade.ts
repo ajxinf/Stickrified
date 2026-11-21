@@ -152,13 +152,14 @@ void main() {
     if (uLitCards > 0.5) ndl = smoothstep(0.15, 0.75, dot(normalize(nlP + vec3(0.0, 0.0, -0.35)), normalize(L)) * 0.5 + 0.5);
     lamp += pointLights[i].color * (1.0 - smoothstep(0.0, D, r)) * (uLitCards > 0.5 ? 0.15 + 1.4 * ndl : 0.35 + 0.9 * ndl);
   }
-  m *= 1.0 + lamp * uPractical;
+  m *= 1.0 + min(lamp * uPractical, vec3(0.6)); // R28: a fire warms a face, never blows it out to orange-white
   #endif
   // Ink takes the scene light (ref2: navy at night, warmer on the lantern side). Only the ink colour itself is
   // recoloured (dark hair, trousers and limb strokes keep theirs); a nearby lamp lifts it a little toward its colour.
   float inkness = 1.0 - smoothstep(0.005, 0.012, distance(tex.rgb, uInkFrom));
-  vec3 base = mix(tex.rgb, uCharInk, inkness) + inkness * lamp * 0.03;
-  vec3 c = aerial(base * m, length(vView));
+  // R28: ink is not multiplied by the light (it turned maroon by the fire): it stays near the scene's ink colour.
+  vec3 base = mix(tex.rgb * m, uCharInk * (0.85 + 0.15 * min(m, vec3(1.4))), inkness) + inkness * lamp * 0.03;
+  vec3 c = aerial(base, length(vView));
   gl_FragColor = vec4(c, tex.a);
   #include <fog_fragment>
 }`;

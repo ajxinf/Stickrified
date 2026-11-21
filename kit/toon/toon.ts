@@ -346,9 +346,11 @@ export class Pen {
  */
 export type Build = { a: number; torso: number; legs: number; tw: number; egg?: number; stoop?: number; ink?: number };
 export const BUILD = {
-  adult: { a: 128, torso: 1.1, legs: 1.4, tw: 0.8 },
-  stout: { a: 128, torso: 1.15, legs: 1.32, tw: 0.92, ink: 1.12 },
-  kid: { a: 116, torso: 0.85, legs: 1.0, tw: 0.72, ink: 0.86 },
+  // R28 (user 2026-11-21 "revamp the characters"; visual-ref8/9/11 bodies): a chunkier bean on shorter legs and a
+  // slightly smaller head (was adult 128 / 1.1 / 1.4 / .8: a slim pill on long sticks).
+  adult: { a: 124, torso: 1.22, legs: 1.36, tw: 0.92 }, // same height as before (1.60 m), more body
+  stout: { a: 124, torso: 1.26, legs: 1.28, tw: 1.04, ink: 1.12 },
+  kid: { a: 114, torso: 0.92, legs: 0.98, tw: 0.82, ink: 0.86 },
 } satisfies Record<string, Build>;
 /** Outline weight of a character: its build's (heavier for stout, lighter for kids) x a seeded +-8 %. */
 export const inkWeight = (b: Build, seed: number) => (b.ink ?? 1) * (0.92 + 0.16 * rnd(seed, 31));

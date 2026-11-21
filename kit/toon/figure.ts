@@ -134,7 +134,11 @@ const armRig = (look: Look, pose: Pose, L: ReturnType<typeof layout>) => {
     // far hand 6u behind so both read.
     const S: P2 = [tcx + side * 0.85 * Ta * Math.max(Math.abs(V.cs), 0), sy];
     const dir = side + (V.side - side) * V.sn;
-    const r = solveArm(S, dir, a, 0.475 * HH);
+    // R28: a forward/back swing (Arm.fwd) moves the hand toward the side faced in turned views and lifts it a little
+    // in the front view (foreshortened toward or away from the lens).
+    const fw = (a.fwd ?? 0) * 0.95 * HH, at: [number, number] = [a.at[0] + (V.side * V.sn * fw) / (dir * 0.95 * HH || 1) * (Math.abs(dir) > 0.25 ? 1 : 0), a.at[1] - Math.abs(a.fwd ?? 0) * 0.18 * Math.abs(V.cs)];
+    const r = solveArm(S, dir, { ...a, at }, 0.475 * HH);
+    if (Math.abs(dir) <= 0.25) r.H = [r.H[0] + V.side * V.sn * fw, r.H[1]]; // far arm crossing the body: shift the hand directly
     if (!near && V.sn > 0.5) r.H = [r.H[0] - V.side * 6 * u * V.sn, r.H[1]];
     return { ...r, near };
   });
@@ -144,7 +148,7 @@ const armRig = (look: Look, pose: Pose, L: ReturnType<typeof layout>) => {
 /** Ink-dot hand (refs: a small dot a little wider than the arm); pointing adds one finger stroke along the forearm. */
 const hand = (p: Pen, s: Solved, u: number) => {
   const grip = s.a.grip ?? "mitt";
-  p.dot(s.H[0], s.H[1], (grip === "open" ? 4.4 : 3.8) * u);
+  p.dot(s.H[0], s.H[1], (grip === "open" ? 4.2 : 3.6) * u);
   if (grip === "point") {
     const l = Math.hypot(s.H[0] - s.E[0], s.H[1] - s.E[1]) || 1;
     p.stroke([s.H, [s.H[0] + ((s.H[0] - s.E[0]) / l) * 8 * u, s.H[1] + ((s.H[1] - s.E[1]) / l) * 8 * u]], 2.4 * u);
@@ -221,7 +225,7 @@ export const handsOf = (look: Look, pose: Pose): [P2, P2] => {
 export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   const g = p.g, pose = s.pose, L = layout(look, pose), B = look.build;
   const { H, W, HH, u, torsoBot, chin, facing, fwd, stoop, V } = L;
-  const ow = 5 * u;
+  const ow = 3 * u; // R28: refs' outline is ~2 % of the head width (was 5u, twice as heavy)
   p.weight = inkWeight(B, look.seed);
   p.seed = look.seed;
   const sq = (pose.squash ?? 0) * 0.08;
@@ -232,7 +236,7 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
 
   // Legs: thin ink lines from the hips, slight bow, A-stance; feet = small dark rounded shoes pointing outward
   // (cast redesign 2026-11-15 from the reference videos: limbs ~3 % of the head width, the outline's colour).
-  const skin = look.skin ?? CREAM, LIMB = 3.2 * u;
+  const skin = look.skin ?? CREAM, LIMB = 2.6 * u;
   // Turned views: the stance narrows (profile 30 %), toes and knees point the way the body faces, the far leg is
   // drawn first; from behind the feet shrink to heels.
   const spread = 0.3 + 0.7 * Math.abs(V.cs), toeK = V.cs < 0 ? 1 + 0.7 * V.cs : 1;
@@ -244,7 +248,8 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
     const i = side < 0 ? 0 : 1, lift = pose.lift[i] * (1 - sit), dir = side + (V.side - side) * V.sn;
     const hx = CX + side * 11 * u * spread, hy = torsoBot - 0.12 * HH;
     const fwdX = V.side * thigh * V.sn * sit; // turned: knees and feet ahead of the hips
-    const fx = CX + side * (17 * u + 6 * u * sit - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir + fwdX, fy = SOLE - 3 * u - lift;
+    const stride = (pose.stride?.[i] ?? 0) * (1 - sit) * V.side * V.sn; // R28: the step shows when we see the body turned
+    const fx = CX + side * (17 * u + 6 * u * sit - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir + fwdX + stride, fy = SOLE - 3 * u - lift;
     // R24 (visual-ref8/9: squats to pick things up, knees bent under a load): legs keep their length, so a lowered hip
     // (negative bob) or a lifted foot folds the knee outward instead of shortening the leg.
     const rest = Math.hypot(hx - fx, B.legs * HH + 0.12 * HH - 3 * u), d = Math.hypot(hx - fx, hy - fy);
@@ -300,6 +305,14 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   const torso: Torso = { pts: tp, cx: tcx, cy: tcy, a: T.a, b: T.b, top: chin - 0.25 * HH, bot: torsoBot, chin, u, HH, facing, yaw: V.yaw };
   if (look.outfit) p.clip(tp, () => look.outfit!(p, torso));
   p.shade(tp, SH_CLOTH, T.a, 0.55, 0.18);
+  // R28 form: the head's soft shadow on the chest (refs: the body reads as round and under the head, not a flat cut-out).
+  p.clip(tp, () => {
+    const gr = g.createRadialGradient(L.hx, chin + 0.06 * HH, 0, L.hx, chin + 0.06 * HH, 0.62 * W);
+    gr.addColorStop(0, "rgba(20,12,24,0.32)");
+    gr.addColorStop(1, "rgba(20,12,24,0)");
+    g.fillStyle = gr;
+    g.fillRect(L.hx - W, chin - 0.3 * HH, 2 * W, 0.9 * HH);
+  });
   if (look.rim) p.rimLight(tp, mix(look.jacket, "#ffffff", 0.45), 2 * u);
   p.inkRing(tp, ow);
   if (lap) {
@@ -324,6 +337,21 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   p.poly(hp, skin);
   drawFill(p, head, s.fx);
   p.shade(hp, SH_PALE, H.a);
+  // R28 form: a broad soft highlight toward the light and a gentle core shadow, so the head reads as a ball.
+  p.clip(hp, () => {
+    const lx = L.hx + Math.cos(p.light) * 0.38 * H.a, ly = L.hc + Math.sin(p.light) * 0.38 * H.b;
+    const hi = g.createRadialGradient(lx, ly, 0, lx, ly, 0.95 * H.a);
+    hi.addColorStop(0, "rgba(255,255,255,0.35)");
+    hi.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = hi;
+    g.fillRect(L.hx - 2 * H.a, L.hc - 2 * H.b, 4 * H.a, 4 * H.b);
+    const cx = L.hx - Math.cos(p.light) * 0.2 * H.a, cy = L.hc - Math.sin(p.light) * 0.2 * H.b;
+    const sh = g.createRadialGradient(cx, cy, 0.75 * H.a, cx, cy, 1.25 * H.a);
+    sh.addColorStop(0, "rgba(60,40,80,0)");
+    sh.addColorStop(1, "rgba(60,40,80,0.16)");
+    g.fillStyle = sh;
+    g.fillRect(L.hx - 2 * H.a, L.hc - 2 * H.b, 4 * H.a, 4 * H.b);
+  });
   p.inkRing(hp, ow);
   look.hair?.(p, head);
   // Turned heads show an ear (over the hair, which tucks behind it): behind the face at 3/4, mid-head in profile, toward the front from 3/4 behind.

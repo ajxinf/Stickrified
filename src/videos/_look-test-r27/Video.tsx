@@ -43,11 +43,11 @@ const clamp01 = (x: number) => Math.min(Math.max(x, 0), 1);
 // ------------------------------------------------------------------ light
 const NIGHT: LightPreset = { ...LIGHTS.night, lit: [0.42, 0.5, 0.72], shade: [0.1, 0.12, 0.2], lift: [0.01, 0.012, 0.025], sunDisc: "#f4f6ff", sunGlow: ["#8fa6d8", 0.25], fogNear: 25, fogFar: 260 };
 const SKY = photoSky(NIGHT, "kloppenheim_07_puresky", { exposure: 0.32, tint: "#bccbe8", yaw: -43 });
-const LIGHT = SKY.preset, MOON = SKY.key;
+export const LIGHT = SKY.preset, MOON = SKY.key;
 
 // ------------------------------------------------------------------ ground: the beach rises from the sea (-z) to the dunes (+z)
-const H = (x: number, z: number) => 0.26 * Math.tanh(z / 3.6) + 0.9 * smooth(10.5, 17, z) + 0.035 * smooth(1, 4, z) * Math.sin(x * 0.8 + z * 0.5) * Math.sin(x * 0.33 - 0.2 * z);
-const at = (x: number, z: number) => V(x, H(x, z), z);
+export const H = (x: number, z: number) => 0.26 * Math.tanh(z / 3.6) + 0.9 * smooth(10.5, 17, z) + 0.035 * smooth(1, 4, z) * Math.sin(x * 0.8 + z * 0.5) * Math.sin(x * 0.33 - 0.2 * z);
+export const at = (x: number, z: number) => V(x, H(x, z), z);
 const FIRE = at(1.7, 5.6), P_START = at(5.9, 3.3), P2 = at(3.3, 4.95);
 const lap = (F: number) => 0.03 * Math.sin((F / 110) * Math.PI * 2) + 0.012 * Math.sin(F / 23); // sea level (m): a wave runs up and drains
 const waterline = (F: number) => lap(F) / 0.072; // z where the sea meets the sand (beach slope ~.072 at the shore)
@@ -338,18 +338,19 @@ const SHOTS: S[] = [
 export const LOOK_TEST_R27_FRAMES = 300;
 const PLAN: Plan = { slug: "_look-test-r27", shots: SHOTS };
 
-const World: React.FC<{ F: number }> = ({ F }) => {
+/** The cove for a composition frame; `story` false leaves out this test's log and its flare (other tests reuse the set). */
+export const World: React.FC<{ F: number; story?: boolean }> = ({ F, story = true }) => {
   const w = useMemo(world, []);
   setWater(w.sea, F);
   w.sea.position.y = lap(F);
   setShoreFoam(w.foam, F, waterline(F), clamp01(0.5 + 0.5 * Math.sin((F / 110) * Math.PI * 2)));
-  const fl = flare(F);
+  const fl = story ? flare(F) : 0;
   const lights = useMemo(() => practicalLights(PRACTICALS, LIGHT), []);
   const glows = useMemo(() => practicalGlows(PRACTICALS, LIGHT), []);
   (lights.children[0] as PointLight).intensity = PRACTICALS[0].color![1] * (1 + 0.07 * Math.sin(F * 1.3) + 0.05 * Math.sin(F * 3.1)) * (1 + 0.9 * fl);
   // the rendered copies are not colliders: the guard tests the moving props itself, frame by frame
   const props = useMemo(() => MOVING.map((m) => { const o = m.make(); delete o.userData.collider; return o; }), []);
-  props.forEach((o, i) => (o.visible = MOVING[i].pose(o, F) !== false));
+  props.forEach((o, i) => (o.visible = story && MOVING[i].pose(o, F) !== false));
   return (
     <>
       <primitive object={w.g} />
@@ -357,8 +358,8 @@ const World: React.FC<{ F: number }> = ({ F }) => {
       <primitive object={glows} />
       {props.map((o, i) => <primitive key={i} object={o} />)}
       <Flames at={FIRE.clone().add(V(0, 0.12, 0))} F={F} grow={fl} />
-      <Embers at={FIRE.clone().add(V(0, 0.3, 0))} F={F} burst={LAND} />
-      <Smoke at={FIRE} F={F} puffAt={LAND} wind={V(0.3, 0, 0.18)} />
+      <Embers at={FIRE.clone().add(V(0, 0.3, 0))} F={F} burst={story ? LAND : -1e9} />
+      <Smoke at={FIRE} F={F} puffAt={story ? LAND : -1e9} wind={V(0.3, 0, 0.18)} />
     </>
   );
 };

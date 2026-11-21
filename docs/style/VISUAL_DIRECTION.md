@@ -365,3 +365,17 @@ sure to fully utilize materials for the world." Done in the kit (all future epis
 - materials: the test set uses 14 photo materials (+ dark_rock, bark_brown_02, coast_sand_rocks_02) and 13 Poly Haven
   models (+ coast rocks, modular pier, driftwood, grass clumps) at three depths;
 - fire: `fire.tsx` Flames / Embers / Smoke (the first flames were glowing cones that blew out to white in close-up).
+
+# R28: character v3 and fluid motion, 2026-11-21
+User: "The character model and movement just needs more work, we need to revamp the characters to a more updated
+version and implement a much more fluid body movements." Study: visual-ref9/10/12 motion strips at 15 fps
+(C:/remotion-tmp only) and the R26 detail sheets vs our TurnaroundSheet (`out/_char/turn_v2.png` / `turn_v3.png`).
+
+| Gap | Refs | Ours (v2) | Change (kit) |
+|---|---|---|---|
+| Body | chunky bean torso, head about as wide as the body | slim pill on long sticks | BUILD adult 124 / 1.22 / 1.36 / .92 (same 1.6 m) |
+| Ink | thin, even, near-black in every light | 5u ring (2x), maroon by firelight | ring 3u, limbs 2.6u; card ink not lit by practicals |
+| Form | heads read as balls, bodies under the head | flat cream head | ball highlight + core shadow, chin shadow on the chest; lamp warmth capped +60 % |
+| Walk | feet pass each other, arms swing, camera tracks | in profile both feet stay under the hips (marching on the spot) | `pose.stride`, `Arm.fwd`, walk v3; skill: track walkers |
+| Moves | settle and flow, head/hands trail | 4-frame snaps with 8 % overshoot | moveCurve 10 f smootherstep, 4 % overshoot, overlap 2/4 f; `posesAt`; `flow` follow-through |
+| Turns | face slides round through 3/4 | headings jump in shot code | `turnTo` eased headings |

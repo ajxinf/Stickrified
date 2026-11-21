@@ -119,6 +119,22 @@ character in every video gets it; do not override it per video. Review sheets: `
   sunken-eye arcs + stitched scar (`zombieFace`), torn shirt hem + grime (`rips`), each one a different person
   (office, jogger, granny, old man, lumberjack, road worker: `ZLOOKS` in the pilot's `roles.ts`).
 
+### Character v3 + fluid motion (R28, user 2026-11-21: "revamp the characters ... much more fluid body movements")
+Kit-wide, so every new episode gets it; `CharTest` (`src/videos/_char-test`) is the worked example.
+- **Build**: chunkier bean on slightly shorter legs, same 1.6 m height (BUILD adult a 124 / torso 1.22 / legs 1.36 /
+  tw .92); outline 3u (refs ~2 % of the head width; was 5u), limbs 2.6u. Heads carry a soft ball highlight and core
+  shadow, the chest takes the head's soft shadow. Card ink stays near-black in any light; practicals warm a face by
+  at most +60 % (it blew out to orange-white by the fire).
+- **Every role's state ends in `flow(raw, F)`** (kit acting.ts): the head and hands trail the body (an exponential lag
+  over 10 frames), so leans, bobs and jumps get follow-through. Crowds `flow(raw, F, 0.5)`.
+- **Turns ease**: `heading: turnTo([[f, h], ...], F, 14)`, never a jump in heading (a jump reads as a card flip).
+- **Keyed poses**: `posesAt([[frame, Pose], ...], F)` (or `poseAt` with names): 10-frame smootherstep moves, a 4-frame
+  anticipation, a 4 % overshoot settling over 8 frames, arms 2 and head 4 frames behind the body, breathing under every
+  hold. Hand-made timelines call `movePose(a, b, moveCurve(d), moveCurve(d - 2), moveCurve(d - 4))`.
+- **Walks stride**: `walkPose` swings the feet past each other (`pose.stride`) and the arms forward/back (`Arm.fwd`),
+  which show in 3/4 and profile views; walk speed `dist` = metres actually travelled, ramp `amount` in over ~10
+  frames and out over ~12 so starts and stops settle. Track a walker with the camera (refs) rather than a static wide.
+
 ## The protagonist ("you")
 The same character in every video; he is the viewer and the channel's face (LOOK_SPEC section 2). Costumes are
 overlays (hat, coat, uniform) that always keep the messy fringe and a rust-orange `#c8582c` accent.

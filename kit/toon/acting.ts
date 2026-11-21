@@ -136,3 +136,53 @@ export const perform = (s: CharState, F: number, seed: number, e: { since?: numb
   };
   return { ...s, pose };
 };
+
+/**
+ * R28 follow-through (user 2026-11-21: "a much more fluid body movement"; refs: heads and hands trail the body, bodies
+ * settle after a move). Wraps a role's state function: the head and arms are low-pass copies of the body (an
+ * exponential lag over the last `lag` frames), so when the body sways, bobs or jumps the head tilts against it and the
+ * hands drag behind, then catch up. Frame-driven: it re-reads `stateAt` for earlier frames, no stored state.
+ * `k` scales it (crowds .5). Use as the last step: `const st = (F) => flow(raw, F)`.
+ */
+export const flow = (stateAt: (F: number) => CharState, F: number, k = 1, lag = 10): CharState => {
+  const s = stateAt(F), p = s.pose;
+  let w = 0, sway = 0, bob = 0, sq = 0;
+  for (let i = 1; i <= lag; i++) {
+    const q = stateAt(F - i).pose, a = Math.exp(-i / 3.2);
+    w += a;
+    sway += a * q.sway;
+    bob += a * q.bob;
+    sq += a * (q.squash ?? 0);
+  }
+  sway /= w;
+  bob /= w;
+  sq /= w;
+  const dSway = (p.sway - sway) * k, dBob = (p.bob - bob) * k;
+  return {
+    ...s,
+    pose: {
+      ...p,
+      tilt: (p.tilt ?? 0) - 0.7 * dSway, // the head lags the lean
+      shrug: (p.shrug ?? 0) - 0.25 * dBob, // shoulders drop a beat late on a rise, lift on a drop
+      squash: (p.squash ?? 0) + 0.35 * ((p.squash ?? 0) - sq) * k,
+      arms: p.arms.map((a) => ({ ...a, at: [a.at[0] - 0.006 * dSway, a.at[1] + 0.0025 * dBob] })) as typeof p.arms, // hands trail
+    },
+  };
+};
+
+/**
+ * Eased heading changes: [frame, heading (rad)] keys; each turn takes `len` frames on a smootherstep along the
+ * shorter way round (R28: headings that jump read as a card flipping, refs turn through the 3/4 views).
+ */
+export const turnTo = (keys: [number, number][], F: number, len = 12) => {
+  let h = keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    const [f, to] = keys[i];
+    if (F < f) break;
+    const t = Math.min((F - f) / len, 1), e = t * t * t * (t * (t * 6 - 15) + 10);
+    let d = to - h;
+    d = Math.atan2(Math.sin(d), Math.cos(d));
+    h = h + d * e;
+  }
+  return h;
+};

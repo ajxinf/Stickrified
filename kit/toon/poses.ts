@@ -10,6 +10,9 @@ export type Arm = {
   grip?: Grip;
   /** back = behind the torso, front = over the face (chin, facepalm). */
   layer?: "back" | "front";
+  /** R28: hand forward (+) / back (-) of the body in arm lengths: shows as a swing in turned views (walk arm swing,
+   * reaching ahead), foreshortened to a small rise in the front view. */
+  fwd?: number;
 };
 export type Pose = {
   bob: number; // upper body up (+) / down (-), design px
@@ -25,6 +28,7 @@ export type Pose = {
   squash?: number; // reaction squash (+) / stretch (-), 1 = 8 %
   yaw?: number; // view angle for looks with `turns` (degrees): 0 front, +90 profile facing card-right, 180 back
   sit?: number; // 0 standing .. 1 seated (hips at chair-seat height, knees bent, shins down to the soles)
+  stride?: [number, number]; // R28: left / right foot ahead (+) of the hips, design px; shows in turned views
 };
 
 const hang: Arm = { at: [0.2, 0.92] };
@@ -86,19 +90,24 @@ export const STRIDE = 0.8;
  * Arms swing against the legs.
  */
 export const walkPose = (dist: number, amount = 1, look = 0): Pose => {
-  const ph = (dist / (2 * STRIDE)) * Math.PI * 2, s = Math.sin(ph), k = amount;
+  const ph = (dist / (2 * STRIDE)) * Math.PI * 2, s = Math.sin(ph), c = Math.cos(ph), k = amount;
   const contact = Math.max(0, Math.cos(2 * ph)) ** 6; // 1 on each heel strike (both feet down)
+  // R28 (user 2026-11-21: "much more fluid body movements"; side walks read as marching on the spot): the feet travel
+  // through a real stride (the planted foot slides back under the hips while the other swings through ahead of it),
+  // the arms swing forward and back against the legs with a soft elbow, the hips roll.
+  const reach = 150 * k; // design px each way (~0.3 m)
   return {
     ...REST,
     bob: (26 * Math.abs(s) - 6 * contact) * k,
     sway: 4.5 * s * k,
     tilt: -2.5 * Math.sin(ph - 0.6) * k,
     squash: 0.25 * contact * k,
-    lift: [Math.max(0, s) * 32 * k, Math.max(0, -s) * 32 * k],
+    lift: [Math.max(0, s) * 30 * k, Math.max(0, -s) * 30 * k],
+    stride: [-reach * c, reach * c],
     knee: 4 * k,
     arms: [
-      { at: [0.2 - 0.08 * s * k, 0.93 - 0.17 * s * k] },
-      { at: [0.2 + 0.08 * s * k, 0.93 + 0.17 * s * k] },
+      { at: [0.18 - 0.05 * s * k, 0.9 - 0.06 * Math.abs(c) * k], fwd: 0.48 * c * k },
+      { at: [0.18 + 0.05 * s * k, 0.9 - 0.06 * Math.abs(c) * k], fwd: -0.48 * c * k },
     ],
     look,
   };
@@ -112,10 +121,11 @@ export const runPose = (dist: number, look = 0): Pose => {
     bob: 20 + 26 * Math.abs(s),
     sway: 5 * s,
     lift: [Math.max(0, s) * 70, Math.max(0, -s) * 70],
+    stride: [-230 * Math.cos((dist / (2.8 * STRIDE)) * Math.PI * 2), 230 * Math.cos((dist / (2.8 * STRIDE)) * Math.PI * 2)],
     knee: 16,
     arms: [
-      { at: [0.24, 0.42 - 0.22 * s], grip: "fist" },
-      { at: [0.24, 0.42 + 0.22 * s], grip: "fist" },
+      { at: [0.24, 0.42 - 0.22 * s], grip: "fist", fwd: 0.4 * s },
+      { at: [0.24, 0.42 + 0.22 * s], grip: "fist", fwd: -0.4 * s },
     ],
     lean: 0.4,
     tilt: -4 * s,
@@ -165,38 +175,56 @@ export const movePose = (a: Pose, b: Pose, body: number, arms = body, head = arm
     ...(body < 0.5 ? a : b),
     bob: num(a.bob, b.bob, body), sway: num(a.sway, b.sway, body), knee: num(a.knee, b.knee, body),
     lift: [Math.max(0, num(a.lift[0], b.lift[0], body)), Math.max(0, num(a.lift[1], b.lift[1], body))],
+    stride: [num(a.stride?.[0], b.stride?.[0], body), num(a.stride?.[1], b.stride?.[1], body)],
     shrug: num(a.shrug, b.shrug, arms), squash: num(a.squash, b.squash, body), sit: num(a.sit, b.sit, body),
     tilt: num(a.tilt, b.tilt, head), lean: Math.max(0, num(a.lean, b.lean, head)),
     look: Math.max(-1, Math.min(1, num(a.look, b.look, head))),
-    arms: [0, 1].map((i) => ({ ...(arms < 0.5 ? a.arms[i] : b.arms[i]), at: arcAt(a.arms[i].at, b.arms[i].at, arms) })) as [Arm, Arm],
+    arms: [0, 1].map((i) => ({ ...(arms < 0.5 ? a.arms[i] : b.arms[i]), at: arcAt(a.arms[i].at, b.arms[i].at, arms), fwd: num(a.arms[i].fwd, b.arms[i].fwd, arms) })) as [Arm, Arm],
   };
 };
 /** In-between of two poses (t 0..1, eased): every part together, hands on arcs, grips switch halfway. */
 export const blendPose = (a: Pose, b: Pose, t: number): Pose => movePose(a, b, smooth(t));
 /**
- * Progress of a pose change `d` frames after its key (R21, visual-ref7 4.70-5.03 s: the arms drop and the eyes
- * shut for two frames, then the arm whips up in ~4 frames, overshoots and settles): a 3-frame anticipation the other
- * way (-6 %), the move over `len` frames eased in and out to an 8 % overshoot, settled 5 frames later.
+ * Progress of a pose change `d` frames after its key. R28 (user 2026-11-21: "much more fluid body movements"): the
+ * R21 curve (4-frame move, 8 % overshoot) read as snapping between held poses. Now: a 4-frame anticipation the other
+ * way (-5 %), the move over `len` (10) frames on a smootherstep, a 4 % overshoot that settles over 8 frames.
  */
-export const moveCurve = (d: number, len = 5) => {
-  if (d <= -3) return 0;
-  if (d < 0) return -0.06 * Math.sin(((d + 3) / 3) * Math.PI);
-  if (d < len) return 1.08 * smooth(d / len);
-  return 1 + 0.08 * (1 - smooth((d - len) / 5));
+export const moveCurve = (d: number, len = 10) => {
+  const ss = (t: number) => { const k = Math.min(Math.max(t, 0), 1); return k * k * k * (k * (k * 6 - 15) + 10); };
+  if (d <= -4) return 0;
+  if (d < 0) return -0.05 * Math.sin(((d + 4) / 4) * Math.PI);
+  if (d < len) return 1.04 * ss(d / len);
+  return 1 + 0.04 * (1 - ss((d - len) / 8));
 };
 /**
  * A pose timeline: [frame, pose name] keys. Each change anticipates, moves over `ease` frames, overshoots and
  * settles (moveCurve), with the arms a frame and the head two frames behind the body. Breathing from `posed` stays on.
  */
-export const poseAt = (keys: [number, PoseName][], f: number, ease = 5, look?: number): Pose => {
+export const poseAt = (keys: [number, PoseName][], f: number, ease = 10, look?: number): Pose => {
   let i = 0;
   while (i + 1 < keys.length && keys[i + 1][0] <= f) i++;
   const P = (j: number) => posed(keys[j][1], f / 30, look);
-  const step = (a: Pose, b: Pose, d: number) => movePose(a, b, moveCurve(d, ease), moveCurve(d - 1, ease), moveCurve(d - 2, ease));
+  const step = (a: Pose, b: Pose, d: number) => movePose(a, b, moveCurve(d, ease), moveCurve(d - 2, ease), moveCurve(d - 4, ease)); // arms 2 f, head 4 f behind the body
   let out = P(i);
-  if (i > 0 && f - keys[i][0] < ease + 7) out = step(P(i - 1), out, f - keys[i][0]);
-  if (i + 1 < keys.length && keys[i + 1][0] - f <= 3) out = step(out, P(i + 1), f - keys[i + 1][0]); // anticipation
+  if (i > 0 && f - keys[i][0] < ease + 13) out = step(P(i - 1), out, f - keys[i][0]);
+  if (i + 1 < keys.length && keys[i + 1][0] - f <= 4) out = step(out, P(i + 1), f - keys[i + 1][0]); // anticipation
   return out;
+};
+
+/**
+ * R28: a timeline of pose OBJECTS (custom poses, not only POSES names), same motion as poseAt: each change anticipates,
+ * moves over `ease` frames, settles, with the arms 2 and the head 4 frames behind the body; breathing (a 3 s bob and a
+ * slow weight shift) runs underneath so a held pose is never a statue.
+ */
+export const posesAt = (keys: [number, Pose][], f: number, ease = 10): Pose => {
+  let i = 0;
+  while (i + 1 < keys.length && keys[i + 1][0] <= f) i++;
+  const step = (a: Pose, b: Pose, d: number) => movePose(a, b, moveCurve(d, ease), moveCurve(d - 2, ease), moveCurve(d - 4, ease));
+  let out = keys[i][1];
+  if (i > 0 && f - keys[i][0] < ease + 13) out = step(keys[i - 1][1], out, f - keys[i][0]);
+  if (i + 1 < keys.length && keys[i + 1][0] - f <= 4) out = step(out, keys[i + 1][1], f - keys[i + 1][0]);
+  const t = f / 30, breath = Math.sin((t * Math.PI * 2) / 3);
+  return { ...out, bob: out.bob + 4 * breath, sway: out.sway + 0.8 * Math.sin((t * Math.PI * 2) / 4.3), arms: out.arms.map((a) => ({ ...a, at: [a.at[0], a.at[1] - 0.01 * breath] })) as [Arm, Arm] };
 };
 
 const GESTURES: Arm[] = [
