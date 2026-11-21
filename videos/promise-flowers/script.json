@@ -181,7 +181,7 @@
     },
     {
       "narration": "So you lift the *lid*.",
-      "audioTag": "dramatic",
+      "audioTag": "dramatic, loud",
       "scene": "Close on the shoebox in your lap; you snap the rubber bands and slowly lift the lid; one bee climbs out first and looks around.",
       "camera": "Macro on the lid lifting",
       "onScreenText": "",
@@ -206,7 +206,7 @@
     },
     {
       "narration": "Every flower... except *Derek's*.",
-      "audioTag": "deadpan",
+      "audioTag": "loud, deadpan punchline",
       "scene": "The swarm hits the stage, splits around Derek like water round a rock and leaves him alone in a ring of empty air. Every head in the crowd turns to him.",
       "camera": "Wide on the stage as the swarm parts, then a slow push on Derek's frozen grin",
       "onScreenText": "",
