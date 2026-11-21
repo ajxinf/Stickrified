@@ -328,3 +328,26 @@ median; every ref reads 1-3x, and none repeats frames in motion (0-1 per video).
 - `kit/toon/world.tsx` + `lights.ts`: `horizonBand` (sky horizon blend height, default .5 = unchanged).
 - `kit/toon/grade.ts`: `moonlit` shadows navy.
 - `kit/toon/guard.tsx`: `Plan.xfades` (dissolves drawn by extending the outgoing shot reach plan.json; R25 f1370 POP).
+
+# R27: outside comparison of Episode 4 vs the three newest refs, 2026-11-21
+
+Source: `docs/style/r27/REPORT.md` (the user's ChatGPT comparison of moon-disappeared-tonight vs Ref1-3). Scope set by the
+report: **shared systems and future episodes only; no existing episode re-rendered or modified.** Validated on the new
+test composition `LookTestR27` (`src/videos/_look-test-r27`) and on the moon preflight stills already on disk.
+`r27/water_before_after.jpg`: test still without / with the water sky reflection, and the new costume detail.
+
+| Finding (report §) | Priority | System | Status |
+|---|---|---|---|
+| Held shots with no visible action (§5) | P0 | guard "Static hold" (2 s without a face, gesture, move, prop or reframe); preflight framing flags (frozen shot, same framing across a cut); skill: `// does:` per shot | **done**. Moon stills: flags A2 (hill crowd, 2.4 s frozen), O1, P2 and the deliberate L1-L3 match cuts |
+| Foreground prop over the protagonist (§6, §4) | P0 | guard "Subject covered" (5 face rays vs colliders and posed story props, held ones included) | **done** |
+| Too much empty sky, small figures (§6) | P0 | guard "Empty sky" (non-wide: plain sky stays above the third grid row) | **done** |
+| Even lighting, lamps that light nothing (§2) | P0 | skill: one lighting line per scene in build.ts, every practical in frame throws a pool | rule **done**; kit falloff unchanged (the test fire pool reads; no evidence for a global change) |
+| Thin environments, flat surfaces (§1, §3) | P0/P1 | skill: material list per scene, `mottle` on large surfaces, mid-scale construction first; R26 photo maps + models | rule **done**; per episode |
+| Water as flat bands (§1) | P1 | kit `build/water.ts` (frame-driven ripple normals) + `toonMaterial({ reflect })` Fresnel sky reflection | **done** |
+| Generic costumes (§4) | P1 | kit `wardrobe.ts` `pocket`, `seams`; skill: one construction detail per speaking role | **done** |
+| Story props without close beats or effects (§8) | P1 | skill rule | **done** (rule) |
+| Captions over the named object (§9) | P2 | existing "Caption vs face", "Text in frame"; preflight checklist | unchanged (already covered) |
+| Wide crowds frozen (§5) | P2 | "Static hold" covers it; skill rule | **done** |
+
+Not done: a global practical-falloff change (needs a night episode to judge, not a test scene), a second fine ripple
+octave for water seen from under 2 m, a guard check for depth layers (richness.py edges already gates density).

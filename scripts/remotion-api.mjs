@@ -25,7 +25,8 @@ export const fail = (what, err) => {
 };
 
 const CHECKS = ["Camera clearance", "Feet on the ground", "Card penetration", "Props through props", "Camera curve",
-  "Subject in frame", "Caption vs face", "Caption width", "Reaction timing", "Light continuity", "Shadows", "Moving props", "Scale", "Cast overlap", "Subject size", "Pacing"];
+  "Subject in frame", "Caption vs face", "Caption width", "Reaction timing", "Light continuity", "Shadows", "Moving props", "Scale", "Cast overlap", "Subject size", "Pacing",
+  "Glare", "Door logic", "Text in frame", "Subject covered", "Empty sky", "Static hold"];
 
 /**
  * QA layer 1 (kit/toon/guard.tsx): one tiny still at frame 0 (plan checks + the plan's shot list), then one at each

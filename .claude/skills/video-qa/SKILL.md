@@ -51,6 +51,9 @@ Read the scene graph and the shot plan directly: `kit/toon/guard.tsx`, run by `s
 | Door logic | every object named `door` carries `userData.door` (height, m) and `userData.opens` (bool); an opening door also `userData.out` (world direction through the doorway) and `doorway` (position), and a ray through the opening finds >= 1.5 m of room, corridor or street before any surface. Found: ep 3's publisher door swung open onto a solid wall |
 | Text in frame | every fillText/strokeText on any canvas is recorded (no tagging). Text >= 3 % of the frame height that is seen (not hidden behind a set piece) is never cut by the frame edge for >= 8 frames (15-95 % visible), never covered by the set (2+ of 5 samples hit something nearer: cars over road letters, a pavement over a sign), and never sits in the caption band while captions are on; in the texture, no run past the canvas edge and no two different words overlapping. Found: ep 3's RACE'N'CHASE, FLOOR, calendar numbers, newspaper masthead, "GTA?" under the pavement and the cars, the "GTA" caption over the GTA? letters |
 | Caption vs face (overlays) | 2D stamp cards (`Plan.overlays`, from `stampBox()` in kit/toon/Stamp.tsx) never cover a head. Found: ep 3's "1994" stamp on Mike's head |
+| Subject covered | R27 (moon report: the carried chair hid you for the whole cold open). Rays from the lens to 5 points on the subject's face, against every collider and every `Shot.moving` prop posed for the frame (held ones included): 2+ blocked for 10+ frames fails. A foreground frames the subject, never hides it |
+| Empty sky | R27 (moon beach: ~40 % plain sky over small figures). Non-`wide` shots: on the median of the first/middle/last frame, at most 40 % of the 7x4 grid rays hit nothing (sky; character cards count as filled), i.e. plain sky never reaches the third grid row (y .37) |
+| Static hold | R27 (moon: one composition held while only captions changed). Shots over 2 s never go 60 frames without a visible change: a face or new effect, a real gesture (a hand travels .35, lean 8 deg, sit, turn 40 deg, a kick; breathing and idle sway do not count), someone moving .4 m, a story prop moving .25 m or appearing, a reframe (look point 20 % across the frame or 25 % zoom; a creep does not reach it) |
 
 ## Layer 1b: pre-render frames (before the final render)
 `python scripts/preflight.py <Comp> <slug>` (QA layer 1 first, then one bundle renders each shot's first+4 / last-4
@@ -59,6 +62,10 @@ frames, plus the middle of shots > 75 f, at 0.3 scale) -> `out/<slug>/pre/P01.jp
 frames, caption band clear of faces, text cut by the frame) and fix before rendering. Open a full-size
 `pre/p_<frame>.png` only for a tile that raises a question. `--draft` renders while layer 1 still fails (never sign-off).
 After a fix, re-run preflight; it overwrites `pre/`.
+INDEX.md ends with **framing flags** (R27, image-based, calibrated on the moon stills): a cut that keeps the same
+composition (diff < .05: fine only as a deliberate match cut) and a shot of 1.5 s+ whose first and last stills barely
+differ (< .015: a frozen picture under changing captions). Tick each: fix it or say why it stays.
+`python scripts/preflight.py <Comp> <slug> --flags-only` recomputes them from the stills on disk.
 
 Export the plan for layer 2 at the same time as layer 1: `out/<slug>/plan.json` with
 `{"cuts": [...], "xfade": [[a,b], ...], "flash": [[a,b]], "kicks": [[a,b], ...], "whips": [[a,b], ...]}`.

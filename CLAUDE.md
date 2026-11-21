@@ -39,7 +39,7 @@ scripts/           tts, audio, stills, QA helpers
 Rendered output (`out/`, `*.mp4`) is git-ignored. Finished episodes reach `Episodes/Episode_<N>_<Title>.mp4` only through `scripts/deliver.py` (gates: QA layers 1-3 and richness; user rule 2026-11-17 after episode 3 shipped with defects) (title words joined by underscores, from the chosen title in PUBLISH.md; user request 2026-11-16) so the user never digs through `out/`. Episode 1 = zombie-supermarket-30-days, 2 = trapped-in-this-world, 3 = gta-started-as-race-n-chase, 4 = moon-disappeared-tonight.
 
 ## Current phase
-Kit built, episodes in production (4 delivered). New kit look work follows the R26 study of the seven primary refs (docs/style/VISUAL_DIRECTION.md "R26").
+Kit built, episodes in production (4 delivered). New kit look work follows the R26 study of the seven primary refs and the R27 outside comparison (docs/style/VISUAL_DIRECTION.md "R26", "R27"; future episodes only, never re-render a finished one).
 
 ## graphify
 

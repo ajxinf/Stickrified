@@ -411,6 +411,34 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
 - **Light patterns without volumetrics**: `lightPatch(center, normal, w, h, color, strength, panes)` (glow.ts) for
   window or slat light on floors and walls.
 
+## R27: what the refs still do better (moon report 2026-11-21; `docs/style/VISUAL_DIRECTION.md` "R27")
+An outside comparison of Episode 4 against the three newest refs. Most of its points are already rules above; these are
+the new ones, and each has a check or a kit piece. **Future episodes only: never re-render or patch a finished one.**
+- **Every shot names its visible change** in a comment on its `SHOTS` entry (`// does: Brad's sign swings, you flinch`):
+  anticipation -> action -> reaction, on the words. Captions changing over a still picture is not a change, and neither
+  is a camera creep or idle breathing. QA "Static hold" fails 2 s without one; preflight's framing flags catch frozen
+  pictures and cuts that keep the same composition. Fix with acting, a prop or the world, never with constant camera motion.
+- **The subject is never behind the set.** Foreground framing props sit at the frame edge; a carried prop never covers
+  its carrier's face (moon cold open: the chair hid you for 2.4 s). QA "Subject covered".
+- **Plain sky stays in the top third** of non-wide shots (QA "Empty sky"): tilt down, frame tighter, or fill it with the
+  set, a skyline, lights or the moon. When the sky IS the story, mark the shot `wide` or `allow` it with the reason.
+- **A lighting idea per scene**, written as one line at the top of `build.ts`: key (direction, colour), fill level, rim,
+  and which practicals carry it. Every practical in frame lights the ground and faces near it (`practicalLights`, not
+  only a glow sprite); a lamp with no pool is a bug. Night and interiors keep 40-60 % in shadow (R13 "one key, one pool").
+- **A material list per scene** (also at the top of `build.ts`): 4-6 materials, each a different photo texture with its
+  normal/ARM maps (`photo()`, `scripts/polyhaven.py tex`), `mottle` on every large surface so no ground or wall is one
+  flat colour. Mid-scale construction before small detail: trim, frames, supports, seams, then chips and pebbles.
+- **Water moves**: `water()` + `setWater(mesh, F)` (kit `build/water.ts`): frame-driven ripples, the sky mirrored into
+  them by Fresnel, glints and practical streaks. Shore foam and wet sand per world (moon `seaPlane` is the worked example).
+- **Clothes look made**: besides the pattern and the signature accessory, each speaking role gets one construction
+  detail that reads at phone size: `pocket`, `seams` (side seams + hem band), `campCollar`, `belt`, `overalls`
+  (kit `wardrobe.ts`). Never a plain colour fill.
+- **Story props get a close beat and an effect**: each story-critical prop has one insert, and its action leaves a
+  physical trace (dust, debris, a dent, the light it throws or blocks, a reaction on the nearest face).
+- **Wides act too**: a crowd reshuffles, lights sweep, flags move, someone crosses. A wide held 2 s with nothing moving
+  fails "Static hold" (moon A2, the hill crowd).
+- Test new kit look work on `LookTestR27` (`src/videos/_look-test-r27`), never on an episode.
+
 ## Look values (measured from the references; R24 notes win where they differ)
 Full measurements: `docs/style/REFERENCE_NOTES.md`. The house look is the **hand-inked painted world** (references
 R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR worlds.

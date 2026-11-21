@@ -165,7 +165,7 @@ const fragment = /* glsl */ `
 #include <shadowmask_pars_fragment>
 uniform vec3 uColor, uEmissive;
 uniform sampler2D uMap, uNor, uArm;
-uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss, uRough, uBump, uHasNor, uNorK, uHasArm;
+uniform float uHasMap, uMute, uFloor, uMottle, uSpec, uGloss, uRough, uBump, uHasNor, uNorK, uHasArm, uReflect;
 uniform vec3 uSunDir, uLit, uShade, uLift, uHazeColor;
 uniform float uEmissiveK, uSat, uHazeStart, uHazeAmount, uWear, uWearC, uWearW;
 uniform vec2 uRepeat;
@@ -304,6 +304,15 @@ void main() {
     g += uLit * 0.16 * pow(max(dot(N, normalize(Ls + V)), 0.0), 80.0) * t; // a narrow glare path, not a wash
     c += uGloss * g;
   }
+  #ifdef REAL
+  if (uReflect > 0.0) {
+    // R27 water (opt-in): the sky in the ripples by Fresnel, the fog (horizon) colour low, darker overhead, so ripples
+    // read as moving bands of sky tone instead of a flat mirror colour.
+    vec3 Vw = normalize(cameraPosition - vW), R = reflect(-Vw, n);
+    float fr = 0.02 + 0.98 * pow(1.0 - max(dot(n, Vw), 0.0), 5.0);
+    c = mix(c, fogColor * mix(1.0, 0.45, clamp(R.y * 1.6, 0.0, 1.0)), clamp(fr * uReflect, 0.0, 1.0));
+  }
+  #endif
   c = max(mix(vec3(dot(c, W)), c, uSat), 0.0);
   c = aerial(c, vDist);
   c += uEmissive * a * uEmissiveK; // HDR glow keeps the map's frames and mullions dark
@@ -340,10 +349,12 @@ export type ToonOpts = {
   normalScale?: number;
   /** R26 real look: Poly Haven ARM map (R AO, G roughness). Default: the photo texture's own. */
   arm?: Texture | null;
+  /** R27 real look: Fresnel sky reflection 0-1 (water; needs fog for the sky colour). Default 0. */
+  reflect?: number;
 };
 
 /** Two-tone toon material. `mute` (0-1) pulls the map toward grey, then `color` tints it; `floor` lifts its darkest value. */
-export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0, gloss = 0, rough, bump, normalMap, normalScale = 1, arm }: ToonOpts = {}) => {
+export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], offset = 0, mute = 0, floor = 0, emissive, wear, mottle = 0, spec = 0, gloss = 0, rough, bump, normalMap, normalScale = 1, arm, reflect = 0 }: ToonOpts = {}) => {
   const nor = normalMap === undefined ? ((map?.userData.nor as Texture | undefined) ?? null) : normalMap;
   const armT = arm === undefined ? ((map?.userData.arm as Texture | undefined) ?? null) : arm;
   return new ShaderMaterial({
@@ -376,6 +387,7 @@ export const toonMaterial = ({ color = "#ffffff", map = null, repeat = [1, 1], o
       uNorK: { value: normalScale },
       uArm: { value: armT },
       uHasArm: { value: armT ? 1 : 0 },
+      uReflect: { value: reflect },
       uWearC: { value: wear?.center ?? 0 },
       uWearW: { value: wear?.width ?? 1 },
     },

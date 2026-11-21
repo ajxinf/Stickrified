@@ -7,6 +7,9 @@ Usage: python scripts/preflight.py <Composition> <slug> [--scale 0.3] [--draft]
      when the shot is longer than 75 frames. Needs out/<slug>/shots.json (any stills/render pass writes it; if it is
      missing, a frame-0 still is rendered first to create it).
   2. out/<slug>/pre/P01.jpg ...: 6 x 3 labelled tiles ("f123  A1"), and out/<slug>/pre/INDEX.md with the checklist.
+  3. R27 framing flags in INDEX.md (look, then fix or keep on purpose): a cut that keeps the same composition, and a
+     shot of 1.5 s+ whose first and last stills barely differ (a frozen picture under changing captions).
+  `--flags-only` redoes step 3 from the stills already on disk (no rendering).
 Read every sheet (layer 3's checklist), fix, re-run. --draft renders even while layer 1 fails (never for sign-off).
 """
 import json
@@ -17,6 +20,9 @@ import sys
 from PIL import Image, ImageDraw
 
 COLS, ROWS, TILE_W = 6, 3, 220
+# Calibrated on moon R26 stills: deliberate match cuts (ten/twenty/thirty) .031-.037, ordinary cuts .07-.31;
+# near-frozen shots .008-.012, acting shots .03+.
+CUT_SAME, FROZEN, FROZEN_MIN_F = 0.05, 0.015, 45
 
 
 def frames_for(shots):
@@ -30,6 +36,33 @@ def frames_for(shots):
     return out
 
 
+def sig(path):
+    """18x32 grey thumbnail, caption band masked: the composition, not the words or fine detail."""
+    import numpy as np
+    a = np.asarray(Image.open(path).convert("L").resize((18, 32), Image.BILINEAR), float) / 255
+    a[int(32 * .62):int(32 * .78), :] = np.nan
+    return a
+
+
+def framing_flags(shots, pre):
+    import numpy as np
+    d = lambda a, b: float(np.nanmean(np.abs(a - b)))
+    out, prev = [], None
+    for s in shots:
+        a, b, sid = s["a"], s["b"], s["id"].split("/")[-1]
+        f0, f1 = min(a + 4, b), max(b - 4, a)
+        if not (os.path.exists(f"{pre}/p_{f0:04d}.png") and os.path.exists(f"{pre}/p_{f1:04d}.png")):
+            prev = None
+            continue
+        s0, s1 = sig(f"{pre}/p_{f0:04d}.png"), sig(f"{pre}/p_{f1:04d}.png")
+        if prev is not None and d(prev[1], s0) < CUT_SAME:
+            out.append(f"- [ ] same framing across the cut {prev[0]} -> {sid} (f{a}, diff {d(prev[1], s0):.3f}): a match cut on purpose, or change the size/angle")
+        if b - a + 1 >= FROZEN_MIN_F and d(s0, s1) < FROZEN:
+            out.append(f"- [ ] {sid} f{a}-{b} looks frozen ({(b - a + 1) / 30:.1f} s, diff {d(s0, s1):.3f}): give it a visible action (face, gesture, prop, world)")
+        prev = (sid, s1)
+    return out
+
+
 def stills(comp, prefix, frames, scale, draft):
     cmd = ["node", "scripts/stills.mjs", comp, prefix, ",".join(map(str, frames)), str(scale)] + (["--draft"] if draft else [])
     if subprocess.run(cmd).returncode:
@@ -39,13 +72,18 @@ def stills(comp, prefix, frames, scale, draft):
 def main():
     a = sys.argv[1:]
     draft = "--draft" in a
-    a = [x for x in a if x != "--draft"]
+    flags_only = "--flags-only" in a
+    a = [x for x in a if x not in ("--draft", "--flags-only")]
     scale = float(a.pop(a.index("--scale") + 1)) if "--scale" in a else 0.3
     a = [x for x in a if x != "--scale"]
     if len(a) != 2:
         sys.exit(__doc__)
     comp, slug = a
     pre = f"out/{slug}/pre"
+    if flags_only:
+        flags = framing_flags(json.load(open(f"out/{slug}/shots.json", encoding="utf-8"))["shots"], pre)
+        print("\n".join(flags) or "preflight: no framing flags")
+        return
     os.makedirs(pre, exist_ok=True)
     for old in os.scandir(pre):  # a re-run must not mix old frames into the sheets
         os.remove(old.path)
@@ -78,8 +116,10 @@ def main():
            "frames, faces/expressions, caption band (y .64-.76) clear of faces and gags, glare, text cut by the frame.",
            f"Full-size stills: `{pre}/p_<frame>.png`.", ""]
     idx += [f"- [ ] `{n}`: f{x}-f{y}" for n, x, y in names]
+    flags = framing_flags(shots, pre)
+    idx += ["", "## Framing flags (R27)", ""] + (flags or ["none"])
     open(f"{pre}/INDEX.md", "w", encoding="utf-8").write("\n".join(idx) + "\n")
-    print(f"preflight: {len(picks)} stills -> {len(names)} sheets in {pre} (read INDEX.md)")
+    print(f"preflight: {len(picks)} stills -> {len(names)} sheets in {pre}, {len(flags)} framing flag(s) (read INDEX.md)")
 
 
 if __name__ == "__main__":

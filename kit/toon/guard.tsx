@@ -11,6 +11,7 @@ import type { CaptionWord } from "./Captions";
 import { layout } from "./figure";
 import type { CharState, Look } from "./figure";
 import { GRADE } from "./grade";
+import { NOINK } from "./ink";
 import { LIGHTS } from "./lights";
 import { youLook } from "./protagonist";
 import { DESIGN } from "./toon";
@@ -38,6 +39,7 @@ export const CHECKS = [
   "Camera clearance", "Feet on the ground", "Card penetration", "Props through props", "Camera curve",
   "Subject in frame", "Caption vs face", "Caption width", "Reaction timing", "Light continuity", "Shadows",
   "Moving props", "Scale", "Cast overlap", "Subject size", "Pacing", "Glare", "Door logic", "Text in frame",
+  "Subject covered", "Empty sky", "Static hold",
 ] as const;
 export type Check = (typeof CHECKS)[number];
 export type Span = [number, number];
@@ -242,6 +244,10 @@ const FACE_COVER = 0.25;
 const SUBJECT_MIN = 0.15;
 /** Longest shot (frames at 30 fps); the plan's mean shot must also stay at or under MEAN_SHOT. */
 const MAX_SHOT = 120, MEAN_SHOT = 90;
+/** R27 (moon report): a set piece or story prop may cover 2+ of 5 face points for at most COVER_RUN frames; a non-wide
+ * shot leaves at most SKY_MAX of the 7x4 ray grid on empty sky; a shot never runs HOLD_MAX frames without a visible
+ * change (a face, a gesture, someone moving, a prop moving, a reframe). */
+const COVER_RUN = 10, SKY_MAX = 0.4, HOLD_MAX = 60;
 const inSpans = (f: number, spans: Span[] | undefined, pad: number) => !!spans?.some(([a, b]) => f >= a - pad && f <= b + pad);
 
 // ---------- scene checks (need the built three scene)
@@ -340,6 +346,57 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
         }
     }
   } else r.na["Feet on the ground"] = r.na["Card penetration"] = "no characters";
+
+  // Subject covered (R27 report: the carried chair hid you for the whole moon cold open): rays from the lens to 5
+  // points on the subject's face against every collider (set pieces, framing props) and every story prop posed for the
+  // frame, held ones included. 2+ blocked rays for COVER_RUN+ frames fails: a foreground frames the subject, never hides it.
+  const subj = cast.find((c) => c.name === shot.subject);
+  if (subj) {
+    r.ran.add("Subject covered");
+    const from = shot.from ?? 0, movers = (shot.moving ?? []).map((m) => ({ m, obj: m.make() }));
+    const still = cols.filter((c) => !movers.some(({ m }) => m.name === c.name)).map((c) => c.root); // the scene's own copy of a story prop sits where the mount frame left it
+    const rc = new Raycaster();
+    let run = 0;
+    for (let f = 0; f < shot.frames; f++) {
+      if (f < (shot.subjectFrom ?? 0) || inSpans(f, shot.whips, 0)) { run = 0; continue; }
+      const cam = cams[f], p = subj.at(f), { head } = card(subj, f), side = new Vector3(Math.cos(cardYaw(p, cam.position)), 0, -Math.sin(cardYaw(p, cam.position)));
+      const targets = [...still, ...movers.filter(({ m, obj }) => m.pose(obj, from + f) !== false && obj.visible).map(({ obj }) => (obj.updateMatrixWorld(true), obj))];
+      let blocked = 0, by = "";
+      for (const [i, j] of [[0, 0], [-0.6, 0], [0.6, 0], [0, -0.6], [0, 0.6]]) {
+        const d = p.clone().addScaledVector(side, head.x + i * head.a).setY(p.y + head.y + j * head.b).sub(cam.position);
+        rc.set(cam.position, d.clone().normalize());
+        rc.far = d.length() - 0.15;
+        const h = rc.intersectObjects(targets, true)[0];
+        if (!h) continue;
+        blocked++;
+        let o: Object3D | null = h.object;
+        while (o && !o.userData.collider && !movers.some(({ obj }) => obj === o)) o = o.parent;
+        by ||= o ? String(o.userData.collider ?? movers.find(({ obj }) => obj === o)?.m.name) : h.object.name || "set";
+      }
+      run = blocked >= 2 ? run + 1 : 0;
+      const note = `${blocked}/5 face rays blocked for ${COVER_RUN}+ frames: move the foreground to the frame edge, change the angle or crop tighter`;
+      if (run === COVER_RUN) for (let g = f - COVER_RUN + 1; g <= f; g++) r.add("Subject covered", shot, g, `${by} over "${subj.name}" face`, note);
+      else if (run > COVER_RUN) r.add("Subject covered", shot, f, `${by} over "${subj.name}" face`, note);
+    }
+  } else r.na["Subject covered"] = "no subject";
+
+  // Empty sky (R27 report: the moon beach frames were ~40 % plain sky over small figures): on the first, middle and
+  // last frame, the share of measure.py's 7x4 grid rays that hit nothing (sky). A non-wide shot stays at or under SKY_MAX.
+  if (!shot.wide) {
+    r.ran.add("Empty sky");
+    const rc = new Raycaster();
+    rc.layers.enable(NOINK); // character and crowd cards fill the frame too (a face against the sky is not empty sky)
+    const miss = [0, shot.frames >> 1, shot.frames - 1].map((f) => {
+      let n = 0;
+      for (const gx of GRID_X)
+        for (const gy of GRID_Y) {
+          rc.setFromCamera({ x: 2 * gx - 1, y: 1 - 2 * gy } as never, cams[f]);
+          if (!rc.intersectObject(scene, true).length) n++;
+        }
+      return n / (GRID_X.length * GRID_Y.length);
+    }).sort((a, b) => a - b)[1];
+    if (miss > SKY_MAX) r.add("Empty sky", shot, 0, "frame", `${(miss * 100).toFixed(0)} % of the frame is empty sky (max ${SKY_MAX * 100} % outside \`wide\` shots): tilt down, frame tighter, or put the set/skyline in it`);
+  }
 
   // Props through props (setup, reported once as shot "setup"): part boxes of different colliders, and nothing
   // floating above its support.
@@ -708,6 +765,32 @@ const planChecks = (plan: Plan, fps: number, aspect: number) => {
     // Pacing (critique: 5 s holds while the punchline was spoken): a shot runs at most MAX_SHOT frames.
     r.ran.add("Pacing");
     if (shot.frames > MAX_SHOT) r.add("Pacing", shot, 0, "shot length", `${(shot.frames / fps).toFixed(1)} s (max ${(MAX_SHOT / fps).toFixed(1)} s): cut on the punch word, split it`);
+
+    // Static hold (R27 report: moon's beach held one composition while only captions changed): no HOLD_MAX frames
+    // without a visible change. Counted as changes: a face or new effect, a real gesture (a hand travels, the body
+    // leans, sits or turns; breathing and idle sway do not count), someone moving 0.4 m, a story prop moving 0.25 m or
+    // appearing, a reframe (look point 20 % across the frame or 25 % zoom; a creep does not reach it).
+    if (n > HOLD_MAX) {
+      r.ran.add("Static hold");
+      const movers = (shot.moving ?? []).map((m) => ({ m, obj: m.make() }));
+      const propAt = (f: number) => movers.map(({ m, obj }) => (m.pose(obj, from + f) === false || !obj.visible ? null : obj.getWorldPosition(new Vector3())));
+      const scale = (p: CamPose) => 1 / (Math.tan((p.fov * Math.PI) / 360) * p.pos.distanceTo(p.look));
+      const big = (a: CharState["pose"], b: CharState["pose"]) =>
+        [0, 1].some((k) => Math.hypot(a.arms[k].at[0] - b.arms[k].at[0], a.arms[k].at[1] - b.arms[k].at[1]) > 0.35) ||
+        Math.abs(a.sway - b.sway) > 8 || Math.abs(a.bob - b.bob) > 12 || Math.abs(a.look - b.look) > 0.5 ||
+        Math.abs((a.sit ?? 0) - (b.sit ?? 0)) > 0.5 || Math.abs((a.yaw ?? 0) - (b.yaw ?? 0)) > 40 || Math.max(...a.lift.map((x, k) => Math.abs(x - b.lift[k]))) > 0.3;
+      let last = 0, ref = { states: cast.map((c) => c.state(0)), at: cast.map((c) => c.at(0)), props: propAt(0), cam: poses[0] };
+      for (let f = 1; f < n; f++) {
+        const states = cast.map((c) => c.state(f)), props = propAt(f), cam = poses[f], s = screen(cams[f], ref.cam.look);
+        const changed =
+          states.some((x, k) => x.expr !== ref.states[k].expr || Object.keys(x.fx).some((e) => !(e in ref.states[k].fx)) || big(x.pose, ref.states[k].pose)) ||
+          cast.some((c, k) => c.at(f).distanceTo(ref.at[k]) > 0.4) ||
+          props.some((q, k) => (q === null) !== (ref.props[k] === null) || (q && ref.props[k] && q.distanceTo(ref.props[k]!) > 0.25)) ||
+          Math.hypot(s.x - 0.5, s.y - 0.5) > 0.2 || Math.abs(scale(cam) / scale(ref.cam) - 1) > 0.25;
+        if (changed) { last = f; ref = { states, at: cast.map((c) => c.at(f)), props, cam }; }
+        else if (f - last === HOLD_MAX) r.add("Static hold", shot, last, "shot", `nothing visibly changes for ${(HOLD_MAX / fps).toFixed(0)}+ s (frames ${last}-${f}): a face, a gesture, a prop or the world must act on the words`);
+      }
+    }
 
     // Cast overlap: a nearer card never covers another character's face (cards are flat: two people in one line of
     // sight read as one blob). Stage them apart on screen or crop one out.
