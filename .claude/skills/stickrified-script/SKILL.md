@@ -41,7 +41,8 @@ breaks, it is a list: rewrite it.
    8 s of hero and toys, "no premise, no zombie"). In line 1's `scene`, plan a quick cut to the danger on its
    number or stakes word (pilot R17: three zombies snap ring-eyed toward the store on "212").
 3. **Chain every line to the one before** with But / So / Then / That night / The next morning / Until /
-   Eventually. "Day N" stamps only for the 2-3 biggest jumps; a "Day 1... Day 3... Day 7..." diary is a list.
+   Eventually. A "Day 1... Day 3... Day 7..." diary is a list. Time jumps are shown in the world, never as a stamp
+   card (user 2026-11-21): give each jump a visual (`gag`) a viewer reads without text.
 4. **Give "you" a goal, an opponent and a doubter.** The opponent pushes back (zombies, a rival, a deadline, the
    rule itself). The doubter, a side character, says the viewer's doubt out loud in one short line of dialogue.
    "You" answers with an action or one word.
@@ -252,7 +253,7 @@ Goal: the most entertaining 61-90 s possible. A swipe-away means a line was bori
   Liam `TX3LPaxmHKxFdv7VOQHJ` young man, Brian `nPczCjzI2devNBz1zQrb` deep older man, Lily `pFZP5JQG7iQjIQuC4Bku`
   warm British woman, Callum `N2lVS1w4EtoT3dr4eOWO` husky trickster) or a library voice the user adds.
 - `spoken` (optional) = what the voice reads when it differs: numbers written out, inline tags, CAPS, `...`.
-- `audioTag` = the line's lead tag without brackets. `onScreenText` = stamp cards ("DAY 3", "1831"). `gag` = the
+- `audioTag` = the line's lead tag without brackets. `onScreenText` = text that appears ON A PROP in the world (a calendar page, a newspaper date), never a floating stamp card. `gag` = the
   literal visual gag on that line (empty if none).
 - Never describe on screen what the viewer already sees; the scene shows it, the narration adds to it.
 

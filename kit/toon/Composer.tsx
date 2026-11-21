@@ -27,12 +27,19 @@ import { GRADE_GLSL, gradeState, setGradeUniforms, setLookUniforms } from "./gra
 import type { Look as ShotLook } from "./grade";
 import { NOINK, inkMaterial } from "./ink";
 import { shared } from "./shade";
+import { onPhotoLoaded } from "./build/photo";
 
 /** Post look values. Pixel sizes are at 1080x1920 and scale with output height / 1920. */
 export const POST = {
   // Lens blur on close-ups and mediums only; wides and establishing shots stay sharp (the default).
   dof: { maxPx: 0, near: 14, far: 45, fgPx: 0, fgNear: 0, fgFar: 0 },
-  bloom: { threshold: 1.0, intensity: 0.5, levels: 6, radius: 0.6 },
+  // R21b (user: "looks cheap next to the refs"): 0.5 hazed every warm frame; the refs' glows stay on the practicals.
+  bloom: { threshold: 1.0, intensity: 0.32, levels: 6, radius: 0.6 },
+  // R26 (2K master, user 2026-11-21): contrast-adaptive sharpen before the tone map, radius 1 px at 1080 (scales with
+  // height). The game-engine refs are TAA-sharpened (richness crisp 10-26); ours went soft straight to the encoder
+  // (2K final crisp 6.3). Clamped to the 3x3 neighbourhood: no halos round ink lines or practicals.
+  sharpen: 1.0,
+  sharpenPx: 2, // radius at 1080 (x height / 1920): 1 px is finer than richness.py's 540-wide measure can see
   // The grade itself is per light preset (grade.ts).
 };
 
@@ -128,9 +135,20 @@ void main() {
 // grey, lighting.md 3) -> sRGB -> fitted grade (grade.ts).
 const finalFrag = /* glsl */ `
 uniform sampler2D tColor, tBloom;
-uniform float uBloom, uExposure, uHalation;
+uniform float uBloom, uExposure, uHalation, uSharpen;
+uniform vec2 uSharpTexel;
 varying vec2 vUv;
 ${GRADE_GLSL}
+// Contrast-adaptive sharpen (CAS-like): push away from the 4-neighbour mean, clamped to the 3x3 min/max.
+vec3 sharpened(vec2 uv) {
+  vec3 c = texture2D(tColor, uv).rgb;
+  if (uSharpen <= 0.0) return c;
+  vec2 o = uSharpTexel;
+  vec3 n = texture2D(tColor, uv + vec2(0.0, o.y)).rgb, s = texture2D(tColor, uv - vec2(0.0, o.y)).rgb;
+  vec3 e = texture2D(tColor, uv + vec2(o.x, 0.0)).rgb, w = texture2D(tColor, uv - vec2(o.x, 0.0)).rgb;
+  vec3 mn = min(c, min(min(n, s), min(e, w))), mx = max(c, max(max(n, s), max(e, w)));
+  return clamp(c + uSharpen * (c - 0.25 * (n + s + e + w)), mn, mx);
+}
 vec3 neutral(vec3 color) {
   const float S = 0.76, D = 0.15;
   float peak = max(color.r, max(color.g, color.b));
@@ -145,7 +163,7 @@ vec3 toSRGB(vec3 c) { return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.
 void main() {
   vec3 b = texture2D(tBloom, vUv).rgb;
   // Halation: the glow around practicals bleeds warm (film), on top of the neutral bloom.
-  vec3 c = (texture2D(tColor, vUv).rgb + uBloom * b + uHalation * dot(b, vec3(0.3333)) * vec3(1.0, 0.45, 0.2)) * uExposure;
+  vec3 c = (sharpened(vUv) + uBloom * b + uHalation * dot(b, vec3(0.3333)) * vec3(1.0, 0.45, 0.2)) * uExposure;
   c = neutral(max(c, 0.0));
   c = toSRGB(clamp(c, 0.0, 1.0));
   gl_FragColor = vec4(grade(c, vUv), 1.0);
@@ -161,13 +179,16 @@ export const DOF = {
   none: POST.dof,
   // 2026-11-13 (ref13): backgrounds clearly soft but still readable (6/8 px read as all-sharp, 10/13 as mush), and
   // anything nearer than ~60 % of the focus distance blurs hard (foreground framing: a chair edge, a shoulder).
-  medium: (d: number): Dof => ({ maxPx: 9, near: d + 1.2, far: d + 12, fgPx: 20, fgNear: d * 0.3, fgFar: d * 0.65 }),
-  closeup: (d: number): Dof => ({ maxPx: 11, near: d + 0.7, far: d + 5, fgPx: 22, fgNear: d * 0.3, fgFar: d * 0.65 }),
+  // R21b (all 7 visual refs): their sets stay readable behind the character (patterns, trims, props visible);
+  // our 9/11 px wiped the set to mush and measured 2-3x less crisp than every ref. Now a soft separation only.
+  medium: (d: number): Dof => ({ maxPx: 4, near: d + 1.5, far: d + 14, fgPx: 20, fgNear: d * 0.3, fgFar: d * 0.65 }),
+  closeup: (d: number): Dof => ({ maxPx: 5, near: d + 0.9, far: d + 7, fgPx: 22, fgNear: d * 0.3, fgFar: d * 0.65 }),
 };
 
 export const Composer: React.FC<{ dof?: Dof; look?: ShotLook }> = ({ dof = POST.dof, look }) => {
-  const { gl, scene, camera } = useThree();
+  const { gl, scene, camera, advance } = useThree();
   const frame = useCurrentFrame();
+  useEffect(() => onPhotoLoaded(() => advance(performance.now())), [advance]); // repaint when a photo texture arrives
 
   const p = useMemo(() => {
     gl.shadowMap.enabled = true;
@@ -235,6 +256,8 @@ export const Composer: React.FC<{ dof?: Dof; look?: ShotLook }> = ({ dof = POST.
       uAccent: { value: [0, 0] },
       uGAmount: { value: 1 },
       uExposure: { value: 1 },
+      uSharpen: { value: POST.sharpen },
+      uSharpTexel: { value: new Vector2((POST.sharpenPx * px) / Math.max(size.x, 1), (POST.sharpenPx * px) / Math.max(size.y, 1)) },
     });
     const quad = new Mesh(new PlaneGeometry(2, 2), ink);
     quad.frustumCulled = false;

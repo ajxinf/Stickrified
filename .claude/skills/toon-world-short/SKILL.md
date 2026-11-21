@@ -1,6 +1,6 @@
 ---
 name: toon-world-short
-description: Make a Stickrified vertical Short (61-90 s) in the "2D stickman cartoon characters in a painted 3D world" style - flat round-head stickman cards with thick ink outlines, hand-inked painted 3D world, saturated colour script, lit cards, an always-moving camera, 10-frame dissolves, literal visual gags, second-person ElevenLabs narration, synthesized SFX and an original score - rendered with three.js inside Remotion. Use for any new Stickrified video, "make the next short", a what-if scenario, strange-true-history or "In this world..." fiction short, writing or punching up a script, building the toon kit, or "use the toon world skill".
+description: Make a Stickrified vertical Short (61-90 s) - flat 2D cartoon characters in a softly lit 3D world (primary refs visual-ref8/9), second-person ElevenLabs narration, word-synced shots, foley and library music - rendered with three.js inside Remotion. Use for any new Stickrified video, "make the next short", a what-if, strange-true-history or "In this world..." short, kit/look work, or "use the toon world skill".
 ---
 
 # Toon-world short (three.js + Remotion)
@@ -11,6 +11,10 @@ Three pillars, all narrated in **second person ("you")**, all built to be as ent
 - **Strange true history**: "You're one of 74 soldiers about to knock down an iron bridge just by walking across it."
 - **"In this world..." fiction**: an invented world with one changed rule, and you're stuck living in it.
   "In this world, everyone's lies float above their head as a number. Yours says 4,000."
+
+**Primary visual references (R24, user 2026-11-21): `assets/visual-ref8.mp4` and `visual-ref9.mp4`.** What they do
+and what the kit took from them: `docs/style/VISUAL_DIRECTION.md` "R24" (frames in `docs/style/r24/`). Where they
+conflict with older refs, LOOK_SPEC or a value below, they win.
 
 **Look authority: `docs/style/LOOK_SPEC.md`** (craft numbers we adopt + the Stickrified identity layer + the
 current gap list). It merges the MIT-licensed 20-video study in `vendor/cartoon-3d-short/references/reports/` (with code
@@ -54,9 +58,15 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
     into a look-ahead true-peak limiter (ceiling -1.3 dBTP). Loudnorm alone falls back to dynamic mode.
   - End the mix on the last word. A musical button may land on the last word and must decay before the last frame;
     no outro sting after it, no end card.
-- Final export 1080x1920 (scale 1, the default since 2026-11-13). 2K 1440x2560 only on request: scale `4/3` (`1.3333` gives 2559.936 px and Remotion refuses it). If a final render on the laptop takes more than 30 min,
-  export 1080x1920 instead and note it in `docs/STYLE.md`.
-- A fresh verifier agent (Opus, max effort) checks every look step and the final video.
+- **Final export is 2K 1440x2560** (user 2026-11-21): scale `4/3` (`1.3333` gives 2559.936 px and Remotion refuses it;
+  `render.mjs` and `stills.mjs` take the fraction). ~34 min on the laptop for 83 s. The 2K master carries 2K photo
+  textures (`polyhaven.py tex <id> --res 2k`: diffuse + normal 2K, ARM 1K) and the Composer's contrast-adaptive sharpen
+  (`POST.sharpen`); every pixel-sized post value scales with the drawing-buffer height, so 2K looks like 1080 scaled.
+  **Review flow:** a 720p preview (downscale of a 1080 render) goes to the user only to spot visual defects (floating
+  objects, clipping); after their notes are fixed, render 2K, run QA layers 2-3 and richness ON THE 2K FILE, deliver it.
+- Checks are scripts first (QA layer 1, `preflight.py`, `richness.py`, `measure.py`), then one eye pass by you on
+  the sheets the `video-qa` skill names. No verifier or critic agents; sub-agents only when the user asks. The user
+  reviews the finished video.
 - Commit after every step (`git add -A; git commit -m "<video>: <step>"`). Push at the end of each session.
 - Once the user approves the script: "just do it". No more check-ins until delivery unless blocked.
 - Content: advertiser-friendly and evergreen; violence stays off-screen (cutaways, sound, reactions); no graphic true
@@ -84,23 +94,6 @@ docs/STYLE.md      our style bible: the look values below + approved frames in d
 videos/BACKLOG.md  topic backlog (20+), videos/TIMELOG.md minutes per step per video
 ```
 
-## Phase 0: build the kit (once, weeks 1-2)
-Build in this order, commit after each, and get a verifier pass on stills before moving on:
-1. **World**: `world.ts` sky shader, fog = horizon colour; `lights.ts` day + golden presets; `shade.ts` two-tone shading.
-2. **Ink**: `ink.ts` outline pass (its own pass, before any blur), `NOINK` layer for character cards.
-3. **Materials**: `paint.ts` Canvas2D painted textures with seams painted in as dark tints; Kenney CC0 props recoloured
-   (record each in `assets/CREDITS.md`).
-4. **Characters**: `toon.ts` Pen API (600x1000 design canvas, soles at y = 975), round heads, stick limbs, near-black
-   variable-width outline, face library (14 expressions); `protagonist.ts` (spec below).
-5. **Cast**: `cast.ts` camera-facing billboards, walk cycles, blinks, crowds, effect cards; `cardshade.ts` card lighting.
-6. **Post**: `Composer.tsx` ink -> lens blur -> camera motion blur -> bloom -> NEUTRAL tone map -> grade, MSAA 4.
-7. **Captions**: `Captions.tsx` from `words.json`.
-8. **Scripts**: `measure.py` (the reference-study measurements: optical-flow camera motion, still frames, colour,
-   vignette, caption change rate), `tts.ts` (ElevenLabs with-timestamps -> voice.wav + words.json), audio scripts, `stills.mjs`,
-   `sbs_sheet.py`, `short_qa.py`.
-9. **Pilot Short** through the full pipeline, then copy its folder to `templates/base/`, save the best frames to
-   `docs/style/frames/` and write `docs/STYLE.md` with the final values and measured render speed.
-
 ## Character style (all characters)
 **Character style for every episode (cast redesign 2026-11-15, matched to `assets/visual-ref1-3.mp4` +
 `video-standard.mp4`; the user rejected the earlier cast as cheap).** It lives in the shared kit (`kit/toon/`), so every
@@ -117,6 +110,11 @@ character in every video gets it; do not override it per video. Review sheets: `
 - Body: the build's pill torso (original widths, not slimmer) carrying the costume detail (stripes, buttons, lanyard,
   tie, patterns); thin dark stick limbs (~3 % of the head width) in the ink colour, small dot hands, small dark feet
   (white sneakers for "you"). Tried and rejected: brush limbs in cloth colours, mitten hands, shaped shoes, paper grain.
+- **R24 (visual-ref8/9):** heads a little wider than tall (H/W .88-.98); faces carry heavy expressive brows; costumes
+  carry rich pattern (lamellar rows of dots, stripes, belts with buckles, badges, pockets) and pick up the scene's
+  light (warm firelight on one side). Legs keep their length: a lowered hip (`bob` < 0) folds the knees (figure.ts
+  leg IK). Use the `crouch`, `pickup` and `strain` poses for picking up, carrying and pushing (ref9 27 s squats to
+  pick up the bomb; ref8 16 s carries armour plates).
 - Variety comes from build, costume, hair, one accessory (`kit/toon/wardrobe.ts`, `extras.ts`). Zombies: green skin,
   sunken-eye arcs + stitched scar (`zombieFace`), torn shirt hem + grime (`rips`), each one a different person
   (office, jogger, granny, old man, lumberjack, road worker: `ZLOOKS` in the pilot's `roles.ts`).
@@ -156,8 +154,11 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
    approved, "just do it". Visual rules that come from the script:
    - **Cold open**: the first frame already shows the most absurd image of the story, on the first word.
    - **Literal gags**: every line's `gag` becomes a picture (a face "goes purple" -> it fills purple).
-   - Scenario pillar: show the 2-3 big time jumps with the "DAY 3" stamp card (upper third, thump SFX); history
-     uses the year card the same way. Every other bit of text lives in the world (see "Visual storytelling").
+   - **No time-stamp cards** (user 2026-11-21: "stop doing the 4 hours later label at the top, find a more creative
+     and subtle way"). Show time passing inside the world: a clock or phone in frame, a candle burned down, the tide
+     line moved, shadows swinging, the sky changing, stubble or a pile of empty cans growing, a match cut on the same
+     framing. A year in history lives on a prop (a newspaper, a calendar, a sign). Text still lives in the world (see
+     "Visual storytelling").
    - At least one POV "you" shot per video. POV only until a back-view card exists (cards always face the
      camera, so an over-the-shoulder shot shows your face); the back view is in `videos/BACKLOG.md`.
    - Captions change 2.2-3 times per second; end on the last word, no outro.
@@ -235,21 +236,19 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      words it says, e.g. a quoted line); `laughFlap` for a laugh. Write characters' quoted lines into scripts so
      they get to talk (R13: characters talk; dialogue holds run on the mouth).
    - Write `cues.md` (frame, time, sound, what it is synced to).
-9. **Look checks**: `node scripts/stills.mjs <Comp> out/<slug>/x_ 100,400 0.5` (QA layer 1 first: every check of the
-   video-qa skill on every frame of every shot; a failure stops with the shot id, frame and object); side-by-sides against
-   `docs/style/frames/` (and, until the pilot is approved, frames grabbed from `assets/references/`) with
-   `python scripts/sbs_sheet.py out.jpg --ours ... --ref ...`; a verifier gives a <=200-word
-   verdict, scores (colour, lighting, ink, textures, characters, depth, composition) and a numbered fix list.
+9. **Look checks, before the final render**: `python scripts/preflight.py <Comp> <slug>` (video-qa layers 1 + 1b:
+   every scene check on every frame, then labelled sheets of every shot). Read every sheet once; fix; re-run. Spot-check
+   colour with `python scripts/richness.py out/<slug>/pre/p_<frame>.png`. For a look question, one side-by-side against
+   the R24 frames: `python scripts/sbs_sheet.py out.jpg --ours ... --ref docs/style/r24/...`.
 10. **Final render**:
-    `node scripts/render.mjs <Comp> out/<slug>/video.mp4` (1080p, concurrency 1) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
+    `node scripts/render.mjs <Comp> out/<slug>/video.mp4 4/3` (2K, concurrency 1) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
     mux with `npx remotion ffmpeg -i out/<slug>/video.mp4 -i videos/<slug>/audio/mix.wav -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 320k out/<slug>/final.mp4`.
-    QA: run the **video-qa** skill (scene checks before rendering, `scripts/video_qa.py` + `short_qa.py` +
-    `measure.py` on the final, then a fresh reviewer agent). Fix everything, then a final verifier audit.
-10b. **Review**: run the `video-review` skill (QA + three audience critics, fixes, re-review); it writes
-    `videos/<slug>/REVIEW.md`. Deliver only at READY TO PUBLISH or READY WITH MINOR IMPROVEMENTS.
+    QA: the **video-qa** layers 2, 2b and 3 on the final (`video_qa.py`, `short_qa.py`, `measure.py`, `richness.py`,
+    `frames.py` sheets, `line_sheet.py`), written to `out/<slug>/QA.md`. Fix, re-render only the changed part, re-QA
+    with `--prev` (changed shots only).
 11. **Deliver**: `python scripts/deliver.py <slug> <N> "<Title>"` (never copy by hand: it refuses unless layer 1,
-    QA.md `Verdict: PASS`, richness and REVIEW.md `Production quality: PASS` + a READY decision are all on disk;
-    episode 3 skipped steps 10-10b and shipped glare, a door onto a wall and cut text), SendUserFile it; 3 title options; description with "Narration: AI voice" (+ sources for
+    QA.md `Verdict: PASS` and richness are on disk and passing; episode 3 skipped QA and shipped glare, a door onto a
+    wall and cut text). The user reviews the delivered video by eye. SendUserFile it; 3 title options; description with "Narration: AI voice" (+ sources for
     history); add minutes per step to `videos/TIMELOG.md`; mark the topic done in `BACKLOG.md`; commit and push.
 
 ## Visual storytelling (from the R5-R7 study)
@@ -280,7 +279,7 @@ The look values below make a frame pretty; these rules make the frames tell the 
   carries small many-coloured detail at several distances (bunting, signs, posters, plants, clutter) so no frame is
   one colour, and the sunset/golden frames keep cool local colour against the warm light. Before the final render,
   `python scripts/richness.py <stills or render>` must land inside the refs' ranges (crisp 8.5-21.6, edges
-  .050-.093, hue entropy 2.0-2.7, warm share <= .77).
+  .050-.093, hue entropy 1.4-2.7, warm share <= .77, colourfulness .17-.36; R24 widened them to include ref8/9).
 - **Bodies act, not just faces (R21, user 2026-11-16: "characters should not feel stiff, robotic, weightless";
   study of visual-ref7 in `docs/style/VISUAL_DIRECTION.md` "R21").** Ep 2 laughed, panicked and gloated with a
   statue body under a changing face; the reference rocks the whole body on a laugh, leans 25 deg into a cart it
@@ -364,6 +363,9 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
 - **Hands do things**: `actionPose("knock" | "tape" | "wave" | "bang", t)` and the still poses `eat`, `kick`, `knock`,
   `tape`, `wave`, `bang` (kit poses.ts); faces `grin` and `smirk` besides the rest. Held props sit in the hand
   (`handWorld`, QA "Moving props").
+- **Sitting is a pose, not a sunk card** (user 2026-11-18, ep 4: "they just stand and clip through the chair"):
+  `pose.sit = 1` drops the torso to `SEAT_M` (0.38 m) and bends the knees; stand the card on the floor at the seat's
+  front edge (lawn chair: `SEAT_AHEAD`), mark the role `sit: true`, frame on `headHeight(look, { ...REST, sit: 1 })`.
 - **Hits get a shake**: `impact(pose, frame)` (kit camera.ts) on slams, crashes and kicks, declared in `kicks`.
 - **Every window shows the outside**: `streetViewTex` + `windowViews` (kit build/views.ts), day and night.
 - **Sets say what they are**: set dressing that names the place's role at phone size (a fortress gets barbed wire,
@@ -409,7 +411,7 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
 - **Light patterns without volumetrics**: `lightPatch(center, normal, w, h, color, strength, panes)` (glow.ts) for
   window or slat light on floors and walls.
 
-## Look values (measured from the references; tune in Phase 0, then record finals in docs/STYLE.md)
+## Look values (measured from the references; R24 notes win where they differ)
 Full measurements: `docs/style/REFERENCE_NOTES.md`. The house look is the **hand-inked painted world** (references
 R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR worlds.
 
@@ -435,7 +437,36 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
     into warm/cool shapes; diorama haze only past ~24 m; wet/polished floors get `gloss` (`StreetOpts.gloss`); head
     turns use `pose.look` (the face slides); listeners run `alive()`; expression changes go through `exprAt()`;
     thrown things use `toss()` (kit/toon/physics.ts); hero props in macros get `spec` .6-.9 and detail. Worked example:
-    `src/videos/_visual-test` (`VisualTest`). Colour targets: sat .44-.52, colourfulness >= .26.
+    `src/videos/_visual-test` (`VisualTest`). Colour targets (R24, ref8/9): sat .36-.46, colourfulness .17-.30 (the grade
+    scales every preset's saturation by `SAT_K` .87); day luma ~.5, night ~.26 with warm practical pools.
+  - **R25 realistic world (user 2026-11-21: "a 2d character in a realistic 3d world just like the references"):**
+    lookdev `real` is the default (kit/toon/lookdev.ts). The world shader (shade.ts `REAL`) does soft Lambert light
+    with soft shadows, sky/ground ambient, roughness highlights with Fresnel, relief from photo textures, and practicals
+    that pool (world only; cards keep the glare-calibrated light). World ink is off; clouds are a soft layer.
+    - **Materials are CC0 photo textures**: `photo("<name>")` (kit build/photo.ts) from `public/tex/`, tinted with
+      `color`, `rough` per surface (sand .95, wood .75, metal .45, wet .2). New texture: `python scripts/polyhaven.py
+      tex <id>` (1K diffuse + normal + ARM, never downloads twice), then `python scripts/tex_level.py`, credit it in
+      `assets/CREDITS.md`. R26: the normal and ARM maps load with the diffuse automatically (`public/tex/maps.json`);
+      without them relief comes from the diffuse's brightness, which turned sand into TV static (R25). Painted canvas
+      textures get no relief (they glitter); kit `MAT.wood/darkWood/metal` are photos.
+    - **Props are CC0 models, not boxes** (R26: the refs' barrels, stools, crates and lanterns are modelled; our Kit
+      boxes read as blocks): `python scripts/polyhaven.py model <id>`, then `model("<id>", { part, height, tint, glow,
+      collider })` (kit build/models.ts). Check the Poly Haven catalogue first (api.polyhaven.com/assets?t=models; the
+      beach set has crates, barrels, buckets, lanterns, a lifebuoy, floodlights, a picnic table, shells). Collections
+      (`flood_lights`, `wooden_barrels_01`) take a `part` name prefix. Build from primitives only what no library has.
+    - **Sky**: a vertical frame sees the dome from the horizon to ~25 deg, so `skyMid` is the sky colour; a blue dusk
+      over a warm horizon needs `horizonBand` ~.14 (a wide band averages blue and peach to mauve) and the `sunset`
+      grade (the `golden` grade's x2.08 exposure washes a dusk milky).
+    - **Model the sets**: houses get plinths, corner boards, framed windows with sills, framed doors with steps, tiled
+      roofs with overhang and chimneys (moon-disappeared-tonight `house()`); open ground gets `grassTufts`.
+    - **Night** (ref9): dim cool key, deep blue ambient, warmth only in practical pools (add `noGlow` fill lights under
+      string bulbs), blue haze up to .6 on far hills. Day keeps the ref8 sun.
+    - Worked example: `src/videos/moon-disappeared-tonight` (R25), side-by-sides in `out/r25/`.
+  - **R24 world (visual-ref8/9):** the world is softly lit 3D with no drawn outlines (world ink is a faint accent:
+    `INK.opacity` .45, 2.6 px near); depth and finish come from AO, raking light, cool aerial haze and dense clutter.
+    Open ground is never one flat fill: scatter `grassTufts` (kit build/ground.ts) along paths, walls and field edges
+    (dark, mid and sun-bleached colours), plus `debris`/`scraps`; interiors carry patterned rugs, hanging lamps, shelves
+    of small props, wall boards with text. Night: moon disc + glow, blue cloud sky, warm fire/torch pools on the ground.
   - **The sun**: `sunDisc(radius)` (hot pale centre, gold limb, rim and corona; SKY layer, billboard it with
     `lookAt`). Put it where the key light comes from (`SUN = SUN_POS - camera`, normalised), so shadows and any
     light gag agree with the sun the viewer sees.
@@ -447,9 +478,8 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
   corner/centre ratio by lighting (`--light`): dusk, golden, night and interior 0.75-0.88; **day exteriors 1.1-1.4**
   (mean over the sampled frames). Sky and sunlit ground fill a day frame's corners, so the ratio stays above 1
   whatever the vignette does. Measured on `_pipeline-test` with the day grade vignette at .14.
-- **Ink** (`ink.ts`): near-black brown `#1c1210`, 4 px near -> 2.5 px far at 1080x1920, on silhouettes, depth
-  jumps and creases from 30 deg, including major wall/floor edges (the inked look draws them). Character cards are
-  on `NOINK` and carry their own outline.
+- **Ink** (`ink.ts`): near-black brown `#1c1210`, 2.6 px near -> 1.6 px far at 1080x1920, 45 % opacity (R24), on
+  silhouettes, depth jumps and creases. Character cards are on `NOINK` and carry their own full-strength outline.
 - **Paint** (`paint.ts`): visible brush strokes and grain in every fill (wood grain, plaster mottling, grass
   strokes, snow sparkle), seams painted as dark tints; never flat untextured fills on big surfaces.
 - **Lens** (`DOF.closeup/medium`): background clearly soft in close-ups (11 px at 1080) and mediums (9 px), wides
@@ -461,10 +491,7 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
   corners and ceilings), dust motes (`Dust`) drifting in its light, and one warm/cool opposite pair in the frame.
 - **Inserts** (ref14): about one full-frame 2D explainer per video (`Insert`: x-ray, thermal, map), a hard cut on
   the mechanism or body beat.
-- **Characters** (`toon.ts`/`cast.ts`/`cardshade.ts`): follow LOOK_SPEC section 1 "Characters" exactly
-  (3.5 HH adults, bean heads and torsos, stroke limbs, ink-dot hands, thick-thin warm ink, lidded default eyes,
-  bright tinted heads with a soft crescent, blob ground shadows, blinks and swaps on the word). Port the drawing
-  code from `vendor/cartoon-3d-short/references/reports/characters.md` section 3, with our colours and identity.
+- **Characters**: see "Character style" above (it supersedes LOOK_SPEC section 1 where they differ).
 - **Camera** (`story.ts`, measured):
   - hold, then move fast (R11/R13, 2026-11-13; replaces "never still"): real still holds on dialogue and reaction
     beats (still frames 10-20 %, holds up to 60 f), then quick 10-15 f reframes. A constant slow creep reads flat.
@@ -485,7 +512,7 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
   - hard cut: punch close-ups, reaction inserts, object close-ups.
   - big jump in place or era: fly-through or fast pull-out with motion-blur streaks, or a white-wash dissolve.
 
-### Current kit values (local Phase 0 tuning; reconcile with the targets above)
+### Current kit values
 - **Light presets** (`lights.ts`, sun camera-relative and frozen per shot):
   - day: az 75 / el 48, lit [1.58,1.5,1.33], shade [.30,.29,.36], lift [.05,.06,.11] (cool tint only in shade), sky
     top `#3e7fd2` -> horizon `#b8d0ec`, fog = horizon, 25->300 m, uSat 1.08, ~15 % blue haze past 60 m.
@@ -497,7 +524,7 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
   - night (add for scenarios): moon-blue key, warm practical lights (lamps, fires, shop signs) as HDR emissives.
 - **Albedos** (`paint.ts`/`build.ts`): muted, never neon. Buildings with plinth, cornice, sills, door step; warm grey/
   beige stone; wood with near-black seams; metal dark and desaturated. Never lemon, never lavender lit faces.
-- **Ink** (`ink.ts`): `#1c1210`, 4 px near (6 m) -> 2.5 px far (90 m) at 1080x1920; creases from 35 deg at 0.7x
+- **Ink** (`ink.ts`): `#1c1210`, 2.6 px near (6 m) -> 1.6 px far (90 m) at 1080x1920, opacity .45 (R24); creases from 35 deg at 0.7x
   width; depth jumps from 1 %; opacity 0.8 at 90 m (outlines.md: far cores lighten). Concave contacts (an object
   standing on the ground) at 0.6x width and the preset's `contactInk` (0.6 outdoors, 0 in interiors: no wall/floor
   lines indoors); no line on the horizon. Character cards are on `NOINK` and carry their own ink.
@@ -514,28 +541,15 @@ R3/R4) with the **saturated daylight colour** of R2. No near-realistic PBR world
 - **Post** (`Composer.tsx`, `POST`, `grade.ts`): grade per preset (sat ~1.15-1.38, vignette .22-.5, top .1-.3,
   grain .022, halation .35); bloom threshold 1.0, intensity .5, 6 levels, radius .6 (HDR emissives only); NEUTRAL
   tone map; grade last.
-- **Characters**: head 40 % of height; mitten hands; ink constant on screen (8 px mediums, 14 px cap) and
-  thicker on the shadow side; poses from `POSES` + any expression; 4-frame squash on reactions; walk bob 3-7 %, lean 1-7 deg, planted 0.8 m stride; blinks every 0.5-2.3 s lasting 4 f;
+- **Characters** (motion): poses from `POSES` + any expression; 4-frame squash on reactions; walk bob 3-7 %, lean 1-7 deg, planted 0.8 m stride; blinks every 0.5-2.3 s lasting 4 f;
   tight contact shadow under the feet + sun-direction tail by day; golden rim light inner only, head/torso only.
 - **Camera** (`kit/toon/camera.ts`: drift, pushIn, pullOut, arc, followTilt, reveal): hard cuts on big jumps;
   everything else a quick glide; holds are real holds (QA guard allows still runs up to 60 f; check with measure.py); rolls 4-5 deg; impact
   shakes flip sign every frame and decay over 7 f; foreground props in ~1/3 of shots.
 
-## Polish loop (Phase 0, or when a video's scores stay low)
-Heavy on time and tokens: use it for the kit, not for every video.
-1. **Targets**: the numbers above, `docs/style/REFERENCE_NOTES.md` and `docs/STYLE.md` are the source of truth for
-   every agent. To re-measure our own render the same way, run `python scripts/measure.py out/<slug>/final.mp4`
-   (camera motion, still frames, colour, vignette, caption rate) and compare with REFERENCE_NOTES.
-2. **Sandboxes, one owner per file area**: copy the video folder to `src/videos/<slug>_{cam,world,mat,char,post}`
-   with entries `src/sandboxes/<n>/index.tsx`. Owners: cam = story.ts; world = world/lights/shade/grade;
-   mat = paint/build; char = toon/cast/cardshade/protagonist; post = ink/Composer/lensblur. Agents edit only their own
-   files and render stills from their sandbox entry.
-3. **Merge** owned files back to main (back up first to `backup/<slug>_<time>/`), run `npx tsc --noEmit`, then
-   re-sync every sandbox from main before the next round.
-4. **Verify** with a fresh verifier: side-by-side sheets vs `docs/style/frames/`, scores per area, numbered fixes with
-   frame numbers; send each fix to its owner (SendMessage keeps the agent's context).
-5. Contracts between owners are exported constants (`NOINK`, `dofAt`, `FOREGROUND`, `LIGHTS`, `LOOK`). Changing one
-   means telling every owner that reads it.
+## Kit-wide look work
+One change at a time in `kit/toon/`, checked on `CharacterLineup` / `VisualTest` stills against `docs/style/r24/`
+frames and `richness.py`; run the kit self-checks (`node kit/toon/<name>.test.mjs`) and `npx tsc --noEmit`.
 
 ## Gotchas
 - **Dissolves fade over the real overlap**, never a fixed constant: `<Dissolve len={prevEnd - s.from}>`. The pilot faded
@@ -557,7 +571,6 @@ Heavy on time and tokens: use it for the kit, not for every video.
 - Sub-agents may not be able to write files: ask for a <=150-word final message and save it yourself to
   `out/<slug>/<n>/REPORT.md`.
 - Scratch `.ts` files inside `out/` break `tsc`: name them `.txt`.
-- Measure render speed on this laptop (stills, 1080 final, 2K final) during the pilot and record it in `docs/STYLE.md`.
 - 4 GB VRAM: if a render crashes or goes black, lower `--concurrency` to 1 before changing anything else.
 
 ## Readability traps (check every new prop and shot)

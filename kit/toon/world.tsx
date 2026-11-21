@@ -1,4 +1,5 @@
 import { useFrame, useThree } from "@react-three/fiber";
+import { LOOK_FEATURES } from "./lookdev";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { BackSide, DirectionalLight, Fog, Mesh, Object3D, ShaderMaterial, Vector3 } from "three";
 import { CASTER, SKY } from "./ink";
@@ -7,7 +8,7 @@ import { applyLight } from "./shade";
 
 const skyFrag = /* glsl */ `
 uniform vec3 uTop, uMid, uHorizon, uSun, uSunDisc, uGlow, uCloudLit, uCloudShade;
-uniform float uHasSun, uCloudCover;
+uniform float uHasSun, uCloudCover, uBand;
 varying vec3 vDir;
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -19,8 +20,21 @@ float fbm(vec2 p) { float s = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { s += a
 void main() {
   vec3 d = normalize(vDir);
   float h = pow(clamp(d.y / 0.75, 0.0, 1.0), 0.6);
-  vec3 c = mix(mix(uHorizon, uMid, smoothstep(0.0, 0.5, h)), uTop, smoothstep(0.45, 1.0, h));
+  vec3 c = mix(mix(uHorizon, uMid, smoothstep(0.0, uBand, h)), uTop, smoothstep(0.45, 1.0, h));
   c += uGlow * pow(max(dot(d, uSun), 0.0), 6.0) * (1.0 - h);
+#ifdef REAL
+  if (uCloudCover > 0.0 && d.y > 0.0) {
+    // R25 real look (visual-ref9 night, ref8 day): a soft cloud layer overhead in perspective (p = d.xz / d.y), billowy
+    // fbm with feathered edges, lit from above, thinning into the horizon haze. No hard painted edge.
+    vec2 p = d.xz / (d.y + 0.12) * 1.3 + vec2(4.1, 2.7);
+    float n = fbm(p) * 0.7 + fbm(p * 2.7 + 9.0) * 0.3;
+    float cov = 1.0 - uCloudCover * 0.75;
+    float dens = smoothstep(cov - 0.15, cov + 0.2, n);
+    float lit = clamp(0.5 + (n - fbm(p + vec2(0.06, 0.09))) * 6.0, 0.0, 1.0);
+    vec3 cc = mix(uCloudShade, mix(uCloudShade, uCloudLit, 0.75), lit);
+    c = mix(c, cc, dens * 0.9 * smoothstep(0.0, 0.22, d.y));
+  }
+#else
   if (uCloudCover > 0.0) {
     // A few painted cloud banks: flattened noise, a hard-ish edge, warm underside, violet top.
     vec2 p = vec2(atan(d.x, -d.z) * 2.6, d.y * 6.0);
@@ -31,6 +45,7 @@ void main() {
     vec3 cc = mix(uCloudShade, uCloudLit, under);
     c = mix(c, cc, m * 0.92);
   }
+#endif
   if (uHasSun > 0.5) c = mix(c, uSunDisc * 4.0, smoothstep(0.99965, 0.99975, dot(d, uSun)));
   gl_FragColor = vec4(c, 1.0);
 }`;
@@ -60,6 +75,7 @@ export const ToonWorld: React.FC<{ preset: LightPreset; sunDir: Vector3; shadow?
     return new ShaderMaterial({
       vertexShader: skyVert,
       fragmentShader: skyFrag,
+      defines: LOOK_FEATURES.real ? { REAL: "" } : {},
       side: BackSide,
       depthWrite: false,
       uniforms: {
@@ -73,6 +89,7 @@ export const ToonWorld: React.FC<{ preset: LightPreset; sunDir: Vector3; shadow?
         uCloudLit: { value: linear(preset.clouds?.lit ?? "#ffffff") },
         uCloudShade: { value: linear(preset.clouds?.shade ?? "#ffffff") },
         uCloudCover: { value: preset.clouds?.cover ?? 0 },
+        uBand: { value: preset.horizonBand ?? 0.5 },
       },
     });
   }, [preset, sunDir]);

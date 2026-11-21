@@ -1,8 +1,8 @@
 # Stickrified — project instructions
 
-Faceless channel **Stickrified** (YouTube Shorts, TikTok, Facebook Reels; long-form later). **Style: flat 2D cartoon characters in a painted, ink-lined 3D world.** Three pillars: survival "what if" scenarios, strange true history, and fictional "In this world..." stories. Entertainment first: comic exaggeration is welcome, but real facts in history videos stay true (see the skill's "Entertainment rules"). All narration in **second person ("you")**. Audience: US/UK/Canada, Gen Z + Millennials. English only.
+Faceless channel **Stickrified** (YouTube Shorts, TikTok, Facebook Reels; long-form later). **Style: flat 2D cartoon characters in a realistic 3D world (photo textures, physical light, haze; lookdev `real`, user 2026-11-21); primary visual refs `assets/visual-ref8.mp4` + `visual-ref9.mp4` (user 2026-11-21; they win over older refs).** Three pillars: survival "what if" scenarios, strange true history, and fictional "In this world..." stories. Entertainment first: comic exaggeration is welcome, but real facts in history videos stay true (see the skill's "Entertainment rules"). All narration in **second person ("you")**. Audience: US/UK/Canada, Gen Z + Millennials. English only.
 
-**How to make a video: follow `.claude/skills/toon-world-short/SKILL.md`.** It holds the pipeline, look values, protagonist spec and gotchas. **Scripts (formulas, jokes, Eleven v4 tags, length): follow `.claude/skills/stickrified-script/SKILL.md`.** **Reviewing a video (QA + audience critics + fixes): follow `.claude/skills/video-review/SKILL.md`.** This file only holds the project-wide rules.
+**How to make a video: follow `.claude/skills/toon-world-short/SKILL.md`.** It holds the pipeline, look values, protagonist spec and gotchas. **Scripts (formulas, jokes, Eleven v4 tags, length): follow `.claude/skills/stickrified-script/SKILL.md`.** **QA (visual defects, before and after the render): follow `.claude/skills/video-qa/SKILL.md`.** No AI critics or verifier agents (removed 2026-11-21): the user reviews finished videos by eye. This file only holds the project-wide rules.
 
 ## Machine
 Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work in PowerShell. Render with `--gl=angle` and `--concurrency=1` (default since 2026-11-13: concurrency 2 ran the laptop out of memory on the 80 s pilot). Set `$env:TEMP`/`$env:TMP` to `C:\remotion-tmp` before rendering.
@@ -15,10 +15,10 @@ Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work 
 - Lip sync: on-screen characters move their mouths on the words they speak (`scripts/audio/mouth.py`, approved 2026-11-14).
 
 ## Pipeline (audio-first)
-Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, the user edits) → voice + word timings → shot plan timed to words → world, cast, captions → sound → look checks → render, mux, QA. Details in the skill.
+Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, the user edits) → voice + word timings → shot plan timed to words → world, cast, captions → sound → pre-render QA (`scripts/preflight.py`) → render, mux, QA. Details in the skill.
 
 ## Formats
-- Shorts: 61–90 s, 1080×1920 composition, 30 fps, final export 1080×1920 (default since 2026-11-13; 2K 1440×2560 only on request).
+- Shorts: 61–90 s, 1080×1920 composition, 30 fps. **Final export 2K 1440×2560** (user 2026-11-21: the 2K file is the final output, its quality and QA are what count); the 720p preview is only for the user's defect review (floating objects, clipping) before the 2K render.
 - Shorts: burned-in captions, at most 2 white words at a time, no pop; the `*key*` word is coloured: yellow in narration, the speaker's colour on dialogue (user request 2026-11-16; see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
 
 ## Content rules
@@ -36,10 +36,10 @@ templates/base/    starting point for new videos (made after the pilot)
 docs/STYLE.md      style bible + approved frames in docs/style/frames/
 scripts/           tts, audio, stills, QA helpers
 ```
-Rendered output (`out/`, `*.mp4`) is git-ignored. Finished episodes reach `Episodes/Episode_<N>_<Title>.mp4` only through `scripts/deliver.py` (gates: QA layers 1-3, richness, video-review; user rule 2026-11-17 after episode 3 shipped with defects) (title words joined by underscores, from the chosen title in PUBLISH.md; user request 2026-11-16) so the user never digs through `out/`. Episode 1 = zombie-supermarket-30-days, 2 = trapped-in-this-world, 3 = gta-started-as-race-n-chase.
+Rendered output (`out/`, `*.mp4`) is git-ignored. Finished episodes reach `Episodes/Episode_<N>_<Title>.mp4` only through `scripts/deliver.py` (gates: QA layers 1-3 and richness; user rule 2026-11-17 after episode 3 shipped with defects) (title words joined by underscores, from the chosen title in PUBLISH.md; user request 2026-11-16) so the user never digs through `out/`. Episode 1 = zombie-supermarket-30-days, 2 = trapped-in-this-world, 3 = gta-started-as-race-n-chase, 4 = moon-disappeared-tonight.
 
 ## Current phase
-Weeks 1–2: Phase 0 of the skill (build the toon kit) and a pilot Short ("What if you were trapped in a supermarket for 30 days during a zombie apocalypse" unless the user picks another). Daily posting starts week 3.
+Kit built, episodes in production (4 delivered). New kit look work follows the R26 study of the seven primary refs (docs/style/VISUAL_DIRECTION.md "R26").
 
 ## graphify
 

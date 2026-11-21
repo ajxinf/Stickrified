@@ -12,9 +12,12 @@ export const CASTER = 3;
 /** Ink look values, in px at 1080x1920 (scaled by output height / 1920). */
 export const INK = {
   color: "#1c1210",
-  nearPx: 4,
+  // R24 (visual-ref8/9, primary refs since 2026-11-21): the world has no drawn outlines, only soft light, AO and
+  // texture; characters keep their ink. World lines stay as a faint hand-made accent: thinner and at 45 % opacity.
+  opacity: 0.45,
+  nearPx: 2.6,
   nearM: 6,
-  farPx: 2.5,
+  farPx: 1.6,
   farM: 90,
   creaseDeg: 35,
   depthJump: 0.01,
@@ -37,7 +40,7 @@ uniform sampler2D tColor, tNormal, tDepth;
 uniform mat4 uProjInv;
 uniform vec2 uTexel;
 uniform float uPx, uNearPx, uNearM, uFarPx, uFarM, uCrease, uJump, uFogTint, uSkyMax, uFogNear, uFogFar;
-uniform float uCreaseScale, uContact, uContactScale, uFarOpacity;
+uniform float uCreaseScale, uContact, uContactScale, uFarOpacity, uOpacity;
 uniform vec3 uInk, uFog, uLit, uShade;
 uniform float uAO, uAORad;
 varying vec2 vUv;
@@ -134,7 +137,7 @@ void main() {
   }
   float fogF = smoothstep(uFogNear, uFogFar, zInk);
   cover *= 1.0 - smoothstep(0.97, 1.0, fogF); // lines only vanish where fog fully hides the surface
-  cover *= mix(1.0, uFarOpacity, clamp((zInk - uNearM) / (uFarM - uNearM), 0.0, 1.0));
+  cover *= uOpacity * mix(1.0, uFarOpacity, clamp((zInk - uNearM) / (uFarM - uNearM), 0.0, 1.0));
   vec3 ink = mix(uInk, uFog, uFogTint * fogF);
   gl_FragColor = vec4(mix(col, ink, cover), 1.0);
 }`;
@@ -165,6 +168,7 @@ export const inkMaterial = (size: Vector2) =>
       uContact: { value: 0.6 },
       uContactScale: { value: INK.contactScale },
       uFarOpacity: { value: INK.farOpacity },
+      uOpacity: { value: LOOK_FEATURES.real ? 0 : INK.opacity }, // R25 real look: the world has no drawn lines (refs 8/9)
       uFogNear: { value: 1e9 },
       uFogFar: { value: 2e9 },
       uInk: { value: new Color(INK.color) },

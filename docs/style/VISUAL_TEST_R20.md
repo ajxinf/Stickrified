@@ -64,7 +64,7 @@ nothing. The old man by the lamp laughs. You kick it, the lid pops, 84 gumballs 
    R5/R6 heads under practicals. Consider a small warm bounce on cards in sunset light.
 
 ## Next
-Apply the R20 kit to the next episode (it is kit-wide: haze, face slide). Run `video-review` on it. Fix 2 and 3 above in
+Apply the R20 kit to the next episode (it is kit-wide: haze, face slide). Run `video-qa` on it. Fix 2 and 3 above in
 the kit (a `hold()` camera helper; a contact-puff effect for hits).
 
 ## R21 (user feedback, same day): lights stealing focus, characters "still kinda cheap"

@@ -70,14 +70,14 @@ export const blobPts = (cx: number, cy: number, B: Blob, n = 96): P2[] => {
 
 /**
  * Head: an imperfect hand-drawn circle, different per character (cast redesign 2026-11-15, refs: round heads with
- * lumps, not a dome with a flat jaw): H/W 0.92-1.02, near-circle crown and jaw, seeded lumps (noise), 6-10 % bulge
+ * lumps, not a dome with a flat jaw): H/W 0.88-0.98 (R24: visual-ref8/9 heads are a little wider than tall), near-circle crown and jaw, seeded lumps (noise), 6-10 % bulge
  * toward the facing side. `facing` is continuous (-1..1, the pose's head turn) so the bulge slides instead of popping.
  */
 export const headBlob = (seed: number, a: number, facing = 0): Blob => {
   const side = rnd(seed, 6) < 0.5 ? -1 : 1, f = clamp(facing * 2, -1, 1);
   return {
     a,
-    b: a * (0.97 + 0.1 * (rnd(seed, 1) - 0.5)),
+    b: a * (0.93 + 0.1 * (rnd(seed, 1) - 0.5)),
     nTop: 2.05 + 0.4 * (rnd(seed, 2) - 0.5),
     nBot: 2.1 + 0.4 * (rnd(seed, 3) - 0.5),
     egg: -0.04 + 0.1 * (rnd(seed, 4) - 0.5),

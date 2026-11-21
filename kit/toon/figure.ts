@@ -69,6 +69,8 @@ export const viewOf = (look: Look, pose: Pose) => {
 };
 
 const { SOLE } = DESIGN;
+/** Seat height (m) a seated pose (`pose.sit` 1) puts the bottom of the torso at: a lawn or dining chair. */
+export const SEAT_M = 0.38;
 const CX = DESIGN.W / 2;
 
 /** Landmarks for a look in a pose (design px). Total height = (1 + torso + legs) head heights. */
@@ -77,7 +79,9 @@ export const layout = (look: Look, pose: Pose = REST) => {
   // Turned views lean the head shape and features toward the side faced (profile = fully one-sided).
   const facing = clamp(pose.look * (1 - V.sn) + V.side * V.sn, -1, 1);
   const H = headBlob(look.seed, B.a, facing), W = 2 * H.a, HH = 2 * H.b, u = W / 100;
-  const torsoBot = SOLE - B.legs * HH - pose.bob;
+  // Seated: the bean bottom rests at chair-seat height (SEAT_M, the same for every build: chairs are world props).
+  const sit = pose.sit ?? 0, hip = B.legs * HH;
+  const torsoBot = SOLE - (hip + (Math.min(hip, SEAT_M * DESIGN.PX_PER_M) - hip) * sit) - pose.bob;
   const chin = torsoBot - B.torso * HH;
   const fwd = facing < 0 ? -1 : 1;
   const hx = CX + stoop * 0.1 * W * fwd;
@@ -85,8 +89,8 @@ export const layout = (look: Look, pose: Pose = REST) => {
   return { H, W, HH, u, torsoBot, chin, hx, hc, facing, fwd, stoop, V };
 };
 
-/** Head centre above the soles (m), standing at rest. */
-export const headHeight = (look: Look) => (SOLE - layout(look).hc) / DESIGN.PX_PER_M;
+/** Head centre above the soles (m), standing at rest (or in `pose`, e.g. `{ ...REST, sit: 1 }`). */
+export const headHeight = (look: Look, pose: Pose = REST) => (SOLE - layout(look, pose).hc) / DESIGN.PX_PER_M;
 
 /** Acceptance numbers (LOOK_SPEC section 4) from the same geometry that is drawn. */
 export const measureLook = (look: Look) => {
@@ -233,12 +237,21 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   // drawn first; from behind the feet shrink to heels.
   const spread = 0.3 + 0.7 * Math.abs(V.cs), toeK = V.cs < 0 ? 1 + 0.7 * V.cs : 1;
   const legOrder: (-1 | 1)[] = V.sn > 0.3 && V.side < 0 ? [1, -1] : [-1, 1];
-  legOrder.forEach((side) => {
-    const i = side < 0 ? 0 : 1, lift = pose.lift[i], dir = side + (V.side - side) * V.sn;
+  // Seated (pose.sit): thighs come forward (front view: short, out to knees just under the torso; turned: level toward
+  // the side faced), shins drop to the soles. Drawn over the torso so the lap reads in front of the body.
+  const sit = pose.sit ?? 0, thigh = 0.42 * B.legs * HH;
+  const drawLegs = () => legOrder.forEach((side) => {
+    const i = side < 0 ? 0 : 1, lift = pose.lift[i] * (1 - sit), dir = side + (V.side - side) * V.sn;
     const hx = CX + side * 11 * u * spread, hy = torsoBot - 0.12 * HH;
-    const fx = CX + side * (17 * u - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir, fy = SOLE - 3 * u - lift;
-    const bow = dir * (1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u);
-    const leg: P2[] = [[hx, hy], [(hx + fx) / 2 + bow, (hy + fy) / 2], [fx, fy]];
+    const fwdX = V.side * thigh * V.sn * sit; // turned: knees and feet ahead of the hips
+    const fx = CX + side * (17 * u + 6 * u * sit - lift * 0.15) * spread + (lift > 2 ? pose.reach ?? 0 : 0) * u * dir + fwdX, fy = SOLE - 3 * u - lift;
+    // R24 (visual-ref8/9: squats to pick things up, knees bent under a load): legs keep their length, so a lowered hip
+    // (negative bob) or a lifted foot folds the knee outward instead of shortening the leg.
+    const rest = Math.hypot(hx - fx, B.legs * HH + 0.12 * HH - 3 * u), d = Math.hypot(hx - fx, hy - fy);
+    const fold = sit > 0 ? 0 : Math.sqrt(Math.max(rest * rest - d * d, 0)) / 2;
+    const bow = dir * Math.max(1.5 * u + (pose.knee ?? 0) * 0.35 + lift * 0.25 + stoop * 3 * u, fold);
+    const stand: P2 = [(hx + fx) / 2 + bow, (hy + fy) / 2], knee: P2 = [CX + side * 30 * u * spread + fwdX, torsoBot + 12 * u];
+    const leg: P2[] = [[hx, hy], [stand[0] + (knee[0] - stand[0]) * sit, stand[1] + (knee[1] - stand[1]) * sit], [fx, fy]];
     p.stroke(leg, LIMB, INK);
     // Point at t (0 hip .. 1 ankle) along the two-segment leg.
     const along = (t: number): P2 => {
@@ -259,6 +272,8 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
       if (look.shoeStripe) p.stroke([[heel[0] + (toe[0] - heel[0]) * 0.25, heel[1] - 0.6 * u], [heel[0] + (toe[0] - heel[0]) * 0.65, toe[1] - 0.6 * u]], 1.6 * u, look.shoeStripe);
     } else p.stroke([heel, toe], 6 * u, mix(look.shoes, INK, 0.55));
   });
+  const lap = sit >= 0.5 && V.cs >= -0.3; // from behind, the body hides the lap
+  if (!lap) drawLegs();
 
   // Upper body pivots around the hips.
   g.save();
@@ -287,6 +302,12 @@ export const drawPerson = (p: Pen, look: Look, s: CharState) => {
   p.shade(tp, SH_CLOTH, T.a, 0.55, 0.18);
   if (look.rim) p.rimLight(tp, mix(look.jacket, "#ffffff", 0.45), 2 * u);
   p.inkRing(tp, ow);
+  if (lap) {
+    // The legs hang from the hips, which the upper body's sway rotates about: undo it so the shins stay plumb.
+    g.save(); g.translate(CX, torsoBot); g.rotate(-rad(pose.sway + stoop * 4 * fwd)); g.translate(-CX, -torsoBot);
+    drawLegs();
+    g.restore();
+  }
   if (!back) drawProp(p, s.prop, arms, u); // from behind, the body hides what the hands hold
   arms.filter((a) => a.front && !over(a)).forEach(drawArm);
 

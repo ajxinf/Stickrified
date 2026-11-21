@@ -52,12 +52,13 @@ export const blinkAt = (frame: number, fps: number, seed = 1) => {
 
 /**
  * Expression timeline (R20, visual-ref1 reaction ladder: every swap goes through a closed-eye frame): [frame, expr]
- * keys; the eyes shut for 2 frames on each change, on top of the seeded blinks.
+ * keys; the eyes shut for 2 frames on each change, on top of the seeded blinks. `since` (the current key's frame)
+ * and `prev` (the expression before it) feed acting.ts `perform`, which crossfades the body between emotions.
  */
-export const exprAt = <E extends string>(keys: [number, E][], F: number, seed = 1): { expr: E; blink: boolean } => {
+export const exprAt = <E extends string>(keys: [number, E][], F: number, seed = 1): { expr: E; blink: boolean; since: number; prev?: E } => {
   let i = 0;
   while (i + 1 < keys.length && keys[i + 1][0] <= F) i++;
-  return { expr: keys[i][1], blink: (i > 0 && F - keys[i][0] < 2) || blinkAt(F, 30, seed) };
+  return { expr: keys[i][1], blink: (i > 0 && F - keys[i][0] < 2) || blinkAt(F, 30, seed), since: i > 0 ? keys[i][0] : -999, prev: i > 0 ? keys[i - 1][1] : undefined };
 };
 
 /**

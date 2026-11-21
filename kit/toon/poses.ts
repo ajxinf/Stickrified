@@ -24,6 +24,7 @@ export type Pose = {
   shrug?: number; // shoulders up, px
   squash?: number; // reaction squash (+) / stretch (-), 1 = 8 %
   yaw?: number; // view angle for looks with `turns` (degrees): 0 front, +90 profile facing card-right, 180 back
+  sit?: number; // 0 standing .. 1 seated (hips at chair-seat height, knees bent, shins down to the soles)
 };
 
 const hang: Arm = { at: [0.2, 0.92] };
@@ -51,6 +52,11 @@ export const POSES = {
   bang: { ...REST, arms: both({ at: [0.42, -0.42], grip: "fist" }), bob: 6 },
   wave: { ...REST, arms: [hang, { at: [0.55, -0.55], grip: "open" }], sway: 3, look: 0.3 },
   kick: { ...REST, arms: both({ at: [0.6, 0.2], grip: "open" }), lift: [0, 70], sway: -7, knee: 20 },
+  // R24 (visual-ref9 27 s "picks it up", ref8 16 s carrying plates): deep knee bends, the head tipped toward the work.
+  // The legs fold at the knee (figure.ts leg IK); in a profile view `sway` is the forward bend.
+  crouch: { ...REST, arms: both({ at: [0.12, 0.9], grip: "mitt" }), bob: -70, tilt: 10, lean: 0.3 },
+  pickup: { ...REST, arms: [{ at: [0.05, 0.95], grip: "mitt" }, { at: [0.2, 0.85], grip: "mitt" }], bob: -55, sway: 14, tilt: 16, lean: 0.4 },
+  strain: { ...REST, arms: both({ at: [-0.2, 0.55], grip: "fist" }), bob: -28, shrug: 10, tilt: -4, lean: 0.2 },
 } satisfies Record<string, Pose>;
 export type PoseName = keyof typeof POSES | "walk" | "run";
 /**
@@ -74,20 +80,25 @@ export const STRIDE = 0.8;
 
 /**
  * Front-view walk at distance `dist` (m); `amount` 0..1 blends from rest (starts and stops).
- * Feet alternate lifting, the body bobs (highest at the passing pose) and leans over the planted leg,
- * arms swing against the legs.
+ * Feet alternate lifting, the body bobs (highest at the passing pose, a dip on each heel strike) and leans over the
+ * planted leg; the head counters the lean a beat late and the body settles on every contact (R21, visual-ref7
+ * 43.7-45.3 s: the walk reads through a +-5 deg weight shift with the head and the lantern lagging behind it).
+ * Arms swing against the legs.
  */
 export const walkPose = (dist: number, amount = 1, look = 0): Pose => {
-  const s = Math.sin((dist / (2 * STRIDE)) * Math.PI * 2), k = amount;
+  const ph = (dist / (2 * STRIDE)) * Math.PI * 2, s = Math.sin(ph), k = amount;
+  const contact = Math.max(0, Math.cos(2 * ph)) ** 6; // 1 on each heel strike (both feet down)
   return {
     ...REST,
-    bob: 26 * Math.abs(s) * k,
-    sway: 2.5 * s * k,
+    bob: (26 * Math.abs(s) - 6 * contact) * k,
+    sway: 4.5 * s * k,
+    tilt: -2.5 * Math.sin(ph - 0.6) * k,
+    squash: 0.25 * contact * k,
     lift: [Math.max(0, s) * 32 * k, Math.max(0, -s) * 32 * k],
     knee: 4 * k,
     arms: [
-      { at: [0.2 - 0.06 * s * k, 0.93 - 0.14 * s * k] },
-      { at: [0.2 + 0.06 * s * k, 0.93 + 0.14 * s * k] },
+      { at: [0.2 - 0.08 * s * k, 0.93 - 0.17 * s * k] },
+      { at: [0.2 + 0.08 * s * k, 0.93 + 0.17 * s * k] },
     ],
     look,
   };
@@ -136,28 +147,56 @@ export const idlePose = (t: number, look = 0) => posed("idle", t, look);
 export const reactSquash = (f: number) => (f < 0 || f > 3 ? 0 : [1, -0.8, -0.3, 0.1][Math.floor(f)]);
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-/** In-between of two poses (t 0..1): numbers and hand targets blend, grips switch halfway. */
-export const blendPose = (a: Pose, b: Pose, t: number): Pose => {
-  const k = Math.min(Math.max(t, 0), 1), e = k * k * (3 - 2 * k);
-  const num = (x?: number, y?: number) => lerp(x ?? 0, y ?? 0, e);
-  return {
-    ...(e < 0.5 ? a : b),
-    bob: num(a.bob, b.bob), sway: num(a.sway, b.sway), look: num(a.look, b.look),
-    lift: [num(a.lift[0], b.lift[0]), num(a.lift[1], b.lift[1])],
-    tilt: num(a.tilt, b.tilt), lean: num(a.lean, b.lean), shrug: num(a.shrug, b.shrug), knee: num(a.knee, b.knee),
-    arms: [0, 1].map((i) => ({ ...(e < 0.5 ? a.arms[i] : b.arms[i]), at: [lerp(a.arms[i].at[0], b.arms[i].at[0], e), lerp(a.arms[i].at[1], b.arms[i].at[1], e)] })) as [Arm, Arm],
-  };
+const smooth = (t: number) => { const k = Math.min(Math.max(t, 0), 1); return k * k * (3 - 2 * k); };
+/** A hand travelling from p to q at progress t swings on an arc (up and out), never a straight slide (R21). */
+const arcAt = (p: [number, number], q: [number, number], t: number): [number, number] => {
+  const dx = q[0] - p[0], dy = q[1] - p[1], b = 0.18 * Math.sin(Math.PI * Math.min(Math.max(t, 0), 1));
+  const n: [number, number] = dy * 0.3 + dx > 0 ? [dy, -dx] : [-dy, dx]; // the perpendicular that points up/out
+  return [lerp(p[0], q[0], t) + b * n[0], lerp(p[1], q[1], t) + b * n[1]];
 };
 /**
- * A pose timeline: [frame, pose name] keys; each change eases over `ease` frames (4 by default, refs never pop a
- * pose in one frame). Breathing from `posed` stays on.
+ * In-between of two poses with separate progress for the body, the arms and the head (overlapping action: the
+ * torso leads, the arms follow a frame later, the head arrives last). Progress may run outside 0..1 (anticipation,
+ * overshoot); hands travel on arcs; grips and layers switch halfway.
  */
-export const poseAt = (keys: [number, PoseName][], f: number, ease = 4, look?: number): Pose => {
+export const movePose = (a: Pose, b: Pose, body: number, arms = body, head = arms): Pose => {
+  const num = (x: number | undefined, y: number | undefined, t: number) => lerp(x ?? 0, y ?? 0, t);
+  return {
+    ...(body < 0.5 ? a : b),
+    bob: num(a.bob, b.bob, body), sway: num(a.sway, b.sway, body), knee: num(a.knee, b.knee, body),
+    lift: [Math.max(0, num(a.lift[0], b.lift[0], body)), Math.max(0, num(a.lift[1], b.lift[1], body))],
+    shrug: num(a.shrug, b.shrug, arms), squash: num(a.squash, b.squash, body), sit: num(a.sit, b.sit, body),
+    tilt: num(a.tilt, b.tilt, head), lean: Math.max(0, num(a.lean, b.lean, head)),
+    look: Math.max(-1, Math.min(1, num(a.look, b.look, head))),
+    arms: [0, 1].map((i) => ({ ...(arms < 0.5 ? a.arms[i] : b.arms[i]), at: arcAt(a.arms[i].at, b.arms[i].at, arms) })) as [Arm, Arm],
+  };
+};
+/** In-between of two poses (t 0..1, eased): every part together, hands on arcs, grips switch halfway. */
+export const blendPose = (a: Pose, b: Pose, t: number): Pose => movePose(a, b, smooth(t));
+/**
+ * Progress of a pose change `d` frames after its key (R21, visual-ref7 4.70-5.03 s: the arms drop and the eyes
+ * shut for two frames, then the arm whips up in ~4 frames, overshoots and settles): a 3-frame anticipation the other
+ * way (-6 %), the move over `len` frames eased in and out to an 8 % overshoot, settled 5 frames later.
+ */
+export const moveCurve = (d: number, len = 5) => {
+  if (d <= -3) return 0;
+  if (d < 0) return -0.06 * Math.sin(((d + 3) / 3) * Math.PI);
+  if (d < len) return 1.08 * smooth(d / len);
+  return 1 + 0.08 * (1 - smooth((d - len) / 5));
+};
+/**
+ * A pose timeline: [frame, pose name] keys. Each change anticipates, moves over `ease` frames, overshoots and
+ * settles (moveCurve), with the arms a frame and the head two frames behind the body. Breathing from `posed` stays on.
+ */
+export const poseAt = (keys: [number, PoseName][], f: number, ease = 5, look?: number): Pose => {
   let i = 0;
   while (i + 1 < keys.length && keys[i + 1][0] <= f) i++;
-  const cur = posed(keys[i][1], f / 30, look);
-  if (i === 0 || f - keys[i][0] >= ease) return cur;
-  return blendPose(posed(keys[i - 1][1], f / 30, look), cur, (f - keys[i][0]) / ease);
+  const P = (j: number) => posed(keys[j][1], f / 30, look);
+  const step = (a: Pose, b: Pose, d: number) => movePose(a, b, moveCurve(d, ease), moveCurve(d - 1, ease), moveCurve(d - 2, ease));
+  let out = P(i);
+  if (i > 0 && f - keys[i][0] < ease + 7) out = step(P(i - 1), out, f - keys[i][0]);
+  if (i + 1 < keys.length && keys[i + 1][0] - f <= 3) out = step(out, P(i + 1), f - keys[i + 1][0]); // anticipation
+  return out;
 };
 
 const GESTURES: Arm[] = [

@@ -135,3 +135,196 @@ hit by force rock and decay (damped sine).
 Kit-wide side effects (pilot not re-rendered): haze is lighter in every video; face slide affects every turned head.
 
 The test render and its assessment: `docs/style/VISUAL_TEST_R20.md`.
+
+
+---
+
+# R21: visual-ref7, character motion (2026-11-16)
+
+Study of `assets/visual-ref7.mp4` (65 s, 1080x1920, 30 fps; a strange-true-history short about an inventor, his
+eight-dragon earthquake jar and a laughing court). Private study material: craft only, never its story, characters
+or shots. The user's brief: "Character animation is one of my biggest priorities. Our characters should not feel
+stiff, robotic, weightless, or like they're simply switching between static poses."
+
+**Method.** Contact sheets every 0.5 s (all 130 timeline points), then 15 Hz strips (every 2nd frame, 1.6 s each)
+at 14 character moments: the ball placed in the dragon (0.0 s), the alarm and point (3.9 s), the court laughing
+(5.4 s), the banquet laugh (22.4 s), the emperor's verdict (24.0 s), the gate (27.0 s), dragging the jar uphill
+(29.6 s), waking at night (33.0 s), all eight balls (34.6 s), the run to the gates (37.2 s), the guards' taunt (40.5 s),
+the walk back (43.7 s), the morning (45.8 s). Then the same strips of our ep 2 (`out/trapped-in-this-world/final.mp4`:
+the street two-shot 9.6 s, Gary's line 13.0 s, the jar pitch 31.8 s, the bait 43.4 s, the snatch 46.4 s). Evidence
+strips: `docs/style/r21/` (ref7_*.jpg, ep2_laugh.jpg, motion_test_*.jpg).
+
+## 1. What visual-ref7 does well (with the moments)
+
+**Whole bodies act; the face is only the top of it.**
+- *Laugh* (5.4-7.0 s): the emperor's face goes frown -> 2-frame squint -> big grin while his whole body rocks
+  side to side about +-12-15 deg; his head rocks with it a beat later; the guards turn their heads to each other
+  first, then laugh and one leans INTO the emperor (bodies touch). At the banquet (22.4-24.0 s) heads bob out of
+  phase, and on "even harder" one guest tips back off the bench in a ~70 deg arc, legs up, still laughing on the floor.
+- *Alarm and point* (3.9-5.1 s): mouth open on "falls" while the ball drops (drawn 2-3 times along its path at
+  4.03-4.10 s: a smear); a closed-eye frame (4.30 s) before ring eyes; a sweat drop arrives (4.57 s); then the
+  ANTICIPATION: arms drop and the eyes shut for 2 frames (4.70 s), and the arm whips up on an arc into a point over
+  his head in ~4 frames (4.77-4.90 s) with radial speed lines and the camera rolling with him; the body leans into
+  the point and the head tilts after it.
+- *Verdict* (24.0-25.6 s): the emperor's laughing-crying face resets to deadpan through a closed-eye frame, then the
+  whole body slowly leans ~10 deg over ~20 frames while he talks; brows and mouth change on each syllable.
+- *Effort* (29.6-31.2 s): dragging the cart uphill, the inventor leans ~25-30 deg into the rope, small slow steps;
+  the cart lurches on the slope. Effort is shown by the body angle, not by the face.
+- *Talk* (40.5-42.0 s): the guard's arm sways out on "Hey", his head tilts per phrase, blinks mid-sentence; the second
+  guard leans on the parapet with a hand on it (contact with the set), squints and smirks.
+- *Walk* (43.7-45.3 s): a dejected walk toward the truck-back camera: the body rolls +-5 deg from foot to foot every
+  ~8 frames, the head counters a beat later, the lantern swings behind the hand. Cast shadows of posts cross the road
+  and pass over him.
+- *Sleep and wake* (33.0-34.6 s): the sleeping head bobs slowly with the breath while "Z"s rise in sequence; the
+  ball falls with gravity spacing (slow at the top, fast at the bottom) into the frog; one eye peeks open.
+
+**Presentation.** Every second a new picture: CU, insert, wide, and back; push-ins with a slow creep on every
+held shot; foreground wipes (the jar passes the lens at 5.23-5.37 s to move from the inventor to the throne);
+dissolves for time (22.47 s, 29.67 s); a time-of-day colour script (warm hall, pink sunset hill, blue moonlight,
+golden morning); cross-section of the earth at the end (62-64.5 s). All of this is already in our kit and skill
+(R13, R20); the gap is the bodies.
+
+## 2. Gap analysis: our characters against the reference
+
+Strips of ep 2 against ref7, same 15 Hz sampling:
+
+| What | visual-ref7 | Ours before R21 (ep 2) | Gap |
+|---|---|---|---|
+| Laugh | whole body rocks +-12-15 deg, head lags, bounce; neighbours lean on each other | "you" laughs on "Nobody leaves before the end, kid" (13.0-14.6 s): the face swaps grin/squint, the body is a statue (sway < 1 deg) | **Critical**: emotion lives only in the face |
+| Talking | head tilts per phrase, an arm beat on the stressed word | Gary's line: mouth moves, head and body still | High |
+| Pose changes | anticipation (arms drop, eyes shut, 2 f), arc, overshoot, the head arrives last | `blendPose`: 4-frame smoothstep, every part arrives together, hands slide on straight lines | High |
+| Walk | +-5 deg weight roll, the head counters a beat late, a heel-strike settle, props swing | +-2.5 deg sway about the hips, head fixed to the body, no contact settle | Medium |
+| Effort | 25-30 deg lean into a load | no forward lean; prop-carrying walks are normal walks | Medium (rule; profile `sway` already leans) |
+| Fear/shock | jump, sweat, shrink, tremble | `reactSquash` only (4 frames, ~8 %) | High |
+| Contact | hands on walls, people leaning on people | characters stand apart | Medium (staging rule) |
+| Emphasis | speed lines on the biggest physical beat; smears on fast props | none | Low-medium |
+| Listener life | eye darts, blinks, slow tilts | `alive()` (R20) already does this | none |
+
+The ep 2 pipeline never used the R15 acting layer (`act()`) at all (only the pilot did), so whatever the kit offers
+must be the default path, not an opt-in.
+
+## 3. Implemented (kit, all future videos)
+
+| File | Change |
+|---|---|
+| `kit/toon/acting.ts` | **`perform(state, F, seed, exprAt(...))`**: every expression brings its body (EMOTES: laughing rocks +-11 deg with the head 1 rad behind and a bounce at twice the rate; crying shakes the shoulders at 4.5 Hz; shocked jumps 32 px, stretches and hunches; scared/nervous shrink and tremble; sad/tired droop; proud/smug lift the chest; scheming/sneaky hunch and rock; angry leans in and shakes; 21 of 24 faces covered). Emotions crossfade over 8 frames from the previous one; a speaking character (`fx.talk`) nods on its open syllables. Never touches the arms, so held props stay in the hands. Phase-shifted per character (no lockstep). |
+| `kit/toon/cast.ts` | `exprAt` also returns `since` and `prev` (feeds `perform`). |
+| `kit/toon/poses.ts` | `moveCurve` (3-frame anticipation the other way, move over 5 frames to an 8 % overshoot, settle over 5), `movePose` (separate progress for body, arms +1 f and head +2 f: overlapping action; hands travel on arcs; extrapolation clamped where it must be), `blendPose` now arcs the hands, `poseAt` uses all of it (default ease 5). `walkPose`: sway 2.5 -> 4.5 deg, the head counters a beat late, a bob dip and a 2 % settle on every heel strike, bigger arm swing. |
+| `kit/toon/SpeedLines.tsx` | Radial speed-line overlay redrawn on twos, fading out; for the 1-3 biggest physical beats. |
+| `kit/toon/poses.test.mjs`, `acting.test.mjs` | Self-checks: anticipation, overshoot, no frame-to-frame snap, hands on arcs, walk weight; perform rocks a laugh, ramps between emotions without snapping, never moves hands, nods while talking. |
+| `src/MotionTest.tsx` (`MotionTest`) | 11 s locked two-shot: walk-in, point, Gary talks, both laugh, Gary goes deadpan, shock, sad. Rendered with the old kit and the new one: `out/_motion-test/before_after.mp4` (left before, right after). |
+| `.claude/skills/toon-world-short/SKILL.md` | "Bodies act, not just faces (R21)": `perform` in every `st()`, `movePose` for hand-made timelines, effort leans, contact, speed lines. |
+
+**Measured on the motion test (strips `docs/style/r21/motion_test_*.jpg`).** Before: both characters stand upright
+through the laugh with only the faces changing (frame-to-frame body motion ~0). After: both rock out of phase, heads
+lagging, Gary's cap swinging with his head; the shock jumps and hunches under speed lines; the point arcs up toward
+Gary instead of sliding. The first after-render used a +-7 deg laugh and it read as a sway at medium-shot size, so
+the laugh, shock and excited bounce were raised (laugh +-11 deg). QA layer 1 passes on both renders.
+
+**Kept from our identity**: thin even ink, cream heads, pill torsos, stick limbs, dot hands, the painted world. No
+new character drawing, no squash beyond ~3 %, no anime-style faces.
+
+## 4. Not done, and why
+
+- **Prop follow-through on hanging props** (the ref's lantern swing): the card renderer has no per-frame velocity for
+  a held prop; it needs a `swing` channel on the pose. Small, worth doing when a video carries a lantern or bag.
+- **Smear frames** on fast props (the ref's ball drawn 2-3 times): a `toss()` trail option; not built yet.
+- **A real body pitch in front view** (leaning toward the lens): front-view cards only have `lean` (head toward the
+  lens); a true pitch needs the 3/4 view. Effort leans therefore use profile views (`sway` = forward lean).
+- **Falling over** (the banquet guest): needs a whole-card rotation about the feet (`Character` rotates only in yaw).
+  A `topple` angle on CharState is the way; not built.
+- Ep 2 (`trapped-in-this-world`) is not wired to `perform` and was not re-rendered; the kit-wide changes (walk,
+  arcs, poseAt timing) reach it, and the zombie pilot, only if they are rendered again. The pilot is not to be
+  regenerated.
+
+
+---
+
+# R21b: why our frames looked cheap next to the refs (2026-11-16)
+
+User: "the new visuals look kind of cheap compared to the references (all visual ref)". Method: full-resolution
+frames of all seven refs beside ours (same shot types), then `scripts/richness.py` on every ref and on ep 2.
+
+| | refs 1-7 | ep 2 cut 4 (before) | ep 2 cut 3 + R21b (stills) |
+|---|---|---|---|
+| crisp (Laplacian) | 8.5-21.6 | **5.9** | 13.6 |
+| edges (detail / ink density) | .050-.093 | **.048** | .127 |
+| hue entropy | 2.0-2.7 | 2.15 | 2.6 |
+| warm share of colour | .15-.77 | **.89** | .78 |
+
+At 1:1 our ink and faces are as crisp as the refs (`docs/style/r21` crops); the cheapness was everything around them:
+1. **Mushy sets**: the lens blur presets (9 px medium, 11 px close-up) wiped every background to colour blobs, while
+   every ref keeps its set readable behind the character (ref7 25.3 s: the fleur-de-lis wallpaper and tufted throne are
+   sharp behind the emperor). Fix (kit): `DOF.medium` 4 px, `DOF.closeup` 5 px.
+2. **Haze**: bloom .5 plus halation glowed the whole warm frame. Fix (kit): bloom .32.
+3. **One colour**: the sunset key, pink sky, peach fog and red brick made 89 % of all colour warm; the refs set warm
+   light against blue/green/yellow local colour (ref6's sunset street hangs blue/yellow/red bunting). Fix: cooler
+   sunset shade and fog (kit `LIGHTS.sunset`), many-coloured set dressing (ep 2: bunting between the lamps).
+4. **Big plain faces**: our "faces big" habit filled frames with a white head; the refs mostly shoot mediums with the
+   set around the character, close-ups only on punches. Rule: head at most ~35 % of the frame width except the 1-3
+   biggest reactions.
+5. **Sparse small detail**: the refs carry trims, patterns, signs and clutter everywhere; ours had large plain
+   surfaces. Rule: every set gets small many-coloured detail at several distances (flags, signs, posters, plants).
+Not fixed yet: bespoke ornate props (the refs' thrones, jars, machines are modelled pieces; our sets are kit boxes).
+
+# R24: visual-ref8 + visual-ref9, the primary references (2026-11-21)
+
+User: ref8/9 are now the primary references and win over refs 1-7 where they conflict. `assets/visual-ref8.mp4`
+(63.6 s, day/dusk, WWII bomber hangar) and `visual-ref9.mp4` (59.1 s, night camp, tent interior). Private study
+material: craft only. Frames and sheets: `docs/style/r24/` (`ref8_sheet.jpg`, `ref9_sheet.jpg` every 2 s;
+`cu_compare.jpg`, `group_compare.jpg`; motion strips `ref8_motion_16.jpg`, `ref9_motion_27.jpg` at 6 fps;
+`ours_vs_ref9.jpg`).
+
+## What they do
+| Area | ref8 / ref9 | Ours before R24 | Kit change |
+|---|---|---|---|
+| Heads | big cream discs, a little wider than tall (H/W ~.85-.95), bold dark-brown outline ~2-2.5 % of head width, soft grey crescent + scene light on the shadow side | H/W .92-1.02 | `headBlob` H/W .88-.98 |
+| Faces | small dot/dash eyes or whites+pupils for shock, heavy tapered brows that carry the emotion, toothy grins, moustaches/goatees; sweat drops | matches (R22 face library) | none |
+| Bodies | bean/pill torsos 0.6-0.9 head widths, thin black stick legs 1.2-1.8 HH, tiny dark hands; 3.1-3.8 HH overall | 3.4-3.7 HH, in range | none (measured, not changed) |
+| Costume | dense pattern: lamellar armour as rows of dots, kimono stripes, belts with buckles, badges, pockets, rivets | wardrobe.ts patterns | rule in skill |
+| Motion | full-body acting: deep squats with knees folding outward to pick things up (ref9 27.0-27.6 s), leaning carries (ref8 16-18 s), whole-body rock on a laugh, a prop shaken beside the head; holds of 1-2 s between big moves | legs shortened when the hip dropped (no knee) | leg IK in `drawPerson` (legs keep their length, knees fold); `crouch`, `pickup`, `strain` poses |
+| World | softly lit 3D, **no outlines on the world**; finish comes from light (sun shafts, bloom, warm practical pools), AO, cool haze, glints and particles | 4 px world ink on every silhouette and crease | world ink 2.6 -> 1.6 px at 45 % opacity (`INK.opacity`) |
+| Ground | dirt with grass tufts and dry-grass fields at every edge (ref9), painted floor markings and hazard stripes (ref8) | flat single-colour fills | `grassTufts` (kit build/ground.ts) |
+| Sets | dense, story-specific clutter at several depths: chalkboards with text, gauges, carts, crates, lanterns, banners, patterned rugs, shelves of mugs | varies per video | rule in skill |
+| Colour | calmer, more natural colour: colourfulness .18-.21, hue entropy 1.4-1.65, sat .37-.39; day luma .52, night .26 | colourfulness .28-.37 | grade saturation x .87 (`SAT_K`); richness ranges widened to include ref8/9 |
+| Camera | still % 22-32, drift p50 2.3-4.7 px/f, p95 27-50: real holds, then motivated moves | same rules (R11/R13) | none |
+
+## Not done (needs a render or the user's taste)
+- Lit texture detail on hero props (rivets, worn paint) and sun shafts in big interiors are per-video set work
+  (`lightShafts`, `paint.ts`); no kit default changed.
+- No episode was re-rendered (user: improve the pipeline, not old videos). The kit changes apply to every future
+  render, including re-renders of old episodes.
+
+# R26: all seven primary refs (visual-ref6, 8, 9, 10, 11, 12, video-standard), 2026-11-21
+
+Sheets every 3 s: `docs/style/r26/<ref>_sheet.jpg`; half-res details `detail_a.jpg` / `detail_b.jpg`; ours (R25 preview)
+`ours_r25_sheet.jpg`; side-by-sides `sbs_r25_vs_ref9.jpg`, `look_r26_vs_refs.jpg` (R26 look test over ref8/ref9).
+
+**Frame rate (measured, not assumed):** all seven are 30 fps files, and the motion inside is 30p too: on synthetic 24p
+controls (ref8 resampled 24->30 by pulldown and by blending) the 5-frame cadence detector reads 18-24x and 9x its
+median; every ref reads 1-3x, and none repeats frames in motion (0-1 per video). Nothing in them is 24 fps.
+
+| Category | Refs (which) | Ours (R25) | Change |
+|---|---|---|---|
+| Ground | soft large tonal shapes, real relief, pebbles/leaves as geometry (ref9, ref10 gravel, ref12 grass) | photo sand with luma-derived bump: pixel-sized speckle, "TV static" at 1-3 m | **done**: real normal + ARM maps (Poly Haven) for every photo texture; the luma bump stays only as a fallback |
+| Props | modelled, bevelled, textured: barrels with hoops, stools, crates, lanterns, a locomotive with gold trim (ref9, ref10, standard) | box-built from Kit primitives (blocks) | **done** (kit): `model()` loads CC0 glTF with their own maps through the world shader; 8 beach props downloaded |
+| Set density | dozens of props and extras at 3+ depths, banners, signs, fires (ref9 24-36 s, ref6 saloon) | 2-5 objects per frame, empty ground (edges .042 vs refs .050-.100) | per shot plan: dress every frame at 3 depths |
+| Light | one directional key (moon/sun) + warm practical pools that fall off into dark, cool far air (ref9); raking sun + bloom (ref8, ref10, ref12) | even fill, every surface the same brightness at night | partly: navy darks; pools exist but are weak; next: stronger lantern/fire pools, darker surround |
+| Night colour | navy darks, warm only in pools, moon disc + lit cloud bank (ref9) | magenta shadow tint (lavender sand), sky floor near black (CRUSH f2073, f2305) | **done**: `moonlit` grade shadows navy; dark sky floor lifted to navy |
+| Dusk sky | deep blue down to a thin peach band, pink cloud streaks (ref8 45 s) | (new) mauve wash: blue + peach blended over 30 deg, golden grade x2.08 | **done** (partly): `horizonBand` preset value (thin band), `sunset` grade, thin clouds; still more violet than ref8 |
+| Framing | heads 15-30 % of width; deep sets; characters at different depths (ref9, ref11, standard) | heads ~50 % in many shots; empty sand/sky frames ("Twenty.", "stick.", "No wave.") | rule kept (<= 35 %); look test frames at ~30 %; shot plan rebuild applies it |
+| Characters | same 2D card family as ours: cream heads, thin dark outline, pill torsos, stick limbs; costume pattern; a back view exists (ref8 46 s) | matches (R22-R24 kit); back view exists | none needed; chair is still a flat card (should be a model) |
+| Overlays | infographic chips in world space (ref10 "1 TON", "$0", hill progress map) | stamp cards | stamps removed (user); world-space chips are a candidate for the explainer beats |
+| Camera | holds then motivated moves, DOF on CUs, motion blur on fast moves (all) | same rules | none |
+| Render | 1080x1920, crisp 10-26, sharp edges, bloom on practicals | 1080 stills crisp 8-14 | none (720p preview exaggerated the softness: 5.4) |
+
+## R26 kit changes (all episodes inherit them)
+- `kit/toon/shade.ts`: normal maps (three's derivative tangent frame, no tangents needed) and Poly Haven ARM maps (AO darkens
+  the ambient, G = roughness) in the real-look shader; `toonMaterial({ normalMap, normalScale, arm })`.
+- `kit/toon/build/photo.ts`: `photo(name)` also loads `<name>_nor` / `<name>_arm` listed in `public/tex/maps.json`.
+- `kit/toon/build/models.ts`: `model(id, { part, height, scale, tint, glow, collider })`: CC0 glTF props, QA collider hull
+  from `public/models/index.json` (boxes through the full node hierarchy), frame waits on load.
+- `scripts/polyhaven.py tex|model <id>`: downloads (no repeats), originals in `assets/`, served copies in `public/`.
+- `kit/toon/world.tsx` + `lights.ts`: `horizonBand` (sky horizon blend height, default .5 = unchanged).
+- `kit/toon/grade.ts`: `moonlit` shadows navy.
+- `kit/toon/guard.tsx`: `Plan.xfades` (dissolves drawn by extending the outgoing shot reach plan.json; R25 f1370 POP).

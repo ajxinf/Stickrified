@@ -27,7 +27,10 @@ def words(text):
     return len(re.sub(r"\[[^\]]*\]", " ", text).split())
 
 # Story-engine limits, measured on three reference shorts (docs/style/REFERENCE_NOTES.md, "Story study").
-HOOK_MAX, SENT_MAX, SENT_MEAN_MAX, LONG_WORD_MAX, DAY_STAMPS_MAX, LINKS_MIN = 12, 25, 15, 0.07, 3, 4
+# R21 (script_ref1-3, docs/scripts/IN_THIS_WORLD_STUDY.md): long words 6.8-10 % there, all concrete nouns
+# (basketball, auditorium, carriages), so the cap is 10 %; fragments (<= 4 words) 8-41 % there vs 53 % in ep 2.
+HOOK_MAX, SENT_MAX, SENT_MEAN_MAX, LONG_WORD_MAX, DAY_STAMPS_MAX, LINKS_MIN = 12, 25, 15, 0.10, 3, 4
+FRAGMENT_MAX = 0.45
 SETUP = ["so basically", "let's", "now,", "imagine this", "in today's video", "did you know"]
 
 def story_warns(text):
@@ -42,6 +45,8 @@ def story_warns(text):
     if len(long_s) > 2: out.append(f"{len(long_s)} sentences over {SENT_MAX} words (max 2 deliberate run-ons): {long_s}")
     mean = sum(map(len, sents)) / len(sents)
     if mean > SENT_MEAN_MAX: out.append(f"mean sentence {mean:.1f} words (max {SENT_MEAN_MAX})")
+    frag = sum(len(s) <= 4 for s in sents) / len(sents)
+    if frag > FRAGMENT_MAX: out.append(f"{frag:.0%} of sentences are 4 words or less (max {FRAGMENT_MAX:.0%}): when everything is a punch, nothing lands; keep fragments for the peaks")
     share = sum(len(w.strip("'")) >= 8 for w in ws) / max(len(ws), 1)
     if share > LONG_WORD_MAX: out.append(f"{share:.0%} words of 8+ letters (max {LONG_WORD_MAX:.0%}): use plain words")
     low = text.lower()
@@ -71,6 +76,8 @@ def main():
             if any(s in tg.lower() for s in SFX_TAGS): errors.append(f"line {i}: sound-effect tag [{tg}] (our SFX are synthesized)")
         if "<break" in sp: errors.append(f"line {i}: <break> tag (Eleven v4 ignores SSML)")
         if "*" not in ln["narration"]: warns.append(f"line {i}: no *key word* for the caption")
+        if re.search(r"whisper|hushed|quiet|soft|murmur|under (his|her|your|the) breath|sneaky|^(tired|dry|tense|slow)(,|$)", ln.get("audioTag", ""), re.I):
+            warns.append(f"line {i}: quiet tag [{ln['audioTag']}] (user 2026-11-16: whispered/hushed lines can't be heard): use a loud one")
         for sent in re.split(r"[.!?]+", re.sub(r"\[[^\]]*\]", "", sp)):
             caps = [w for w in re.findall(r"\b[A-Z]{2,}\b", sent) if w not in ("OK", "TV", "USA", "UK", "DIY")]
             if len(caps) > 1: warns.append(f"line {i}: {len(caps)} CAPS words in one sentence")
@@ -100,11 +107,11 @@ def main():
               f"**Voice:** Eleven v4, voice ID `{d.get('voiceId', '')}`  ", ""]
         if d.get("loop"): md += [f"**Loop:** {d['loop']}", ""]
         if d.get("facts"): md += ["## Facts", ""] + [f"- {f}" for f in d["facts"]] + [""]
-        md += ["## Script", "", "Narration column = what the voice reads (tags included). `*word*` = rust-orange caption key word.", "",
+        md += ["## Script", "", "Narration column = what the voice reads (tags included). `*word*` = coloured caption key word: yellow, or the colour of the line's **speaker**.", "",
                "| # | Time | Narration (spoken) | Scene / gag | Camera | On-screen |", "|---|---|---|---|---|---|"]
         for i, (s, ln) in enumerate(zip(starts, lines), 1):
             sp = ln.get("spoken") or ln["narration"]
-            sp = (f"[{ln['audioTag']}] " if ln.get("audioTag") else "") + sp
+            sp = (f"**{ln['speaker'].upper()}:** " if ln.get("speaker") else "") + (f"[{ln['audioTag']}] " if ln.get("audioTag") else "") + sp
             scene = ln["scene"] + (f" **Gag:** {ln['gag']}" if ln.get("gag") else "")
             md.append("| " + " | ".join(str(x).replace("|", "/") for x in (i, f"{s:.0f}s", sp, scene, ln["camera"], ln["onScreenText"])) + " |")
         out = os.path.join(os.path.dirname(a.path), "SCRIPT.md")

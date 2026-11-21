@@ -58,7 +58,7 @@ export type StreetOpts = {
 };
 
 type Light = { pos: Vector3; kind: PracticalKind };
-const PRIORITY: Record<PracticalKind, number> = { lamp: 0, fire: 0, shop: 1, window: 2 };
+const PRIORITY: Record<PracticalKind, number> = { lamp: 0, fire: 0, shop: 1, window: 2, screen: 2 };
 
 const ribbon = (at: (s: number, x: number) => Vector3, s0: number, s1: number, x0: number, x1: number) => {
   const pos: number[] = [], uv: number[] = [], idx: number[] = [];

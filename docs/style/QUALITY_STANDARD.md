@@ -4,7 +4,9 @@ Built from a frame-by-frame study of four reference shorts (`assets/video-standa
 private study material, craft only, never their stories, characters, jokes or shots). Per-sheet notes:
 `docs/style/r14/notes_visual_refs.md`; measurements: `docs/style/r14/metrics_all.json`; the R13 study in
 `REFERENCE_NOTES.md`. Our direction stays **A+B "Illustrated Diorama"** (painted, ink-lined 3D world; flat inked
-character cards lit by that world). This file is the bar; the `video-review` skill scores every video against it.
+character cards lit by that world). This file is the bar for the user's own review of finished videos (the AI critic
+review was removed 2026-11-21). Since R24, `assets/visual-ref8.mp4` and `visual-ref9.mp4` are the primary references
+(`VISUAL_DIRECTION.md` "R24"); where they differ from the four refs below, they win.
 
 ## Measured bar (all four references vs the zombie pilot, same script)
 | metric | refs (range) | pilot r3 | target |
@@ -104,9 +106,10 @@ For each: what the references do, why it works, how we do it in our kit, what fa
 - **Poor:** silences between lines, an effect louder than the narrator, a dead second.
 - **Check:** `mix.py` gates; a listen.
 
-## Scoring (the `video-review` skill applies this)
-Each category 1-10 with evidence from the rendered frames: 9-10 reference-level; 7-8 good, visible gap; 5-6 technically
-fine, not competitive; 1-4 below standard. **A final video needs every category >= 8.**
+## Automatic fails (QA layer 3 looks for these; the user scores the rest by eye)
 **Automatic fail** regardless of scores: an obvious visual inconsistency, broken or unnatural character animation,
 poor camera work, a major composition problem, inconsistent lighting, a rendering artefact, unintended flatness,
-an element outside the art direction, or any other obvious production defect.
+an element outside the art direction, or any other obvious production defect. Named after episode 3 (user,
+2026-11-17): a practical washing out a face; an environment that makes no sense (a door that opens onto wall, an
+entrance from nowhere); in-world text cut by the frame, covered or under a caption; a flat 2D surface (screen,
+board, paper) filling the frame with no world around it.

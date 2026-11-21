@@ -20,6 +20,8 @@ if (!id || !prefix) {
   process.exit(2);
 }
 const frames = framesArg.split(",").map(Number);
+const [num, den = "1"] = scaleArg.split("/"); // "4/3" = the 2K master (1.3333 gives 2559.936 px, which Remotion refuses)
+const scale = Number(num) / Number(den);
 fs.mkdirSync(path.dirname(prefix), { recursive: true });
 const serveUrl = await bundleOnce();
 const composition = await pick(serveUrl, id, extraProps).catch((e) => fail(id, e));
@@ -29,6 +31,6 @@ if (!(await guardPass(serveUrl, composition, starts))) {
 }
 for (const frame of frames) {
   const output = `${prefix}${String(frame).padStart(4, "0")}.png`;
-  await renderStill({ composition, serveUrl, output, frame, scale: Number(scaleArg), chromiumOptions: CHROMIUM, inputProps: { ...composition.props, ...extraProps, ...(draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
+  await renderStill({ composition, serveUrl, output, frame, scale, chromiumOptions: CHROMIUM, inputProps: { ...composition.props, ...extraProps, ...(draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
   console.log(output);
 }

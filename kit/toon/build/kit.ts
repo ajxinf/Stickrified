@@ -1,7 +1,9 @@
 import { BoxGeometry, BufferGeometry, Float32BufferAttribute, Group, Material, Mesh } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { planks, rough, windowTex } from "../paint";
+import { LOOK_FEATURES } from "../lookdev";
 import { toonMaterial } from "../shade";
+import { photo } from "./photo";
 
 /** World-metre box mapping: tiled paint keeps the same scale on every part (tiles are 2 m, so repeat .5). */
 export const boxUV = (g: BufferGeometry) => {
@@ -61,9 +63,10 @@ export const tiled = (key: string, tex: () => ReturnType<typeof rough>) => M(key
 export const MAT = {
   stone: () => M("stone", () => toonMaterial({ map: rough("#b3a492"), repeat: [1, 1] })),
   darkStone: () => M("darkStone", () => toonMaterial({ map: rough("#7d6f66"), repeat: [1, 1] })),
-  metal: () => M("metal", () => toonMaterial({ map: rough("#4a4650"), repeat: [1, 1], spec: 0.5 })), // coloured dark + one highlight
-  wood: () => M("wood", () => toonMaterial({ map: planks("#80583a"), repeat: [1, 1] })),
-  darkWood: () => M("darkWood", () => toonMaterial({ map: planks("#4e3426"), repeat: [1, 1] })),
+  // R25 real look: wood and metal are CC0 photo textures (public/tex) tinted to the old values.
+  metal: () => M("metal", () => (LOOK_FEATURES.real ? toonMaterial({ map: photo("rusty_metal_sheet"), repeat: [0.5, 0.5], color: "#8a8690", rough: 0.45 }) : toonMaterial({ map: rough("#4a4650"), repeat: [1, 1], spec: 0.5 }))), // coloured dark + one highlight
+  wood: () => M("wood", () => (LOOK_FEATURES.real ? toonMaterial({ map: photo("weathered_planks"), repeat: [0.5, 0.5], color: "#c49a74", rough: 0.75 }) : toonMaterial({ map: planks("#80583a"), repeat: [1, 1] }))),
+  darkWood: () => M("darkWood", () => (LOOK_FEATURES.real ? toonMaterial({ map: photo("weathered_planks"), repeat: [0.5, 0.5], color: "#7a5640", rough: 0.75 }) : toonMaterial({ map: planks("#4e3426"), repeat: [1, 1] }))),
   winLit: () => M("winLit", () => toonMaterial({ map: windowTex(true), emissive: ["#ffb76a", 1.6] })), // the room stays readable; glow.ts adds the halo
   winDark: () => M("winDark", () => toonMaterial({ map: windowTex(false) })),
   /** Lamp glass: lit (HDR, blooms) when the light preset has lamps, plain pale glass by day. */

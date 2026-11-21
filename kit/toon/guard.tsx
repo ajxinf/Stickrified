@@ -1,7 +1,7 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { getInputProps, useCurrentFrame, useVideoConfig } from "remotion";
-import { Box3, DirectionalLight, Matrix3, Matrix4, Mesh, Object3D, PerspectiveCamera, Quaternion, Raycaster, Vector3 } from "three";
+import { Box3, DirectionalLight, Matrix3, Matrix4, Mesh, Object3D, PerspectiveCamera, PlaneGeometry, PointLight, Quaternion, Raycaster, Sprite, Vector3 } from "three";
 import { OBB } from "three/examples/jsm/math/OBB.js";
 import { CamPose, applyCam } from "./camera";
 import { CONTACT_Y, handWorld } from "./cast";
@@ -37,7 +37,7 @@ const SAFE_X: [number, number] = [0.08, 0.92], CAPTION_Y: [number, number] = [0.
 export const CHECKS = [
   "Camera clearance", "Feet on the ground", "Card penetration", "Props through props", "Camera curve",
   "Subject in frame", "Caption vs face", "Caption width", "Reaction timing", "Light continuity", "Shadows",
-  "Moving props", "Scale", "Cast overlap", "Subject size", "Pacing",
+  "Moving props", "Scale", "Cast overlap", "Subject size", "Pacing", "Glare", "Door logic", "Text in frame",
 ] as const;
 export type Check = (typeof CHECKS)[number];
 export type Span = [number, number];
@@ -81,8 +81,43 @@ export type Shot = {
  */
 export type MovingProp = { name: string; make: () => Object3D; pose: (o: Object3D, f: number) => boolean | void; touches?: string[]; heldBy?: string; hand?: Hand | "none" };
 /** `inserts`: 2D cut-aways mounted outside the shot list ([from, to] composition frames): layer 2 gets their cuts. */
-export type Plan = { slug: string; shots: Shot[]; words?: CaptionWord[]; inserts?: Span[] };
+/** `overlays`: 2D cards over the picture (Stamp: kit/toon/Stamp.tsx `stampBox`), composition frames + screen box (0..1). */
+export type Overlay = { name: string; from: number; to: number; x: Span; y: Span };
+/** `xfades`: dissolves the video draws by extending the outgoing shot past the next shot's start (composition frames);
+ * without them exportPlan sees a hard cut and video_qa.py flags the dissolve as a POP (moon R25, f1370). */
+export type Plan = { slug: string; shots: Shot[]; words?: CaptionWord[]; inserts?: Span[]; overlays?: Overlay[]; xfades?: Span[] };
 export type Fail = { check: Check; shot: string; frame: number; to: number; object: string; note: string; intended?: string };
+
+// ---------- text runs (check "Text in frame")
+// Every fillText/strokeText box (canvas px, after the canvas transform) is recorded on its canvas, so in-world text
+// (signs, boards, calendars, box art) can be checked on screen without per-video tagging. A repaint of the whole
+// canvas starts a new list (screens redrawn per frame).
+type Run = { text: string; x0: number; y0: number; x1: number; y1: number };
+type RunCanvas = HTMLCanvasElement & { __runs?: Run[] };
+if (typeof CanvasRenderingContext2D !== "undefined" && !(CanvasRenderingContext2D.prototype as unknown as { __qaText?: boolean }).__qaText) {
+  const P = CanvasRenderingContext2D.prototype as unknown as Record<string, unknown> & { __qaText: boolean };
+  P.__qaText = true;
+  for (const k of ["fillText", "strokeText"]) {
+    const orig = P[k] as (...a: unknown[]) => void;
+    P[k] = function (this: CanvasRenderingContext2D, text: string, x: number, y: number, maxW?: number) {
+      const m = this.measureText(text), t = this.getTransform();
+      const sx = maxW && m.width > maxW ? maxW / m.width : 1;
+      const xs = [x - m.actualBoundingBoxLeft * sx, x + m.actualBoundingBoxRight * sx], ys = [y - m.actualBoundingBoxAscent, y + m.actualBoundingBoxDescent];
+      const pts = xs.flatMap((px) => ys.map((py) => [t.a * px + t.c * py + t.e, t.b * px + t.d * py + t.f]));
+      const run = { text: String(text), x0: Math.min(...pts.map((q) => q[0])), x1: Math.max(...pts.map((q) => q[0])), y0: Math.min(...pts.map((q) => q[1])), y1: Math.max(...pts.map((q) => q[1])) };
+      const c = this.canvas as RunCanvas, runs = (c.__runs ??= []);
+      if (String(text).trim() && !runs.some((r) => r.text === run.text && Math.abs(r.x0 - run.x0) < 1 && Math.abs(r.y0 - run.y0) < 1)) runs.push(run);
+      return orig.call(this, text, x, y, maxW);
+    };
+  }
+  for (const k of ["fillRect", "clearRect"]) {
+    const orig = P[k] as (...a: unknown[]) => void;
+    P[k] = function (this: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+      if (x <= 0 && y <= 0 && x + w >= this.canvas.width && y + h >= this.canvas.height && this.getTransform().isIdentity) (this.canvas as RunCanvas).__runs = [];
+      return orig.call(this, x, y, w, h);
+    };
+  }
+}
 
 class Report {
   fails: Fail[] = [];
@@ -137,6 +172,11 @@ const parts = (cols: Collider[]): Part[] => {
     c.root.traverse((m) => {
       const mesh = m as Mesh;
       if (!mesh.isMesh || !mesh.geometry || (mesh as unknown as { isInstancedMesh?: boolean }).isInstancedMesh) return;
+      // A nested collider (a monitor on a desk) names its own parts: a prop allowed to touch the desk still may not
+      // pass through the monitor (ep 3: the newspaper landed under the CRT).
+      let own: Object3D | null = mesh;
+      while (own && !own.userData.collider) own = own.parent;
+      if (own !== c.root) return;
       if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
       for (const b of (mesh.userData.parts as Box3[] | undefined) ?? [mesh.geometry.boundingBox!]) {
         const obb = toOBB(b, mesh.matrixWorld);
@@ -256,8 +296,8 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
   // Ground height under a point: first surface below (layer 0 meshes; cards, blobs and sky live on other layers).
   const ray = new Raycaster();
   ray.far = 1.2;
-  const groundAt = (p: Vector3, skip?: Object3D): number | null => {
-    ray.set(p.clone().setY(p.y + 0.6), new Vector3(0, -1, 0));
+  const groundAt = (p: Vector3, skip?: Object3D, up = 0.6): number | null => {
+    ray.set(p.clone().setY(p.y + up), new Vector3(0, -1, 0));
     const hit = ray.intersectObject(scene, true).find((h) => !skip || !isUnder(h.object, skip));
     return hit ? hit.point.y : null;
   };
@@ -270,7 +310,7 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
       const cam = cams[f];
       for (const c of cast) {
         const p = c.at(f), key = `${p.x.toFixed(3)},${p.y.toFixed(3)},${p.z.toFixed(3)}`;
-        if (!memo.has(key)) memo.set(key, groundAt(p));
+        if (!memo.has(key)) memo.set(key, groundAt(p, undefined, c.sit ? 0.15 : 0.6)); // seated: start under the lap (a bucket in it)
         const g = memo.get(key)!;
         const gy = g ?? 0;
         const d = p.y - gy;
@@ -406,11 +446,176 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
   if (shot.cast && chars.length !== cast.length) r.add("Shadows", shot, 0, "cast", `${chars.length} character cards in the scene, ${cast.length} in the plan`);
   for (const ch of chars) if (!ch.children.some((m) => m.userData.contact && m.visible)) r.add("Shadows", shot, 0, "character card", "no contact blob");
   for (const c of cast) {
-    const p = c.at(0), g = groundAt(p);
+    const p = c.at(0), g = groundAt(p, undefined, c.sit ? 0.15 : 0.6);
     const blob = p.y + CONTACT_Y;
     if (g !== null && blob < g + 0.002) r.add("Shadows", shot, 0, `"${c.name}" contact blob`, `blob at y ${blob.toFixed(3)} is under the ground (y ${g.toFixed(3)}): hidden`);
   }
+
+  glareCheck(r, shot, scene, cams);
+  doorCheck(r, shot, scene);
+  textCheck(r, shot, scene, cams);
   return r;
+};
+
+// ---------- Glare: practicals must light a face, not wash it out (ep 3: CRT glow in front of every face).
+/** Max practical light at a head (sum of point-light intensity x luminance x falloff, the card shader's `lamp`). */
+const GLARE_LIGHT = 1.6;
+/** Max glow-sprite brightness (opacity x strength x luminance) allowed in front of a face. */
+const GLARE_GLOW = 0.12;
+const lum = (c: { r: number; g: number; b: number }) => 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+const smooth = (a: number, b: number, x: number) => { const t = Math.min(Math.max((x - a) / (b - a), 0), 1); return t * t * (3 - 2 * t); };
+const glareCheck = (r: Report, shot: Shot, scene: Object3D, cams: PerspectiveCamera[]) => {
+  const cast = shot.cast ?? [];
+  if (!cast.length) return void (r.na["Glare"] = "no characters");
+  r.ran.add("Glare");
+  const lights: PointLight[] = [], glows: Sprite[] = [];
+  scene.traverseVisible((o) => {
+    if ((o as PointLight).isPointLight) lights.push(o as PointLight);
+    if ((o as Sprite).isSprite && o.userData.glow) glows.push(o as Sprite);
+  });
+  cams.forEach((cam, f) => {
+    for (const c of cast) {
+      const p = c.at(f), k = card(c, f), yaw = cardYaw(p, cam.position);
+      const head = p.clone().add(new Vector3(Math.cos(yaw) * k.head.x, k.head.y, -Math.sin(yaw) * k.head.x));
+      let sum = 0;
+      for (const l of lights) {
+        const d = l.getWorldPosition(new Vector3()).distanceTo(head);
+        sum += l.intensity * lum(l.color) * (l.distance > 0 ? 1 - smooth(0, l.distance, d) : 1);
+      }
+      if (sum > GLARE_LIGHT) r.add("Glare", shot, f, `"${c.name}" face`, `practical light ${sum.toFixed(2)} at the head (max ${GLARE_LIGHT}): the face washes out; dim or move the lamp/screen light`);
+      const hb = headBox(c, f, cam), hd = head.distanceTo(cam.position);
+      for (const s of glows) {
+        const { pos, size, strength } = s.userData.glow as { pos: Vector3; size: number; strength: number };
+        const toCam = cam.position.clone().sub(pos), d = toCam.length();
+        const t = Math.min(Math.max((d - size * 0.9) / (size * 1.6), 0), 1), op = t * t * (3 - 2 * t);
+        const at = pos.clone().addScaledVector(toCam.normalize(), size * 0.45), sc = screen(cam, at);
+        if (op * strength < GLARE_GLOW || at.distanceTo(cam.position) > hd || !sc.front) continue;
+        // The bright core (~30 % of the sprite) on screen vs the head box.
+        const rad = (size * 0.15) / (at.distanceTo(cam.position) * Math.tan((cam.fov * Math.PI) / 360) * 2);
+        const ov = covered({ x0: sc.x - rad / cam.aspect, x1: sc.x + rad / cam.aspect, y0: sc.y - rad, y1: sc.y + rad }, hb);
+        if (ov > 0.05) r.add("Glare", shot, f, `glow over "${c.name}" face`, `a practical's glow (${(op * strength).toFixed(2)}) sits between the lens and the face: it washes the face; smaller glow, or move it`);
+      }
+    }
+  });
+};
+
+// ---------- Door logic: every door is tagged, and a door that opens leads somewhere (ep 3: a door onto a wall).
+/** Free space needed behind an opening door (m), measured from the doorway through the opening. */
+const DOOR_BEYOND = 1.5;
+const doorCheck = (r: Report, shot: Shot, scene: Object3D) => {
+  const doors: Object3D[] = [];
+  scene.traverseVisible((o) => void (/door/i.test(o.name) && !/sign|tex|frame|knob|handle/i.test(o.name) && doors.push(o)));
+  if (!doors.length) return void (r.na["Door logic"] = "no objects named door");
+  r.ran.add("Door logic");
+  const setup: Shot = { ...shot, id: "setup", from: 0 };
+  const ray = new Raycaster();
+  for (const d of doors) {
+    const u = d.userData;
+    if (typeof u.door !== "number" || typeof u.opens !== "boolean") {
+      r.add("Door logic", setup, 0, d.name, "untagged door: set userData.door = height (m) and userData.opens = true/false");
+      continue;
+    }
+    if (!u.opens) continue;
+    if (!u.out) { r.add("Door logic", setup, 0, d.name, "an opening door needs userData.out (world direction from the room through the doorway)"); continue; }
+    // The doorway: the door's hinge position at 1 m up; cast through the opening (past the leaf) and look for what is there.
+    const out = (u.out as Vector3).clone().normalize(), at = (u.doorway as Vector3 | undefined)?.clone() ?? d.getWorldPosition(new Vector3());
+    ray.set(at.clone().setY(at.y + 1.0).addScaledVector(out, -0.3), out);
+    const hit = ray.intersectObject(scene, true).find((h) => !isUnder(h.object, d) && h.object !== d);
+    const beyond = hit ? hit.distance - 0.3 : Infinity;
+    if (beyond < DOOR_BEYOND) r.add("Door logic", setup, 0, d.name, `opens onto ${hit!.object.name || "a solid surface"} ${beyond.toFixed(2)} m behind the doorway (needs >= ${DOOR_BEYOND} m of room, corridor or street)`);
+  }
+};
+
+// ---------- Text in frame: readable in-world text is never cut by the frame edge or covered by the set, and text
+// runs never overlap or run off their own texture (ep 3: RACE'N'CHASE, FLOOR, the calendar, the road letters).
+/** Text this tall (fraction of frame height) is meant to be read. */
+const TEXT_READ = 0.03;
+/** A run cut at the frame edge for this many frames fails (a pan may slide past text briefly). */
+const TEXT_CUT_RUN = 8;
+/** Composition frames while captions are on screen (QAPlan sets it; the scene checks read it for "Text in frame"). */
+let captionOn: Span | null = null;
+const textCheck = (r: Report, shot: Shot, scene: Object3D, cams: PerspectiveCamera[]) => {
+  const items: { mesh: Mesh; run: Run; W: number; H: number; w: number; h: number }[] = [];
+  const setup: Shot = { ...shot, id: "setup", from: 0 };
+  const seenCanvas = new Set<RunCanvas>();
+  scene.traverseVisible((o) => {
+    const m = o as Mesh;
+    if (!m.isMesh) return;
+    // In the texture, on any geometry (ep 3: THEFT AUTO ran off the box art): no run past the canvas edge.
+    for (const mt of (Array.isArray(m.material) ? m.material : [m.material]) as { map?: { image?: RunCanvas } }[]) {
+      const c = mt?.map?.image;
+      if (!c?.__runs?.length || seenCanvas.has(c)) continue;
+      seenCanvas.add(c);
+      for (const run of c.__runs) if (run.x0 < -1 || run.y0 < -1 || run.x1 > c.width + 1 || run.y1 > c.height + 1) r.add("Text in frame", setup, 0, `"${run.text.slice(0, 24)}" (${m.name || m.parent?.name || "texture"})`, "drawn past its canvas edge: cut in the texture");
+    }
+    const mat = m.material as { map?: { image?: RunCanvas; repeat: { x: number; y: number } } } | undefined;
+    const img = mat && !Array.isArray(mat) ? mat.map?.image : undefined;
+    if (!img?.__runs?.length || m.geometry?.type !== "PlaneGeometry") return;
+    if (mat!.map!.repeat.x !== 1 || mat!.map!.repeat.y !== 1) return;
+    const { width: w, height: h } = (m.geometry as PlaneGeometry).parameters;
+    for (const run of img.__runs) items.push({ mesh: m, run, W: img.width, H: img.height, w, h });
+  });
+  r.ran.add("Text in frame");
+  if (!items.length) return;
+  const label = (it: (typeof items)[number]) => `"${it.run.text.slice(0, 24)}" (${it.mesh.name || it.mesh.parent?.name || "text plane"})`;
+  // In the texture: off the canvas edge, or two runs on top of each other.
+  const byCanvas = new Map<RunCanvas, Run[]>();
+  for (const it of items) {
+    const c = (it.mesh.material as unknown as { map: { image: RunCanvas } }).map.image;
+    byCanvas.set(c, [...(byCanvas.get(c) ?? []), it.run]);
+  }
+  for (const [, runs] of byCanvas)
+    for (let i = 0; i < runs.length; i++)
+      for (let j = i + 1; j < runs.length; j++) {
+        const a = runs[i], b = runs[j];
+        // The same word twice = a drop shadow or outline pass; single letters = a sign spelled letter by letter.
+        if (a.text === b.text || a.text.trim().length < 2 || b.text.trim().length < 2) continue;
+        const ov = Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) * Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
+        if (ov > 0.15 * Math.min((a.x1 - a.x0) * (a.y1 - a.y0), (b.x1 - b.x0) * (b.y1 - b.y0))) r.add("Text in frame", setup, 0, `"${a.text.slice(0, 16)}" vs "${b.text.slice(0, 16)}"`, "two text runs overlap in the texture");
+      }
+  // On screen, per frame.
+  const ray = new Raycaster(), streak = new Map<string, number>();
+  const world = (it: (typeof items)[number], u: number, v: number) => it.mesh.localToWorld(new Vector3((u / it.W - 0.5) * it.w, (0.5 - v / it.H) * it.h, 0));
+  // Every 2nd frame: 5 samples along the run's middle line, each in frame or not and clear or covered by the set.
+  // Not seen at all (behind a monitor, off screen, too small) = no problem; partly off the frame = cut; 2+ of the
+  // in-frame samples covered by something nearer (cars over road letters, a pavement over a sign) = covered.
+  const STEP = 2;
+  for (let f = 0; f < cams.length; f += STEP) {
+    const cam = cams[f];
+    for (const it of items) {
+      const { run } = it, key = label(it) + run.x0;
+      const pts = [[run.x0, run.y0], [run.x1, run.y0], [run.x0, run.y1], [run.x1, run.y1]].map(([u, v]) => screen(cam, world(it, u, v)));
+      const x0 = Math.min(...pts.map((q) => q.x)), x1 = Math.max(...pts.map((q) => q.x)), y0 = Math.min(...pts.map((q) => q.y)), y1 = Math.max(...pts.map((q) => q.y));
+      const facing = it.mesh.getWorldDirection(new Vector3()).dot(cam.position.clone().sub(it.mesh.getWorldPosition(new Vector3()))) > 0;
+      if (!pts.every((q) => q.front) || !facing || x1 < 0 || x0 > 1 || y1 < 0 || y0 > 1 || y1 - y0 < TEXT_READ) { streak.set(key, 0); continue; }
+      let inFrame = 0, clear = 0, covered = 0, by = "";
+      for (const u of [0.05, 0.3, 0.5, 0.7, 0.95]) {
+        const p = world(it, run.x0 + u * (run.x1 - run.x0), (run.y0 + run.y1) / 2), s = screen(cam, p);
+        if (s.x < 0 || s.x > 1 || s.y < 0 || s.y > 1) continue;
+        inFrame++;
+        const dir = p.clone().sub(cam.position), dist = dir.length();
+        ray.set(cam.position, dir.normalize());
+        ray.far = dist + 0.05;
+        const hit = ray.intersectObject(scene, true).find((h) => h.object.visible && !(h.object as Sprite).isSprite);
+        if (hit && hit.object !== it.mesh && hit.distance < dist - 0.02) { covered++; by = hit.object.name || hit.object.parent?.name || "a set piece"; }
+        else clear++;
+      }
+      if (!clear) { streak.set(key, 0); continue; }
+      const vis = ((Math.min(x1, 1) - Math.max(x0, 0)) * (Math.min(y1, 1) - Math.max(y0, 0))) / ((x1 - x0) * (y1 - y0));
+      if (vis < 0.95 && vis > 0.15) { // under 15 %: a sliver entering the frame reads as off screen
+        const n = (streak.get(key) ?? 0) + STEP;
+        streak.set(key, n);
+        if (n >= TEXT_CUT_RUN) for (let g = Math.max(0, f - (n === TEXT_CUT_RUN ? n : STEP) + 1); g <= Math.min(f + STEP - 1, cams.length - 1); g++) r.add("Text in frame", shot, g, label(it), `cut by the frame edge (${(vis * 100).toFixed(0)} % visible): reframe or move the text`);
+        continue;
+      }
+      streak.set(key, 0);
+      if (covered >= 2) for (let g = f; g < Math.min(f + STEP, cams.length); g++) r.add("Text in frame", shot, g, label(it), `covered by ${by} (${covered} of ${inFrame} samples): move the text or the cover`);
+      // Under the burned-in captions: two texts on top of each other (ep 3: "GTA" over GTA?, "18 months" over 18 MONTHS!).
+      const F = (shot.from ?? 0) + f;
+      if (captionOn && F >= captionOn[0] && F <= captionOn[1] && y0 < CAPTION_Y[1] && y1 > CAPTION_Y[0] && x1 > 0.2 && x0 < 0.8)
+        for (let g = f; g < Math.min(f + STEP, cams.length); g++) r.add("Text in frame", shot, g, label(it), `sits in the caption band (y ${y0.toFixed(2)}-${y1.toFixed(2)}): the caption covers it; raise the text or reframe`);
+    }
+  }
 };
 /** "w x h x d m at (x, y, z)" in the collider's own frame (x across, y up, z toward its front for buildings). */
 const partInfo = (p: Part) => {
@@ -533,6 +738,19 @@ const planChecks = (plan: Plan, fps: number, aspect: number) => {
         }
       });
     }
+    // Overlays (stamps) never sit on a face (ep 3: "1994" on Mike's head).
+    if (plan.overlays?.length && cast.length) {
+      r.ran.add("Caption vs face");
+      cams.forEach((cam, f) => {
+        for (const o of plan.overlays!) {
+          if (from + f < o.from || from + f > o.to) continue;
+          for (const c of cast) {
+            const b = headBox(c, f, cam);
+            if (b.front && covered({ x0: o.x[0], x1: o.x[1], y0: o.y[0], y1: o.y[1] }, b) > 0.05) r.add("Caption vs face", shot, f, `${o.name} over "${c.name}" head`, "a 2D overlay covers the face: move the overlay (Stamp `top`) or reframe");
+          }
+        }
+      });
+    }
 
     // Reaction timing: expression swaps and new gag effects land 0-3 frames before a word starts.
     if (cast.length) {
@@ -608,6 +826,11 @@ export const exportPlan = (plan: Plan) => {
   }
   // An insert is a hard cut in and out (pilot review: the x-ray's cuts showed as unplanned POPs).
   for (const [a, b] of plan.inserts ?? []) cuts.push(a, b);
+  for (const [a, b] of plan.xfades ?? []) {
+    xfade.push([a, b]);
+    const i = cuts.indexOf(a);
+    if (i >= 0) cuts.splice(i, 1);
+  }
   cuts.sort((x, y) => x - y);
   const abs = (k: "whips" | "kicks" | "flash") => shots.flatMap((s) => (s[k] ?? []).map(([a, b]) => [a + (s.from ?? 0), b + (s.from ?? 0)] as Span));
   return { cuts, xfade, flash: abs("flash"), kicks: abs("kicks"), whips: abs("whips"), shots: shots.map((s) => ({ id: s.id, from: s.from ?? 0, frames: s.frames, scene: s.scene })) };
@@ -620,6 +843,8 @@ export const QAPlan: React.FC<{ plan: Plan }> = ({ plan }) => {
   useLayoutEffect(() => {
     if (done.current) return;
     done.current = true;
+    const w = plan.words;
+    captionOn = w?.length ? [w[0].start * fps, (w[w.length - 1].end + 0.3) * fps] : null;
     emit("plan", plan.slug, planChecks(plan, fps, width / height), { slug: plan.slug, plan: exportPlan(plan) });
   }, [plan, fps, width, height]);
   return null;

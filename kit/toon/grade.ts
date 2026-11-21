@@ -49,7 +49,8 @@ export const GRADE: Record<GradeName, Grade> = {
   night: { ...DEEP_CURVE, ...FILM, exposure: 1.85, sat: [1.15, 1.28, 1.15], tint: { s: [6, -1, 10], m: [2, -1, 6], h: [0, 0, 0] }, vig: [0.5, 0.25], top: 0.3, amount: 1 },
   // Ep 4 (a whole video outdoors at night): night's toe, but a lighter vignette and top (corners measured .62 and
   // crushed), less blue saturation (C*p90 66) and a warm shadow tint so the warm practicals hold their colour.
-  moonlit: { ...DEEP_CURVE, ...FILM, exposure: 2.0, sat: [1.05, 1.12, 1.0], tint: { s: [9, 2, 4], m: [3, 0, 2], h: [2, 0, -2] }, vig: [0.3, 0.3], top: 0.14, amount: 1, grain: 0.034, halation: 0.15 },
+  // R26: navy darks like visual-ref9's night (was s [9, 2, 4]: red + blue turned the moonlit sand lavender).
+  moonlit: { ...DEEP_CURVE, ...FILM, exposure: 2.0, sat: [1.05, 1.12, 1.0], tint: { s: [1, 3, 9], m: [1, 0, 3], h: [3, 1, -2] }, vig: [0.3, 0.3], top: 0.14, amount: 1, grain: 0.034, halation: 0.15 },
   interior: { ...DEEP_CURVE, ...FILM, exposure: 1.2, sat: [1.1, 1.3, 1.2], tint: { s: [8, 0, 2], m: [-2, 0, 6], h: [-2, 0, 4] }, vig: [0.4, 0.3], top: 0.3, amount: 1 },
 };
 
@@ -119,11 +120,17 @@ export const setLookUniforms = (u: Record<string, { value: unknown }>, l: Look =
   u.uAccent.value = l.accent ?? [0, 0];
 };
 
+/**
+ * R24 (2026-11-21): every grade's saturation x .87. The primary refs (visual-ref8/9) measure colourfulness .18-.21 and
+ * sat .37-.39; our episodes measured .28-.37 (richness.py) and read loud next to them.
+ */
+export const SAT_K = 0.87;
+
 /** Copy a grade into the shader's uniforms. */
 export const setGradeUniforms = (u: Record<string, { value: unknown }>, g: Grade) => {
   u.uKy.value = g.y;
   u.uKm.value = g.m;
-  u.uGSat.value = g.sat;
+  u.uGSat.value = g.sat.map((v) => v * SAT_K);
   u.uTintS.value = g.tint.s.map((v) => v / 255);
   u.uTintM.value = g.tint.m.map((v) => v / 255);
   u.uTintH.value = g.tint.h.map((v) => v / 255);

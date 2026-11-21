@@ -1,3 +1,4 @@
+import type { CharState } from "./figure";
 import type { Arm, Pose } from "./poses";
 
 /**
@@ -76,4 +77,62 @@ export const act = (p: Pose, F: number, keys: number[], seed: number, opts: { ha
     out.arms = [p.arms[0], { ...(t > 0.5 ? to : from), at }];
   }
   return out;
+};
+
+/**
+ * Body language per emotion (R21, visual-ref7): the face never acts alone. A laugh rocks the whole body with the head
+ * a beat behind (5.4-7.0 s, 22.4-24.0 s), crying shakes the shoulders, fear shrinks and trembles, a shock jumps,
+ * pride lifts the chest, sadness droops, scheming rocks slowly. t = seconds (phase-shifted per character so two
+ * people never move in lockstep), f = frames since the emotion began. Arms are never touched (held props stay put).
+ */
+type Body = { sway?: number; bob?: number; tilt?: number; lean?: number; shrug?: number; squash?: number };
+const w = (t: number, hz: number, ph = 0) => Math.sin(2 * Math.PI * hz * t + ph);
+const take = (f: number) => (f < 0 || f > 3 ? 0 : [1, -0.8, -0.3, 0.1][Math.floor(f)]); // = poses.reactSquash
+const EMOTES: Record<string, (t: number, f: number) => Body> = {
+  // Measured on the first motion test (R21): +-7 deg read as a sway, not a laugh, on a medium two-shot; the ref rocks ~15.
+  laughing: (t, f) => ({ sway: 11 * w(t, 1.7), tilt: 9 * w(t, 1.7, -1.0), bob: 11 * Math.abs(w(t, 3.4)), shrug: 8 * Math.abs(w(t, 3.4, 0.5)), squash: 0.8 * take(f) }),
+  crying: (t) => ({ sway: 1.5 * w(t, 4.5), shrug: 5 * Math.abs(w(t, 4.5)), bob: -8 + 2 * w(t, 4.5), tilt: 8 }),
+  shocked: (t, f) => ({ bob: 32 * Math.exp(-f / 6), squash: 1.3 * take(f), shrug: 12 * (1 - Math.exp(-f / 4)), sway: 1.2 * w(t, 6) }),
+  scared: (t) => ({ sway: 1.2 * w(t, 6), shrug: 9, bob: -5, squash: 0.25 }),
+  nervous: (t) => ({ sway: 0.9 * w(t, 5.5), shrug: 6, bob: -3, tilt: 3 * w(t, 0.5) }),
+  worried: (t) => ({ shrug: 4, tilt: 5, sway: 1.5 * w(t, 0.4) }),
+  excited: (t) => ({ bob: 12 * Math.abs(w(t, 2.4)), sway: 4 * w(t, 1.2), shrug: 4 }),
+  proud: (t) => ({ bob: 6, tilt: -4, sway: 2 * w(t, 0.35), shrug: -2 }),
+  smug: (t) => ({ bob: 4, tilt: -5 + 2 * w(t, 0.3), sway: 1.5 * w(t, 0.3) }),
+  sad: (t) => ({ bob: -10, tilt: 9, shrug: -3, lean: 0.1, sway: 1.2 * w(t, 0.25) }),
+  tired: (t) => ({ bob: -8, tilt: 6, shrug: -2, sway: 2 * w(t, 0.3) }),
+  angry: (t) => ({ lean: 0.35, shrug: 7, bob: -3, sway: 1 * w(t, 7) }),
+  scheming: (t) => ({ lean: 0.3, shrug: 6, sway: 3 * w(t, 0.7), tilt: 5 * w(t, 0.7, -0.8) }),
+  sneaky: (t) => ({ lean: 0.25, shrug: 7, bob: -6, sway: 2 * w(t, 0.8) }),
+  determined: () => ({ lean: 0.2, bob: 3, shrug: 2 }),
+  pleading: (t) => ({ tilt: 10, shrug: 6, bob: -3, sway: 2 * w(t, 1.0) }),
+  disgusted: () => ({ tilt: -8, shrug: 5, bob: 2 }),
+  confused: (t) => ({ tilt: 11, sway: -2 + 1 * w(t, 0.4) }),
+  relieved: (_t, f) => ({ bob: -6 * Math.min(1, f / 10), shrug: -4, tilt: 4 }),
+  grin: (t) => ({ bob: 3, sway: 1.5 * w(t, 0.5) }),
+  suspicious: () => ({ tilt: -6, lean: 0.15 }),
+};
+const ONSET = 8; // frames an emotion's body takes to arrive (and the previous one to leave)
+/**
+ * The performer: everything the face says, the body says too. On top of the role's pose: the emotion's body
+ * (crossfading from the previous emotion over 8 frames) and, while the character speaks (`fx.talk`), small nods on
+ * the open syllables (visual-ref7 40.5-42 s). `e` = exprAt's `since` and `prev`; without it the body starts at once.
+ * Hands and held props are never touched; `amount` scales it (0 = off, 0.5 for crowds/extras).
+ */
+export const perform = (s: CharState, F: number, seed: number, e: { since?: number; prev?: string } = {}, amount = 1): CharState => {
+  const f = e.since === undefined ? 99 : F - e.since, t = (F + seed * 17) / 30;
+  const r = f >= ONSET ? 1 : f <= 0 ? 0 : (f / ONSET) ** 2 * (3 - (2 * f) / ONSET);
+  const cur = EMOTES[s.expr]?.(t, f) ?? {}, prev = r < 1 && e.prev ? EMOTES[e.prev]?.(t, f + 99) ?? {} : {};
+  const v = (k: keyof Body) => amount * ((cur[k] ?? 0) * r + (prev[k] ?? 0) * (1 - r));
+  const open = s.fx.talk?.open ?? 0, p = s.pose;
+  const pose: Pose = {
+    ...p,
+    sway: p.sway + v("sway"),
+    bob: p.bob + v("bob") + 4 * amount * open,
+    tilt: (p.tilt ?? 0) + v("tilt") + 2.5 * amount * open * w(t, 0.6),
+    lean: Math.max(0, Math.min(1, (p.lean ?? 0) + v("lean"))),
+    shrug: (p.shrug ?? 0) + v("shrug"),
+    squash: (p.squash ?? 0) + v("squash"),
+  };
+  return { ...s, pose };
 };

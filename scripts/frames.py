@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
-"""Exact-frame inspection for reviews: labelled contact sheets of a render, sized per reader.
+"""Exact-frame inspection for QA layer 3: labelled contact sheets of a render.
 
 Usage:
   python scripts/frames.py out/<slug>/final.mp4 out/<slug>/shots.json videos/<slug> [--every 3] [--out out/<slug>/qa/frames]
-         [--prev out/<slug>/review/prev_final.mp4]
+         [--prev out/<slug>/qa/prev_final.mp4]
 
 Writes to --out:
-  sheets/S001.png  QA sheets (Opus: QA layer 3, module 5): every --every-th frame of the WHOLE video, 5 x 4 tiles,
+  sheets/S001.png  QA sheets (QA layer 3): every --every-th frame of the WHOLE video, 5 x 4 tiles,
                    continuous across shots and inserts (an insert that is in no shot used to be on no sheet), each tile
                    labelled "f123  B04  'word'"
-  phone/P01.png    viewer strip (Sonnet critics): 2 frames a second at phone size, 6 x 4 tiles
   key/f0123.png    full-resolution exact frames: first/last of each shot, each dissolve's middle, every word start
                    and every sound event: where gags and reactions land. Opened only where a sheet raises a question.
   INDEX.md         the files frame by frame, and the checklist to tick for each sheet (video-qa skill)
-  CHANGED.md       with --prev (the last reviewed render): the shots whose pixels changed, the only ones a re-review
-                   opens (video-review "Re-reviews")
+  CHANGED.md       with --prev (the last QA-ed render): the shots whose pixels changed, the only sheets a re-QA opens
 Frames are decoded sequentially (cv2) and streamed, so frame N is exactly composition frame N and memory stays flat
 (the old version held every 1080x1920 frame in RAM, ~15 GB for 80 s).
 """
@@ -23,7 +21,6 @@ import cv2
 import numpy as np
 
 QA = dict(tile_w=288, cols=5, rows=4)
-PHONE = dict(tile_w=240, cols=6, rows=4, fps=2)
 CHANGE_LEVEL = 1.5  # mean abs pixel difference (0-255) on 1/8-size frames above which a shot counts as changed
 
 
@@ -68,7 +65,7 @@ def main():
     ap.add_argument("--every", type=int, default=3); ap.add_argument("--out"); ap.add_argument("--prev")
     a = ap.parse_args()
     out = a.out or os.path.join(os.path.dirname(a.video), "qa", "frames")
-    for sub in ("sheets", "phone", "key"):
+    for sub in ("sheets", "key"):
         d = os.path.join(out, sub)
         os.makedirs(d, exist_ok=True)
         for old in os.scandir(d):  # a re-run must not leave the previous layout's sheets behind
@@ -95,8 +92,6 @@ def main():
     for e in events: keys.setdefault(e["f"], []).append(f"sfx {e['sfx']}: {e.get('note', '')}")
 
     qa = Sheets(os.path.join(out, "sheets"), "S", QA["tile_w"], QA["cols"], QA["rows"], 3)
-    phone = Sheets(os.path.join(out, "phone"), "P", PHONE["tile_w"], PHONE["cols"], PHONE["rows"], 2)
-    step_phone = fps // PHONE["fps"]
     cap = cv2.VideoCapture(a.video)
     prev = cv2.VideoCapture(a.prev) if a.prev else None
     diff = {}  # shot -> [sum, count]
@@ -107,7 +102,6 @@ def main():
         f, shot = n, shot_at.get(n, "INSERT")
         text = f"f{f}  {shot}  {word_at.get(f, '')}"
         if f % a.every == 0: qa.add(img.copy(), f, text)
-        if f % step_phone == 0: phone.add(img.copy(), f, text)
         if f in keys: cv2.imwrite(os.path.join(out, "key", f"f{f:04d}.png"), img)
         if prev is not None:
             okp, old = prev.read()
@@ -117,19 +111,18 @@ def main():
             acc[0] += d; acc[1] += 1
         n += 1
     if n == 0: sys.exit(f"could not decode {a.video}")
-    qa.flush(); phone.flush()
+    qa.flush()
 
     index = [f"# Exact frames: {a.video}", "", f"{n} frames. QA sheets show every {a.every} frame(s) of the whole video "
-             f"(inserts included); phone sheets 2 frames a second at phone size; key frames are full size.", "",
+             f"(inserts included); key frames are full size.", "",
              "## Checklist per sheet (tick every tile, note the frame number of anything wrong)",
              "- Clipping: anything passing through anything (props, poles, rays, hands, hats, walls, roofs, fences)",
              "- Scale: people vs doors, sheds, cars, furniture; nobody taller than a door they stand by",
              "- Contact: feet on the ground, held props in the hand, nothing floating or sunk",
              "- Background: no empty sky-and-grass frames; a story-relevant detail or life in every wide",
              "- Faces and reactions: the right expression on the right word; nothing hidden behind a caption",
-             "- Light: no pure-white blowouts, no sudden light jumps inside a shot", "", "## QA sheets (Opus)", ""]
+             "- Light: no pure-white blowouts, no sudden light jumps inside a shot", "", "## QA sheets", ""]
     index += [f"- [ ] `sheets/{nm}`: f{a0}-f{b0}" for nm, a0, b0 in qa.names]
-    index += ["", "## Phone sheets (critics)", ""] + [f"- `phone/{nm}`: f{a0}-f{b0}" for nm, a0, b0 in phone.names]
     index += ["", "## Key frames (full size)", ""]
     index += [f"- [ ] `key/f{g:04d}.png`: " + "; ".join(keys[g]) for g in sorted(keys) if g < n]
     open(os.path.join(out, "INDEX.md"), "w", encoding="utf-8").write("\n".join(index) + "\n")
@@ -148,7 +141,7 @@ def main():
         lines += ["", f"Unchanged: {', '.join(s for s in sorted(diff, key=lambda x: order.get(x, 1e9)) if s not in dict(changed))}"]
         open(os.path.join(out, "CHANGED.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
         print(f"changed shots: {len(changed)} of {len(diff)} -> CHANGED.md")
-    print(f"{n} frames -> {out} ({len(qa.names)} QA sheets, {len(phone.names)} phone sheets, {len([g for g in keys if g < n])} key frames)")
+    print(f"{n} frames -> {out} ({len(qa.names)} QA sheets, {len([g for g in keys if g < n])} key frames)")
 
 
 def short(shot_id):

@@ -1,8 +1,9 @@
-import { CircleGeometry, DodecahedronGeometry, InstancedMesh, Matrix4, Mesh, PlaneGeometry, Quaternion, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three";
+import { CircleGeometry, ConeGeometry, DodecahedronGeometry, InstancedMesh, Matrix4, Mesh, PlaneGeometry, Quaternion, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three";
 import { LightPreset, linear } from "../lights";
 import { grain, painted, rng, shade, strokes } from "../paint";
 import { toonMaterial } from "../shade";
-import { SKY } from "../ink";
+import { NOINK, SKY } from "../ink";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 /**
  * Ground textures (2 m tiles, 512 px), all on the same variation rules:
@@ -349,4 +350,39 @@ export const scraps = (n: number, place: (t: number, r: () => number) => Vector3
     im.receiveShadow = true;
     return im;
   });
+};
+
+/**
+ * Grass tufts (R24, visual-ref9: dry-grass fields at the camp's edges, tufts along every path; ref8 weeds at the
+ * hangar walls). Each tuft is 6 thin blades leaning out; one InstancedMesh per colour (mix a dark, a mid and a sun-
+ * bleached tip colour). Not colliders (the QA guard skips instanced meshes) and on NOINK, so blades get no outlines.
+ * `place` returns the tuft's base on the ground (slopes: give it the ground's y). `height` is the tallest blade (m).
+ * Keep n <= ~3000 per call on the 4 GB laptop.
+ */
+export const grassTufts = (n: number, place: (t: number, r: () => number) => Vector3, colors: string[], seed: number, height = 0.35) => {
+  const r = rng(seed);
+  const blades = Array.from({ length: 6 }, (_, k) => {
+    const h = height * (0.55 + 0.45 * ((k * 0.618) % 1)), g = new ConeGeometry(0.012, h, 3, 1);
+    g.translate(0, h / 2, 0);
+    g.rotateZ((0.15 + 0.25 * ((k * 0.37) % 1)) * (k % 2 ? 1 : -1));
+    g.rotateY((k / 6) * Math.PI * 2);
+    return g;
+  });
+  const tuft = mergeGeometries(blades);
+  const meshes = colors.map((c) => new InstancedMesh(tuft, toonMaterial({ color: c }), n));
+  const counts = colors.map(() => 0);
+  const m = new Matrix4(), q = new Quaternion(), sc = new Vector3();
+  for (let i = 0; i < n; i++) {
+    const k = i % colors.length, s = 0.6 + 0.8 * r();
+    q.setFromAxisAngle(new Vector3(0, 1, 0), r() * 6.28);
+    sc.set(s * (0.8 + 0.6 * r()), s, s);
+    m.compose(place(r(), r), q, sc);
+    meshes[k].setMatrixAt(counts[k]++, m);
+  }
+  meshes.forEach((mm, k) => {
+    mm.count = counts[k];
+    mm.receiveShadow = true;
+    mm.layers.set(NOINK);
+  });
+  return meshes;
 };

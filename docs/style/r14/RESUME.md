@@ -2,7 +2,7 @@
 Latest: review round 5, videos/zombie-supermarket-30-days/REVIEW_R5.md (merged open list) + QUALITY_R15.md (module 5,
 FAIL, Characters 7, rest 5-6). Start from REVIEW_R5.md's list. Delta re-reviews: baseline is review/prev_final.mp4.
 
-Standard: docs/style/QUALITY_STANDARD.md. Gate: video-review module 5 (Opus), every category >= 8, no auto-fail.
+Standard: docs/style/QUALITY_STANDARD.md. Gate (historical): the video-review module 5 was removed 2026-11-21; the user reviews by eye.
 Last module-5 review (on pass 4): FAIL, scores 5-6 in every category (videos/zombie-supermarket-30-days/QUALITY_R14_P4.md).
 The reviewer's ordered fix list in that file supersedes the 'Still open' list below. Its points on pass-4 work:
 battery not readable at phone size, kick still reads as missing the cart, tape slap off-frame, knock has no door edge

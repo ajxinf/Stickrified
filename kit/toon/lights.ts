@@ -13,6 +13,9 @@ export type LightPreset = {
   lift: RGB;
   skyTop: string;
   skyMid?: string;
+  /** Height (0..1 of the dome) over which the horizon colour blends into skyMid (default .5). R26: a blue dusk over a
+   * peach horizon needs a thin band (~.14, visual-ref8 45 s); a wide one averages them to mauve. */
+  horizonBand?: number;
   skyHorizon: string;
   fog: string;
   fogNear: number;
@@ -157,13 +160,13 @@ export const LIGHTS = {
     el: 26,
     // R21: gentler key (was 1.7/1.06/.6): sunlit facades out-shone the character; the subject must be the brightest.
     lit: [1.42, 0.94, 0.58],
-    shade: [0.4, 0.33, 0.56],
+    shade: [0.33, 0.35, 0.62], // R21b: cooler shade (was .4/.33/.56): every sunset frame read one pink-orange
     lift: [0.02, 0.015, 0.035],
     litMax: 3.2,
     skyTop: "#4a58b0",
     skyMid: "#dc7f9c",
     skyHorizon: "#ffc27c",
-    fog: "#f4b48c",
+    fog: "#e8b4a6",
     fogNear: 60,
     fogFar: 340,
     sat: 1.2,

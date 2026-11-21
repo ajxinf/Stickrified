@@ -18,7 +18,7 @@ import { STRESS_FRAMES, StressTest } from "./videos/_stress-test/Video";
 import { VISUAL_TEST_FRAMES, VisualTest } from "./videos/_visual-test/Video";
 import { TRAPPED_FRAMES, TrappedInThisWorld } from "./videos/trapped-in-this-world/Video";
 import { GTA_FRAMES, GtaStartedAsRaceNChase } from "./videos/gta-started-as-race-n-chase/Video";
-import { MOON_FRAMES, MoonDisappearedTonight } from "./videos/moon-disappeared-tonight/Video";
+import { LOOK_FRAMES, MOON_FRAMES, MoonDisappearedTonight, MoonLookTest } from "./videos/moon-disappeared-tonight/Video";
 import { ZOMBIE_FRAMES, ZombieSupermarket } from "./videos/zombie-supermarket-30-days/Video";
 
 export const RemotionRoot: React.FC = () => (
@@ -47,6 +47,7 @@ export const RemotionRoot: React.FC = () => (
       <Composition id="StressTest" component={StressTest} fps={30} durationInFrames={STRESS_FRAMES} width={1080} height={1920} />
       <Composition id="GtaStartedAsRaceNChase" component={GtaStartedAsRaceNChase} fps={30} durationInFrames={GTA_FRAMES} width={1080} height={1920} />
       <Composition id="MoonDisappearedTonight" component={MoonDisappearedTonight} fps={30} durationInFrames={MOON_FRAMES} width={1080} height={1920} />
+      <Composition id="MoonLookTest" component={MoonLookTest} fps={30} durationInFrames={LOOK_FRAMES} width={1080} height={1920} />
       <Composition id="TrappedInThisWorld" component={TrappedInThisWorld} fps={30} durationInFrames={TRAPPED_FRAMES} width={1080} height={1920} />
       <Composition id="VisualTest" component={VisualTest} fps={30} durationInFrames={VISUAL_TEST_FRAMES} width={1080} height={1920} />
       <Composition id="ZombieSupermarket" component={ZombieSupermarket} fps={30} durationInFrames={ZOMBIE_FRAMES} width={1080} height={1920} />

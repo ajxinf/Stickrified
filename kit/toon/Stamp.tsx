@@ -6,6 +6,11 @@ import { CAPTION_FONT } from "./Captions";
  * Lands on its word frame `at` with a 4-frame thump (scale 1.35 -> 1, matching the thump SFX), holds, fades over 6 f.
  * Sizes are fractions of the frame width so stills (0.5) and 2K finals match.
  */
+/** Screen box (fractions of a 9:16 frame) a Stamp covers, for the QA plan's `overlays` (guard "Caption vs face"). */
+export const stampBox = (text: string, at: number, hold = 45, top = "18%") => {
+  const w = (text.length * 7.2 + 10) / 100, y0 = parseFloat(top) / 100;
+  return { name: `stamp "${text}"`, from: at, to: at + hold + 6, x: [0.5 - w / 2, 0.5 + w / 2] as [number, number], y: [y0, y0 + 0.1] as [number, number] };
+};
 export const Stamp: React.FC<{ text: string; at: number; hold?: number; tilt?: number; top?: string }> = ({ text, at, hold = 45, tilt = -5, top = "18%" }) => {
   const f = useCurrentFrame() - at;
   const { width } = useVideoConfig();

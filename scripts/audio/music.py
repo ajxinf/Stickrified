@@ -37,6 +37,9 @@ def pluck(midi, dur, bright=1.0, decay=0.35):
 
 def main(d):
     cfg = events.load(d)["music"]  # word-anchored button/stop resolved
+    if cfg.get("track"):  # a library track from assets/bgm (user 2026-11-16), not the synth score
+        import bgm
+        return bgm.fit(d, cfg)
     fps = 30
     n = round(cfg["frames"] / fps * SR)
     beat = 60 / cfg["bpm"]

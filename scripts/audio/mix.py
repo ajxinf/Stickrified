@@ -24,6 +24,7 @@ MUSIC_DB, BUTTON_DB, SFX_DB, DUCK_DB = -3, -3, -12, 16  # SFX -12 (was -6; user 
 SFX_DUCK_DB = 6  # effects also dip under the narrator, so hits sit in the gaps
 AMB_DB, AMB_DUCK_DB = -9, 13  # R13: a continuous scene bed under everything, ducked less than the music
 MIN_GAP_DB = 15
+TRACK_CARVE_DB = -6  # speech-band dip on library tracks (assets/bgm, 2026-11-16): voice was only 21 dB clear without it
 MAX_SFX_DB = -16  # loudest effect 16 dB under the narrator (user 2026-11-15: still way too loud at -10)
 AMB_UNDER_VOICE_DB = 24  # the scene bed stays this far under the narrator while he speaks (dawn groans masked 'Dave thinks Chad is winning')
 FFMPEG = os.path.abspath("node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe")  # bundled with Remotion
@@ -77,6 +78,13 @@ def shelf(x, f0, gain_db, high):
     return lfilter(np.array(b) / a[0], np.array(a) / a[0], x, axis=0)
 
 
+def carve(x, cut_db=TRACK_CARVE_DB):
+    """A library track's keys and pads fill the speech band the synth score left free: dip 300-4000 Hz (zero-phase,
+    so subtracting the band leaves a clean notch)."""
+    from scipy.signal import butter, sosfiltfilt
+    return x - (1 - db(cut_db)) * sosfiltfilt(butter(2, [300, 4000], "bandpass", fs=SR, output="sos"), x, axis=0)
+
+
 def widen(m, ms=11):
     """Mono -> stereo: the right channel a few ms late (Haas), so a mono stem fills the stereo field."""
     d = int(ms / 1000 * SR)
@@ -85,7 +93,7 @@ def widen(m, ms=11):
 
 
 def main(d):
-    voice, music = read(f"{d}/voice/voice.wav"), read(f"{d}/audio/music.wav")
+    voice, music = read(f"{d}/voice/voice.wav"), read_st(f"{d}/audio/music.wav")
     sfx = read_st(f"{d}/audio/sfx.wav")
     n = len(sfx)  # sfx/music are written at the exact video length
     voice = np.pad(voice, (0, max(0, n - len(voice))))[:n]
@@ -107,7 +115,8 @@ def main(d):
     aduck = aduck * db(-18 * _uf(hole, int(0.15 * SR)))
     # Per video: "music": {"button_db": -12} when the last word is quiet (a deadpan line) and the button would bury it.
     button_db = json.load(open(f"{d}/audio/events.json"))["music"].get("button_db", BUTTON_DB)
-    bedm = shelf(widen(music[:n]), 160, 3, False)  # R13: warmer, wider score
+    mono = np.array_equal(music[:, 0], music[:, 1])  # the synth score is mono; a library track (bgm.py) is a stereo master
+    bedm = shelf(widen(music[:n, 0]), 160, 3, False) if mono else carve(music[:n])  # R13: warmer, wider score
     mus = db(MUSIC_DB) * bedm * duck[:, None] + db(button_db) * widen(button)
     ambm = db(AMB_DB) * amb * aduck[:, None]
     # R14 (reviewer: one word masked, lowest -5.9 dB): ride the bed + ambience down under any word that is still less
@@ -167,9 +176,10 @@ def word_ride(voice, bed, words):
     v, m = sosfilt(sos, voice), sosfilt(sos, bed)
     rms = lambda z: np.sqrt(np.mean(z ** 2) + 1e-20)
     cut = np.zeros(len(bed))
-    for w in words:
+    for i, w in enumerate(words):
         a, b = int(w["start"] * SR), max(int(w["end"] * SR), int(w["start"] * SR) + int(0.08 * SR))
-        short = WORD_GAP_DB - 20 * np.log10(rms(v[a:b]) / rms(m[a:b]))
+        need = MIN_GAP_DB + 0.5 if i == len(words) - 1 else WORD_GAP_DB  # the punchline: a library track plays on under it
+        short = need - 20 * np.log10(rms(v[a:b]) / rms(m[a:b]))
         if short > 0:
             cut[a:b] = np.maximum(cut[a:b], min(short, 18))
     ramp = int(0.06 * SR)

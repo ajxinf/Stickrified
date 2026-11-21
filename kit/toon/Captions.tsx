@@ -19,12 +19,18 @@ if (typeof document !== "undefined") {
 }
 
 /**
- * Burned-in word captions (SKILL "Captions", LOOK_SPEC identity 3; R13 restyle 2026-11-14): at most 2 words at a time
- * from words.json, all white, bold rounded sans with a thick dark outline and a firm drop shadow, centred at y = 0.70 H,
- * no colour highlight, no pop or bounce: each group appears on its first word and holds until the next. `*key*` marks in
- * the word list are stripped (they still drive the script tools and audio tags).
+ * Burned-in word captions (SKILL "Captions", LOOK_SPEC identity 3; R13 restyle 2026-11-14, key colours 2026-11-16): at
+ * most 2 words at a time from words.json, white bold rounded sans with a thick dark outline and a firm drop shadow,
+ * centred at y = 0.70 H, no pop or bounce: each group appears on its first word and holds until the next. The `*key*`
+ * word of each sentence is coloured: yellow in narration, the speaker's colour on a line with a `speaker` (user
+ * request 2026-11-16). Straight and curly double quotes are dropped (the colour shows who speaks).
  */
-export type CaptionWord = { text: string; start: number; end: number };
+export type CaptionWord = { text: string; start: number; end: number; speaker?: string };
+
+/** Key-word colours: narration, and per speaker (a video adds its own cast with the `speakers` prop). */
+export const KEY_COLOR = "#ffd23f";
+export const SPEAKER_COLORS: Record<string, string> = { narrator: "#ff4a3d", you: "#7ce86a" };
+const clean = (t: string) => t.replace(/[*"“”]/g, "");
 
 export const CAPTION_FONT = '"Nunito", "Segoe UI Black", "Arial Rounded MT Bold", "Arial Black", sans-serif';
 /** Sizes as fractions of the frame width: font, outline, max line width (longer groups wrap; the guard checks). */
@@ -32,24 +38,29 @@ export const CAPTION_FONT = '"Nunito", "Segoe UI Black", "Arial Rounded MT Bold"
 export const CAPTION = { size: 0.06, stroke: 0.016, maxWidth: 0.84, maxLines: 2 };
 
 /** Caption groups of at most 2 words, exactly as drawn: shared with the QA guard's "Caption width" check. */
-export const captionPages = (words: CaptionWord[]) =>
-  createTikTokStyleCaptions({
-    captions: words.map((w) => ({ text: ` ${w.text.replace(/\*/g, "")}`, startMs: w.start * 1000, endMs: w.end * 1000, timestampMs: null, confidence: null })),
+export const captionPages = (words: CaptionWord[], speakers: Record<string, string> = {}) => {
+  const colors = { ...SPEAKER_COLORS, ...speakers };
+  const color = words.map((w) => (w.text.includes("*") ? (w.speaker ? colors[w.speaker] : KEY_COLOR) ?? KEY_COLOR : "#ffffff"));
+  let n = 0; // tokens come out one per word, in order
+  return createTikTokStyleCaptions({
+    captions: words.map((w) => ({ text: ` ${clean(w.text)}`, startMs: w.start * 1000, endMs: w.end * 1000, timestampMs: null, confidence: null })),
     combineTokensWithinMilliseconds: 350,
   }).pages.flatMap((p) => {
-    const end = p.startMs + p.durationMs, out: typeof p[] = [];
-    for (let k = 0; k < p.tokens.length; k += 2) {
-      const tokens = p.tokens.slice(k, k + 2), startMs = k === 0 ? p.startMs : tokens[0].fromMs;
+    const all = p.tokens.map((t) => ({ ...t, color: color[n++] }));
+    const end = p.startMs + p.durationMs, out: (Omit<typeof p, "tokens"> & { tokens: typeof all })[] = [];
+    for (let k = 0; k < all.length; k += 2) {
+      const tokens = all.slice(k, k + 2), startMs = k === 0 ? p.startMs : tokens[0].fromMs;
       const endMs = k + 2 < p.tokens.length ? p.tokens[k + 2].fromMs : end;
       out.push({ ...p, tokens, startMs, durationMs: endMs - startMs, text: tokens.map((t) => t.text).join("") });
     }
     return out;
   });
+};
 
-export const Captions: React.FC<{ words: CaptionWord[] }> = ({ words }) => {
+export const Captions: React.FC<{ words: CaptionWord[]; speakers?: Record<string, string> }> = ({ words, speakers }) => {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
-  const pages = useMemo(() => captionPages(words), [words]);
+  const pages = useMemo(() => captionPages(words, speakers), [words, speakers]);
   const ms = (frame / fps) * 1000;
   const i = pages.filter((p) => p.startMs <= ms).length - 1; // pages are in time order
   const page = pages[i];
@@ -58,7 +69,7 @@ export const Captions: React.FC<{ words: CaptionWord[] }> = ({ words }) => {
   // Two stacked copies in one grid cell: the outline layer behind (thick stroke, dark fill), the letters on top with
   // no stroke. A stroke drawn over the fill (Chrome ignores paint-order on HTML text) ate thin glyphs: "!" read as
   // "?" in the pilot. Never draw the outline on the letters themselves.
-  const text = () => page.tokens.map((t, k) => <span key={k}>{t.text}</span>);
+  const text = (fill: boolean) => page.tokens.map((t, k) => <span key={k} style={fill ? { color: t.color } : undefined}>{t.text}</span>);
   // Explicit stacking: a layer with a filter paints after unpositioned siblings, so z-index decides, not DOM order.
   const layer: React.CSSProperties = { gridArea: "1 / 1", position: "relative", maxWidth: CAPTION.maxWidth * width, whiteSpace: "normal", textAlign: "center" };
   return (
@@ -76,9 +87,9 @@ export const Captions: React.FC<{ words: CaptionWord[] }> = ({ words }) => {
         }}
       >
         <div aria-hidden style={{ ...layer, zIndex: 0, color: "#141014", WebkitTextStroke: `${CAPTION.stroke * width}px #141014`, filter: `drop-shadow(0 ${0.005 * width}px ${0.002 * width}px rgba(0,0,0,0.75))` }}>
-          {text()}
+          {text(false)}
         </div>
-        <div style={{ ...layer, zIndex: 1, color: "#ffffff" }}>{text()}</div>
+        <div style={{ ...layer, zIndex: 1, color: "#ffffff" }}>{text(true)}</div>
       </div>
     </AbsoluteFill>
   );

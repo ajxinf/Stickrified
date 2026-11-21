@@ -36,6 +36,7 @@ export const glowSprite = (pos: Vector3, color: string, size: number, strength: 
   s.scale.setScalar(size);
   s.layers.set(SKY);
   s.raycast = () => {};
+  s.userData.glow = { pos: pos.clone(), size, strength: 0.2126 * m.color.r + 0.7152 * m.color.g + 0.0722 * m.color.b }; // QA "Glare" (colour already x strength)
   s.onBeforeRender = (_r, _s, cam: Camera) => {
     toCam.setFromMatrixPosition(cam.matrixWorld).sub(pos);
     // A lens near (or inside) a halo washes the whole frame (pilot: generator shot 2 m from a floodlight): fade the
@@ -51,21 +52,25 @@ export const glowSprite = (pos: Vector3, color: string, size: number, strength: 
 };
 
 /** Glow size (m across) and strength per practical kind. */
-const GLOW: Record<PracticalKind, [number, number]> = { lamp: [1.7, 0.75], window: [2.0, 0.35], shop: [3.0, 0.45], fire: [2.4, 0.9] };
+const GLOW: Record<PracticalKind, [number, number]> = { lamp: [1.7, 0.75], window: [2.0, 0.35], shop: [3.0, 0.45], fire: [2.4, 0.9], screen: [0.55, 0.25] };
 
 /**
  * Glows for every practical (all of them, not only the few that get real point lights). Off when the preset has
  * no `lamp` (lights off by day) unless the practical has its own colour (an exit sign stays on). `glowAt` places
  * the glow on the fixture when the light itself hangs elsewhere (fluorescent strips).
  */
-export const practicalGlows = (list: { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3 }[], p: LightPreset) => {
+/** `noGlow`: a fill light with no visible source of its own (a pool under string bulbs that already glow); its sprite
+ * is added hidden so glows.children[i] still matches list[i]. */
+export const practicalGlows = (list: { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3; noGlow?: boolean }[], p: LightPreset) => {
   const g = new Group();
   const on = Math.min((p.lamp?.[1] ?? 0) / 3, 1);
   for (const l of list) {
     const [size, k] = GLOW[l.kind];
     const strength = l.color ? k * Math.min(l.color[1], 1.5) : k * on;
     if (strength <= 0.02) continue;
-    g.add(glowSprite(l.glowAt ?? l.pos, l.color?.[0] ?? p.lamp?.[0] ?? "#ffb35a", size, strength));
+    const s = glowSprite(l.glowAt ?? l.pos, l.color?.[0] ?? p.lamp?.[0] ?? "#ffb35a", size, strength);
+    s.visible = !l.noGlow;
+    g.add(s);
   }
   return g;
 };
