@@ -2,8 +2,8 @@
   "slug": "promise-flowers",
   "title": "In this world, every promise grows a flower out of your skin.",
   "pillar": "'In this world...' fiction",
-  "formula": "Rule as the hook (every promise grows a flower out of your skin; kept = bloom, broken = rot + stink) -> world tour (Linda's marathon sunflower, Dad's six-year sink tulip, the 'I'll call you' guy you smell across the mall) -> rival's perfect version (Derek: 1,000 perfect flowers, running for mayor, every promise blooms the second he says it) -> plants (instant blooms; bees never land on him) -> stake (his first job: bulldoze the park and Grandma's hives) -> your promise (save her bees: a bud on your hand) -> weird prep (all 10,000 bees in a shoebox) -> doubter (Grandma: 'a thousand flowers vs a bud') -> setback (99 % in the polls, your bud browning) -> big test (bees land on every real flower except Derek's) -> reversal: the rival's own habit (he PROMISES they're real: a real flower shoots out of his nose and rots on live TV) -> reveal (sweat, glue, 1,000 fake flowers slide off, 1,000 rotten ones underneath) -> callback (you can smell him from across the mall) -> loop: your one bud blooms",
-  "loop": "Line 1: every promise you make grows a flower out of your skin. Last: your one little bud (Grandma's 'You've got a bud') finally blooms: the rule closes on you, kept.",
+  "formula": "Rule as the hook (every promise grows a flower out of your skin; kept = bloom, broken = rot + stink) -> world tour (Linda's marathon sunflower, Dad's six-year sink tulip, the 'I'll call you' guy you smell across the mall) -> you: the town flake, 14 rotten flowers + a fly since ninth grade, so nobody believes you (wound + flaw + running bit) -> rival's perfect version (Derek, running for mayor: 1,000 perfect flowers; routine: every morning a new promise that blooms the second he says it) -> the break (he promises to bulldoze the park and Grandma's hives) -> plant (every summer you've watched where her bees go) -> your first promise in years (save the bees: a bud on your hand) -> doubter (Grandma: three Christmases) -> weird prep (all her bees in a shoebox) -> setback (99 %, your bud browning; the park laughs when you call him a fake) -> big test (bees land on every real flower except Derek's) -> hidden plan revealed mid-danger (bees never land on Derek) -> reversal: the rival's own habit (he PROMISES they're real: a real flower shoots out of his nose and rots on live TV) -> reveal (sweat, glue, 1,000 fakes slide off, 1,000 rotten ones underneath) -> running bit pays off (your fly leaves you for Derek) -> callback (you can smell him from across the mall) -> loop: fourteen rotten flowers, and one that blooms",
+  "loop": "Lines 1-3: every promise grows a flower; break it and it rots (and yours are all rotten: 14). Last: 'Fourteen rotten flowers... and one that finally blooms.'",
   "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
   "model": "eleven_v4",
   "voices": {
@@ -15,16 +15,16 @@
     "derek": "Callum (ElevenLabs premade): husky trickster, a slick candidate with something to hide"
   },
   "facts": [
-    "Fiction: no sources needed. One rule, said in line 1-2 and shown before it matters: every promise grows a flower out of the promiser's skin; kept = it blooms, broken = it rots and stinks.",
-    "Fallout of the same rule (not new rules): a promise that is already false rots the moment it is said (Derek's nose flower); bees land only on real flowers (planted in line 9, shown with a bee snubbing Derek).",
-    "Derek's 1,000 blooms are glued-on fakes hiding 1,000 rotten real ones; the clue is that his flowers bloom the second he promises (a real one only blooms once the promise is kept).",
-    "Numbers: 1,000 (Derek's flowers, the motif), 10,000 bees, 99 % in the polls: story numbers."
+    "Fiction: no sources needed. One rule, said in lines 1-3 and shown before it matters: every promise grows a flower out of the promiser's skin; kept = it blooms, broken = it rots and stinks.",
+    "Fallout of the same rule (not new rules): rotten flowers draw flies (your fly, Dad's ear); a promise that is already false rots the moment it is said (Derek's nose flower); bees visit real blooms only (planted: you watch Grandma's bees from her porch every summer; a bee snubs Derek on screen).",
+    "Derek's 1,000 blooms are glued-on fakes hiding 1,000 rotten real ones; the clue is that they bloom the second he promises (a real one only blooms once the promise is kept).",
+    "Numbers: 14 (your rotten flowers, the loop), 1,000 (Derek's), 10,000 bees, 99 % in the polls: story numbers."
   ],
   "lines": [
     {
       "narration": "In this world, every promise you make grows a *flower* out of your skin.",
       "audioTag": "fast-paced, energetic storyteller",
-      "scene": "Cold open, a sunny small-town square: a man on a bench takes his date's hands and says something; POP, a green bud shoots out of his elbow. Around them, everyone carries flowers growing out of arms, shoulders, heads: a mail carrier with daisies up both arms, a kid with one sprout on his knee.",
+      "scene": "Cold open, a sunny small-town square: a man on a bench takes his date's hands and promises; POP, a green bud shoots out of his elbow. Around them everyone carries flowers growing from arms, shoulders, heads: a mail carrier with daisies up both arms, a kid with one sprout on his knee.",
       "camera": "MCU on the couple, the bud pops on 'flower', quick pull-out to the square full of flowered people",
       "onScreenText": "",
       "gag": "A bud pops out of a man's elbow the instant he says 'I promise'"
@@ -32,150 +32,200 @@
     {
       "narration": "Keep it, and it *blooms*.",
       "audioTag": "playful",
-      "scene": "Macro: the elbow bud unfurls into a big red flower, petals opening in a burst, pollen sparkles in the sun.",
+      "scene": "Macro: the elbow bud unfurls into a big red flower, petals opening in a burst, pollen sparkling in the sun.",
       "camera": "Macro push-in, the bloom opens on 'blooms'",
       "onScreenText": "",
-      "gag": "The bud bursts into a bloom like a party popper"
+      "gag": "The bud bursts open like a party popper"
     },
     {
       "narration": "Break it, and it rots and *stinks*.",
       "audioTag": "amused",
-      "scene": "Same framing, match cut: the flower droops brown, petals fall, three flies circle it, green stink lines rise; a passing jogger gags and veers away.",
+      "scene": "Same framing, match cut: the flower droops brown, petals fall, flies circle, green stink lines rise; a passing jogger gags and veers away.",
       "camera": "Same macro (match cut), then a hard cut to the jogger's disgusted face",
       "onScreenText": "",
       "gag": "Flies circle the rotten flower and a jogger gags mid-stride"
     },
     {
-      "narration": "You see, Linda ran the marathon she promised: a sunflower on her *knee*.",
+      "narration": "You see, Linda next door ran the marathon she promised: a sunflower on her *knee*.",
       "audioTag": "playful",
-      "scene": "Linda (headband, running vest with a race number) jogs past your fence, a giant sunflower blooming from her knee, bobbing with every stride, a finisher medal round her neck.",
-      "camera": "Tracking her jog in profile, the sunflower bobbing",
+      "scene": "Linda (headband, running vest with a race number, finisher medal) jogs past your fence, a giant sunflower blooming from her knee, bobbing with every stride.",
+      "camera": "Tracking her jog in profile",
       "onScreenText": "Race number on her vest",
-      "gag": "The sunflower on her knee bounces like a bobblehead as she jogs"
+      "gag": "The sunflower on her knee bounces like a bobblehead"
     },
     {
       "narration": "Dad's sink promise? Six years old. Dead tulip, on his *ear*.",
       "spoken": "Dad's sink promise? SIX years old. Dead tulip, on his ear.",
       "audioTag": "amused",
-      "scene": "Kitchen: Dad reads the paper beside a sink with a bucket under a dripping tap; a shrivelled brown tulip hangs off his ear, a fly circling it. He waves the fly off without looking up.",
-      "camera": "MS on Dad and the bucket, quick push to the rotten tulip on 'ear'",
-      "onScreenText": "A sticky note on the tap: FIX ME",
-      "gag": "A bucket overflowing under the sink and a fly orbiting Dad's ear"
+      "scene": "Kitchen: Dad reads the paper beside a sink with a bucket under the dripping tap; a shrivelled brown tulip hangs off his ear, a fly circling it. He waves the fly off without looking up.",
+      "camera": "MS on Dad and the bucket, quick push to the tulip on 'ear'",
+      "onScreenText": "Sticky note on the tap: FIX ME",
+      "gag": "The bucket overflows while Dad waves off the fly"
     },
     {
       "narration": "And the guy who said \"I'll call you\"? You can smell him from across the *mall*.",
       "audioTag": "mischievous",
-      "scene": "A mall: far down the walkway a guy scrolling his phone, a brown rotten rose on his shoulder; a thick green stink cloud drifts the full length of the mall, shoppers fanning their noses, a dog fainting.",
+      "scene": "A mall: far down the walkway a guy scrolls his phone, a rotten rose on his shoulder; a green stink cloud drifts the length of the mall, shoppers fan their noses, a dog faints.",
       "camera": "Long telephoto down the mall, the cloud rolling toward the lens on 'mall'",
       "onScreenText": "",
       "gag": "The stink cloud rolls the whole length of the mall; a dog faints"
     },
     {
-      "narration": "Then there's Derek: a thousand perfect flowers, like a walking wedding *cake*.",
-      "spoken": "Then there's Derek: a THOUSAND perfect flowers, like a walking wedding cake.",
+      "narration": "And you? Fourteen rotten flowers, and a fly that's followed you since ninth *grade*.",
+      "audioTag": "playful",
+      "scene": "You on Grandma's porch steps: fourteen droopy brown flowers poke out of your hoodie sleeves, collar and hood; one fat fly orbits your head like a tiny moon. You give it a tired look.",
+      "camera": "Hard cut to an MS of you, push to the fly on 'grade'",
+      "onScreenText": "",
+      "gag": "Your fly orbits your head like a pet"
+    },
+    {
+      "narration": "Most of them are from \"I'll be there in five *minutes*.\"",
+      "audioTag": "deadpan",
+      "scene": "Flashback inserts, same pose three times: you in bed under the covers texting 'omw 5 min', and each time a brown flower pops out of your arm.",
+      "camera": "Three hard cuts on the same bed framing (match cuts), the phone screen readable",
+      "onScreenText": "Phone screen: omw 5 min",
+      "gag": "You text 'omw 5 min' from under the covers, three times"
+    },
+    {
+      "narration": "So nobody in town believes a word you *say*.",
+      "audioTag": "playful",
+      "scene": "The square: you say something to a neighbour; she glances at your rotten flowers, holds her nose and walks off; a shop owner flips his sign to CLOSED as you pass.",
+      "camera": "MS two-shot, then a quick reframe to the sign",
+      "onScreenText": "Shop sign flips: CLOSED",
+      "gag": "A shopkeeper flips his sign to CLOSED as you walk by"
+    },
+    {
+      "narration": "Then there's Derek: running for mayor, a thousand perfect flowers, like a walking wedding *cake*.",
+      "spoken": "Then there's Derek: running for mayor, a THOUSAND perfect flowers, like a walking wedding cake.",
       "audioTag": "amazed",
-      "scene": "The town park: Derek steps out of a shiny campaign van, covered head to toe in perfect pink and white blooms, teeth gleaming, a 'DEREK FOR MAYOR' banner behind him. He spritzes himself with a perfume bottle.",
+      "scene": "The town park: Derek steps out of a shiny campaign van, covered head to toe in perfect pink and white blooms, teeth gleaming, a DEREK FOR MAYOR banner behind him. He spritzes himself with a perfume bottle.",
       "camera": "Low angle tilt up Derek from his flowered shoes to his grin",
       "onScreenText": "DEREK FOR MAYOR banner",
       "gag": "Derek is so covered in flowers he looks like a three-tier wedding cake"
     },
     {
-      "narration": "He's running for mayor, promising free pizza, a water park, and no more *Mondays*.",
+      "narration": "Every morning, he promises the town something new: free pizza, a water park, no more *Mondays*.",
       "audioTag": "playful",
-      "scene": "Derek at a podium in the park, crowd cheering; each promise he shouts, a fresh perfect bloom appears on his sleeve. Inserts: a pizza, a waterslide, a calendar with Monday crossed out.",
+      "scene": "Derek at a podium in the park, the crowd cheering; on each promise a fresh perfect bloom appears on his sleeve. Inserts: a pizza, a waterslide, a calendar with Monday torn out.",
       "camera": "Hard cuts on each promise, MCU of Derek",
-      "onScreenText": "Calendar page with MONDAY crossed out",
+      "onScreenText": "Calendar page with MONDAY torn out",
       "gag": "A calendar where Monday is torn out"
     },
     {
       "narration": "And they bloom the *second* he says them.",
       "audioTag": "excited, building",
-      "scene": "Macro on Derek's sleeve: he says 'promise', and a flower is just THERE, fully open, no bud. Behind his back his other hand tucks a glue tube into his pocket (planted, easy to miss).",
+      "scene": "Macro on Derek's sleeve: he says 'promise' and a flower is just THERE, fully open, no bud. Behind his back his other hand tucks a glue tube into his pocket (planted, easy to miss). A bee buzzes up, sniffs one of his flowers, and zigzags away.",
       "camera": "Macro on the sleeve, quick rack to his hidden hand",
       "onScreenText": "",
-      "gag": "A bloom appears fully open with no bud, like a magic trick"
+      "gag": "A bloom appears fully open with no bud, like a magic trick; a bee sniffs it and leaves"
     },
     {
-      "narration": "Weirdly, bees never land on *him*.",
-      "audioTag": "playful, loud",
-      "scene": "A bee buzzes up to Derek's chest of flowers, sniffs one, recoils, and zigzags away gagging. Derek doesn't notice.",
-      "camera": "Follow the bee in close, it lands, sniffs, flies off toward the lens",
-      "onScreenText": "",
-      "gag": "A bee sniffs Derek's flower and flies off disgusted"
-    },
-    {
-      "narration": "But as mayor, he'll bulldoze Grandma's *beehives*.",
+      "narration": "Then one Monday, he promises to bulldoze the park, and Grandma's *beehives*.",
       "audioTag": "urgent",
-      "scene": "Derek points his campaign plan at the park's corner: Grandma's little white beehives under an apple tree; a big yellow bulldozer sits on the plan board, ready.",
+      "scene": "Derek points his plan board at the park's corner: Grandma's little white beehives under an apple tree; the board shows them replaced by a parking lot, a yellow bulldozer parked beside it.",
       "camera": "Whip from Derek's pointing finger to the hives",
-      "onScreenText": "Campaign board: NEW PARKING LOT",
-      "gag": "The plan board shows the hives replaced by a parking lot"
+      "onScreenText": "Plan board: NEW PARKING LOT",
+      "gag": "The plan board draws the hives as a parking lot"
     },
     {
-      "narration": "So you promise to save them, and a bud pops out of your *hand*.",
+      "narration": "You've spent every summer on her porch, watching where those bees *go*.",
+      "audioTag": "playful",
+      "scene": "Grandma's porch, summer light: you with binoculars and a notebook full of bee doodles and arrows, a bee flying past your nose; Grandma knits beside you. The fly sits on your notebook.",
+      "camera": "MS of you on the porch, insert of the notebook page",
+      "onScreenText": "Notebook page: arrows, bees, 'LINDA - YES'",
+      "gag": "You track bees with binoculars like a spy"
+    },
+    {
+      "narration": "So, for the first time in years, you promise to save them, and a bud pops out of your *hand*.",
+      "spoken": "So, for the first time in YEARS, you promise to save them, and a bud pops out of your hand.",
       "audioTag": "determined",
-      "scene": "At the hives: Grandma (beekeeper hat with veil pushed up, cardigan) looks up at you; you take her hands, and a tiny green bud pops out of the back of your hand.",
+      "scene": "At the hives: you take Grandma's hands; a tiny green bud pops out of the back of your hand, fresh and green among your rotten flowers. Your fly lands on it and you shoo it off.",
       "camera": "Two-shot, then macro on your hand as the bud pops on 'hand'",
       "onScreenText": "",
-      "gag": "Your bud is tiny next to Derek's thousand"
+      "gag": "One green bud among fourteen brown ones"
     },
     {
-      "narration": "You borrow all her bees. In a *shoebox*.",
-      "spoken": "You borrow all her bees. In a SHOEBOX.",
+      "narration": "\"Sweetie, you promised to visit at Christmas. Three *Christmases* ago.\"",
+      "speaker": "grandma",
+      "audioTag": "amused, teasing",
+      "scene": "Grandma (beekeeper hat, veil pushed up, cardigan) taps one of your rotten flowers; it drops a petal. On her shelf, a photo of an empty chair at a Christmas table.",
+      "camera": "MCU on Grandma, insert of the petal falling on 'Christmases'",
+      "onScreenText": "",
+      "gag": "Your rotten Christmas flower drops a petal when she taps it"
+    },
+    {
+      "narration": "You borrow every bee she owns. In a *shoebox*.",
+      "spoken": "You borrow every bee she owns. In a SHOEBOX.",
       "audioTag": "mischievous",
-      "scene": "Grandma's shed: you hold a sneaker shoebox, rubber bands round it, the lid bulging and buzzing; a few bees peek out of the air holes.",
+      "scene": "Grandma's shed: you hold a sneaker shoebox wrapped in rubber bands, the lid bulging and buzzing; a few bees peek out of the air holes.",
       "camera": "Push-in on the bulging, buzzing shoebox",
       "onScreenText": "Sticker on the box: 10,000 BEES - DO NOT SHAKE",
       "gag": "The shoebox lid hops up and down from 10,000 bees"
     },
     {
-      "narration": "\"Sweetie, he's got a thousand flowers. You've got a *bud*.\"",
-      "speaker": "grandma",
-      "audioTag": "amused, teasing",
-      "scene": "Grandma pats your hand and taps your tiny bud with one finger, a fond, doubtful look; over her shoulder through the window, Derek's flowered billboard.",
-      "camera": "MCU on Grandma, insert of her finger tapping the bud on 'bud'",
-      "onScreenText": "",
-      "gag": "She flicks your tiny bud and it wobbles"
-    },
-    {
-      "narration": "But by Thursday, Derek's at 99 percent, and your bud's turning *brown*.",
-      "spoken": "But by Thursday, Derek's at ninety-nine percent, and your bud's turning brown.",
+      "narration": "But by Friday, Derek's at 99 percent, and your new bud is turning *brown*.",
+      "spoken": "But by Friday, Derek's at ninety-nine percent, and your new bud is turning brown.",
       "audioTag": "dramatic, alarmed",
-      "scene": "Night, Grandma's kitchen: the TV shows a poll bar, DEREK 99 %; you stare at your hand, the bud's edges going brown; a lone fly lands next to it. Blue night outside, warm lamp inside.",
+      "scene": "Night, Grandma's kitchen: the TV shows a poll bar, DEREK 99 %; you stare at your hand, the bud's edges going brown. Blue night outside, warm lamp inside.",
       "camera": "Over the TV to your face, then macro on the browning bud",
       "onScreenText": "TV poll graphic: DEREK 99%",
-      "gag": "A fly lands beside your bud like it's waiting"
+      "gag": "Your fly lands beside the bud like it's waiting"
     },
     {
-      "narration": "Friday's debate. You lift the *lid*.",
+      "narration": "At the debate, you shout \"He's a fake!\", and the whole park laughs at the *flake*.",
       "audioTag": "urgent, building",
-      "scene": "Bright morning, the park: a debate stage, a crowd on folding chairs, news cameras. Derek beams at the podium in full bloom. You, front row, slowly lift the shoebox lid.",
-      "camera": "Wide of the stage, cut to you in the front row, macro on the lid lifting",
+      "scene": "Bright morning, the park: a debate stage, a crowd on folding chairs, news cameras. You stand up in the front row and point at Derek; the crowd roars with laughter, pointing at your rotten flowers; Derek smirks at the podium.",
+      "camera": "Wide of the stage, cut to you standing, then the laughing crowd",
       "onScreenText": "Stage banner: MAYOR DEBATE",
-      "gag": "A single bee climbs out first and looks around"
+      "gag": "The whole crowd holds its nose and laughs at you at once"
     },
     {
-      "narration": "Ten thousand bees pour out, onto every real *flower*.",
-      "spoken": "Ten thousand bees POUR out, onto every real flower.",
+      "narration": "So you lift the *lid*.",
+      "audioTag": "dramatic",
+      "scene": "Close on the shoebox in your lap; you snap the rubber bands and slowly lift the lid; one bee climbs out first and looks around.",
+      "camera": "Macro on the lid lifting",
+      "onScreenText": "",
+      "gag": "A single bee climbs out first, like a scout"
+    },
+    {
+      "narration": "Ten thousand bees pour out, onto every real flower in the *park*.",
+      "spoken": "Ten thousand bees POUR out, onto every real flower in the park.",
       "audioTag": "dramatic, booming",
-      "scene": "A golden cloud of bees erupts from the box, sweeps over the crowd and settles on real blooms: Linda's knee sunflower, the bench guy's elbow flower, Grandma's roses. Nobody gets stung: people giggle.",
+      "scene": "A golden cloud of bees erupts from the box and sweeps over the crowd. Nobody gets stung: people giggle.",
       "camera": "Ride with the swarm over the crowd (object POV), sweeping toward the stage",
       "onScreenText": "",
-      "gag": "Bees cover Linda's knee sunflower like a fuzzy blanket"
+      "gag": "The laughing stops mid-laugh as the cloud rises"
+    },
+    {
+      "narration": "Linda's knee. The mailman's elbow. Grandma's *roses*.",
+      "audioTag": "building excitement",
+      "scene": "Three quick inserts: bees cover Linda's knee sunflower like a fuzzy blanket; the mail carrier's daisies; Grandma's roses at the back, Grandma beaming. Your rotten flowers and Dad's tulip get skipped.",
+      "camera": "Three hard cuts, each a quick push",
+      "onScreenText": "",
+      "gag": "Bees wear Linda's sunflower like a fuzzy hat"
     },
     {
       "narration": "Every flower... except *Derek's*.",
       "audioTag": "deadpan",
-      "scene": "The swarm hits the stage, splits around Derek like water round a rock, and leaves him standing alone in a ring of empty air. The crowd turns to look at him.",
+      "scene": "The swarm hits the stage, splits around Derek like water round a rock and leaves him alone in a ring of empty air. Every head in the crowd turns to him.",
       "camera": "Wide on the stage as the swarm parts, then a slow push on Derek's frozen grin",
       "onScreenText": "",
       "gag": "The swarm parts around Derek like he's a rock in a river"
     },
     {
+      "narration": "You see, all summer you've watched those bees, and they never, ever land on *Derek*.",
+      "spoken": "You see, all summer you've watched those bees, and they NEVER, ever land on Derek.",
+      "audioTag": "excited, realizing",
+      "scene": "Insert: your porch notebook again, the page now readable: a bee doodle with an arrow bending away from a stick figure covered in flowers, 'DEREK - NEVER' circled three times. Cut back: your smug face in the front row.",
+      "camera": "Macro on the notebook page, hard cut to your smug MCU",
+      "onScreenText": "Notebook: DEREK - NEVER (circled)",
+      "gag": "The notebook page you scribbled all summer: DEREK - NEVER"
+    },
+    {
       "narration": "\"Pfft. Bees? I promise these flowers are *real*!\"",
       "speaker": "derek",
       "audioTag": "shouting, cocky",
-      "scene": "Derek laughs too loudly into the microphone, slaps his flowered chest, sweat starting on his brow.",
+      "scene": "Derek laughs too loudly into the microphone and slaps his flowered chest, sweat starting on his brow; a fake petal falls off.",
       "camera": "MCU on Derek, low angle",
       "onScreenText": "",
       "gag": "He slaps his chest and a fake petal falls off"
@@ -191,15 +241,16 @@
     {
       "narration": "And it rots. Right there. On live *TV*.",
       "audioTag": "dramatic, building",
-      "scene": "The nose flower wilts brown in seconds, petals drop, flies arrive; a news camera's red LIVE light; the crowd gasps and pinches noses.",
+      "scene": "The nose flower wilts brown in seconds, petals drop, flies arrive; a news camera's red LIVE light; the crowd gasps and pinches its nose.",
       "camera": "Push on the rotting flower, cut to the news camera's LIVE light on 'TV'",
       "onScreenText": "LIVE on the news camera",
       "gag": "The flower wilts like a time-lapse in two seconds flat"
     },
     {
-      "narration": "He sweats, so the glue melts, and his flowers slide off like wet *stickers*.",
+      "narration": "He sweats, so the glue melts, and a thousand flowers slide off like wet *stickers*.",
+      "spoken": "He sweats, so the glue melts, and a THOUSAND flowers slide off like wet stickers.",
       "audioTag": "excited",
-      "scene": "Sweat pours down Derek; his perfect flowers peel off in sheets, slide down his suit and pile at his feet; a glue tube falls out of his pocket.",
+      "scene": "Sweat pours down Derek; his perfect flowers peel off in sheets, slide down his suit and pile at his feet; the glue tube falls out of his pocket.",
       "camera": "Tilt down Derek as the flowers slide, following them to the pile",
       "onScreenText": "Glue tube label: SUPER STICK",
       "gag": "A thousand flowers peel off him in one sheet like a banana skin"
@@ -214,17 +265,26 @@
       "gag": "The whole front row falls backwards from the smell"
     },
     {
+      "narration": "Even your fly leaves you, for *Derek*.",
+      "audioTag": "amused",
+      "scene": "Your fly lifts off your head, hesitates, and buzzes happily over to Derek to join his fly cloud. You watch it go and give a little wave.",
+      "camera": "Follow the fly from your MCU across to Derek",
+      "onScreenText": "",
+      "gag": "Your fly since ninth grade leaves you for Derek, and you wave goodbye"
+    },
+    {
       "narration": "Derek loses. You can smell him from across the *mall*.",
       "audioTag": "amused",
-      "scene": "The same mall telephoto as line 6: now Derek at the far end with a shopping bag, a stink cloud twice as big rolling the length of the mall; the 'I'll call you' guy next to him fans his own nose.",
+      "scene": "The same mall telephoto as line 6: now Derek at the far end with a shopping bag, a stink cloud twice as big rolling the length of the mall; the 'I'll call you' guy next to him holds his own nose.",
       "camera": "Mirror of the line 6 mall telephoto, the cloud rolling toward the lens",
       "onScreenText": "Newspaper on a bench: DEREK LOSES",
       "gag": "Even the 'I'll call you' guy holds his nose next to Derek"
     },
     {
-      "narration": "And your little bud finally *blooms*.",
+      "narration": "Fourteen rotten flowers... and one that finally *blooms*.",
+      "spoken": "Fourteen rotten flowers... and ONE that finally blooms.",
       "audioTag": "proud, warm",
-      "scene": "The park at the hives, golden light: Grandma beside you, bees back home; on your hand the bud bursts open into a big rust-orange flower, and a bee lands on it. Your smug, proud face, the hives blurred behind.",
+      "scene": "The park at the hives, golden light, the bees back home, Grandma beside you: on your hand the bud bursts open into a big rust-orange flower among your fourteen brown ones, and a bee lands on it. Your proud face, the hives blurred behind.",
       "camera": "Macro on the bloom, rack to your face close-up on the last word",
       "onScreenText": "",
       "gag": "A bee lands on your flower, the first one that ever picked you"
