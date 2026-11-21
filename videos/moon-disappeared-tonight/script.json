@@ -2,8 +2,8 @@
   "slug": "moon-disappeared-tonight",
   "title": "What if the moon suddenly disappeared tonight?",
   "pillar": "Scenario",
-  "formula": "Strange act (you carry a lawn chair DOWN to the sea while 4,000 people run UP the hill) -> why (the moon blinked out, every phone says giant wave) -> goal (you won't leave Grandma's snack shack) -> rival's perfect version (Brad: 500 sandbags, floodlights, a live stream) mocks you; doubter (Mia: 'We're gonna drown') -> weird prep chain (a stick at the waterline, every light off, popcorn) -> setback (the sea pulls back, Brad: tsunami!) -> tension stretch (ten steps, twenty, thirty) -> explain mid-danger (bedsheet analogy) -> undercut (just a boring tide) -> stick pays off (tides a third) -> reversal (no moon = darkest nights: Brad's floodlights pull every moth, your dark beach gets the stars, popcorn pays off) -> loop: 4,000 people bring a lawn chair",
-  "loop": "Line 1: you carry a lawn chair down to the sea while 4,000 people run up the hill. Last: the next night, all 4,000 people bring a lawn chair (down to your beach).",
+  "formula": "Strange act (you carry a lawn chair DOWN to the sea while 4,000 people run UP the hill, a moon-shaped hole in the sky) -> why (the moon switched off, every phone says giant wave) -> want (save Grandma's dying snack shack; Brad the realtor wants it gone) -> rival's perfect version (Brad: sandbags, floodlights, a live stream) mocks you; doubter (Mia: 'We're gonna drown') -> weird prep (Grandma's tide stick at the waterline, every light off, popcorn) -> setback (the sea pulls back, Brad: tsunami!) -> stretch (ten steps, twenty, thirty) -> explain mid-danger (bedsheet) -> undercut (a boring tide) -> stick pays off (a third) -> reversal (darkest night ever: Brad's floodlights pull every moth and blind the hill; your dark beach gets the stars) -> hidden plan revealed (lights off + popcorn = a stargazing show) -> loop: 4,000 people carry a lawn chair DOWN, and the shack sells out",
+  "loop": "Line 1: you carry a lawn chair down to the ocean while 4,000 people run up the hill. Last: 4,000 people carry a lawn chair down to the ocean, straight to Grandma's popcorn.",
   "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
   "model": "eleven_v4",
   "voices": {
@@ -28,43 +28,41 @@
       "narration": "You carry a lawn chair down to the ocean, while 4,000 people run up the *hill*.",
       "spoken": "You carry a lawn chair DOWN to the ocean, while four-thousand people run up the hill.",
       "audioTag": "fast-paced, energetic storyteller",
-      "scene": "Cold open, night beach town: you walk down the beach path with a folding lawn chair under your arm, against a stream of townsfolk with flashlights, suitcases, a fish tank, a grandpa carrying a TV, all running uphill.",
+      "scene": "Cold open at dusk, the beach town: you walk down the beach path with a folding lawn chair, against a stream of townsfolk running uphill with flashlights, suitcases, a canoe, a grandpa hugging a TV. Behind them, over the sea, a perfect moon-shaped HOLE in the sky, ringed by a faint glow.",
       "camera": "Low wide on the path, you walking toward the lens against the crowd; hard cut on '4,000' to a high wide of the hill road, a river of flashlights",
       "onScreenText": "",
-      "gag": "You are the only one walking the other way; somebody runs past carrying a whole fridge"
+      "gag": "You are the only one walking the other way; a man runs uphill carrying a canoe"
     },
     {
-      "narration": "Because ten minutes ago, the moon just... *blinked* out.",
-      "spoken": "Because ten minutes ago, the moon just... blinked out.",
-      "audioTag": "dramatic",
-      "scene": "Flash back ten minutes: the full moon over the bay, a dog on the pier howling at it. The moon switches off like a light bulb, leaving a moon-shaped patch of black sky.",
-      "camera": "Tilt up from the howling dog to the moon; hold on the black hole in the sky",
-      "onScreenText": "10 MIN AGO",
-      "gag": "The moon goes out with a light-switch click; the dog stops mid-howl and looks at the camera"
-    },
-    {
-      "narration": "And every phone in town says the same thing: giant *wave*.",
-      "spoken": "And every phone in town says the same thing: giant wave.",
+      "narration": "Because the moon just switched off, and every phone in town says: giant *wave*.",
       "audioTag": "urgent",
-      "scene": "Back on the hill road: dozens of phone screens light the running faces, each showing the same alert: a huge cartoon wave and 'NO MOON = MEGA WAVE?!'.",
-      "camera": "Fast push across a row of phone screens",
+      "scene": "Hard cut to a row of running faces lit by phones; every screen shows the same alert: a cartoon wave and 'NO MOON = MEGA WAVE?!'. Insert: the empty moon-shaped hole in the sky.",
+      "camera": "Fast push across the phone screens",
       "onScreenText": "",
-      "gag": "Every phone shows the same alert at the same moment, glowing on 30 terrified faces"
+      "gag": "Thirty phones flash the same giant-wave alert on thirty terrified faces"
     },
     {
       "narration": "But you're not leaving Grandma's snack *shack*.",
       "audioTag": "proud, determined",
-      "scene": "The beach: a tiny wooden snack shack, sign 'SHELLY'S SNACKS', a giant fibreglass hot dog on the roof, Grandma's framed photo by the hatch. You unfold the chair in front of it and sit, arms crossed.",
+      "scene": "The beach: a tiny wooden snack shack, 'SHELLY'S SNACKS' sign, a giant fibreglass hot dog on the roof, Grandma's framed photo by the hatch. You snap the chair open and sit, arms crossed.",
       "camera": "Low push-in on you in the chair, the shack behind",
       "onScreenText": "",
       "gag": "You snap the chair open with one flick and sit like a king guarding a castle made of hot dogs"
     },
     {
-      "narration": "Up on the hill, Brad the realtor has 500 sandbags, floodlights, and a *live stream*.",
-      "spoken": "Up on the hill, Brad the realtor has five-hundred sandbags, floodlights, and a live stream.",
+      "narration": "It hasn't sold a hot dog in a month, and tomorrow, Brad the realtor *buys* it.",
       "audioTag": "playful",
-      "scene": "Brad's hilltop fortress: a pyramid of sandbags round his big house, two blazing floodlights, Brad in a pastel suit and a bike helmet on top, phone on a selfie stick, a screen behind him: 'LIVE 12K'.",
-      "camera": "Telephoto from the beach up to Brad, crane up the sandbag pyramid",
+      "scene": "Insert: a cobwebbed hot dog on the grill; a 'SOLD TO BRAD - TOMORROW' sign with Brad's grinning face stuck on the shack door.",
+      "camera": "Macro on the cobweb, whip to the sign",
+      "onScreenText": "",
+      "gag": "A spider has built a web on the last hot dog"
+    },
+    {
+      "narration": "Brad's on the hill with 500 sandbags, two floodlights, and a live *stream*.",
+      "spoken": "Brad's on the hill with five-hundred sandbags, two floodlights, and a live stream.",
+      "audioTag": "playful",
+      "scene": "Brad's hilltop fortress: a pyramid of sandbags, two blazing floodlights, Brad in a pastel suit and a bike helmet on top, phone on a selfie stick, 'LIVE 12K' on screen.",
+      "camera": "Telephoto from the beach up to Brad, crane up the sandbags",
       "onScreenText": "",
       "gag": "Brad poses on the sandbags like a mountaineer on a summit, selfie stick raised like a flag"
     },
@@ -72,10 +70,10 @@
       "narration": "\"Enjoy the wave, chair *guy*!\"",
       "speaker": "brad",
       "audioTag": "mocking, loud",
-      "scene": "Brad points down at you for the stream; his comment feed scrolls with laughing emojis.",
+      "scene": "Brad points down at you for the stream; laughing emojis rain down his screen.",
       "camera": "Telephoto MCU of Brad laughing, hard cut",
       "onScreenText": "",
-      "gag": "Brad's face fills his own phone screen, the laughing emojis rain down it"
+      "gag": "Brad's face fills his own phone screen, laughing emojis raining down it"
     },
     {
       "narration": "Even your little sister Mia thinks you've *lost* it.",
@@ -95,25 +93,25 @@
       "gag": "The goldfish in her bag nods"
     },
     {
-      "narration": "You don't answer. You push a stick into the sand, right at the *water*.",
+      "narration": "You don't answer. You push Grandma's tide stick into the sand, right at the *water*.",
       "audioTag": "mischievous",
-      "scene": "You walk to the waterline and push a long stick upright into the wet sand, right where the foam stops.",
+      "scene": "You walk to the waterline and push Grandma's painted tide stick (red rings, 'SHELLY' carved on it) upright into the wet sand, right where the foam stops.",
       "camera": "Macro insert: the stick sinking into the sand as foam washes round it",
       "onScreenText": "",
       "gag": "You plant it with a little twist, like a flag on the moon"
     },
     {
       "narration": "Then you switch off every light in the *shack*.",
-      "audioTag": "",
-      "scene": "Inside the shack: the fridge glow, the neon HOT DOGS sign, the string lights; you flick them off one by one until it's dark.",
+      "audioTag": "quick",
+      "scene": "Inside the shack: the fridge glow, the neon HOT DOGS sign, the string lights; you flick them off one by one.",
       "camera": "Inside the hatch, hard cuts on each switch",
       "onScreenText": "",
-      "gag": "The neon hot dog fizzles out last, sadly drooping"
+      "gag": "The neon hot dog fizzles out last and droops"
     },
     {
       "narration": "And you make *popcorn*.",
       "audioTag": "deadpan",
-      "scene": "A pan of popcorn pops on the camping stove; you pour it into a huge bucket and sit back down in the chair.",
+      "scene": "A pan of popcorn pops on the camping stove; you pour it into a huge bucket and sit back down. You light one small lantern.",
       "camera": "Macro on the popping pan, cut to you in the chair with the bucket",
       "onScreenText": "",
       "gag": "A kernel pops straight into your open mouth"
@@ -121,10 +119,10 @@
     {
       "narration": "Then the ocean starts pulling *back*.",
       "audioTag": "dramatic, alarmed",
-      "scene": "The foam slides away from the stick, the waterline sliding back down the beach, wet sand gleaming.",
+      "scene": "The foam slides away from the stick, the waterline sliding down the beach, wet sand gleaming.",
       "camera": "Low over the sand, pulling back with the water",
       "onScreenText": "",
-      "gag": "A crab on the sand sprints after the water"
+      "gag": "A crab sprints after the water"
     },
     {
       "narration": "\"It pulls back before a *tsunami*!\"",
@@ -133,82 +131,82 @@
       "scene": "Brad on the sandbags, screaming at his phone; the town behind him screams too.",
       "camera": "Telephoto CU of Brad, impact shake",
       "onScreenText": "",
-      "gag": "Brad's helmet pops up off his head"
+      "gag": "Brad's helmet pops straight up off his head"
     },
     {
       "narration": "Ten steps. Twenty. Thirty. Your stick stands in dry *sand*.",
       "spoken": "Ten steps. Twenty. THIRTY. Your stick stands in dry sand.",
       "audioTag": "urgent, building",
-      "scene": "The water keeps sliding away from the stick; Mia grabs your arm with both hands; you don't move.",
-      "camera": "Three hard cuts, each wider: the gap between stick and water grows; end on you, popcorn bucket still in your lap",
+      "scene": "The water keeps sliding away from the stick; Mia grabs your arm with both hands; you keep eating popcorn.",
+      "camera": "Three hard cuts, each wider: the gap between stick and water grows; end on you, bucket in your lap",
       "onScreenText": "",
-      "gag": "Mia hides behind the popcorn bucket"
+      "gag": "Mia hides inside the popcorn bucket"
     },
     {
-      "narration": "You see, the moon pulled the ocean up in a bump, like a hand lifting a *bedsheet*.",
+      "narration": "You see, the moon held the ocean up in a bump, like a hand lifting a *bedsheet*.",
       "audioTag": "quick, excited",
-      "scene": "Analogy mini-set: a bed in a cosy bedroom; a giant hand (moon-white) pinches the middle of the blue bedsheet and lifts it into a hump.",
+      "scene": "Analogy mini-set: a bed in a cosy bedroom; a giant moon-white hand pinches the middle of the blue bedsheet and lifts it into a hump.",
       "camera": "Dissolve in; push in on the hump",
       "onScreenText": "",
       "gag": "A tiny toy boat rides on top of the bedsheet hump"
     },
     {
       "narration": "Let go, and the sheet doesn't *slam*. It just... settles.",
-      "audioTag": "",
-      "scene": "The hand vanishes; the sheet slowly sinks flat, the toy boat gently lowering with it. Match cut to the ocean, flat and calm.",
+      "audioTag": "amused",
+      "scene": "The hand vanishes; the sheet sinks flat, the toy boat gently lowering with it. Match cut to the bay, flat and calm.",
       "camera": "Slow tilt down with the sheet, match cut to the bay",
       "onScreenText": "",
       "gag": "The toy boat lands without spilling a drop"
     },
     {
-      "narration": "The water stops. No wave. Just a slow, boring *tide*.",
+      "narration": "No wave. Just a slow, boring *tide*.",
       "audioTag": "deadpan",
-      "scene": "The bay lies flat and calm; a single tiny wave lops onto the sand.",
+      "scene": "The bay lies flat; the tiniest wave in history flops onto the sand at your feet.",
       "camera": "Wide hold on the calm bay, you and Mia small in the foreground",
       "onScreenText": "",
       "gag": "The tiniest wave in history flops onto the beach"
     },
     {
-      "narration": "And when it comes back, it stops a third of the way to your *stick*. Now only the sun is *pulling*.",
+      "narration": "When your lantern burns down, the water crawls back... and quits a third of the way to your *stick*.",
       "audioTag": "amused",
-      "scene": "Hours later: the tide creeps back in and stops far short of the stick; a line of dark wet sand marks a third of the way.",
-      "camera": "Low along the sand from the stick to the stopped waterline",
-      "onScreenText": "4 HOURS LATER",
+      "scene": "Time passing in one place, no card: the lantern candle shrinks to a stub, the popcorn bucket empties, Mia falls asleep on your shoulder; the tide creeps back and stops far short of the stick, a dark wet line a third of the way up the beach.",
+      "camera": "Match-framed dissolve on the lantern, then low along the sand from the stick to the stopped waterline",
+      "onScreenText": "",
       "gag": "The foam reaches toward the stick and gives up, like it's out of breath"
     },
     {
-      "narration": "But the moon was also the world's biggest nightlight. Without it, nights get a hundred times *darker*.",
+      "narration": "But the moon was the world's biggest nightlight. Without it, the night goes a hundred times *darker*.",
       "audioTag": "dramatic",
-      "scene": "Wide of the whole bay: the town goes inky black, only Brad's floodlights blazing on the hill.",
+      "scene": "Wide of the whole bay: the town goes inky black; only Brad's floodlights blaze on the hill.",
       "camera": "Fast pull-out to the widest shot of the video",
       "onScreenText": "",
-      "gag": "Brad's hill is the only lit thing in the whole world, like a birthday cake in a dark room"
+      "gag": "Brad's hill is the only lit thing in the world, like a birthday cake in a dark room"
     },
     {
       "narration": "So Brad's floodlights are the brightest thing for fifty miles, and every moth for fifty miles finds *Brad*.",
       "spoken": "So Brad's floodlights are the brightest thing for fifty miles, and every moth for fifty miles finds BRAD.",
       "audioTag": "amused",
-      "scene": "A huge cloud of moths swirls into Brad's floodlights and over Brad; his stream shows only moths.",
+      "scene": "A huge cloud of moths swirls into the floodlights and over Brad; his stream shows only moths; the crowd on the hill squints into the glare.",
       "camera": "Telephoto push on Brad disappearing into moths",
       "onScreenText": "",
-      "gag": "Brad's live stream screen is 100 % moth"
+      "gag": "Brad's live stream is 100 % moth"
     },
     {
-      "narration": "Down on your dark beach, Mia looks up, and the sky is *exploding* with stars.",
+      "narration": "Up there, nobody sees a thing. But on your dark beach, the sky *explodes* with stars.",
       "audioTag": "amazed",
-      "scene": "Mia and you in the chair, faces lit faintly blue; overhead the Milky Way blazes across the sky. You pass her the popcorn.",
+      "scene": "Tilt up from you, Mia and the lantern stub to the Milky Way blazing over the sea; on the hill, the crowd turns from the moth storm and stares down at your beach.",
       "camera": "Low angle tilt up from your faces to the star-packed sky",
       "onScreenText": "",
       "gag": "Mia's mouth drops open so wide a popcorn kernel falls in; her goldfish looks up too"
     },
     {
-      "narration": "The next night, 4,000 people bring a lawn *chair*.",
-      "spoken": "The next night, four-thousand people bring a lawn chair.",
+      "narration": "So 4,000 people carry a lawn chair down to the ocean, straight to Grandma's *popcorn*.",
+      "spoken": "So four-thousand people carry a lawn chair DOWN to the ocean, straight to Grandma's popcorn.",
       "audioTag": "proud",
-      "scene": "Next night: the beach packed edge to edge with lawn chairs under the stars, the shack hatch open and selling popcorn; end on your smug face in close-up, chairs blurred behind.",
-      "camera": "Mirror of the opening low wide (now everyone walks DOWN with chairs), then a CU of your smug face",
+      "scene": "Mirror of the opening: the whole town walks DOWN the beach path with lawn chairs; the shack hatch is open, a queue to the dunes, a 'SOLD OUT' card slapped on the popcorn. End on your smug face, the chairs and stars blurred behind; a moth-covered Brad in the queue holding a chair.",
+      "camera": "Mirror of the opening low wide, then a CU of your smug face",
       "onScreenText": "",
-      "gag": "A sea of lawn chairs; a moth-covered Brad sneaks in carrying one too"
+      "gag": "A sea of lawn chairs; moth-covered Brad waits in the popcorn line"
     }
   ]
 }

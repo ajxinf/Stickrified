@@ -6,8 +6,8 @@
 3. No Moon Means No Giant Wave (But Way More Moths)
 
 ## Description
-The moon blinks out, every phone in town screams "giant wave", and 4,000 people run up the hill. You grab a lawn
-chair and head the other way. Here's what would really happen to the tides and the night sky.
+The moon switches off, every phone in town screams "giant wave", and 4,000 people run up the hill. You grab a lawn
+chair and head the other way, to save Grandma's snack shack. Here's what would really happen to the tides and the night sky.
 
 The science: without the moon, only the sun pulls on the oceans, so tides shrink to about a third of today's size,
 and the water would settle like a normal tide rather than form a giant wave. Nights would also get far darker (a
@@ -27,4 +27,4 @@ publishing, see assets/CREDITS.md)
 - Character voices (new rule, 2026-11-17): Brad = ElevenLabs premade "Eric", Mia = premade "Laura" (no premade child
   voices exist; swap in a library voice if the user prefers).
 - The ending loops: line 1 has 4,000 people running UP the hill; the last line brings all 4,000 back DOWN with
-  lawn chairs, the opening's angle reversed.
+  lawn chairs, straight to Grandma's popcorn (R26 script, delivered 2026-11-21 as Episode 4, 2K).

@@ -15,10 +15,9 @@ import { practicalLights } from "../../../kit/toon/shade";
 import type { PracticalKind } from "../../../kit/toon/shade";
 import { SpeedLines } from "../../../kit/toon/SpeedLines";
 import { lantern } from "../../../kit/toon/build/storyprops";
-import { Stamp } from "../../../kit/toon/Stamp";
 import { ToonWorld } from "../../../kit/toon/world";
-import { B, BRAD_HEAD, BRAD_POS, CHAIR_OPEN, bradLateAt, CROWD_SPOTS, FLOOD_HEAD, FRAMES, PLAN, S, SHOTS, STAMPS, WORLDS, XFADE, boatAt, dogHead, handAt, humpAt, milkyAt, mothsAt, pathAt, propsFor, shackOn, starsAt, tide, words } from "./story";
-import { BED_LAMP, BEACH, LAMP_GLOW, LANTERN_AT, PIER_END, PROM_GLOWS, SHACK_LIGHTS, beach, bedroom, canvasTex, chairRows, dog, giantHand, setSheet, setTide, shackLights, toyBoat } from "./world";
+import { B, BRAD_HEAD, burnAt, BRAD_POS, CHAIR_OPEN, bradLateAt, CROWD_SPOTS, FLOOD_HEAD, FRAMES, PLAN, S, SHOTS, LOOK_SHOTS, WORLDS, XF, XFADE, boatAt, dogHead, handAt, humpAt, milkyAt, mothsAt, propsFor, shackOn, starsAt, tide, walkerBeams, words } from "./story";
+import { BED_LAMP, RING_X, BEACH, LAMP_GLOW, LANTERN_AT, PIER_END, PROM_GLOWS, SHACK_LIGHTS, beach, bedroom, canvasTex, chairRows, dog, giantHand, setSheet, setTide, shackLights, toyBoat } from "./world";
 
 /**
  * moon-disappeared-tonight (episode 4): what if the moon vanished tonight. Each shot is its own canvas (hard cuts;
@@ -37,16 +36,28 @@ const V = (x: number, y: number, z: number) => new Vector3(x, y, z);
 const NIGHT: LightPreset = {
   // The moon is gone: what light is left is the town's (warm sodium key), the shade stays cool; the sky is near-black
   // navy with cloud bellies lit orange by the town, and stars come out.
-  ...LIGHTS.night, lit: [0.8, 0.68, 0.58], shade: [0.17, 0.19, 0.33], lift: [0.02, 0.02, 0.04], litTint: "#f0d8c0", sat: 1.0,
-  skyTop: "#0a0d1e", skyMid: "#161b3c", skyHorizon: "#4a3c5e", fog: "#2a2840", haze: { color: "#3a3450", start: 30, amount: 0.3 },
-  clouds: { lit: "#d08a60", shade: "#24243f", cover: 0.62 }, grade: "moonlit",
+  // R25 real look (ref9 night): a dim cool starlight key, deep blue ambient, the warmth kept to the practicals' pools
+  // (the world shader pools them; faces keep the QA glare limit); far hills sink into blue haze; clouds grey.
+  ...LIGHTS.night, lit: [0.3, 0.33, 0.44], shade: [0.07, 0.085, 0.17], lift: [0.012, 0.014, 0.03], litTint: "#b8c8e8", sat: 1.0,
+  skyTop: "#0a0d1e", skyMid: "#161b3c", skyHorizon: "#3a3e62", fog: "#232a48", haze: { color: "#2c3456", start: 16, amount: 0.5 },
+  clouds: { lit: "#8c7a80", shade: "#1e2036", cover: 0.62 }, grade: "moonlit",
 };
 const DARK: LightPreset = {
-  ...NIGHT, lit: [0.56, 0.5, 0.5], shade: [0.14, 0.15, 0.28], skyTop: "#0a0e24", skyMid: "#141c44", skyHorizon: "#2a3466",
+  // R26: the sky floor lifted to navy (pixel QA CRUSH on Q2/R2: 9-12 % of the frame was black; ref9's night sky stays blue).
+  ...NIGHT, lit: [0.56, 0.5, 0.5], shade: [0.14, 0.15, 0.28], skyTop: "#151d4a", skyMid: "#1f2b62", skyHorizon: "#33407a",
   fog: "#1c2448", haze: { color: "#2a3466", start: 30, amount: 0.3 }, clouds: undefined,
 };
+/** R26: the new script opens at dusk (a full moon rises at sunset): the town's lamps already on, a violet-to-peach
+ * sky like visual-ref8's dusk (45 s), the sea holding the last light. */
+const DUSK: LightPreset = {
+  // The sky dome reaches skyTop only above ~27 deg: in a vertical frame skyMid IS the sky, so it carries ref8's blue.
+  ...LIGHTS.dusk, el: 5, lit: [1.02, 0.9, 0.98], shade: [0.3, 0.33, 0.6], litMax: 2.4, litTint: "#e8d8f0",
+  skyTop: "#1e2a78", skyMid: "#3c4cb4", skyHorizon: "#f6a08c", horizonBand: 0.14, fog: "#c08cb0", fogNear: 90, fogFar: 460,
+  haze: { color: "#a888c4", start: 45, amount: 0.14 }, clouds: { lit: "#ffa890", shade: "#4250a8", cover: 0.3 }, // R25 soft clouds at .5 covered the dome violet
+  lamp: ["#ffc27a", 1.4], glow: 1, grade: "sunset", // the golden grade's 2.08 exposure washed the dusk milky pink
+};
 const BEDROOM: LightPreset = { ...LIGHTS.interior, lamp: ["#ffc27a", 2.2], lit: [0.95, 0.86, 0.74], litTint: "#ffe2c0" };
-const presetOf = (s: S): LightPreset => (s.w === "dark" ? DARK : s.w === "bedroom" ? BEDROOM : NIGHT);
+const presetOf = (s: S): LightPreset => (s.preset === "dusk" ? DUSK : s.w === "dark" ? DARK : s.w === "bedroom" ? BEDROOM : NIGHT);
 
 const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
   const o = useMemo(prop.make, [prop]);
@@ -118,22 +129,25 @@ const Sky: React.FC<{ F: number; moon: boolean }> = ({ F, moon }) => {
   sky.milky.visible = sky.haze.visible = milkyAt(F) > 0;
   sky.haze.children.forEach((c) => ((c as Mesh).visible = milkyAt(F) > 0));
   sky.haze.scale.setScalar(1);
-  sky.disc.visible = moon && F < B.blinked;
-  sky.gone.visible = F >= B.blinked || !moon; // where the moon was: a dotted outline, like a missing sticker
+  // R26 script: the moon is already gone in the first shot; where it was hangs a dotted outline, like a missing sticker.
+  sky.disc.visible = moon;
+  sky.gone.visible = !moon;
   return <primitive object={sky.g} />;
 };
 
 // ------------------------------------------------------------------ the beach
-type Practical = { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3; group?: "shack" | "lamp" | "lantern" };
+type Practical = { pos: Vector3; kind: PracticalKind; color?: [string, number]; glowAt?: Vector3; noGlow?: boolean; group?: "shack" | "lamp" | "lantern" };
 const BULB_MID = SHACK_LIGHTS.string[5];
 const beachPracticals = (dark: boolean): Practical[] => [
   ...(dark ? [] : [LAMP_GLOW, ...PROM_GLOWS].map((g) => ({ pos: g.clone().add(V(0, -0.3, 0)), kind: "lamp" as const, glowAt: g, group: "lamp" as const }))),
+  // R25 real look: the entrance string lights throw a warm pool onto the sand around the chairs (ref9's fire pools).
+  ...(dark ? [] : [{ pos: V(1.25, 3.0, 9.6), kind: "lamp" as const, color: ["#ffb86a", 1.5] as [string, number], noGlow: true, group: "lamp" as const }]),
   { pos: BULB_MID.clone().add(V(0, -0.2, -0.6)), kind: "shop", color: ["#ffc27a", 2.2], glowAt: BULB_MID, group: "shack" },
   { pos: SHACK_LIGHTS.neon.clone().add(V(0, 0, -0.3)), kind: "shop", color: ["#ff6a9a", 1.4], glowAt: SHACK_LIGHTS.neon, group: "shack" },
   { pos: BEACH.hatch.clone().add(V(-0.6, -0.1, 0.3)), kind: "screen", color: ["#bfe4ff", 0.7], group: "shack" },
   ...[0, 1].map((i) => ({ pos: FLOOD_HEAD(i).clone().add(V(0, -1.2, -4.5)), kind: "lamp" as const, color: ["#fff2d8", 1.6] as [string, number], glowAt: FLOOD_HEAD(i) })),
   { pos: LANTERN_AT.clone().add(V(0, 0.5, 0)), kind: "fire", color: ["#ffb35c", 0.85], glowAt: LANTERN_AT.clone().add(V(0, 0.15, 0)), group: "lantern" },
-  { pos: BRAD_POS.clone().add(V(0.9, 1.6, -0.2)), kind: "screen", color: ["#f4f4ff", 1.4] },
+  { pos: BRAD_POS.clone().add(V(RING_X, 1.6, -0.2)), kind: "screen", color: ["#f4f4ff", 1.4] },
 ];
 const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> = ({ F, dark, preset, s }) => {
   const world = useMemo(() => beach(!dark), [dark]);
@@ -159,9 +173,14 @@ const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> =
   const lanternOn = F >= CHAIR_OPEN;
   const lanternObj = useMemo(() => { const l = lantern(); l.position.copy(LANTERN_AT); return l; }, []);
   lanternObj.visible = lanternOn;
-  list.forEach((l, i) => { if (l.group === "lantern") { (lights.children[i] as PointLight).intensity = lanternOn ? l.color![1] : 0; glows.children[i].visible = false; } });
+  // Line 18 time-lapse: the candle (the lantern's glow mesh) burns down, its light and glow fade with it.
+  const burn = burnAt(F);
+  lanternObj.traverse((m) => { const u = ((m as Mesh).material as { uniforms?: { uEmissive?: { value: { r: number } } } })?.uniforms; if (u?.uEmissive && u.uEmissive.value.r > 0) m.scale.y = burn; });
+  world.getObjectByName("soldOut")!.visible = F >= B.next;
+  list.forEach((l, i) => { if (l.group === "lantern") { (lights.children[i] as PointLight).intensity = lanternOn ? l.color![1] * burn : 0; glows.children[i].visible = false; } });
   const lanternGlow = useMemo(() => glowSprite(LANTERN_AT.clone().add(V(0, 0.14, 0)), "#ffb35c", 0.55, 0.7), []);
   lanternGlow.visible = lanternOn;
+  lanternGlow.scale.setScalar(0.4 + 0.6 * burn);
   const dogObj = useMemo(() => { const d = dog(); d.position.copy(PIER_END); d.rotation.y = 0.3; return d; }, []);
   const h = dogHead(F), head = dogObj.getObjectByName("head")!;
   head.rotation.set(h.rx, h.ry, 0);
@@ -179,23 +198,23 @@ const Beach: React.FC<{ F: number; dark: boolean; preset: LightPreset; s: S }> =
       <primitive object={lanternGlow} />
       <primitive object={chairs} />
       {s.id === "moon/A2-flashlight-river" && <FlashlightRiver F={F} />}
-      {(s.id.startsWith("moon/Q2") || s.id.startsWith("moon/Q3")) && <Moths F={F} />}
+      {(s.id.startsWith("moon/Q2") || s.id.startsWith("moon/Q3") || s.id.startsWith("moon/T1")) && <Moths F={F} />}
       {s.id === "moon/S1-lawn-chairs" && <Moths F={F} trail />}
-      {s.id === "moon/S1-lawn-chairs" && <FlashlightRiver F={-F} />}
+      {s.id === "moon/S1-lawn-chairs" && <FlashlightRiver F={F} down />}
     </>
   );
 };
-/** Line 1: a river of flashlights climbing the hill road (glowSprite follows the Vector3 it was given). */
-const FlashlightRiver: React.FC<{ F: number }> = ({ F }) => {
+/** Line 1: every walker's flashlight (glowSprite follows the Vector3 it was given): one glow per person, a little
+ * ahead of the hand, so the river of lights is a river of people (user 2026-11-18: lone blobs did not read). */
+const FlashlightRiver: React.FC<{ F: number; down?: boolean }> = ({ F, down = false }) => {
   const g = useMemo(() => {
-    const spots = Array.from({ length: 46 }, () => new Vector3());
+    const beams = walkerBeams(down), spots = beams.map(() => new Vector3());
     const grp = new Group();
-    spots.forEach((p, i) => grp.add(glowSprite(p, i % 5 ? "#fff2c8" : "#ffd08a", 1.2, 1.2)));
-    return { grp, spots };
-  }, []);
+    spots.forEach((p, i) => grp.add(glowSprite(p, i % 5 ? "#fff2c8" : "#ffd08a", 0.6, 1.0)));
+    return { grp, spots, beams };
+  }, [down]);
   g.spots.forEach((p, i) => {
-    const t = 0.18 + 0.82 * (((((i / 46) + F * 0.0016 + rnd(i) * 0.012) % 1) + 1) % 1); // dune top up (near ones bloomed); F < 0 runs downhill
-    p.copy(pathAt(t).add(V((rnd(i + 5) - 0.5) * 1.6, 0.2 * Math.sin(F * 0.3 + i), 0)));
+    p.copy(g.beams[i](F));
     g.grp.children[i].position.copy(p);
   });
   return <primitive object={g.grp} />;
@@ -209,6 +228,7 @@ const Moths: React.FC<{ F: number; trail?: boolean }> = ({ F, trail }) => {
     g.setAttribute("position", new BufferAttribute(new Float32Array(N * 3), 3));
     const m = new PointsMaterial({ size: 0.13, map: mothTex(), transparent: true, depthWrite: false, alphaTest: 0.3, color: "#fff4e0" });
     const p = new Points(g, m);
+    p.layers.set(SKY); // particles: colour pass only (on layer 0 the QA ground ray hit the moths on Brad: "soles 60 cm under")
     p.frustumCulled = false;
     return p;
   }, [N]);
@@ -276,7 +296,6 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
 };
 
 /** A shot that starts a dissolve fades in over the previous shot (kept running underneath for XF frames). */
-const XF = 10;
 const Fade: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const f = useCurrentFrame();
   return <AbsoluteFill style={{ opacity: interpolate(f, [0, XF], [0, 1], { extrapolateRight: "clamp" }) }}>{children}</AbsoluteFill>;
@@ -297,8 +316,19 @@ export const MoonDisappearedTonight: React.FC = () => (
     {/* The two biggest physical beats: the chair snaps open, Brad's scream. */}
     <Sequence from={CHAIR_OPEN - 2} durationInFrames={12}><SpeedLines center={[0.5, 0.34]} /></Sequence>
     <Sequence from={B.tsunami} durationInFrames={12}><SpeedLines center={[0.5, 0.36]} seed={5} /></Sequence>
-    {STAMPS.map((x) => <Stamp key={x.text} {...x} />)}
     <Captions words={words} speakers={{ brad: "#ff7ac8", mia: "#5fb8ff" }} />
     {getRemotionEnvironment().isStudio && <Audio src={staticFile("moon-disappeared-tonight/mix.wav")} />}
+  </AbsoluteFill>
+);
+
+/** R26 look test: one still per LOOK_SHOTS entry (frame i = shot i), rendered by stills.mjs --draft for side-by-sides. */
+export const LOOK_FRAMES = LOOK_SHOTS.length;
+export const MoonLookTest: React.FC = () => (
+  <AbsoluteFill style={{ background: "black" }}>
+    {LOOK_SHOTS.map((s, i) => (
+      <Sequence key={s.id} from={i} durationInFrames={1}>
+        <ShotView s={s} />
+      </Sequence>
+    ))}
   </AbsoluteFill>
 );
