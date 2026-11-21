@@ -34,6 +34,6 @@ if (!noGuard && !(await guardPass(serveUrl, composition, starts))) {
 }
 for (const frame of frames) {
   const output = `${prefix}${String(frame).padStart(4, "0")}.png`;
-  await renderStill({ composition, serveUrl, output, frame, scale, chromiumOptions: CHROMIUM, inputProps: { ...composition.props, ...extraProps, ...(noGuard ? { qa: "off" } : draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
+  await renderStill({ composition, serveUrl, output, frame, scale, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, inputProps: { ...composition.props, ...extraProps, ...(noGuard ? { qa: "off" } : draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
   console.log(output);
 }

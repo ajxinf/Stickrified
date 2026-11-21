@@ -37,6 +37,7 @@ await renderMedia({
   scale,
   concurrency,
   imageFormat: "jpeg",
+  timeoutInMilliseconds: 120000, // big glTF sets (trees) can take > 30 s to load in a fresh tab
   ...(noGuard ? { inputProps: { ...composition.props, qa: "off" } } : {}),
   chromiumOptions: CHROMIUM,
   onProgress: ({ progress }) => {

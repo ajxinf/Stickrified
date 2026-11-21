@@ -248,7 +248,7 @@ const store = () => {
     }
   }));
   out.add(plane(3.4, 2.2, goods, V(x - 1.3, 1.6, fz + 0.1)));
-  out.add(plane(4.6, 0.9, unlit("pf-store-name", () => boardTex(["CORNER STORE"], "#2a4a6a", "#ffe9b0", 1024, 200)), V(x, 3.6, fz + 0.06)));
+  out.add(plane(3.4, 0.8, unlit("pf-store-name", () => boardTex(["CORNER STORE"], "#2a4a6a", "#ffe9b0", 1024, 200)), V(x, 3.6, fz + 0.06)));
   // striped awning over the window
   const awn = unlit("pf-awning", () => canvasTex(256, 64, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? "#f2ece2" : "#d8423a"; c.fillRect(i * 32, 0, 32, 64); } }));
   const a = plane(4.2, 1.1, awn, V(x - 1.3, 3.05, fz + 0.5), 0, -1.0);
@@ -403,7 +403,8 @@ const tree = (id: string, name: string, x: number, z: number, s: number, ry: num
 };
 const trees = (g: Group) => {
   g.add(tree("island_tree_02", "apple tree", APPLE.x, APPLE.z, 1.1, 0.4));
-  for (const [x, z, s, ry] of [[-16, 22, 0.42, 0.3], [17, 26, 0.38, 1.9]] as const) g.add(tree("jacaranda_tree", "jacaranda", x, z, s, ry, 0.6));
+  // (the 205 MB jacaranda timed out the frame load: two big island trees instead)
+  for (const [x, z, s, ry] of [[-16, 22, 2.0, 0.3], [17, 26, 1.9, 1.9]] as const) g.add(tree("island_tree_01", "big tree", x, z, s, ry, 0.5));
   for (const [x, z, s] of [[12, 7, 1.2], [-4, 14.5, 1.0], [10, 31, 1.4], [-6, 30, 1.3], [24, 12, 1.3], [-22, 10, 1.25], [30, 30, 1.5]] as const) g.add(tree("island_tree_01", "tree", x, z, s, x));
   // street trees in the house-side walk, between the houses
   for (const x of [-13.2, -5.2, 6.3, 13.9]) g.add(tree("island_tree_01", "street tree", x, -7.0, 0.85, x, 0.3));
@@ -455,7 +456,7 @@ const bunting = (a: Vector3, b: Vector3, n: number, seed: number) => {
 /** Two flag poles at the plaza's mouth carrying bunting across it, and bunting along the stage front. */
 const festive = (g: Group) => {
   const k = new Kit();
-  const P1 = V(PLAZA.x - 3.6, 0, PLAZA.z - 3.0), P2 = V(PLAZA.x + 3.9, 0, PLAZA.z - 2.6), P3 = V(PLAZA.x + 6.6, 0, PLAZA.z + 2.0); // right of the chair block, out of the debate wides
+  const P1 = V(PLAZA.x - 3.6, 0, PLAZA.z - 3.0), P2 = V(PLAZA.x + 4.3, 0, PLAZA.z - 3.4), P3 = V(PLAZA.x + 6.6, 0, PLAZA.z + 2.0); // right of the chair block, out of the debate wides
   for (const p of [P1, P2, P3]) k.add(MATS.trim(), new CylinderGeometry(0.05, 0.06, 4.2, 10), p.x, 2.1, p.z);
   const poles = k.build();
   poles.userData.collider = "flag poles";
