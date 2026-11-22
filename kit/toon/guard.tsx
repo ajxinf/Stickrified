@@ -304,7 +304,9 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
   ray.far = 1.2;
   const groundAt = (p: Vector3, skip?: Object3D, up = 0.6): number | null => {
     ray.set(p.clone().setY(p.y + up), new Vector3(0, -1, 0));
-    const hit = ray.intersectObject(scene, true).find((h) => !skip || !isUnder(h.object, skip));
+    // hidden objects are not ground (ep5: "roses" in the plaza stood on a debate chair that only shows at the debate)
+    const shown = (o: Object3D | null): boolean => !o || (o.visible && shown(o.parent));
+    const hit = ray.intersectObject(scene, true).find((h) => (!skip || !isUnder(h.object, skip)) && shown(h.object));
     return hit ? hit.point.y : null;
   };
 
