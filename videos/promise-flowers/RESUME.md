@@ -2,6 +2,11 @@
 
 Episode 5, "In this world, every promise grows a flower out of your skin." Stopped 2026-11-22 by the user mid-QA.
 
+## Status 2026-11-22 (evening)
+QA rounds 3-4 done and fixed (commit bec8156); 720p preview rendered (`out/promise-flowers/preview_720p.mp4`, phone copy
+`preview_720p_phone.mp4`), sent to the user, no blank frames in the 3765 frames. **Waiting on the user's defect notes**, then
+step 5 below (fix, then a full preflight round before the 2K final: layer 1 has not re-checked the A1/U2/V3/W1/O1 tweaks).
+
 ## Where it stands
 - **Script**: approved (draft 2, 347 words). `script.json`, `SCRIPT.md`. Titles/description drafted in `PUBLISH.md`.
 - **Voice**: done, 125.2 s, all lines pass `line_loudness.py`. `voice/voice.wav`, `words.json`, `mouth.json`.
