@@ -21,6 +21,6 @@
  "voice_music_gap_min_word_db": -0.1,
  "worst_word": "At",
  "voice_button_gap_db": 15.5,
- "sfx_loudest_vs_voice_db": -19.0,
- "sfx_loudest_at_s": 16.8
+ "sfx_loudest_vs_voice_db": -17.5,
+ "sfx_loudest_at_s": 101.0
 }

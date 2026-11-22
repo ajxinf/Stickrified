@@ -1,6 +1,12 @@
 # promise-flowers: resume here (next session)
 
-Episode 5, "In this world, every promise grows a flower out of your skin." Stopped 2026-11-22 by the user mid-QA.
+Episode 5, "In this world, every promise grows a flower out of your skin."
+
+## DELIVERED 2026-11-23
+`Episodes/Episode_5_In_This_World_Every_Promise_Grows_a_Flower_on_Your_Body.mp4` (1080x1920, 125.5 s; the user made
+1080p the final, replacing 2K). QA: `out/promise-flowers/QA.md` (PASS; hue_ent 2.92 over 2.7 shipped user-approved).
+Last user notes fixed: the nose flower pops ON "Pop!"; line 11's poster inserts replaced by I2-promise-show (pizza
+burst, water arch, MONDAY page rips, a bloom per promise). Nothing left to do; everything below is history.
 
 ## Status 2026-11-22 (evening)
 QA rounds 3-4 done and fixed (commit bec8156); 720p preview rendered (`out/promise-flowers/preview_720p.mp4`, phone copy
