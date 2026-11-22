@@ -430,8 +430,9 @@ shot("A5-jogger-gags", L(4, 0), "town", "day", [JOGGER, MAN], (F) => creep(P(V(3
 // does: Linda charges at a low leading camera in her race vest, the sunflower bouncing on her knee, the street sliding
 // past; she brakes into a proud pose (user 2026-11-22: "rework the marathon camera ... dynamic and purposeful")
 const B1C = (F: number) => {
-  const x = LINDA_RUN.at(F).x, k = span(F, L(4, 0), LINDA_STOP + 6);
-  return P(V(x - 2.7 + 0.5 * k, 0.78, -6.3 + 1.85 - 0.25 * k), V(x - 0.15, 1.02, -6.3), 40);
+  // a locked offset: the lens rides at her speed, nothing on top (a push-in on the track broke 25 px/f)
+  const x = LINDA_RUN.at(F).x;
+  return P(V(x - 2.45, 0.78, -6.3 + 1.75), V(x - 0.15, 1.02, -6.3), 40);
 };
 shot("B1-linda-jogs", L(4, 10), "town", "day", [LINDA_RUN], B1C, { dof: mid(2.9) });
 // does: close on the knee: the sunflower swings with every stride
@@ -578,7 +579,7 @@ shot("U1-pfft", L(25, 3), "town", "debate", [derekSide], (F) => creep(P(V(DEREK_
 shot("U1b-i-promise", L(26, 0), "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
 // === line 26: POP, a new flower shoots out of his nose
 // does: crash in on his face: a real stem shoots out of the tip of his nose and opens; ring eyes
-const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 44, dy: 0.2 });
+const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 48, dy: 0.22 });
 shot("U2-nose-pop", L(27, 0), "town", "debate", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.06), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
 // === line 27: and it rots, right there, on live TV
 // does: the nose flower wilts brown in seconds, flies arrive, he goes cross-eyed and sweaty
