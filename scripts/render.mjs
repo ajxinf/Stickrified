@@ -1,5 +1,6 @@
 // Final render after QA layer 1 (kit/toon/guard.tsx; writes out/<slug>/plan.json for layer 2), then the video.
-// The guard also runs inside the full render, so a shot that only mounts later still fails with its id and frame.
+// The render itself runs with the in-page checks off: guardPass above (or this round's preflight, --no-guard) already
+// checked every frame of every shot, and repeating them inside the page timed out on long shots (ep 5 B1, 2026-11-23).
 // usage: node scripts/render.mjs <Composition> <out.mp4> [scale = 1 (1080p)] [--concurrency 2] [--no-guard] [--resume] [--starts 0,190 (only without a QAPlan)]
 import { renderMedia } from "@remotion/renderer";
 import { spawnSync } from "node:child_process";
@@ -35,7 +36,7 @@ if (!noGuard && !(await guardPass(serveUrl, composition, starts))) fail(id, "QA 
 // Chunks (ep 5, 2026-11-23: a 2K render died of Chrome OOM at 70 % after 65 min, and every fresh start after it hit a
 // GPU reset on frame 0): each chunk renders on its own, a failed chunk retries in a new Chrome, finished chunks stay in
 // <out>_parts/ and `--resume` keeps them (only after a crash on unchanged code), then they join without re-encoding.
-const props = { ...composition.props, ...(noGuard ? { qa: "off" } : {}) };
+const props = { ...composition.props, qa: "off" };
 const comp = { ...composition, props }; // the component reads composition.props (Remotion 4), see stills.mjs
 const parts = out.replace(/\.mp4$/, "_parts");
 if (!resume) fs.rmSync(parts, { recursive: true, force: true });
