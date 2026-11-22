@@ -16,6 +16,13 @@ export const CHROMIUM = { gl: "angle" };
 // keeps the bundle's big models between pages. Callers pass `puppeteerInstance: await browser()`.
 let shared = null;
 export const browser = () => (shared ??= openBrowser("chrome", { chromiumOptions: CHROMIUM }));
+/** After a GPU reset Chrome blocks WebGL on that page's origin ("context loss and was blocked"): start a new Chrome. */
+export const freshBrowser = async () => {
+  const old = shared;
+  shared = null;
+  await old?.then((b) => b.close({ silent: true })).catch(() => {});
+  return browser();
+};
 
 export const bundleOnce = () => bundle({ entryPoint: path.resolve("src/index.ts"), rspack: true });
 
