@@ -1,6 +1,6 @@
 // Shared setup for the render scripts: temp dir on C:/remotion-tmp (Windows), one bundle per run, laptop GPU flags.
 import { bundle } from "@remotion/bundler";
-import { renderStill, selectComposition } from "@remotion/renderer";
+import { openBrowser, renderStill, selectComposition } from "@remotion/renderer";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -11,6 +11,11 @@ if (process.platform === "win32") {
 }
 
 export const CHROMIUM = { gl: "angle" };
+
+// One Chrome for every still of a run (was one launch per still: ~5 s each, x 200 stills per QA round). Its cache also
+// keeps the bundle's big models between pages. Callers pass `puppeteerInstance: await browser()`.
+let shared = null;
+export const browser = () => (shared ??= openBrowser("chrome", { chromiumOptions: CHROMIUM }));
 
 export const bundleOnce = () => bundle({ entryPoint: path.resolve("src/index.ts"), rspack: true });
 
@@ -35,9 +40,9 @@ const CHECKS = ["Camera clearance", "Feet on the ground", "Card penetration", "P
  */
 export const guardPass = async (serveUrl, composition, starts = [0]) => {
   const logs = new Map(), errors = [];
-  const still = (frame) =>
+  const still = async (frame) =>
     renderStill({
-      composition, serveUrl, frame, scale: 0.1, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, // heavy tree models
+      composition, serveUrl, frame, scale: 0.1, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, puppeteerInstance: await browser(), // heavy tree models
       output: path.join(os.tmpdir(), `guard_${composition.id}.png`),
       inputProps: { ...composition.props, qa: "collect" },
       onBrowserLog: ({ text }) => void (text.startsWith("QA1 ") && logs.set(text, JSON.parse(text.slice(4)))),

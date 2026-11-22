@@ -126,16 +126,16 @@ const arms = (l: [number, number], r: [number, number], o: { gl?: Pose["arms"][0
   [{ at: l, grip: o.gl ?? "fist", ...(o.front ? { layer: "front" as const } : {}) }, { at: r, grip: o.gr ?? "fist", ...(o.front ? { layer: "front" as const } : {}) }];
 
 // ------------------------------------------------------------------ places
-const MAN_AT = V(2.15, 0, BENCH.z + 0.32), WOMAN_AT = V(2.75, 0, BENCH.z + 0.32);
+const MAN_AT = V(2.15, 0, BENCH.z + 0.36), WOMAN_AT = V(2.75, 0, BENCH.z + 0.36); // 11 cm in front of the bench (front BENCH.z + 0.249)
 const YOU_PORCH = V(GRANDMA_DOOR_X + 1.05, 0, PORCH.z1 + 0.12);
-const GRANNY_CHAIR = V(GRANDMA_DOOR_X + 1.55, PORCH.y, PORCH.z0 + 1.45); // just clear of the rocker tips (z0 + 1.41)
+const GRANNY_CHAIR = V(GRANDMA_DOOR_X + 1.55, PORCH.y, PORCH.z0 + 1.56); // clear of the turned rocker tips (z0 ~ +1.45), on the porch (edge z0 + 1.6)
 const YOU_HIVE = V(-8.92, 0, 3.6), GRANNY_HIVE = V(-9.58, 0, 3.7);
 const YOU_WALK = V(GRANDMA_DOOR_X + 0.45, 0, PORCH.z1 + 1.45);
 const DEREK_WALK_A = V(2.0, 0, 16.2), DEREK_WALK_B = V(2.0, 0, 15.2);
 const DEREK_PODIUM = V(PODIUM.x + 0.05, STAGE.h, PODIUM.z + 0.45);
 const DEREK_SIDE = V(PODIUM.x + 1.0, STAGE.h, PODIUM.z + 0.2);
 const DEREK_PLAN = V(PLAN_BOARD.x + 0.95, STAGE.h, PLAN_BOARD.z + 0.15);
-const seatAt = (i: number) => CHAIR_SPOTS[i].clone().add(V(0, 0, 0.28)); // card at the seat's front edge
+const seatAt = (i: number) => CHAIR_SPOTS[i].clone().add(V(0, 0, 0.35)); // card ~12 cm in front of the chair (front at spot + 0.234: model() centres the box)
 // Seats on a checkerboard (row + column odd): nobody sits straight behind anybody (QA cast overlap from the stage).
 const YOU_SEAT = 5, LINDA_SEAT = 16, MAIL_SEAT = 20, DAD_SEAT_I = 27, MAN_SEAT = 31, WOMAN_SEAT = 33, JOGGER_SEAT = 38, NEIGHBOUR_SEAT = 7;
 const YOU_STAND = seatAt(YOU_SEAT).add(V(0, 0, 0.18));
@@ -297,7 +297,7 @@ const GAG: Pose = { ...REST, arms: arms([0.15, 0.62], [0.15, 0.62], { gl: "open"
 const JOGGER = role("jogger", joggerLook, (F) => V(JOG_X(F), 0, 7.2), (F) => st({ ...(F < B.stinks - 4 ? runPose(6.2 - JOG_X(F)) : pose([[0, REST], [B.stinks - 4, GAG]], F)), squash: reactSquash(F - B.stinks) }, F, 49, [[0, "determined"], [B.stinks, "disgusted"]], { heading: -Math.PI / 2, fx: { fill: F >= snap(B.stinks) ? { color: "#8ac85a", t: clamp01((F - snap(B.stinks) + 1) / 8) * 0.5 } : undefined } }));
 const LINDA_STOP = L(4, 10) - 6;
 // a real run (user 2026-11-22: the marathon read as a stroll at 0.034 m/f), braking over 8 frames into the knee show
-const RUN_V = 0.07;
+const RUN_V = 0.052; // ~1.6 m/s: a real jog the tracking lens can hold under 25 px/f
 const lindaDist = (F: number) => { const t = F - L(4, 0); return t < LINDA_STOP - L(4, 0) ? RUN_V * t : RUN_V * (LINDA_STOP - L(4, 0)) + RUN_V * 8 * clamp01((F - LINDA_STOP) / 8) * (1 - 0.5 * clamp01((F - LINDA_STOP) / 8)); };
 const SHOW_KNEE: Pose = { ...POSES.hips, lift: [0, 34], knee: 14, sway: -4, tilt: -6 };
 const LINDA_RUN = role("linda", lindaLook, (F) => V(-12.6 - lindaDist(F), 0, -6.3), (F) => st(F < LINDA_STOP + 4 ? runPose(lindaDist(F)) : pose([[0, REST], [LINDA_STOP + 4, SHOW_KNEE]], F), F, 51, [[0, "excited"], [L(4, 7), "proud"], [L(4, 13), "grin"]], { heading: turnTo([[0, -Math.PI / 2], [LINDA_STOP + 4, -Math.PI / 2 + 0.8]], F, 14), flowers: [{ at: { part: "leg", side: 1, t: 0.5 }, color: "#f2c23a", open: 1, size: 2.3, ang: 10, seed: 8 }] }));
@@ -376,8 +376,9 @@ export type Fx = "hiveBees" | "porchBees" | "derekBee" | "swarm" | "fly" | "flyT
 const LIGHT_OF: Record<Light, { light: "day" | "golden" | "interior" | "night"; scene: string }> = {
   day: { light: "day", scene: "town day" }, golden: { light: "golden", scene: "town golden" },
   homeDay: { light: "interior", scene: "home day" }, homeNight: { light: "night", scene: "home night" },
-  // scene tags unchanged (sound beds key on them); only the light differs
-  porch: { light: "day", scene: "town day" }, mall: { light: "day", scene: "town day" }, debate: { light: "day", scene: "town day" },
+  // Grandma's porch and hives are their own place (own light, the bee-garden bed); mall and debate shots already carry
+  // their scene tags
+  porch: { light: "day", scene: "porch day" }, mall: { light: "day", scene: "mall day" }, debate: { light: "day", scene: "debate" },
 };
 const P = (pos: Vector3, look: Vector3, fov: number, roll = 0): CamPose => ({ pos, look, fov, roll });
 const castIn = (from: number, roles: Role[]) => roles.map((r) => ({ name: r.name, look: lookAt(r, from), lookAt: typeof r.look === "function" ? r.look : undefined, at: (f: number) => r.at(f + from), state: (f: number) => r.state(f + from), sit: r.sit }));
@@ -436,7 +437,7 @@ shot("B1-linda-jogs", L(4, 10), "town", "day", [LINDA_RUN], B1C, { dof: mid(2.9)
 // does: close on the knee: the sunflower swings with every stride
 const KNEE_AT = () => LINDA_RUN.at(L(5, 0) - 1);
 // does: from her proud grin the camera tilts down her race vest and lands on the bobbing sunflower on "knee"
-const B2C = (F: number) => { const k = span(F, L(4, 10) + 6, L(5, 0) - 12); return P(KNEE_AT().add(V(0.25, 1.25 - 0.4 * k, 1.75)), KNEE_AT().add(V(0.05, 1.32 - 0.7 * k, 0)), 44); };
+const B2C = (F: number) => { const k = span(F, L(4, 10) + 4, L(5, 0) - 4); return P(KNEE_AT().add(V(0.25, 1.25 - 0.4 * k, 1.75)), KNEE_AT().add(V(0.05, 1.32 - 0.7 * k, 0)), 44); };
 shot("B2-knee-sunflower", L(5, 0), "town", "day", [LINDA_RUN], B2C, { subject: undefined, dof: close(1.8), allow: { "Subject size": "a tilt down to her knee: the sunflower is the subject" } });
 // === line 5: Dad, six years of a dripping sink, a dead tulip on his ear
 // does: Dad reads at the table, the tap drips into the overflowing bucket, the puddle shines
@@ -528,7 +529,7 @@ const O2C = (F: number) => {
   // the card turns to the lens, so find the hand from where the lens will be (two passes)
   const s = youSofa.state(L(18, 12)), hw = (cam: Vector3) => handWorld(youLook, s.pose, YOU_SOFA, cam, "right", 0.06, s.heading);
   const h = hw(hw(V(2.2, 1.0, -0.4)).add(V(0.05, 0.15, 0.8))), push = 0.12 * span(F, L(18, 8), L(19, 0));
-  return P(h.clone().add(V(0.05, 0.15, 0.8 - push)), h.clone().add(V(0.03, 0.13, 0)), 40);
+  return P(h.clone().add(V(0.05, 0.15, 0.8 - push)), h.clone().add(V(0.03, 0.05, 0)), 40); // look low: your face sits above the captions
 };
 shot("O2-bud-browning", L(19, 0), "home", "homeNight", [youSofa], O2C, { subject: undefined, dof: close(0.75), fx: ["fly"], allow: { ...SEATED, "Subject size": "insert: the browning bud is the subject" } });
 // === line 19: the debate; you shout "He's a fake!"; the park laughs at the flake
@@ -577,7 +578,7 @@ shot("U1-pfft", L(25, 3), "town", "debate", [derekSide], (F) => creep(P(V(DEREK_
 shot("U1b-i-promise", L(26, 0), "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
 // === line 26: POP, a new flower shoots out of his nose
 // does: crash in on his face: a real stem shoots out of the tip of his nose and opens; ring eyes
-const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 40, dy: 0.2 });
+const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 40, dy: 0.25 });
 shot("U2-nose-pop", L(27, 0), "town", "debate", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.06), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
 // === line 27: and it rots, right there, on live TV
 // does: the nose flower wilts brown in seconds, flies arrive, he goes cross-eyed and sweaty
@@ -595,7 +596,7 @@ shot("V2-slide", L(29, 0), "town", "debate", [derekSide], (F) => { const t = spa
 // does: "Underneath?" pushes in on Derek's chest as the last glued flowers slide away: a thousand rotten ones, stink
 // rolling off him toward the lens (user 2026-11-22: the narrated object is the focal point; was a high wide)
 const V3F = on(derekSide, DEREK_SIDE, V(0.95, 0, -1.95), "mcu", { fov: 42 });
-shot("V3-stink-wave", L(30, 0), "town", "debate", [derekSide], (F) => creep(V3F, F, L(29, 0), L(30, 0), 0.14, 0, 0.1), { ...DEB, subject: "derek", dof: mid(2.2), fx: ["stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
+shot("V3-stink-wave", L(30, 0), "town", "debate", [derekSide], (F) => creep(V3F, F, L(29, 0), L(30, 0), 0.32, 0, 0.1), { ...DEB, subject: "derek", dof: mid(2.2), fx: ["stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
 // === line 30: even your fly leaves you, for Derek
 // does: your fly lifts off your head, hesitates, and buzzes across to join Derek's cloud; you wave it goodbye
 // does: the fly circles your head, lifts off on "fly" while you wave it goodbye, the camera rides with it across the
@@ -609,9 +610,9 @@ const W1C = (F: number) => {
   const side = V(dir.z, 0, -dir.x).normalize().multiplyScalar(0.55 * k);
   const fly = a.clone().lerp(d, t).add(V(0, 0.4 * Math.sin(Math.PI * t), 0));
   const look = fly.clone().addScaledVector(dir, 1.2 * k); // past your head toward the stage at first
-  return P(fly.clone().addScaledVector(dir, -(0.9 + 0.9 * k)).add(V(0, 0.25 + 0.3 * k, 0)).add(side), look, 44);
+  return P(fly.clone().addScaledVector(dir, -(0.9 + 0.9 * k)).add(V(0, 0.25 + 0.3 * k, 0)).add(side), look.add(V(0, -0.1 * t, 0)), 44); // Derek's face lands above the captions
 };
-shot("W1-the-fly-leaves", L(31, 0), "town", "debate", [youDebate, derekSide], W1C, { ...DEB, subject: undefined, dof: close(0.95), whips: [[B.flyGo - L(30, 0), B.toDerek + 8 - L(30, 0)]], allow: { "Text in frame": "the stage banner high behind the follow (read whole in P1)", "Subject size": "a follow on the fly: it is the subject" }, fx: ["flyToDerek", "stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
+shot("W1-the-fly-leaves", L(31, 0), "town", "debate", [youDebate, derekSide], W1C, { ...DEB, subject: undefined, dof: close(0.95), whips: [[B.flyGo - L(30, 0), B.toDerek + 8 - L(30, 0)]], allow: { "Text in frame": "the stage banner high behind the follow (read whole in P1)", "Subject size": "a follow on the fly: it is the subject", "Caption vs face": "over your shoulder: the back of your head, no face", "Cast overlap": "the chase passes your head for 2 frames" }, fx: ["flyToDerek", "stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
 // === line 31: Derek loses; you can smell him from across the mall
 // does: the newspaper on the plaza bench: DEREK LOSES
 const PAPER_AT = BENCH.clone().add(V(-0.25, 0.84, 0.02));

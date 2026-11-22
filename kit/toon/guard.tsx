@@ -27,7 +27,7 @@ import { DESIGN } from "./toon";
  * Colliders opt in with `userData.collider = "<name>"`; boxes are taken in each object's own frame.
  */
 export const CLEARANCE = 0.3;
-const FEET_TOL = 0.02, CARD_DEPTH = 0.3, ZFIGHT = 0.25, PROP_EPS = 0.01, FLOAT_TOL = 0.02, BODY_GAP = 0.5;
+const FEET_TOL = 0.02, CARD_DEPTH = 0.3, SEAT_DEPTH = 0.04, ZFIGHT = 0.25, PROP_EPS = 0.01, FLOAT_TOL = 0.02, BODY_GAP = 0.5;
 const HAND_TOL = 0.12;
 const MAX_SPEED = 25, MAX_ACCEL = 20, MAX_ZOOM = 2.2, SNAP = 25, STILL_PX = 0.5, STILL_RUN = 61;
 // STILL_RUN 12 -> 61 (2026-11-13): refs R11/R13 hold dead still for up to ~50 f on beats, then move fast.
@@ -213,8 +213,8 @@ const card = (c: CastSpec, f: number) => {
 const headOBB = (p: Vector3, yaw: number, h: { x: number; y: number; a: number; b: number }) =>
   new OBB(p.clone().add(new Vector3(Math.cos(yaw) * h.x, h.y, -Math.sin(yaw) * h.x)), new Vector3(h.a, h.b, 0.15), yawMat(yaw));
 /** Card body (footprint width x 0.3 m, from 5 cm above the soles to the head top), facing the lens. */
-const cardOBB = (p: Vector3, yaw: number, w: number, top: number) =>
-  new OBB(p.clone().setY(p.y + (0.05 + top) / 2), new Vector3(w / 2, (top - 0.05) / 2, CARD_DEPTH / 2), yawMat(yaw));
+const cardOBB = (p: Vector3, yaw: number, w: number, top: number, depth = CARD_DEPTH) =>
+  new OBB(p.clone().setY(p.y + (0.05 + top) / 2), new Vector3(w / 2, (top - 0.05) / 2, depth / 2), yawMat(yaw));
 const obbDistance = (o: OBB, q: Vector3) => o.clampPoint(q, new Vector3()).distanceTo(q);
 
 const camera = (pose: CamPose, aspect: number) => {
@@ -322,7 +322,9 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
         const d = p.y - gy;
         if (Math.abs(d) > FEET_TOL)
           r.add("Feet on the ground", shot, f, `"${c.name}"`, `soles ${(d * 100).toFixed(1)} cm ${d > 0 ? "above" : "below"} the ${c.sit ? "seat" : "ground"} (y ${gy.toFixed(3)})`);
-        const k = card(c, f), o = cardOBB(p, cardYaw(p, cam.position), k.w, k.top), rad = o.halfSize.length();
+        // seated cards are checked as thin planes: the lap is drawn, so only the drawn plane going behind the seat front
+        // is a clip (the body-depth box flagged every correct sitter against the furniture's whole bounding box)
+        const k = card(c, f), o = cardOBB(p, cardYaw(p, cam.position), k.w, k.top, c.sit ? SEAT_DEPTH : CARD_DEPTH), rad = o.halfSize.length();
         for (const pt of ps) {
           if (pt.obb.center.distanceTo(o.center) > pt.r + rad) continue;
           if (o.intersectsOBB(pt.obb)) r.add("Card penetration", shot, f, `"${c.name}" vs ${pt.name}`, "card footprint overlaps it");

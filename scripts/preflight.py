@@ -65,7 +65,7 @@ def framing_flags(shots, pre):
 
 
 def stills(comp, prefix, frames, scale, draft, guard=True):
-    cmd = ["node", "scripts/stills.mjs", comp, prefix, ",".join(map(str, frames)), str(scale)] + (["--draft"] if draft else []) + ([] if guard else ["--no-guard"])
+    cmd = ["node", "scripts/stills.mjs", comp, prefix, ",".join(map(str, frames)), str(scale), "--batch"] + (["--draft"] if draft else []) + ([] if guard else ["--no-guard"])
     if subprocess.run(cmd).returncode:
         sys.exit("preflight: stills.mjs failed (QA layer 1 above, or a render error); fix it or pass --draft")
 

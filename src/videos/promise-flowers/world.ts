@@ -386,7 +386,8 @@ const newsCam = () => {
 /** Folding chairs for the debate (Video.tsx shows them from line 19). */
 export const debateChairs = () => {
   const g = new Group();
-  for (const p of CHAIR_SPOTS) g.add(place(model("plastic_monobloc_chair_01", { collider: false, tint: "#f2ece2" }), p.x, 0, p.z - 0.08, Math.PI));
+  // the model faces +z (backrest at -z), the same way as the stage: no turn (user 2026-11-22: they faced away, rotated by pi)
+  for (const p of CHAIR_SPOTS) g.add(place(model("plastic_monobloc_chair_01", { collider: false, tint: "#f2ece2" }), p.x, 0, p.z - 0.08, 0));
   g.name = "chairs";
   return g;
 };
@@ -500,7 +501,7 @@ export const BUCKET = V(-1.7, 0, -1.82);
 export const TABLE = V(-0.7, 0, 0.6);
 export const DAD_SEAT = V(-0.75, 0, -0.35); // Dad sits at the table's far side, facing the lens (+z)
 export const SOFA = V(2.15, 0, -1.9);
-export const YOU_SOFA = V(2.15, 0, -1.44); // seated card 12 cm in front of the seat cushion (front z -1.56, top 0.41 m): a card turns to the lens, so on the front face half of it sank into the sofa
+export const YOU_SOFA = V(2.15, 0, -1.38); // seated card 11 cm in front of the sofa (model() centres its box: front at SOFA.z + 0.409 = -1.491): a card turns to the lens, so on the front face half of it sank into the sofa
 export const TV = V(1.15, 0.72, 1.4); // facing -z (the sofa)
 export const FLOOR_LAMP = V(3.3, 1.55, -2.2);
 export const WINDOW = V(0.6, 1.55, HOME.z0 + 0.01);
@@ -584,7 +585,7 @@ export const home = (night: boolean) => {
     g.add(lightShafts(WINDOW.clone().add(V(0, 0.1, 0.15)), V(-0.15, -0.75, 1).normalize(), { length: 2.6, width: 1.1, color: "#ffd9a0", strength: 0.16, count: 5 }));
   }
   g.add(place(model("dining_table", { collider: "dining table", scale: 0.7 }), TABLE.x, 0, TABLE.z, 0));
-  g.add(place(model("dining_chair_02", { collider: "chair" }), DAD_SEAT.x, 0, DAD_SEAT.z - 0.12, 0));
+  g.add(place(model("dining_chair_02", { collider: "chair" }), DAD_SEAT.x, 0, DAD_SEAT.z - 0.4, 0)); // front (+0.288) 11 cm behind Dad's card (was 17 cm in front of it: he sat inside the chair)
   g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 0.9, 0, TABLE.z + 0.85, Math.PI));
   g.add(place(model("sofa_02", { collider: "sofa" }), SOFA.x, 0, SOFA.z, 0));
   const tv = place(model("television_02", { collider: "tv", scale: 1.5 }), TV.x, 0.5, TV.z, Math.PI);

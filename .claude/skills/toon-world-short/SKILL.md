@@ -412,10 +412,12 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
   (`handWorld`, QA "Moving props").
 - **Sitting is a pose, not a sunk card** (user 2026-11-18, ep 4: "they just stand and clip through the chair"):
   `pose.sit = 1` drops the torso to `SEAT_M` (0.38 m) and bends the knees; mark the role `sit: true`, frame on
-  `headHeight(look, { ...REST, sit: 1 })`. **Stand the card ~0.1-0.12 m IN FRONT of the seat's front face** (measure the
-  model: `sofa_02` cushion front is +0.34 m from its origin), never on it: cards turn to face the lens, so a card on
+  `headHeight(look, { ...REST, sit: 1 })`. **Stand the card ~0.1-0.12 m IN FRONT of the seat's front face**, never on it
+  (`model()` centres the model's bounding box on the placement point, so the front is at +size.z/2: `sofa_02` +0.409,
+  `dining_chair_02` +0.288, `plastic_monobloc_chair_01` +0.314, `painted_wooden_bench` +0.249; ep5 had Dad 17 cm inside
+  his chair from reading raw model coordinates): cards turn to face the lens, so a card on
   the front face swings half into the furniture (ep5 preview: legs through the sofa). Never `allow` "Card penetration"
-  for seated cards: the drawn lap needs no overlap, and the guard then catches every sunk sitter.
+  for seated cards: the guard checks a `sit: true` card as a thin plane (`SEAT_DEPTH`), so it flags exactly the sunk ones.
 - **Hits get a shake**: `impact(pose, frame)` (kit camera.ts) on slams, crashes and kicks, declared in `kicks`.
 - **Screens are displays, not stickers** (user 2026-11-22, ep5 TV poll): put screen content on the device's glass with
   kit `build/screen.ts` `curvedScreen(tex, { x, y, w, h, z, zMap })`, added to the model's inner group

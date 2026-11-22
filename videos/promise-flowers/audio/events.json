@@ -416,7 +416,8 @@
   "home night": "amb_bedroom_night",
   "mall day": "amb_mall",
   "debate": "amb_crowd_park",
-  "town golden": "amb_bees_garden"
+  "town golden": "amb_bees_garden",
+  "porch day": "amb_bees_garden"
  },
  "space": {
   "town day": 0.45,
@@ -424,6 +425,7 @@
   "home night": 0.6,
   "mall day": 1.1,
   "debate": 0.45,
-  "town golden": 0.45
+  "town golden": 0.45,
+  "porch day": 0.45
  }
 }
