@@ -567,10 +567,29 @@ export const home = (night: boolean) => {
   k.add(MAT.metal(), new CylinderGeometry(0.02, 0.02, 1.45, 8), FLOOR_LAMP.x, 0.72, FLOOR_LAMP.z);
   k.add(MAT.metal(), new CylinderGeometry(0.18, 0.2, 0.03, 16), FLOOR_LAMP.x, 0.015, FLOOR_LAMP.z);
   k.add(MAT.lampGlass(night), new CylinderGeometry(0.14, 0.22, 0.28, 16, 1, true), FLOOR_LAMP.x, FLOOR_LAMP.y, FLOOR_LAMP.z);
+  // frames on the wall behind the TV (user 2026-11-22: no bare walls): dark wood borders
+  for (const [x, y, w, h] of [[0.72, 1.55, 0.42, 0.52], [1.52, 1.62, 0.36, 0.3]]) k.box(MATS.darkWood(), w + 0.06, h + 0.06, 0.03, x, y, HOME.z1 - 0.03);
   // a rug under the table
   const walls = k.build();
   walls.userData.collider = "home";
   g.add(walls);
+  // the photos in them: you as a kid with Grandma at the hives; your ninth-grade class (the fly's first day)
+  const photoMat = (key: string, draw: (c: CanvasRenderingContext2D) => void) => M(key, () => toonMaterial({ map: canvasTex(256, 320, draw), color: "#ffffff" }));
+  g.add(plane(0.42, 0.52, photoMat("pf-photo-gran", (c) => {
+    c.fillStyle = "#f6d89a"; c.fillRect(0, 0, 256, 320); c.fillStyle = "#7ab86a"; c.fillRect(0, 220, 256, 100);
+    c.fillStyle = "#e8c050"; c.fillRect(150, 150, 70, 80); c.strokeStyle = "#5a4030"; c.lineWidth = 4; c.strokeRect(150, 150, 70, 80); // a hive
+    c.fillStyle = "#f7f4f0"; c.strokeStyle = "#1c1414"; c.lineWidth = 5;
+    for (const [x, y, r] of [[70, 120, 34], [120, 165, 22]]) { c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); c.stroke(); }
+    c.fillStyle = "#c8728e"; c.fillRect(46, 154, 48, 70); c.fillStyle = "#c8582c"; c.fillRect(104, 187, 32, 44); // her cardigan, your little hoodie
+    c.fillStyle = "#e8d49a"; c.fillRect(24, 82, 92, 10); // her hat
+  }), V(0.72, 1.55, HOME.z1 - 0.05), Math.PI));
+  g.add(plane(0.36, 0.3, photoMat("pf-photo-class", (c) => {
+    c.fillStyle = "#9ab4d8"; c.fillRect(0, 0, 256, 320); c.fillStyle = "#5a6a8a"; c.fillRect(0, 200, 256, 120);
+    c.strokeStyle = "#1c1414"; c.lineWidth = 4;
+    for (let i = 0; i < 5; i++) for (let r = 0; r < 2; r++) { c.fillStyle = "#f7f4f0"; c.beginPath(); c.arc(32 + i * 48 + r * 24, 110 + r * 80, 18, 0, 7); c.fill(); c.stroke(); }
+    c.fillStyle = "#1c1414"; c.font = "900 30px sans-serif"; c.textAlign = "center"; c.fillText("CLASS OF 9", 128, 300);
+  }), V(1.52, 1.62, HOME.z1 - 0.05), Math.PI));
+  g.add(place(model("potted_plant_01", { collider: "plant 2", scale: 0.45 }), TV.x + 0.47, 0.5, TV.z + 0.05, 1.2));
   g.add(plane(1.32, 1.12, M(`pf-window-${night}`, () => new MeshBasicMaterial({ map: windowTex(night), toneMapped: false })), WINDOW.clone().add(V(0, 0, 0.05))));
   const rug = plane(2.6, 1.8, unlit("pf-rug", () => canvasTex(256, 192, (c) => {
     c.fillStyle = "#b84a3a"; c.fillRect(0, 0, 256, 192);

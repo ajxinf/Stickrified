@@ -297,7 +297,7 @@ const GAG: Pose = { ...REST, arms: arms([0.15, 0.62], [0.15, 0.62], { gl: "open"
 const JOGGER = role("jogger", joggerLook, (F) => V(JOG_X(F), 0, 7.2), (F) => st({ ...(F < B.stinks - 4 ? runPose(6.2 - JOG_X(F)) : pose([[0, REST], [B.stinks - 4, GAG]], F)), squash: reactSquash(F - B.stinks) }, F, 49, [[0, "determined"], [B.stinks, "disgusted"]], { heading: -Math.PI / 2, fx: { fill: F >= snap(B.stinks) ? { color: "#8ac85a", t: clamp01((F - snap(B.stinks) + 1) / 8) * 0.5 } : undefined } }));
 const LINDA_STOP = L(4, 10) - 6;
 // a real run (user 2026-11-22: the marathon read as a stroll at 0.034 m/f), braking over 8 frames into the knee show
-const RUN_V = 0.049; // ~1.6 m/s: a real jog the tracking lens can hold under 25 px/f
+const RUN_V = 0.045; // ~1.6 m/s: a real jog the tracking lens can hold under 25 px/f
 const lindaDist = (F: number) => { const t = F - L(4, 0); return t < LINDA_STOP - L(4, 0) ? RUN_V * t : RUN_V * (LINDA_STOP - L(4, 0)) + RUN_V * 8 * clamp01((F - LINDA_STOP) / 8) * (1 - 0.5 * clamp01((F - LINDA_STOP) / 8)); };
 const SHOW_KNEE: Pose = { ...POSES.hips, lift: [0, 34], knee: 14, sway: -4, tilt: -6 };
 const LINDA_RUN = role("linda", lindaLook, (F) => V(-12.6 - lindaDist(F), 0, -6.3), (F) => st(F < LINDA_STOP + 4 ? runPose(lindaDist(F)) : pose([[0, REST], [LINDA_STOP + 4, SHOW_KNEE]], F), F, 51, [[0, "excited"], [L(4, 7), "proud"], [L(4, 13), "grin"]], { heading: turnTo([[0, -Math.PI / 2], [LINDA_STOP + 4, -Math.PI / 2 + 0.8]], F, 14), flowers: [{ at: { part: "leg", side: 1, t: 0.5 }, color: "#f2c23a", open: 1, size: 2.3, ang: 10, seed: 8 }] }));
@@ -437,7 +437,7 @@ shot("B1-linda-jogs", L(4, 10), "town", "day", [LINDA_RUN], B1C, { dof: mid(2.9)
 // does: close on the knee: the sunflower swings with every stride
 const KNEE_AT = () => LINDA_RUN.at(L(5, 0) - 1);
 // does: from her proud grin the camera tilts down her race vest and lands on the bobbing sunflower on "knee"
-const B2C = (F: number) => { const k = span(F, L(4, 10), L(5, 0) - 2); return P(KNEE_AT().add(V(0.25, 1.2 - 0.35 * k, 1.75)), KNEE_AT().add(V(0.05, 1.24 - 0.62 * k, 0)), 44); };
+const B2C = (F: number) => { const k = span(F, L(4, 10), L(5, 0) - 2); return P(KNEE_AT().add(V(0.25, 1.15 - 0.3 * k, 1.75)), KNEE_AT().add(V(0.05, 1.16 - 0.54 * k, 0)), 44); };
 shot("B2-knee-sunflower", L(5, 0), "town", "day", [LINDA_RUN], B2C, { subject: undefined, dof: close(1.8), allow: { "Subject size": "a tilt down to her knee: the sunflower is the subject" } });
 // === line 5: Dad, six years of a dripping sink, a dead tulip on his ear
 // does: Dad reads at the table, the tap drips into the overflowing bucket, the puddle shines
@@ -521,8 +521,8 @@ const N2C = (F: number) => { const s = youWalk.state(L(17, 7)), h = handWorld(yo
 shot("N2-lid-hops", L(18, 0), "town", "porch", [youWalk], N2C, { subject: undefined, dof: close(0.7), props: [boxProp(youWalk, "both", N1F)], allow: { "Subject size": "insert: the hopping lid is the subject" } });
 // === line 18: by Friday, 99 percent, and your bud turning brown
 // does: night, over your shoulder: the TV says DEREK 99%; you slump
-const O1C = P(V(1.35, 0.95, -0.4), V(1.15, 0.7, 1.2), 38);
-shot("O1-tv-poll", L(18, 8), "home", "homeNight", [] /* you are behind this lens */, (F) => creep(O1C, F, L(18, 0), L(18, 8), 0.1, 0, 0.05), { subject: undefined, dof: close(1.6), allow: { ...SEATED, "Subject size": "the TV poll is the subject" } });
+const O1C = P(V(1.44, 1.07, -1.16), V(1.15, 0.7, 1.2), 38); // 2.4 m out: the TV glowing in the dark room
+shot("O1-tv-poll", L(18, 8), "home", "homeNight", [] /* you are behind this lens */, (F) => creep(O1C, F, L(18, 0), L(18, 8), 0.35, 0, 0.05), { subject: undefined, dof: close(1.6), allow: { ...SEATED, "Subject size": "the TV poll is the subject" } });
 // does: close on your bud: its edges go brown; tears; the fly lands next to it, waiting
 // does: the bud on your raised hand goes from green to a brown droop on "turning brown", your face crumples behind it
 const O2C = (F: number) => {
@@ -567,7 +567,7 @@ shot("S1-swarm-parts", B.except - 2, "town", "debate", [derekSide], (F) => P(V(7
 shot("S2-frozen-grin", L(24, 0), "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(0.25, 0, -2.8), "mcu", { fov: 42, dy: 0.06 }), F, B.except - 2, L(24, 0), 0.1), { ...DEB, subject: "derek", dof: close(2.5), fx: ["swarm"] });
 // === line 24: all summer you've watched those bees: DEREK - NEVER
 // does: the notebook page you scribbled all summer: DEREK - NEVER, circled three times
-shot("T1-derek-never", L(24, 8), "town", "porch", [], (F) => P(NB_AT.clone().add(V(0.02, 1.06, 0.48)).lerp(NB_AT.clone().add(V(0.0, 0.98, 0.44)), span(F, L(24, 0), L(24, 8))), NB_AT.clone().add(V(0, -0.02, 0.18)), 40), { ...DEB, scene: "town day", subject: undefined, dof: close(0.5), props: [{ name: "summer page", make: () => notebook(0), pose: (o, F) => { if (F >= L(24, 0) + 30) return false; o.position.copy(NB_AT); o.rotation.set(0, 0.05, 0); const k = clamp01((F - L(24, 0) - 22) / 8); o.scale.set(1, 1, 1 - k); } }, { name: "notebook", make: () => notebook(1), pose: (o, F) => { const t = 0; if (F < L(24, 0) + 22) return false; const k = clamp01((F - L(24, 0) - 22) / 8); o.position.copy(NB_AT).add(V(0, 0.002, 0)); o.rotation.set(0, 0.05, 0); o.scale.set(1, 1, Math.max(k, 0.01)); void t; } }] });
+shot("T1-derek-never", L(24, 8), "town", "porch", [], (F) => P(NB_AT.clone().add(V(0.02, 1.06, 0.48)).lerp(NB_AT.clone().add(V(0.0, 0.98, 0.44)), span(F, L(24, 0), L(24, 8))), NB_AT.clone().add(V(0, -0.02, 0.18)), 40), { ...DEB, scene: "porch day", subject: undefined, dof: close(0.5), props: [{ name: "summer page", make: () => notebook(0), pose: (o, F) => { if (F >= L(24, 0) + 30) return false; o.position.copy(NB_AT); o.rotation.set(0, 0.05, 0); const k = clamp01((F - L(24, 0) - 22) / 8); o.scale.set(1, 1, 1 - k); } }, { name: "notebook", make: () => notebook(1), pose: (o, F) => { const t = 0; if (F < L(24, 0) + 22) return false; const k = clamp01((F - L(24, 0) - 22) / 8); o.position.copy(NB_AT).add(V(0, 0.002, 0)); o.rotation.set(0, 0.05, 0); o.scale.set(1, 1, Math.max(k, 0.01)); void t; } }] });
 // does: back to you in the front row: arms crossed, the smuggest face of your life
 shot("T2-smug", L(25, 0), "town", "debate", [youDebate, ...crowdNear(10, 14.6, -0.5, 3.5)], (F) => creep(on(youDebate, YOU_STAND, V(-0.85, 0, 2.1), "mcu", { fov: 42 }), F, L(24, 8), L(25, 0), 0.08), { ...DEB, dof: close(2.0), fx: ["swarm"] });
 // === line 25: "Pfft. Bees? I promise these flowers are real!"
@@ -578,7 +578,7 @@ shot("U1-pfft", L(25, 3), "town", "debate", [derekSide], (F) => creep(P(V(DEREK_
 shot("U1b-i-promise", L(26, 0), "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
 // === line 26: POP, a new flower shoots out of his nose
 // does: crash in on his face: a real stem shoots out of the tip of his nose and opens; ring eyes
-const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 44, dy: 0.25 });
+const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 44, dy: 0.2 });
 shot("U2-nose-pop", L(27, 0), "town", "debate", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.06), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
 // === line 27: and it rots, right there, on live TV
 // does: the nose flower wilts brown in seconds, flies arrive, he goes cross-eyed and sweaty
