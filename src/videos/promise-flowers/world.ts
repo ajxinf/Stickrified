@@ -426,7 +426,7 @@ const streetDressing = (g: Group) => {
   g.add(place(model("flower_ursinia", { collider: false, scale: 0.8 }), APPLE.x + 1.6, 0, APPLE.z + 0.8, 0.2));
   g.add(place(model("flower_gazania", { collider: false, scale: 0.7 }), GRANDMA_HOUSE.x + 2.5, 0, STREET.walkHouse - 0.55, 0));
   g.add(place(model("potted_plant_01", { collider: "potted plant" }), GRANDMA_HOUSE.x - 2.4, PORCH.y, PORCH.z0 + 0.55, 0));
-  g.add(place(model("Rockingchair_01", { collider: "rocking chair" }), GRANDMA_DOOR_X + 1.5, PORCH.y, PORCH.z0 + 0.95, 0.3));
+  g.add(place(model("Rockingchair_01", { collider: "rocking chair" }), GRANDMA_DOOR_X + 1.5, PORCH.y, PORCH.z0 + 0.85, 0.3));
   // a few grass tufts along the park's edges and round the hives
   g.add(...grassTufts(900, (_t, r) => {
     const k = r();

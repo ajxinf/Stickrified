@@ -6,7 +6,7 @@
  "channels": 2,
  "premaster": {
   "lufs": -14.58,
-  "dbtp": 0.52
+  "dbtp": 0.5
  },
  "levels_db": {
   "voice": 0,
