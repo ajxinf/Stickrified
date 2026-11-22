@@ -94,7 +94,7 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
   templates: this protects against YouTube's inauthentic-content policy).
 
 ## Machine (Windows 11, PowerShell)
-- i5-11400H, RTX 3050 4 GB, 16 GB RAM. Render with `--gl=angle --concurrency=2` (the default since 2026-11-22, user: faster; drop to 1 if a render crashes or goes black).
+- i5-11400H, RTX 3050 4 GB, 16 GB RAM. Render with `--gl=angle --concurrency=2` (the default since 2026-11-22, user: faster; drop to 1 if a render crashes or goes black; 2K renders of heavy sets start at 1). `render.mjs` renders 600-frame chunks into `<out>_parts/`, retries a failed chunk in a new Chrome and joins them losslessly; after a crash on unchanged code, rerun with `--resume` to keep the finished chunks.
 - **One full-frame QA per round** (user 2026-11-22): QA layer 1 scans every frame of every shot (~45 min on a 2-min episode). `preflight.py` runs it once with frame 0 and renders the review stills with `--no-guard`; a render straight after a clean preflight on unchanged code passes `--no-guard` too (`render.mjs`, which also turns the in-render shot checks off). Never run it twice in a round.
 - Before any render in a new terminal: `$env:TEMP='C:\remotion-tmp'; $env:TMP='C:\remotion-tmp'`
   (use another drive if it has more space). See Gotchas: Disk.
