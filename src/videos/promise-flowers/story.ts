@@ -18,7 +18,7 @@ import MOUTH from "../../../videos/promise-flowers/voice/mouth.json";
 import WORDS from "../../../videos/promise-flowers/voice/words.json";
 import { TOWN_LOOKS, callGuyLook, dadLook, dateManLook, dateWomanLook, derekFlowers, derekLook, grandmaLook, joggerLook, kidLook, lindaLook, mailLook, neighbourLook, townFlowers, yourFlowers } from "./cast";
 import { DEBATE_SUN, GOLD_SUN, HOME_SUN, MALL_SUN, SUN, TOWN_SUN, petal } from "./scene";
-import { BENCH, CHAIR_SPOTS, DAD_SEAT, GRANDMA_DOOR_X, HIVES, LIVE_LIGHT, PANELS, PLAN_BOARD, PODIUM, PORCH, STAGE, STORE_SIGN, V, YOU_SOFA, binoculars, flowerPile, glueTube, newspaper, notebook, perfume, phone, shoebox } from "./world";
+import { BENCH, CHAIR_SPOTS, DAD_SEAT, GRANDMA_DOOR_X, HIVES, LIVE_LIGHT, MONDAY_AT, PLAN_BOARD, PODIUM, PORCH, STAGE, STORE_SIGN, V, YOU_SOFA, binoculars, flowerPile, glueTube, mondayPage, newspaper, notebook, perfume, phone, shoebox } from "./world";
 
 /**
  * promise-flowers (episode 5, "In this world..."), shot plan. Every beat is locked to words.json through the script's
@@ -76,7 +76,7 @@ export const B = {
   except: L(23, 2),
   never: L(24, 10),
   promise25: L(25, 3), real: L(25, 6),
-  nosePop: L(26, 4),
+  nosePop: L(26, 0), // on "Pop!" itself (user 2026-11-23: it bloomed on "shoots", 1.5 s late)
   rots: L(27, 2), tv: L(27, 7),
   sweats: L(28, 0), melts: L(28, 5), slide: L(28, 9),
   underneath: L(29, 0), rotten: L(29, 3),
@@ -87,7 +87,7 @@ export const B = {
 /** Derek's state of ruin: how far the glued flowers have slid (0..1.3) and the rotten ones underneath (0..1). */
 export const derekSlide = (F: number) => (F < B.melts ? 0 : F < B.slide ? 0.35 * clamp01((F - B.melts) / (B.slide - B.melts)) : 0.35 + 0.95 * clamp01((F - B.slide) / 40));
 export const derekRot = (F: number) => (F < B.melts ? 0 : 1);
-/** His nose flower: grows on "shoots", rots from "rots". */
+/** His nose flower: shoots out on "Pop!", rots from "rots". */
 const noseFlower = (F: number): Flower | null => F < B.nosePop ? null : { at: { part: "head", x: 0.1, y: 0.16 }, color: "#f6a0c8", open: clamp01((F - B.nosePop - 3) / 8), grow: clamp01((F - B.nosePop) / 5), rot: clamp01((F - B.rots + 6) / 24), size: 1.3, ang: 40, seed: 99, F, flies: F > B.rots + 12 };
 
 // ------------------------------------------------------------------ helpers
@@ -132,7 +132,7 @@ const GRANNY_CHAIR = V(GRANDMA_DOOR_X + 1.55, PORCH.y, PORCH.z0 + 1.56); // clea
 const YOU_HIVE = V(-8.92, 0, 3.6), GRANNY_HIVE = V(-9.58, 0, 3.7);
 const YOU_WALK = V(GRANDMA_DOOR_X + 0.45, 0, PORCH.z1 + 1.45);
 const DEREK_WALK_A = V(2.0, 0, 16.2), DEREK_WALK_B = V(2.0, 0, 15.2);
-const DEREK_PODIUM = V(PODIUM.x + 0.05, STAGE.h, PODIUM.z + 0.45);
+const DEREK_PODIUM = V(PODIUM.x + 0.05, STAGE.h, PODIUM.z + 0.55); // card turns toward I2's low side lens: keep its corner off the podium
 const DEREK_SIDE = V(PODIUM.x + 1.0, STAGE.h, PODIUM.z + 0.2);
 const DEREK_PLAN = V(PLAN_BOARD.x + 0.95, STAGE.h, PLAN_BOARD.z + 0.15);
 const seatAt = (i: number) => CHAIR_SPOTS[i].clone().add(V(0, 0, 0.35)); // card ~12 cm in front of the chair (front at spot + 0.234: model() centres the box)
@@ -254,9 +254,18 @@ const derekWalk = role("derek", derekLookAt, (F) => lerpV(DEREK_WALK_A, DEREK_WA
   const p = walking ? walkPose(((F - B.derekIn) / 40) * 1.1, 1 - clamp01((F - B.derekIn - 28) / 12)) : pose([[0, REST], [L(10, 6), SPRITZ]], F);
   return derekState(p, F, [[0, "proud"], [L(10, 4), "grin"], [L(10, 9), "smug"], [L(10, 13), "proud"]], { heading: Math.PI });
 });
+/** Line 11: each promise pops a new bloom on him on its word, coloured like the promise (pizza orange on the raised
+ * arm, pool blue on the other, a big red one on his head for MONDAY): the rule the episode runs on, in his own body. */
+const promiseBlooms = (F: number): Flower[] => ([
+  [B.pizza, { part: "arm", side: 0, t: 0.82 }, "#ff8a2a", -20, 211],
+  [B.park, { part: "arm", side: 1, t: 0.82 }, "#3ab4f2", 20, 212],
+  [B.mondays, { part: "head", x: -0.72, y: -0.62 }, "#ff3a4a", -35, 213],
+] as [number, Flower["at"], string, number, number][]).filter(([k]) => F >= k).map(([k, at, color, ang, seed]) =>
+  ({ at, color, ang, seed, size: 2.0, grow: clamp01((F - k) / 4), open: clamp01((F - k - 1) / 5) }));
 const derekPodium = role("derek", derekLookAt, DEREK_PODIUM, (F) => {
   const p = pose([[0, POSES.wave], [L(11, 3) - 4, PROMISE_R], [B.pizza - 6, PROMISE_UP], [B.park - 6, PROMISE_R], [B.mondays - 6, { ...PROMISE_UP, bob: 12 }]], F);
-  return derekState(p, F, [[0, "grin"], [L(11, 3), "smug"], [B.pizza, "excited"], [B.park, "proud"], [B.mondays, "laughing"]], { heading: Math.PI });
+  const s = derekState({ ...p, squash: reactSquash(F - B.pizza) + reactSquash(F - B.park) + reactSquash(F - B.mondays) }, F, [[0, "grin"], [L(11, 3), "smug"], [B.pizza, "excited"], [B.park, "proud"], [B.mondays, "laughing"]], { heading: Math.PI });
+  return { ...s, flowers: [...(s.flowers ?? []), ...promiseBlooms(F)] };
 });
 const derekSide = role("derek", derekLookAt, DEREK_SIDE, (F) => {
   if (F < L(13, 0)) {
@@ -269,7 +278,7 @@ const derekSide = role("derek", derekLookAt, DEREK_SIDE, (F) => {
   // lines 23-31 on stage: frozen grin; the promise; the nose; the rot; the sweat; the slide; the flies
   const keys: [number, Pose][] = [[0, { ...REST, arms: arms([0.2, 0.58], [0.2, 0.58]) }], [L(25, 0), CHEST_SLAP], [B.nosePop - 4, { ...POSES.panic, bob: 4 }], [B.rots, { ...REST, arms: arms([0.3, 0.2], [0.3, 0.2], { gl: "open", gr: "open" }), shrug: 14 }], [B.sweats, { ...POSES.panic }], [B.sweats + 22, { ...REST, arms: arms([-0.3, 0.3], [0.45, -0.1], { gl: "open", gr: "open" }), sway: 6 }], [B.melts, { ...REST, arms: arms([0.5, 0.0], [-0.25, 0.4], { gl: "open", gr: "open" }), sway: -6, bob: -6 }], [B.slide, { ...REST, arms: arms([0.62, 0.1], [0.62, 0.1], { gl: "open", gr: "open" }), bob: -10 }], [B.underneath, { ...POSES.panic, bob: -4 }]];
   return derekState({ ...pose(keys, F), squash: reactSquash(F - B.nosePop) + reactSquash(F - B.slide) }, F,
-    [[0, "grin"], [B.except, "nervous"], [L(25, 0), "laughing"], [B.real, "smug"], [B.nosePop, "shocked"], [B.rots, "confused"], [L(27, 4), "nervous"], [B.sweats, "scared"], [B.slide, "shocked"], [B.rotten, "crying"], [B.toDerek, "disgusted"]],
+    [[0, "grin"], [B.except, "nervous"], [L(25, 0), "laughing"], [B.real, "smug"], [B.nosePop, "shocked"], [L(26, 8), "confused"], [B.rots, "confused"], [L(27, 4), "nervous"], [B.sweats, "scared"], [B.slide, "shocked"], [B.rotten, "crying"], [B.toDerek, "disgusted"]],
     { heading: Math.PI, fx: { ringEyes: F >= snap(B.nosePop) && F < B.nosePop + 24 } });
 });
 const derekPlan = role("derek", derekLookAt, DEREK_PLAN, (F) => derekState(pose([[0, POSES.wave], [B.bulldoze - 8, POINT_L]], F), F, [[0, "grin"], [B.bulldoze, "scheming"]], { heading: Math.PI - 0.6 }));
@@ -372,7 +381,28 @@ export type World = "town" | "home";
 export type Light = "day" | "golden" | "homeDay" | "homeNight" | "porch" | "mall" | "debate";
 export type S = Shot & { from: number; frames: number; dof: (f: number) => Dof; w: World; lit: Light; debate?: boolean; fx?: Fx[] };
 /** Living things and effects a shot draws (Video.tsx). */
-export type Fx = "hiveBees" | "porchBees" | "derekBee" | "swarm" | "fly" | "flyToDerek" | "stinkMall" | "stinkDerek" | "stinkBench" | "petal" | "speedNose" | "speedBees";
+export type Fx = "hiveBees" | "porchBees" | "derekBee" | "swarm" | "fly" | "flyToDerek" | "stinkMall" | "stinkDerek" | "stinkBench" | "petal" | "speedNose" | "speedBees" | "pizzaRain" | "fountain";
+const rnd2 = (i: number, k: number) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
+const PODIUM_TOP = V(1.72, 2.02, 18.62);
+/** Line 11 "free pizza": 26 slices burst out of the podium top and arc down over the crowd (never toward the lens). */
+export const pizzaAt = (i: number, F: number) => {
+  const t = (F - B.pizza + 1 - (i % 13) * 0.7) / FPS;
+  if (t < 0) return null;
+  const v = V((rnd2(i, 1) - 0.5) * 2.6, 3.1 + rnd2(i, 2) * 1.7, -(0.3 + rnd2(i, 3) * 1.1));
+  const p = PODIUM_TOP.clone().addScaledVector(v, t).add(V(0, -4.9 * t * t, 0));
+  return p.y < 0.05 ? null : p;
+};
+/** Line 11 "a water park": from "water" on, two jets on either side of the podium cross in an arch over his head
+ * (a water-park arch) and keep spraying to the cut. */
+export const dropAt = (i: number, F: number) => {
+  const side = i % 2 ? 1 : -1, j = Math.floor(i / 2), life = 36;
+  const a = F - B.park + 3 - j * 0.78;
+  if (a < 0) return null;
+  const t = (a % life) / FPS;
+  const v = V(-side * (1.25 + rnd2(i, 4) * 0.2), 6.0 + rnd2(i, 5) * 0.5, -(0.05 + rnd2(i, 6) * 0.15));
+  const p = V(1.75 + side * 0.75, 0.85, 19.1).addScaledVector(v, t).add(V(0, -4.9 * t * t, 0));
+  return p.y < 0.82 ? null : p;
+};
 const LIGHT_OF: Record<Light, { light: "day" | "golden" | "interior" | "night"; scene: string }> = {
   day: { light: "day", scene: "town day" }, golden: { light: "golden", scene: "town golden" },
   homeDay: { light: "interior", scene: "home day" }, homeNight: { light: "night", scene: "home night" },
@@ -477,13 +507,24 @@ shot("H1-derek-arrives", L(10, 6), "town", "day", [derekWalk], (F) => { const t 
 shot("H2-perfume", L(11, 0), "town", "day", [derekWalk], (F) => creep(on(derekWalk, DEREK_WALK_B, V(0.5, 0, -2.6), "ms", { fov: 42 }), F, L(10, 6), L(11, 0), 0.1), { allow: { "Text in frame": "the campaign banner high behind him, partly in the background (read whole in the wides)" }, dof: mid(2.6), props: [held("perfume", perfume, derekWalk, "right", (f) => creep(on(derekWalk, DEREK_WALK_B, V(0.5, 0, -2.6), "ms", { fov: 42 }), f, L(10, 6), L(11, 0), 0.1), { when: (f) => f >= L(10, 6) - 2 })] });
 // === line 11: every morning a new promise: pizza, a water park, no more Mondays
 // does: at the podium, arms up on each promise; the crowd's cheer is off-screen
-shot("I1-podium", B.pizza, "town", "day", [derekPodium], (F) => creep(on(derekPodium, DEREK_PODIUM, V(0.3, 0, -2.5), "mcu", { fov: 42 }), F, L(11, 0), B.pizza, 0.1), { dof: close(2.5) });
-// does: pizza panel slams into view (push)
-shot("I2-pizza", B.park - 3, "town", "day", [], (F) => P(PANELS[0].clone().add(V(0.05, 0, -0.95)).lerp(PANELS[0].clone().add(V(0.02, 0, -0.8)), span(F, B.pizza, B.park)), PANELS[0], 40), { subject: undefined, dof: close(0.9) });
-// does: water park panel
-shot("I3-water-park", B.mondays - 4, "town", "day", [], (F) => P(PANELS[1].clone().add(V(-0.05, 0.02, -0.95)).lerp(PANELS[1].clone().add(V(0.0, 0.0, -0.8)), span(F, B.park, B.mondays)), PANELS[1], 40), { subject: undefined, dof: close(0.9) });
-// does: the calendar with MONDAY crossed out (push hard on "Mondays")
-shot("I4-no-mondays", L(12, 0), "town", "day", [], (F) => P(PANELS[2].clone().add(V(0, 0.02, -1.25)).lerp(PANELS[2].clone().add(V(0, 0, -1.02)), span(F, B.mondays - 4, B.mondays + 10)), PANELS[2], 40), { subject: undefined, dof: close(0.9) });
+// a touch above his eye line so the podium never cuts his chin (it did, from a level MCU)
+shot("I1-podium", B.pizza - 4, "town", "day", [derekPodium], (F) => creep(P(V(2.05, 2.5, 16.95), V(1.75, 2.08, 19.35), 42), F, L(11, 0), B.pizza, 0.1), { dof: close(2.5) });
+// does: (user 2026-11-23: the three poster inserts were bland) one low angle that drifts round Derek at the podium while
+// each promise comes true in the air on its word and pops a new bloom on him: pizza bursts out of the podium over the
+// crowd, water jets shoot up behind him, the MONDAY page rips off the podium front and flies away
+// his face above the caption band, the MONDAY page below it, air above him for the pizza and the jets
+const I2A = P(V(1.15, 2.25, 16.3), V(1.75, 2.25, 19.35), 46), I2B = P(V(2.35, 2.3, 16.25), V(1.8, 2.28, 19.35), 46);
+shot("I2-promise-show", L(12, 0), "town", "day", [derekPodium], (F) => { const t = span(F, B.pizza - 4, L(12, 0)); return P(lerpV(I2A.pos, I2B.pos, t), lerpV(I2A.look, I2B.look, t), 46); }, {
+  dof: mid(3.1), fx: ["pizzaRain", "fountain"],
+  allow: { "Text in frame": "the campaign banner high behind him (read whole in the wides); the torn MONDAY page flies out of frame (gag)" },
+  props: [{ name: "monday page", make: mondayPage, touches: ["stage"], pose: (o, F) => {
+    // pinned over the podium star; rips on "Mondays" and tumbles up and away to the left
+    const t = Math.max(0, (F - B.mondays + 2) / 45);
+    o.position.copy(MONDAY_AT).add(V(-1.9 * t, 2.3 * t - 1.2 * t * t, -0.9 * t));
+    o.rotation.set(-2.2 * t, 1.6 * t, 3.1 * t);
+    return t < 1.1;
+  } }],
+});
 // === line 12: they bloom the second he says them (no bud!); the glue; a bee snubs him
 // does: his arm goes up and a full bloom is just THERE on his sleeve; behind his back a glue tube; a bee sniffs it and flies off
 const I5F = on(derekSide, DEREK_SIDE, V(0.15, 0, -2.0), "mcu", { fov: 44, side: 0.1 });
@@ -576,11 +617,13 @@ shot("T2-smug", L(25, 0), "town", "debate", [youDebate, ...crowdNear(10, 14.6, -
 // does: "Pfft. Bees?" a too-loud laugh
 shot("U1-pfft", L(25, 3), "town", "debate", [derekSide], (F) => creep(P(V(DEREK_SIDE.x + 0.3, 1.85, DEREK_SIDE.z - 2.5), V(DEREK_SIDE.x, 2.12, DEREK_SIDE.z), 44), F, L(25, 0), L(25, 3), 0.06), { ...DEB, subject: "derek", dof: close(2.5) });
 // does: "I promise these flowers are real!" he slaps his flowered chest, a fake petal falls
-shot("U1b-i-promise", L(26, 0), "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
+shot("U1b-i-promise", L(26, 0) - 5, "town", "debate", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
 // === line 26: POP, a new flower shoots out of his nose
 // does: crash in on his face: a real stem shoots out of the tip of his nose and opens; ring eyes
 const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 48, dy: 0.22 });
-shot("U2-nose-pop", L(27, 0), "town", "debate", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.06), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
+// (user 2026-11-23: the flower must pop ON "Pop!") 5 frames of his smug face, POP on the word, a second punch on "nose"
+const U2_0 = L(26, 0) - 5;
+shot("U2-nose-pop", L(27, 0), "town", "debate", [derekSide], impact(impact((F) => creep(U2F, F, U2_0, L(27, 0), 0.16), B.nosePop, 0.03, 7), L(26, 8), 0.018, 6), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - U2_0, B.nosePop - U2_0 + 7], [L(26, 8) - U2_0, L(26, 8) - U2_0 + 6]], fx: ["speedNose"] });
 // === line 27: and it rots, right there, on live TV
 // does: the nose flower wilts brown in seconds, flies arrive, he goes cross-eyed and sweaty
 shot("U3-nose-rots", L(27, 5), "town", "debate", [derekSide], (F) => creep(U2F, F, L(27, 0) - 40, L(27, 5), 0.12), { ...DEB, subject: "derek", dof: close(1.7) });

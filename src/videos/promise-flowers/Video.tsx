@@ -8,8 +8,8 @@ import { Dust } from "../../../kit/toon/dust";
 import { QAPlan, ShotCamera } from "../../../kit/toon/guard";
 import { SpeedLines } from "../../../kit/toon/SpeedLines";
 import { ToonWorld } from "../../../kit/toon/world";
-import { Bees, DAY, DEBATE, DEBATE_SUN, Fly, GOLD, GOLD_SUN, HOME_DAY, HOME_NIGHT, HOME_SUN, Home, MALL, MALL_SUN, Moving, Stink, SUN, TOWN, TOWN_SUN, Town } from "./scene";
-import { B, FRAMES, L, PLAN, S, SHOTS, SWARM_N, derekBee, flyAt, hiveBee, petalProp, porchBee, stinkAt, swarmBee, words } from "./story";
+import { Bees, DAY, DEBATE, DEBATE_SUN, Fly, GOLD, GOLD_SUN, HOME_DAY, HOME_NIGHT, HOME_SUN, Home, MALL, MALL_SUN, Moving, Sprites, Stink, SUN, TOWN, TOWN_SUN, Town } from "./scene";
+import { B, FRAMES, L, PLAN, S, SHOTS, SWARM_N, derekBee, dropAt, flyAt, hiveBee, pizzaAt, petalProp, porchBee, stinkAt, swarmBee, words } from "./story";
 import { V } from "./world";
 
 /**
@@ -45,6 +45,8 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       {fx.includes("derekBee") && <Bees n={1} F={F} at={(_, ff) => derekBee(ff)} />}
       {fx.includes("swarm") && <Bees n={SWARM_N} F={F} at={swarmBee} size={0.07} />}
       {(fx.includes("fly") || fx.includes("flyToDerek")) && <Fly F={F} at={flyAt} />}
+      {fx.includes("pizzaRain") && <Sprites n={26} F={F} at={pizzaAt} kind="pizza" size={0.3} />}
+      {fx.includes("fountain") && <Sprites n={92} F={F} at={dropAt} kind="drop" size={0.15} />}
       {fx.includes("stinkMall") && <Stink n={26} F={F} at={(i, ff) => stinkAt("mall", i, ff)} size={1.4} />}
       {fx.includes("stinkBench") && <Stink n={10} F={F} at={(i, ff) => stinkAt("bench", i, ff)} size={0.35} />}
       {fx.includes("stinkDerek") && <Stink n={40} F={F} at={(i, ff) => stinkAt("derek", i, ff)} size={1.1} />}

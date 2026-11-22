@@ -93,6 +93,17 @@ const puffTex = () => canvasTex(64, 64, (g) => {
   r.addColorStop(0, "rgba(150,190,70,0.75)"); r.addColorStop(0.6, "rgba(130,170,60,0.35)"); r.addColorStop(1, "rgba(120,160,60,0)");
   g.fillStyle = r; g.fillRect(0, 0, 64, 64);
 });
+// line 11's promises in the air: pizza slices, water drops
+const pizzaTex = () => canvasTex(64, 64, (g) => {
+  g.lineWidth = 3; g.strokeStyle = "#1c1414";
+  g.fillStyle = "#f2c23a"; g.beginPath(); g.moveTo(32, 60); g.lineTo(8, 12); g.quadraticCurveTo(32, 2, 56, 12); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = "#c86a3a"; g.beginPath(); g.moveTo(8, 12); g.quadraticCurveTo(32, 2, 56, 12); g.lineTo(54, 18); g.quadraticCurveTo(32, 9, 10, 18); g.closePath(); g.fill();
+  g.fillStyle = "#d8342c"; for (const [x, y] of [[26, 24], [38, 28], [31, 40]]) { g.beginPath(); g.arc(x, y, 5, 0, 7); g.fill(); }
+});
+const dropTex = () => canvasTex(64, 64, (g) => {
+  g.fillStyle = "#6cc8ff"; g.beginPath(); g.moveTo(32, 6); g.quadraticCurveTo(52, 34, 46, 46); g.arc(32, 44, 14, 0.15, Math.PI - 0.15); g.quadraticCurveTo(12, 34, 32, 6); g.fill();
+  g.fillStyle = "rgba(255,255,255,0.85)"; g.beginPath(); g.ellipse(27, 40, 3, 6, -0.4, 0, 7); g.fill();
+});
 const swarm = (n: number, tex: () => ReturnType<typeof canvasTex>, size: number, opacity = 1) => {
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(new Float32Array(n * 3), 3));
@@ -104,8 +115,9 @@ const swarm = (n: number, tex: () => ReturnType<typeof canvasTex>, size: number,
   return p;
 };
 /** `at(i, F)` places sprite i (null hides it, far below the world). */
-const Sprites: React.FC<{ n: number; F: number; at: (i: number, F: number) => Vector3 | null; kind: "bee" | "fly" | "puff"; size: number }> = ({ n, F, at, kind, size }) => {
-  const pts = useMemo(() => swarm(n, kind === "bee" ? beeTex : kind === "fly" ? flyTex : puffTex, size, kind === "puff" ? 0.7 : 1), [n, kind, size]);
+const TEX = { bee: beeTex, fly: flyTex, puff: puffTex, pizza: pizzaTex, drop: dropTex };
+export const Sprites: React.FC<{ n: number; F: number; at: (i: number, F: number) => Vector3 | null; kind: keyof typeof TEX; size: number }> = ({ n, F, at, kind, size }) => {
+  const pts = useMemo(() => swarm(n, TEX[kind], size, kind === "puff" ? 0.7 : 1), [n, kind, size]);
   const pos = pts.geometry.attributes.position as BufferAttribute;
   for (let i = 0; i < n; i++) {
     const p = at(i, F) ?? V(0, -50, 0);

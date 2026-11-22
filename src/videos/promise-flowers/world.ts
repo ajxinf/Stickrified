@@ -709,6 +709,21 @@ export const shoebox = () => {
   return g;
 };
 /** Derek's glue tube (origin = grip) and perfume bottle. */
+/** Line 11: a big tear-off calendar page pinned over the podium star, MONDAY in red; it rips off on "Mondays". */
+export const MONDAY_AT = V(PODIUM.x, STAGE.h + 0.75, PODIUM.z - 0.245); // between the frame bottom and the caption band in I2
+export const mondayPage = () => {
+  const m = new Mesh(new PlaneGeometry(0.36, 0.38), unlit("pf-monday-page", () => canvasTex(320, 360, (g) => {
+    g.fillStyle = "#fbf8f2"; g.fillRect(0, 0, 320, 360);
+    g.fillStyle = "#d8342c"; g.fillRect(0, 0, 320, 96);
+    g.fillStyle = "#ffffff"; g.font = `900 58px ${FONT}`; g.textAlign = "center"; g.fillText("MONDAY", 160, 68);
+    g.fillStyle = "#1c1414"; g.font = `900 170px ${FONT}`; g.fillText("1", 160, 300);
+    g.strokeStyle = "#1c1414"; g.lineWidth = 8; g.strokeRect(4, 4, 312, 352);
+  })));
+  m.rotation.y = Math.PI; // faces the crowd (-z)
+  const g = new Group();
+  g.add(m);
+  return g;
+};
 export const glueTube = () => {
   const g = new Group();
   const t = new Mesh(new CylinderGeometry(0.022, 0.016, 0.13, 12), MAT.color("#f2ece2"));

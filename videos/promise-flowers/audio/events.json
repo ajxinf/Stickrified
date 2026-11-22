@@ -1,431 +1,447 @@
 {
- "fps": 30,
- "frames": "auto",
- "events": [
-  {
-   "word": "flower",
-   "n": 0,
-   "lead": 2,
-   "sfx": "bud_pop",
-   "note": "a bud shoots out of his elbow on 'flower'"
-  },
-  {
-   "word": "blooms",
-   "n": 0,
-   "lead": 2,
-   "sfx": "bloom_burst",
-   "note": "the bud bursts into a red bloom"
-  },
-  {
-   "word": "rots",
-   "n": 0,
-   "lead": 0,
-   "sfx": "wilt_droop",
-   "note": "match cut: the flower rots"
-  },
-  {
-   "word": "stinks",
-   "n": 0,
-   "lead": 0,
-   "sfx": "stink_gag",
-   "pan": -0.2,
-   "note": "the jogger gags"
-  },
-  {
-   "word": "you",
-   "n": 1,
-   "lead": -2,
-   "sfx": "running_steps",
-   "max_s": 2.6,
-   "gain_db": -4,
-   "note": "Linda jogs past your fence"
-  },
-  {
-   "word": "dad's",
-   "n": 0,
-   "lead": -2,
-   "sfx": "water_drip",
-   "note": "cut to the kitchen: the tap drips into the bucket"
-  },
-  {
-   "word": "old",
-   "n": 0,
-   "lead": 0,
-   "sfx": "water_drip",
-   "gain_db": -3,
-   "note": "drip"
-  },
-  {
-   "word": "on",
-   "n": 1,
-   "lead": 2,
-   "sfx": "fly_buzz",
-   "max_s": 1.2,
-   "pan": -0.3,
-   "note": "the fly round Dad's dead tulip"
-  },
-  {
-   "word": "smell",
-   "n": 0,
-   "lead": 4,
-   "sfx": "stink_cloud",
-   "note": "the stink cloud rolls down the mall"
-  },
-  {
-   "word": "across",
-   "n": 0,
-   "lead": 0,
-   "sfx": "stink_gag",
-   "gain_db": -5,
-   "pan": 0.3,
-   "note": "a shopper gags"
-  },
-  {
-   "word": "fly",
-   "n": 0,
-   "lead": 2,
-   "sfx": "fly_buzz",
-   "max_s": 1.5,
-   "note": "your fly, since ninth grade"
-  },
-  {
-   "word": "most",
-   "n": 0,
-   "lead": -10,
-   "sfx": "bud_pop",
-   "gain_db": -4,
-   "note": "flashback 1: a rotten flower pops out of your arm"
-  },
-  {
-   "word": "be",
-   "n": 0,
-   "lead": 0,
-   "sfx": "bud_pop",
-   "gain_db": -4,
-   "note": "flashback 2: another one"
-  },
-  {
-   "word": "in",
-   "n": 1,
-   "lead": -2,
-   "sfx": "phone_send",
-   "note": "omw 5 min: Sent"
-  },
-  {
-   "word": "word",
-   "n": 0,
-   "lead": -8,
-   "sfx": "sign_flip",
-   "note": "the store sign flips to CLOSED"
-  },
-  {
-   "word": "a",
-   "n": 4,
-   "lead": -6,
-   "sfx": "perfume_spritz",
-   "note": "Derek spritzes himself"
-  },
-  {
-   "word": "cake",
-   "n": 0,
-   "lead": 2,
-   "sfx": "reveal_pop",
-   "gain_db": -4,
-   "note": "walking wedding cake"
-  },
-  {
-   "word": "every",
-   "n": 1,
-   "lead": 0,
-   "sfx": "crowd_rally_cheer",
-   "note": "the crowd cheers Derek at the podium"
-  },
-  {
-   "word": "free",
-   "n": 0,
-   "lead": 2,
-   "sfx": "paper_slap",
-   "note": "pizza panel"
-  },
-  {
-   "word": "water",
-   "n": 0,
-   "lead": 2,
-   "sfx": "paper_slap",
-   "gain_db": -2,
-   "note": "water park panel"
-  },
-  {
-   "word": "mondays",
-   "n": 0,
-   "lead": 2,
-   "sfx": "stamp_thump",
-   "note": "MONDAY crossed out"
-  },
-  {
-   "word": "second",
-   "n": 0,
-   "lead": 2,
-   "sfx": "bloom_burst",
-   "note": "a full bloom appears with no bud"
-  },
-  {
-   "word": "says",
-   "n": 0,
-   "lead": 0,
-   "sfx": "bee_buzz",
-   "pan": -0.3,
-   "note": "a bee sniffs his flower and flies off"
-  },
-  {
-   "word": "grandma's",
-   "n": 0,
-   "lead": 6,
-   "sfx": "whoosh",
-   "note": "whip pan from Derek to the hives (declared whip)"
-  },
-  {
-   "word": "watching",
-   "n": 0,
-   "lead": 0,
-   "sfx": "bee_buzz",
-   "pan": 0.3,
-   "gain_db": -3,
-   "note": "a bee past your nose"
-  },
-  {
-   "word": "pops",
-   "n": 0,
-   "lead": 2,
-   "sfx": "bud_pop",
-   "note": "your bud pops out of your hand"
-  },
-  {
-   "word": "hand",
-   "n": 0,
-   "lead": 0,
-   "sfx": "fly_buzz",
-   "max_s": 1.0,
-   "note": "the fly lands on the bud"
-  },
-  {
-   "word": "christmases",
-   "n": 0,
-   "lead": 2,
-   "sfx": "pat",
-   "gain_db": -4,
-   "note": "the petal drops off your Christmas flower"
-  },
-  {
-   "word": "shoebox",
-   "n": 0,
-   "lead": 4,
-   "sfx": "box_buzz",
-   "note": "the shoebox lid hops"
-  },
-  {
-   "word": "99",
-   "n": 0,
-   "lead": 6,
-   "sfx": "counter_roll",
-   "max_s": 1.2,
-   "note": "DEREK 99% on the TV"
-  },
-  {
-   "word": "brown",
-   "n": 0,
-   "lead": 0,
-   "sfx": "wilt_droop",
-   "gain_db": -4,
-   "note": "your bud browning"
-  },
-  {
-   "word": "laughs",
-   "n": 0,
-   "lead": 4,
-   "sfx": "crowd_laugh",
-   "note": "the park laughs at the flake"
-  },
-  {
-   "word": "lid",
-   "n": 0,
-   "lead": 8,
-   "sfx": "rubber_snap",
-   "gain_db": -3,
-   "note": "the rubber bands snap"
-  },
-  {
-   "word": "lid",
-   "n": 0,
-   "lead": -2,
-   "sfx": "bee_buzz",
-   "gain_db": -2,
-   "note": "the scout bee"
-  },
-  {
-   "word": "pour",
-   "n": 0,
-   "lead": 2,
-   "sfx": "bees_swarm",
-   "note": "ten thousand bees pour out"
-  },
-  {
-   "word": "flower",
-   "n": 1,
-   "lead": 0,
-   "sfx": "crowd_gasp",
-   "gain_db": -3,
-   "note": "the crowd gasps under the cloud"
-  },
-  {
-   "word": "linda's",
-   "n": 0,
-   "lead": 0,
-   "sfx": "crowd_giggle",
-   "note": "bees land on Linda's sunflower"
-  },
-  {
-   "word": "derek's",
-   "n": 1,
-   "lead": 2,
-   "sfx": "crowd_gasp",
-   "gain_db": -2,
-   "note": "except Derek's"
-  },
-  {
-   "word": "never",
-   "n": 0,
-   "lead": 2,
-   "sfx": "marker_circle",
-   "note": "DEREK - NEVER, circled"
-  },
-  {
-   "word": "pfft",
-   "n": 0,
-   "lead": -2,
-   "sfx": "hand_slap",
-   "note": "Derek slaps his chest"
-  },
-  {
-   "word": "shoots",
-   "n": 0,
-   "lead": 0,
-   "sfx": "bud_pop",
-   "gain_db": 2,
-   "note": "a flower shoots out of his nose"
-  },
-  {
-   "word": "nose",
-   "n": 0,
-   "lead": 2,
-   "sfx": "shock_sting",
-   "gain_db": -3,
-   "note": "his NOSE"
-  },
-  {
-   "word": "rots",
-   "n": 1,
-   "lead": 0,
-   "sfx": "wilt_droop",
-   "note": "it rots right there"
-  },
-  {
-   "word": "tv",
-   "n": 0,
-   "lead": 2,
-   "sfx": "xray_beep",
-   "gain_db": -4,
-   "note": "the LIVE light"
-  },
-  {
-   "word": "melts",
-   "n": 0,
-   "lead": 0,
-   "sfx": "sticker_peel",
-   "max_s": 2.2,
-   "note": "the glue melts, the flowers slide off"
-  },
-  {
-   "word": "underneath",
-   "n": 0,
-   "lead": 2,
-   "sfx": "stink_cloud",
-   "note": "underneath: a thousand rotten ones"
-  },
-  {
-   "word": "rotten",
-   "n": 1,
-   "lead": 0,
-   "sfx": "crowd_gasp",
-   "gain_db": -2,
-   "note": "the front row recoils"
-  },
-  {
-   "word": "fly",
-   "n": 1,
-   "lead": 0,
-   "sfx": "fly_buzz",
-   "max_s": 1.8,
-   "pan": 0.4,
-   "note": "your fly leaves you for Derek"
-  },
-  {
-   "word": "derek",
-   "n": 3,
-   "lead": 2,
-   "sfx": "paper_slap",
-   "note": "DEREK LOSES"
-  },
-  {
-   "word": "mall",
-   "n": 1,
-   "lead": 6,
-   "sfx": "stink_cloud",
-   "gain_db": -3,
-   "note": "the mall cloud, twice as big"
-  },
-  {
-   "word": "blooms",
-   "n": 1,
-   "lead": 2,
-   "sfx": "bloom_burst",
-   "note": "your bud finally blooms"
-  },
-  {
-   "word": "blooms",
-   "n": 1,
-   "lead": 0,
-   "sfx": "star_shimmer",
-   "gain_db": -6,
-   "max_s": 1.2,
-   "note": "the bloom sparkles"
-  }
- ],
- "music": {
-  "track": "in_this_world(default).mp3",
+  "fps": 30,
   "frames": "auto",
-  "button": {
-   "word": "blooms",
-   "n": 1
+  "events": [
+    {
+      "word": "flower",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bud_pop",
+      "note": "a bud shoots out of his elbow on 'flower'"
+    },
+    {
+      "word": "blooms",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bloom_burst",
+      "note": "the bud bursts into a red bloom"
+    },
+    {
+      "word": "rots",
+      "n": 0,
+      "lead": 0,
+      "sfx": "wilt_droop",
+      "note": "match cut: the flower rots"
+    },
+    {
+      "word": "stinks",
+      "n": 0,
+      "lead": 0,
+      "sfx": "stink_gag",
+      "pan": -0.2,
+      "note": "the jogger gags"
+    },
+    {
+      "word": "you",
+      "n": 1,
+      "lead": -2,
+      "sfx": "running_steps",
+      "max_s": 2.6,
+      "gain_db": -4,
+      "note": "Linda jogs past your fence"
+    },
+    {
+      "word": "dad's",
+      "n": 0,
+      "lead": -2,
+      "sfx": "water_drip",
+      "note": "cut to the kitchen: the tap drips into the bucket"
+    },
+    {
+      "word": "old",
+      "n": 0,
+      "lead": 0,
+      "sfx": "water_drip",
+      "gain_db": -3,
+      "note": "drip"
+    },
+    {
+      "word": "on",
+      "n": 1,
+      "lead": 2,
+      "sfx": "fly_buzz",
+      "max_s": 1.2,
+      "pan": -0.3,
+      "note": "the fly round Dad's dead tulip"
+    },
+    {
+      "word": "smell",
+      "n": 0,
+      "lead": 4,
+      "sfx": "stink_cloud",
+      "note": "the stink cloud rolls down the mall"
+    },
+    {
+      "word": "across",
+      "n": 0,
+      "lead": 0,
+      "sfx": "stink_gag",
+      "gain_db": -5,
+      "pan": 0.3,
+      "note": "a shopper gags"
+    },
+    {
+      "word": "fly",
+      "n": 0,
+      "lead": 2,
+      "sfx": "fly_buzz",
+      "max_s": 1.5,
+      "note": "your fly, since ninth grade"
+    },
+    {
+      "word": "most",
+      "n": 0,
+      "lead": -10,
+      "sfx": "bud_pop",
+      "gain_db": -4,
+      "note": "flashback 1: a rotten flower pops out of your arm"
+    },
+    {
+      "word": "be",
+      "n": 0,
+      "lead": 0,
+      "sfx": "bud_pop",
+      "gain_db": -4,
+      "note": "flashback 2: another one"
+    },
+    {
+      "word": "in",
+      "n": 1,
+      "lead": -2,
+      "sfx": "phone_send",
+      "note": "omw 5 min: Sent"
+    },
+    {
+      "word": "word",
+      "n": 0,
+      "lead": -8,
+      "sfx": "sign_flip",
+      "note": "the store sign flips to CLOSED"
+    },
+    {
+      "word": "a",
+      "n": 4,
+      "lead": -6,
+      "sfx": "perfume_spritz",
+      "note": "Derek spritzes himself"
+    },
+    {
+      "word": "cake",
+      "n": 0,
+      "lead": 2,
+      "sfx": "reveal_pop",
+      "gain_db": -4,
+      "note": "walking wedding cake"
+    },
+    {
+      "word": "every",
+      "n": 1,
+      "lead": 0,
+      "sfx": "crowd_rally_cheer",
+      "note": "the crowd cheers Derek at the podium"
+    },
+    {
+      "word": "free",
+      "n": 0,
+      "lead": 1,
+      "sfx": "bloom_burst",
+      "note": "pizza bursts out of the podium, an orange bloom pops on his arm"
+    },
+    {
+      "word": "water",
+      "n": 0,
+      "lead": 2,
+      "sfx": "tiny_wave",
+      "gain_db": -2,
+      "note": "water jets shoot up behind him"
+    },
+    {
+      "word": "water",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bud_pop",
+      "gain_db": -4,
+      "note": "a blue bloom pops on his other arm"
+    },
+    {
+      "word": "mondays",
+      "n": 0,
+      "lead": 2,
+      "sfx": "tape_rip",
+      "note": "the MONDAY page rips off the podium"
+    },
+    {
+      "word": "mondays",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bud_pop",
+      "gain_db": -4,
+      "note": "a red bloom pops on his head"
+    },
+    {
+      "word": "second",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bloom_burst",
+      "note": "a full bloom appears with no bud"
+    },
+    {
+      "word": "says",
+      "n": 0,
+      "lead": 0,
+      "sfx": "bee_buzz",
+      "pan": -0.3,
+      "note": "a bee sniffs his flower and flies off"
+    },
+    {
+      "word": "grandma's",
+      "n": 0,
+      "lead": 6,
+      "sfx": "whoosh",
+      "note": "whip pan from Derek to the hives (declared whip)"
+    },
+    {
+      "word": "watching",
+      "n": 0,
+      "lead": 0,
+      "sfx": "bee_buzz",
+      "pan": 0.3,
+      "gain_db": -3,
+      "note": "a bee past your nose"
+    },
+    {
+      "word": "pops",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bud_pop",
+      "note": "your bud pops out of your hand"
+    },
+    {
+      "word": "hand",
+      "n": 0,
+      "lead": 0,
+      "sfx": "fly_buzz",
+      "max_s": 1.0,
+      "note": "the fly lands on the bud"
+    },
+    {
+      "word": "christmases",
+      "n": 0,
+      "lead": 2,
+      "sfx": "pat",
+      "gain_db": -4,
+      "note": "the petal drops off your Christmas flower"
+    },
+    {
+      "word": "shoebox",
+      "n": 0,
+      "lead": 4,
+      "sfx": "box_buzz",
+      "note": "the shoebox lid hops"
+    },
+    {
+      "word": "99",
+      "n": 0,
+      "lead": 6,
+      "sfx": "counter_roll",
+      "max_s": 1.2,
+      "note": "DEREK 99% on the TV"
+    },
+    {
+      "word": "brown",
+      "n": 0,
+      "lead": 0,
+      "sfx": "wilt_droop",
+      "gain_db": -4,
+      "note": "your bud browning"
+    },
+    {
+      "word": "laughs",
+      "n": 0,
+      "lead": 4,
+      "sfx": "crowd_laugh",
+      "note": "the park laughs at the flake"
+    },
+    {
+      "word": "lid",
+      "n": 0,
+      "lead": 8,
+      "sfx": "rubber_snap",
+      "gain_db": -3,
+      "note": "the rubber bands snap"
+    },
+    {
+      "word": "lid",
+      "n": 0,
+      "lead": -2,
+      "sfx": "bee_buzz",
+      "gain_db": -2,
+      "note": "the scout bee"
+    },
+    {
+      "word": "pour",
+      "n": 0,
+      "lead": 2,
+      "sfx": "bees_swarm",
+      "note": "ten thousand bees pour out"
+    },
+    {
+      "word": "flower",
+      "n": 1,
+      "lead": 0,
+      "sfx": "crowd_gasp",
+      "gain_db": -3,
+      "note": "the crowd gasps under the cloud"
+    },
+    {
+      "word": "linda's",
+      "n": 0,
+      "lead": 0,
+      "sfx": "crowd_giggle",
+      "note": "bees land on Linda's sunflower"
+    },
+    {
+      "word": "derek's",
+      "n": 1,
+      "lead": 2,
+      "sfx": "crowd_gasp",
+      "gain_db": -2,
+      "note": "except Derek's"
+    },
+    {
+      "word": "never",
+      "n": 0,
+      "lead": 2,
+      "sfx": "marker_circle",
+      "note": "DEREK - NEVER, circled"
+    },
+    {
+      "word": "pfft",
+      "n": 0,
+      "lead": -2,
+      "sfx": "hand_slap",
+      "note": "Derek slaps his chest"
+    },
+    {
+      "word": "pop",
+      "n": 0,
+      "lead": 0,
+      "sfx": "bud_pop",
+      "gain_db": 2,
+      "note": "a flower shoots out of his nose on 'Pop!'"
+    },
+    {
+      "word": "nose",
+      "n": 0,
+      "lead": 2,
+      "sfx": "shock_sting",
+      "gain_db": -3,
+      "note": "his NOSE"
+    },
+    {
+      "word": "rots",
+      "n": 1,
+      "lead": 0,
+      "sfx": "wilt_droop",
+      "note": "it rots right there"
+    },
+    {
+      "word": "tv",
+      "n": 0,
+      "lead": 2,
+      "sfx": "xray_beep",
+      "gain_db": -4,
+      "note": "the LIVE light"
+    },
+    {
+      "word": "melts",
+      "n": 0,
+      "lead": 0,
+      "sfx": "sticker_peel",
+      "max_s": 2.2,
+      "note": "the glue melts, the flowers slide off"
+    },
+    {
+      "word": "underneath",
+      "n": 0,
+      "lead": 2,
+      "sfx": "stink_cloud",
+      "note": "underneath: a thousand rotten ones"
+    },
+    {
+      "word": "rotten",
+      "n": 1,
+      "lead": 0,
+      "sfx": "crowd_gasp",
+      "gain_db": -2,
+      "note": "the front row recoils"
+    },
+    {
+      "word": "fly",
+      "n": 1,
+      "lead": 0,
+      "sfx": "fly_buzz",
+      "max_s": 1.8,
+      "pan": 0.4,
+      "note": "your fly leaves you for Derek"
+    },
+    {
+      "word": "derek",
+      "n": 3,
+      "lead": 2,
+      "sfx": "paper_slap",
+      "note": "DEREK LOSES"
+    },
+    {
+      "word": "mall",
+      "n": 1,
+      "lead": 6,
+      "sfx": "stink_cloud",
+      "gain_db": -3,
+      "note": "the mall cloud, twice as big"
+    },
+    {
+      "word": "blooms",
+      "n": 1,
+      "lead": 2,
+      "sfx": "bloom_burst",
+      "note": "your bud finally blooms"
+    },
+    {
+      "word": "blooms",
+      "n": 1,
+      "lead": 0,
+      "sfx": "star_shimmer",
+      "gain_db": -6,
+      "max_s": 1.2,
+      "note": "the bloom sparkles"
+    }
+  ],
+  "music": {
+    "track": "in_this_world(default).mp3",
+    "frames": "auto",
+    "button": {
+      "word": "blooms",
+      "n": 1
+    },
+    "button_db": -26
   },
-  "button_db": -26
- },
- "ambience": {
-  "town day": "amb_suburb_morning",
-  "home day": "amb_kitchen_day",
-  "home night": "amb_bedroom_night",
-  "mall day": "amb_mall",
-  "debate": "amb_crowd_park",
-  "town golden": "amb_bees_garden",
-  "porch day": "amb_bees_garden"
- },
- "space": {
-  "town day": 0.45,
-  "home day": 0.6,
-  "home night": 0.6,
-  "mall day": 1.1,
-  "debate": 0.45,
-  "town golden": 0.45,
-  "porch day": 0.45
- }
+  "ambience": {
+    "town day": "amb_suburb_morning",
+    "home day": "amb_kitchen_day",
+    "home night": "amb_bedroom_night",
+    "mall day": "amb_mall",
+    "debate": "amb_crowd_park",
+    "town golden": "amb_bees_garden",
+    "porch day": "amb_bees_garden"
+  },
+  "space": {
+    "town day": 0.45,
+    "home day": 0.6,
+    "home night": 0.6,
+    "mall day": 1.1,
+    "debate": 0.45,
+    "town golden": 0.45,
+    "porch day": 0.45
+  }
 }
