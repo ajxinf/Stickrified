@@ -405,7 +405,7 @@ const trees = (g: Group) => {
   g.add(tree("island_tree_02", "apple tree", APPLE.x, APPLE.z, 1.1, 0.4));
   // (the 205 MB jacaranda timed out the frame load: two big island trees instead)
   for (const [x, z, s, ry] of [[-16, 22, 2.0, 0.3], [17, 26, 1.9, 1.9]] as const) g.add(tree("island_tree_01", "big tree", x, z, s, ry, 0.5));
-  for (const [x, z, s] of [[12, 7, 1.2], [-4, 14.5, 1.0], [10, 31, 1.4], [-6, 30, 1.3], [24, 12, 1.3], [-22, 10, 1.25], [30, 30, 1.5]] as const) g.add(tree("island_tree_01", "tree", x, z, s, x));
+  for (const [x, z, s] of [[12, 7, 1.2], [-7.5, 15.5, 1.0], [10, 31, 1.4], [-6, 30, 1.3], [24, 12, 1.3], [-22, 10, 1.25], [30, 30, 1.5]] as const) g.add(tree("island_tree_01", "tree", x, z, s, x));
   // street trees in the house-side walk, between the houses
   for (const x of [-13.2, -5.2, 6.3, 13.9]) g.add(tree("island_tree_01", "street tree", x, -7.0, 0.85, x, 0.3));
 };
@@ -594,7 +594,7 @@ export const home = (night: boolean) => {
   // the sticky note on the cabinet under the tap
   g.add(plane(0.16, 0.16, unlit("pf-fixme", () => boardTex(["FIX", "ME"], "#f6e65a", "#1c1414", 256, 256)), V(SINK.x + 0.42, 0.7, z0 + 0.615)));
   // the TV screen (Video.tsx swaps it on/off)
-  const scr = plane(0.5, 0.36, M("pf-tv-on", () => new MeshBasicMaterial({ map: tvTex(), toneMapped: false })), TV.clone().add(V(0, 0.08, -0.2)), Math.PI);
+  const scr = plane(0.46, 0.35, M("pf-tv-on", () => new MeshBasicMaterial({ map: tvTex(), toneMapped: false })), TV.clone().add(V(0, 0.125, -0.33)), Math.PI); // in front of the bulging CRT glass
   scr.name = "tvScreen";
   g.add(scr);
   // the puddle round the bucket (Video.tsx scales it: it grows between line 5 and line 18)
@@ -633,6 +633,7 @@ const pageTex = (page: number) => canvasTex(512, 640, (c) => {
     c.strokeStyle = "#1c1414"; c.lineWidth = 4; c.stroke();
     c.fillStyle = "#1c1414"; c.fillRect(x - 6 * s, y - 15 * s, 5 * s, 30 * s); c.fillRect(x + 6 * s, y - 15 * s, 5 * s, 30 * s);
     c.fillStyle = "rgba(200,230,255,0.9)"; c.beginPath(); c.ellipse(x - 6 * s, y - 22 * s, 10 * s, 7 * s, -0.5, 0, 7); c.fill(); c.stroke();
+    c.fillStyle = "#1c1414"; c.strokeStyle = "#2f5ab8"; c.lineWidth = 6; // the text after a bee kept the wing colour
   };
   c.fillStyle = "#1c1414"; c.font = `900 50px "Comic Sans MS", ${FONT}`; c.textAlign = "left";
   c.strokeStyle = "#2f5ab8"; c.lineWidth = 6;

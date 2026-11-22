@@ -37,7 +37,7 @@ export const guardPass = async (serveUrl, composition, starts = [0]) => {
   const logs = new Map(), errors = [];
   const still = (frame) =>
     renderStill({
-      composition, serveUrl, frame, scale: 0.1, chromiumOptions: CHROMIUM,
+      composition, serveUrl, frame, scale: 0.1, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, // heavy tree models
       output: path.join(os.tmpdir(), `guard_${composition.id}.png`),
       inputProps: { ...composition.props, qa: "collect" },
       onBrowserLog: ({ text }) => void (text.startsWith("QA1 ") && logs.set(text, JSON.parse(text.slice(4)))),

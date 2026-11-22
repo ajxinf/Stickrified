@@ -34,6 +34,20 @@ if (!noGuard && !(await guardPass(serveUrl, composition, starts))) {
 }
 for (const frame of frames) {
   const output = `${prefix}${String(frame).padStart(4, "0")}.png`;
-  await renderStill({ composition, serveUrl, output, frame, scale, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, inputProps: { ...composition.props, ...extraProps, ...(noGuard ? { qa: "off" } : draft ? { qa: "collect" } : {}) } }).catch((e) => fail(`${id} frame ${frame}`, e));
+  // shortcut: a fresh page sometimes captures a blank white/black frame (~0.04 B/px vs ~2 for a real one); retry it.
+  // Upgrade to a root-cause fix if blanks ever show up in renderMedia output too.
+  for (let tryNo = 0; tryNo < 3; tryNo++) {
+    // a passing Chrome out-of-memory on the heavy town shots also gets a retry; the third failure stops the run
+    const err = await renderStill({ composition, serveUrl, output, frame, scale, chromiumOptions: CHROMIUM, timeoutInMilliseconds: 120000, inputProps: { ...composition.props, ...extraProps, ...(noGuard ? { qa: "off" } : draft ? { qa: "collect" } : {}) } }).then(() => null, (e) => e);
+    if (err) {
+      if (tryNo === 2) fail(`${id} frame ${frame}`, err);
+      console.log(`render error at frame ${frame}, retry ${tryNo + 1}: ${String(err?.message ?? err).split("\n")[0]}`);
+      continue;
+    }
+    if (fs.statSync(output).size / (composition.width * composition.height * scale * scale) > 0.2) break;
+    console.log(`blank still at frame ${frame}, retry ${tryNo + 1}`);
+  }
   console.log(output);
 }
+// a timed-out still can leave a Chrome page open, which keeps node alive forever and hangs preflight
+process.exit(0);

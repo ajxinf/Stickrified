@@ -2,7 +2,7 @@
 """QA pre-render frame check (video-qa "Layer 1b"): look at real frames of every shot BEFORE the final render, so a
 visual defect costs a still, not a 40-minute render.
 
-Usage: python scripts/preflight.py <Composition> <slug> [--scale 0.3] [--draft]
+Usage: python scripts/preflight.py <Composition> <slug> [--scale 0.3] [--draft] [--no-guard]
   1. QA layer 1 + stills (scripts/stills.mjs, one bundle): each shot's first+4 and last-4 frames, plus its middle
      when the shot is longer than 75 frames. Needs out/<slug>/shots.json (any stills/render pass writes it; if it is
      missing, a frame-0 still is rendered first to create it).
@@ -10,6 +10,7 @@ Usage: python scripts/preflight.py <Composition> <slug> [--scale 0.3] [--draft]
   3. R27 framing flags in INDEX.md (look, then fix or keep on purpose): a cut that keeps the same composition, and a
      shot of 1.5 s+ whose first and last stills barely differ (a frozen picture under changing captions).
   `--flags-only` redoes step 3 from the stills already on disk (no rendering).
+`--no-guard` skips QA layer 1 (this round already ran it: reuses out/<slug>/shots.json + layer1.md).
 Read every sheet (layer 3's checklist), fix, re-run. --draft renders even while layer 1 fails (never for sign-off).
 """
 import json
@@ -72,8 +73,9 @@ def stills(comp, prefix, frames, scale, draft, guard=True):
 def main():
     a = sys.argv[1:]
     draft = "--draft" in a
+    guard = "--no-guard" not in a
     flags_only = "--flags-only" in a
-    a = [x for x in a if x not in ("--draft", "--flags-only")]
+    a = [x for x in a if x not in ("--draft", "--flags-only", "--no-guard")]
     scale = float(a.pop(a.index("--scale") + 1)) if "--scale" in a else 0.3
     a = [x for x in a if x != "--scale"]
     if len(a) != 2:
@@ -89,7 +91,7 @@ def main():
         os.remove(old.path)
     # QA layer 1 runs exactly once per round (user 2026-11-22): here, with frame 0, which also writes shots.json; the
     # review stills after it skip the guard (--no-guard).
-    stills(comp, f"{pre}/p_", [0], scale, draft)
+    stills(comp, f"{pre}/p_", [0], scale, draft, guard)
     shots = json.load(open(f"out/{slug}/shots.json", encoding="utf-8"))["shots"]
     picks = frames_for(shots)
     stills(comp, f"{pre}/p_", [f for f, _ in picks], scale, draft, guard=False)

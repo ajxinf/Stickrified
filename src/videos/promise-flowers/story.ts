@@ -403,8 +403,8 @@ const on = (r: Role, at: Vector3, from: Vector3, size: "cu" | "mcu" | "ms" | "fs
 
 // === line 1: the rule, a bud pops out of an elbow on "flower"; the square full of flowered people
 // does: he takes her hands, POP a bud shoots out of his elbow, both jump
-const A1F = { pos: V(2.45, 1.08, 8.9), look: V(2.45, 0.92, 5.3), fov: 42 };
-shot("A1-bench-promise", L(1, 10), "town", "day", [MAN, WOMAN], (F) => creep(A1F, F, 0, L(1, 10), 0.12), { dof: close(2.4) });
+const A1F = { pos: V(2.38, 1.08, 8.9), look: V(2.38, 0.92, 5.3), fov: 42 };
+shot("A1-bench-promise", L(1, 10), "town", "day", [MAN, WOMAN], (F) => creep(A1F, F, 0, L(1, 10), 0.05), { dof: close(2.4) });
 // does: the square: a mail carrier waving with daisies up both arms, a kid with a sprout, a woman in roses, a man with a rotten head-flower
 shot("A2-square-of-flowers", L(2, 0), "town", "day", [...PLAZA_PEOPLE, MAN, WOMAN], (F) => P(V(2.5, 3.6, 15.4).lerp(V(2.5, 3.2, 14.6), span(F, L(1, 10), L(2, 0))), V(2.35, 0.4, 7.4), 52), { wide: true, subject: undefined, dof: NONE });
 // === line 2-3: the same flower blooms, then (match cut) rots; a jogger gags
@@ -429,7 +429,7 @@ shot("C2-dad-tulip", L(6, 0), "home", "homeDay", [DAD], (F) => { const f0 = on(D
 // === line 6: the "I'll call you" guy at the mall
 // does: he scrolls his phone, smug, a rotten rose on his shoulder trailing stink lines
 const MALL_TEXT = { "Text in frame": "the arcade's shop signs run edge-on down the walkway: dressing, not story text" };
-shot("D1-call-guy", L(6, 8), "town", "day", [CALL_GUY], (F) => creep(P(V(42.4, 1.42, -6.6), V(44, 1.25, -7.0), 44), F, L(6, 0), L(6, 8), 0.08, 0, 0.05), { scene: "mall day", dof: mid(1.7), allow: MALL_TEXT });
+shot("D1-call-guy", L(6, 8), "town", "day", [CALL_GUY], (F) => creep(P(V(42.4, 1.42, -6.6), V(44, 1.25, -7.0), 44), F, L(6, 0), L(6, 8), 0.03, 0, 0.05), { scene: "mall day", dof: mid(1.7), allow: MALL_TEXT });
 // does: down the whole mall: a green stink cloud rolls toward the lens, three shoppers clap hands over their noses
 shot("D2-mall-stink", L(7, 0), "town", "day", [CALL_GUY, ...SHOPPERS], (F) => P(V(23.6, 1.5, -6.85), V(44, 1.1, -7.0).lerp(V(40, 1.05, -7.0), span(F, L(6, 8), L(7, 0))), 15), { wide: true, subject: "callguy", subjectFrom: 0, scene: "mall day", dof: NONE, fx: ["stinkMall"], allow: { ...MALL_TEXT, "Caption vs face": "telephoto down the mall: the shoppers' faces are a few pixels" } });
 // === line 7: you, fourteen rotten flowers and a fly since ninth grade
@@ -448,7 +448,7 @@ const PHONE_CAM = (F: number) => { const s = youSofa.state(F), h = handWorld(you
 shot("F3-phone-omw", L(9, 0), "home", "homeNight", [youSofa], PHONE_CAM, { subject: undefined, dof: close(0.32), props: [held("phone", () => phone(["omw", "5 min"]), youSofa, "right", () => SOFA_CAM, { fwd: 0.1 })], allow: { ...SEATED, "Caption vs face": "insert on the phone screen held in front of you (face soft behind)" } });
 // === line 9: nobody believes a word you say
 // does: you try to talk to a neighbour; she clamps her nose and walks off mid-sentence
-shot("G1-neighbour-leaves", L(9, 6), "town", "day", [youSquare, NEIGHBOUR], (F) => creep(P(V(1.85, 1.3, 7.5), V(1.8, 1.0, 3.45), 44), F, L(9, 0), L(9, 6), 0.08, 0, 0.1), { dof: mid(2.9) });
+shot("G1-neighbour-leaves", L(9, 6), "town", "day", [youSquare, NEIGHBOUR], (F) => creep(P(V(1.85, 1.3, 7.5), V(1.65, 1.0, 3.45), 44), F, L(9, 0), L(9, 6), 0.06, 0, 0), { dof: mid(2.9) });
 // does: the corner store's door sign flips OPEN -> CLOSED as you come near
 shot("G2-closed", L(10, 0), "town", "day", [], (F) => creep(P(V(STORE_SIGN.x + 0.2, 1.45, STORE_SIGN.z + 2.0), STORE_SIGN.clone().add(V(0, -0.05, 0)), 40), F, L(9, 6), L(10, 0), 0.15), { subject: undefined, dof: close(2.0) });
 // === line 10: Derek, a thousand perfect flowers
@@ -471,7 +471,7 @@ const I5F = on(derekSide, DEREK_SIDE, V(0.15, 0, -2.0), "mcu", { fov: 44, side: 
 shot("I5-instant-bloom", L(13, 0), "town", "day", [derekSide], (F) => creep(I5F, F, L(12, 0), L(13, 0), 0.08), { dof: close(2.0), fx: ["derekBee"], props: [held("glue", glueTube, derekSide, "right", () => ({ ...I5F, roll: 0 }), { fwd: 0 })] });
 // === line 13: he promises to bulldoze the park and Grandma's hives
 // does: Derek points off-stage beside the NEW PARKING LOT board; whip pan away
-shot("J1-plan-board", B.hives - 3, "town", "day", [derekPlan], (F) => creep(P(V(-0.25, 2.05, DEREK_PLAN.z - 5.2), V(-0.25, 1.85, DEREK_PLAN.z), 44), F, L(13, 0), B.hives, 0.16, 0.1, 0.4), { allow: { "Text in frame": "the campaign banner high behind him, partly in the background (read whole in the wides)" }, dof: mid(3.1), whips: [[B.hives - 3 - L(13, 0) - 6, B.hives - 3 - L(13, 0)]] });
+shot("J1-plan-board", B.hives - 3, "town", "day", [derekPlan], (F) => creep(P(V(-0.25, 2.05, DEREK_PLAN.z - 5.2), V(0.15, 1.85, DEREK_PLAN.z), 44), F, L(13, 0), B.hives, 0.1, 0.1, 0.2), { allow: { "Text in frame": "the campaign banner high behind him, partly in the background (read whole in the wides)" }, dof: mid(3.1), whips: [[B.hives - 3 - L(13, 0) - 6, B.hives - 3 - L(13, 0)]] });
 // does: whip in to Grandma's three white hives under the apple tree, bees buzzing round them
 shot("J2-the-hives", L(14, 0), "town", "day", [], (F) => P(V(-7.3, 1.1, 1.7).lerp(V(-7.6, 1.05, 2.2), span(F, B.hives - 3, L(14, 0))), V(-9.6, 0.75, 4.95), 46), { subject: undefined, wide: true, dof: NONE, fx: ["hiveBees"], whips: [[0, 6]] });
 // === line 14: every summer on her porch, watching where those bees go
@@ -503,8 +503,8 @@ const N2C = (F: number) => { const s = youWalk.state(L(17, 7)), h = handWorld(yo
 shot("N2-lid-hops", L(18, 0), "town", "day", [youWalk], N2C, { subject: undefined, dof: close(0.7), props: [boxProp(youWalk, "both", N1F)], allow: { "Subject size": "insert: the hopping lid is the subject" } });
 // === line 18: by Friday, 99 percent, and your bud turning brown
 // does: night, over your shoulder: the TV says DEREK 99%; you slump
-const O1C = P(V(2.35, 1.42, -2.25), V(1.2, 0.82, 1.4), 44);
-shot("O1-tv-poll", L(18, 8), "home", "homeNight", [youSofa], (F) => creep(O1C, F, L(18, 0), L(18, 8), 0.03, 0, 0.1), { subject: undefined, dof: mid(3.4), allow: { ...SEATED, "Subject size": "over the shoulder: the TV poll is the subject", "Caption vs face": "over the shoulder: the back of your head (no face) in the foreground" } });
+const O1C = P(V(1.35, 0.95, -0.4), V(1.15, 0.7, 1.2), 38);
+shot("O1-tv-poll", L(18, 8), "home", "homeNight", [youSofa], (F) => creep(O1C, F, L(18, 0), L(18, 8), 0.1, 0, 0.05), { subject: undefined, dof: close(1.6), allow: { ...SEATED, "Subject size": "the TV poll is the subject" } });
 // does: close on your bud: its edges go brown; tears; the fly lands next to it, waiting
 const O2C = (F: number) => { const s = youSofa.state(L(18, 10)), h = handWorld(youLook, s.pose, YOU_SOFA, V(2.2, 1.0, -0.4), "right", 0.06, s.heading); return P(h.clone().add(V(0.05, 0.22, 0.75 - 0.1 * span(F, L(18, 8), L(19, 0)))), h.clone().add(V(0, 0.08, 0)), 40); };
 shot("O2-bud-browning", L(19, 0), "home", "homeNight", [youSofa], O2C, { subject: undefined, dof: close(0.75), fx: ["fly"], allow: { ...SEATED, "Subject size": "insert: the browning bud is the subject" } });
@@ -512,7 +512,7 @@ shot("O2-bud-browning", L(19, 0), "home", "homeNight", [youSofa], O2C, { subject
 const DEB = { debate: true, scene: "debate" };
 // does: the morning debate: rows of chairs, the stage, Derek grinning in his flowers; you sit in the front row with the box
 const CROWD_BACKS = { "Caption vs face": "a wide over the seated crowd: backs of heads in the caption band, no faces" };
-shot("P1-debate-wide", B.shout - 8, "town", "day", [youDebate, derekSide, ...CROWD], (F) => P(V(-4.4, 2.8, 7.6).lerp(V(-4.0, 2.75, 8.2), span(F, L(19, 0), B.shout)), V(3.0, 3.0, 19.0), 58), { ...DEB, wide: true, subject: undefined, dof: NONE, allow: { ...CROWD_BACKS, "Cast overlap": "from behind the crowd: backs of heads overlap, no faces" } });
+shot("P1-debate-wide", B.shout - 8, "town", "day", [youDebate, derekSide, ...CROWD], (F) => P(V(-4.4, 2.8, 7.6).lerp(V(-4.0, 2.75, 8.2), span(F, L(19, 0), B.shout)), V(3.0, 3.0, 19.0), 61), { ...DEB, wide: true, subject: undefined, dof: NONE, allow: { ...CROWD_BACKS, "Cast overlap": "from behind the crowd: backs of heads overlap, no faces" } });
 // does: you jump up and point at Derek, the box under one arm
 const P2F = (F: number) => creep(on(youDebate, YOU_STAND, V(-0.85, 0, 2.7), "ms", { fov: 44 }), F, B.shout - 8, B.laughs, 0.08);
 shot("P2-he-is-a-fake", B.laughs - 4, "town", "day", [youDebate, ...crowdNear(10, 14.6, -1, 4.5)], P2F, { ...DEB, subject: "you", dof: mid(2.6), props: [boxProp(youDebate, "left", P2F, B.shout - 8)] });
@@ -527,11 +527,11 @@ shot("Q1-lid", L(21, 0), "town", "day", [youDebate], Q1C, { ...DEB, subject: und
 const Q2F = (F: number) => creep(on(youDebate, YOU_STAND, V(-0.35, 0, 3.2), "ms", { fov: 50, dy: 0.4 }), F, L(21, 0), B.pour + 30, 0.06, 0.3);
 shot("Q2-eruption", B.pour + 34, "town", "day", [youDebate, ...crowdNear(10, 14.6, -1.5, 5)], Q2F, { ...DEB, dof: mid(3.0), fx: ["swarm", "speedBees"], props: [boxProp(youDebate, "both", Q2F)] });
 // does: ride with the swarm over the crowd's heads toward the stage (object POV)
-shot("Q3-ride-the-swarm", L(22, 0), "town", "day", [derekSide, ...CROWD], (F) => { const t = span(F, B.pour + 34, L(22, 0)); return P(V(-4.6, 3.4, 9.6).lerp(V(-4.2, 2.9, 14.8), t), V(2.6, 2.2, 19.0).lerp(V(2.7, 2.35, 19.0), t), 54); }, { ...DEB, wide: true, subject: undefined, dof: NONE, fx: ["swarm"], allow: { ...CROWD_BACKS, "Cast overlap": "from behind the crowd: backs of heads overlap, no faces", "Text in frame": "the stage banner high in the corner of a moving wide (read whole in P1)" } });
+shot("Q3-ride-the-swarm", L(22, 0), "town", "day", [derekSide, ...CROWD], (F) => { const t = span(F, B.pour + 34, L(22, 0)); return P(V(-4.6, 3.4, 9.6).lerp(V(-3.8, 3.8, 12.2), t), V(2.6, 2.2, 19.0).lerp(V(2.7, 2.35, 19.0), t), 54); }, { ...DEB, wide: true, subject: undefined, dof: NONE, fx: ["swarm"], allow: { ...CROWD_BACKS, "Cast overlap": "from behind the crowd: backs of heads overlap, no faces", "Text in frame": "the stage banner high in the corner of a moving wide (read whole in P1)" } });
 // === line 22: Linda's knee, the mailman's elbow, Grandma's roses
 const lindaSeat = CROWD.find((r) => r.name === "linda")!, mailSeat = CROWD.find((r) => r.name === "mail")!;
 // does: bees pile onto Linda's knee sunflower like a fuzzy hat; she giggles
-shot("R1-linda-knee", B.mailman, "town", "day", [lindaSeat], (F) => { const a = lindaSeat.at(0); return creep(P(a.clone().add(V(0.25, 0.8, 1.4)), a.clone().add(V(0.05, 0.6, 0)), 44), F, B.linda, B.mailman, 0.08); }, { ...DEB, subject: undefined, dof: close(1.4), fx: ["swarm"], allow: { ...SEATED, "Subject size": "insert on her knee: the bees on the sunflower are the subject" } });
+shot("R1-linda-knee", B.mailman, "town", "day", [lindaSeat], (F) => { const a = lindaSeat.at(0); return creep(P(a.clone().add(V(0.2, 1.35, 1.0)), a.clone().add(V(0.05, 0.55, 0)), 44), F, B.linda, B.mailman, 0.08); }, { ...DEB, subject: undefined, dof: close(1.4), fx: ["swarm"], allow: { ...SEATED, "Subject size": "insert on her knee: the bees on the sunflower are the subject" } });
 // does: the mail carrier's daisies vanish under bees, he laughs
 shot("R2-mail-elbow", B.roses, "town", "day", [mailSeat], (F) => { const a = mailSeat.at(0); return creep(P(a.clone().add(V(-0.05, 1.0, 1.9)), a.clone().add(V(-0.05, 0.9, 0)), 44), F, B.mailman, B.roses, 0.06, 0, 0.05); }, { ...DEB, subject: "mail", dof: close(1.6), fx: ["swarm"] });
 // does: at the side, Grandma's roses fill with bees and she beams with her arms up
@@ -554,8 +554,8 @@ shot("U1-pfft", L(25, 3), "town", "day", [derekSide], (F) => creep(P(V(DEREK_SID
 shot("U1b-i-promise", L(26, 0), "town", "day", [derekSide], (F) => creep(on(derekSide, DEREK_SIDE, V(-0.35, 0, -2.2), "mcu", { fov: 42, dy: 0.06 }), F, L(25, 3), L(26, 0), 0.08), { ...DEB, subject: "derek", dof: close(2.2) });
 // === line 26: POP, a new flower shoots out of his nose
 // does: crash in on his face: a real stem shoots out of the tip of his nose and opens; ring eyes
-const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 40, dy: 0.1 });
-shot("U2-nose-pop", L(27, 0), "town", "day", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.12), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
+const U2F = on(derekSide, DEREK_SIDE, V(0.05, 0, -2.05), "cu", { fov: 40, dy: 0.2 });
+shot("U2-nose-pop", L(27, 0), "town", "day", [derekSide], impact((F) => creep(U2F, F, L(26, 0), B.nosePop + 6, 0.06), B.nosePop, 0.03, 7), { ...DEB, subject: "derek", dof: close(1.7), kicks: [[B.nosePop - L(26, 0), B.nosePop - L(26, 0) + 7]], fx: ["speedNose"] });
 // === line 27: and it rots, right there, on live TV
 // does: the nose flower wilts brown in seconds, flies arrive, he goes cross-eyed and sweaty
 shot("U3-nose-rots", L(27, 5), "town", "day", [derekSide], (F) => creep(U2F, F, L(27, 0) - 40, L(27, 5), 0.12), { ...DEB, subject: "derek", dof: close(1.7) });
@@ -569,19 +569,19 @@ shot("V1-sweat", B.slide - 2, "town", "day", [derekSide], (F) => creep(on(derekS
 shot("V2-slide", L(29, 0), "town", "day", [derekSide], (F) => { const t = span(F, B.slide - 2, L(29, 0)); return P(V(DEREK_SIDE.x + 0.4, 2.2 - 0.9 * t, DEREK_SIDE.z - 3.6), V(DEREK_SIDE.x, 2.2 - 1.2 * t, DEREK_SIDE.z), 46); }, { ...DEB, subject: "derek", allow: { "Text in frame": "the campaign banner high behind him, partly in the background (read whole in the wides)" }, dof: mid(3.6), props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o, F) => { const k = clamp01((F - B.slide) / 40); if (k <= 0) return false; o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); o.scale.set(0.4 + 0.6 * k, k, 0.4 + 0.6 * k); } }, { name: "glue falls", make: glueTube, touches: ["stage"], pose: (o, F) => { if (F < B.slide) return false; const t = clamp01((F - B.slide) / 14); o.position.copy(DEREK_SIDE).add(V(0.35, STAGE_UP * (1 - t * t), -0.15)); o.rotation.set(0, 0, 1.4 * t); } }] });
 // === line 29: underneath, a thousand rotten ones
 // does: pull back fast: Derek covered in rot and flies, a green stink wave rolls off the stage, the front row recoils
-shot("V3-stink-wave", L(30, 0), "town", "day", [derekSide, ...CROWD], (F) => { const t = span(F, L(29, 0), L(29, 0) + 56); return P(V(7.6, 3.5, 18.8).lerp(V(9.2, 3.9, 15.2), t), V(DEREK_SIDE.x, 1.8, DEREK_SIDE.z).lerp(V(DEREK_SIDE.x - 0.3, 1.3, DEREK_SIDE.z - 1.6), t), 52); }, { ...DEB, wide: true, subject: "derek", dof: NONE, allow: { ...CROWD_BACKS, "Text in frame": "the news camera's LIVE card and the banner edge-on at the frame side: dressing", "Card penetration": "seated crowd in different rows, seen from high on the stage's side" }, fx: ["stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
+shot("V3-stink-wave", L(30, 0), "town", "day", [derekSide, ...CROWD], (F) => { const t = span(F, L(29, 0), L(29, 0) + 56); return P(V(7.6, 4.9, 18.8).lerp(V(9.2, 5.3, 15.2), t), V(DEREK_SIDE.x, 1.8, DEREK_SIDE.z).lerp(V(DEREK_SIDE.x - 0.3, 1.3, DEREK_SIDE.z - 0.9), t), 52); }, { ...DEB, wide: true, subject: "derek", dof: NONE, allow: { ...CROWD_BACKS, "Text in frame": "the news camera's LIVE card and the banner edge-on at the frame side: dressing", "Card penetration": "seated crowd in different rows, seen from high on the stage's side" }, fx: ["stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
 // === line 30: even your fly leaves you, for Derek
 // does: your fly lifts off your head, hesitates, and buzzes across to join Derek's cloud; you wave it goodbye
-shot("W1-the-fly-leaves", L(31, 0), "town", "day", [youDebate, derekSide], (F) => { const t = span(F, B.flyGo - 10, B.toDerek + 24); const a = head(youDebate, F), b = head(derekSide, F); return P(V(10.4, 1.75, 16.6), a.lerp(b, t).add(V(0, -0.35, 0)), 46); }, { ...DEB, wide: true, subject: undefined, dof: NONE, allow: { "Text in frame": "the stage banner high behind the follow (read whole in P1)" }, fx: ["flyToDerek", "stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
+shot("W1-the-fly-leaves", L(31, 0), "town", "day", [youDebate, derekSide], (F) => { const t = span(F, B.flyGo - 10, B.toDerek + 38); const a = head(youDebate, F), b = head(derekSide, F); return P(V(10.4, 1.75, 16.6), a.lerp(b, t).add(V(0, -0.35, 0)), 46); }, { ...DEB, wide: true, subject: undefined, dof: NONE, allow: { "Text in frame": "the stage banner high behind the follow (read whole in P1)" }, fx: ["flyToDerek", "stinkDerek"], props: [{ name: "flower pile", make: flowerPile, touches: ["stage"], pose: (o) => { o.position.copy(DEREK_SIDE).add(V(0, 0, -0.1)); } }] });
 // === line 31: Derek loses; you can smell him from across the mall
 // does: the newspaper on the plaza bench: DEREK LOSES
-const PAPER_AT = BENCH.clone().add(V(-0.25, 0.47, 0.02));
+const PAPER_AT = BENCH.clone().add(V(-0.25, 0.84, 0.02));
 shot("X0-derek-loses", L(31, 2), "town", "day", [], (F) => creep(P(PAPER_AT.clone().add(V(0.08, 0.78, 0.72)), PAPER_AT.clone().add(V(0, 0, 0.06)), 46), F, L(31, 0), L(31, 2), 0.06), { subject: undefined, dof: close(0.75), props: [{ name: "newspaper", make: newspaper, touches: ["bench"], pose: (o) => { o.position.copy(PAPER_AT); } }] });
 // does: the same mall telephoto as line 6: Derek now at the end, a cloud twice as big, even the "I'll call you" guy holds his nose
 shot("X1-mall-again", L(32, 0), "town", "day", [derekMall, CALL_GUY, ...SHOPPERS], (F) => P(V(23.6, 1.5, -6.85), V(43.5, 1.1, -7.05).lerp(V(40, 1.05, -7.0), span(F, L(31, 2), L(32, 0))), 15), { wide: true, subject: "derek", scene: "mall day", dof: NONE, fx: ["stinkMall"], allow: { ...MALL_TEXT, "Caption vs face": "telephoto down the mall: the shoppers' faces are a few pixels" } });
 // === line 32: golden light: fourteen rotten flowers... and one that finally blooms
 // does: golden hour at the hives, bees home, you and Grandma side by side; your rotten flowers sway
-shot("Y1-golden-hives", L(32, 3), "town", "golden", [youHives, grannyHives], (F) => creep(P(V(-9.4, 1.35, -0.4), V(-9.4, 1.12, 3.7), 46), F, L(32, 0), L(32, 3), 0.08, 0, 0.1), { dof: mid(2.8), fx: ["hiveBees"] });
+shot("Y1-golden-hives", L(32, 3), "town", "golden", [youHives, grannyHives], (F) => creep(P(V(-9.2, 1.35, -0.4), V(-9.2, 1.12, 3.7), 46), F, L(32, 0), L(32, 3), 0.08, 0, 0.1), { dof: mid(2.8), fx: ["hiveBees"] });
 // does: your hand comes up by your face: the bud bursts into a big rust-orange flower, a bee lands on it, the proudest face
 shot("Y2-it-blooms", FRAMES, "town", "golden", [youHives], (F) => creep(on(youHives, V(-8.95, 0, 3.6), V(0.25, 0, -1.8), "mcu", { fov: 42, side: 0.15, dy: 0.06 }), F, L(32, 3), FRAMES, 0.08), { dof: close(1.6), fx: ["hiveBees"] });
 const STAGE_UP = 0.95;
