@@ -1,4 +1,4 @@
-import { insideHead } from "./face";
+import { faceGeom, insideHead } from "./face";
 import type { Head } from "./face";
 import type { Look, Torso } from "./figure";
 import { BUILD, INK, Pen, SH_CLOTH, SH_HAIR, WHITE, clamp, mix, mul, rnd, smooth } from "./toon";
@@ -67,8 +67,16 @@ export const outfit = (o: Top) => (p: Pen, t: Torso) => {
  * `spikes` adds messy tips on top.
  */
 const capPts = (h: Head, k: number, sides = 0.35, spikes = 0): P2[] => {
-  const { cx, cy, a, b, u, pts } = h;
-  const lim = (x: number) => cy - k * b + sides * b * Math.abs((x - cx) / a) ** 3;
+  const { cx, cy, a, b, u, pts } = h, G = faceGeom(h);
+  // Hair never covers the face (user 2026-11-22: eyes ran into Linda's and Grandma's hair on turned heads): over the
+  // eyes and brows (faceGeom, which slides with the turn) the hairline stays above the brows.
+  const brow = cy - 17 * u, band = G.ex + 13 * u;
+  const lim = (x: number) => {
+    const y = cy - k * b + sides * b * Math.abs((x - cx) / a) ** 3;
+    if (G.back) return y;
+    const d = Math.abs(x - G.fx), t = d < band ? 1 : d < band + 10 * u ? 1 - (d - band) / (10 * u) : 0;
+    return y - Math.max(0, y - brow) * t;
+  };
   const n = pts.length, cap: P2[] = [];
   for (let i = n / 2; i <= n; i++) {
     const [x, y] = pts[i % n];
@@ -160,20 +168,30 @@ export const bun = (p: Pen, h: Head) => {
   fillInk(p, h, pts, "#5a3424");
 };
 
+/** Round glasses on the eyes (faceGeom): lenses foreshorten with the turn, the far lens narrows and hides with the far
+ * eye, and on a turned head one arm runs back to the ear. */
 export const glasses = (p: Pen, h: Head) => {
-  const { cx, cy, u, facing } = h, fx = cx + 7 * u * facing, w = 2.4 * u;
-  for (const s of [-1, 1]) {
-    p.ell(fx + s * 13 * u, cy, 10.5 * u, 10 * u, "rgba(190,225,255,0.22)", w);
-    p.stroke([[fx + s * 23.5 * u, cy - 3 * u], [cx + s * h.a * 0.98, cy - 6 * u]], w * 0.8);
-  }
-  p.arc(fx, cy + 1 * u, 3 * u, 3 * u, 200, 340, w);
+  const { cx, cy, u } = h, G = faceGeom(h), w = 2.4 * u;
+  if (G.back) return;
+  const lens = ([-1, 1] as const).map((s) => ({ s, x: G.fx + s * G.ex, rx: 10.5 * u * (1 - 0.4 * G.sn) * G.eye(s).squash, show: G.eye(s).show }));
+  for (const L of lens) if (L.show) p.ell(L.x, cy, L.rx, 10 * u, "rgba(190,225,255,0.22)", w);
+  const [l, r] = lens;
+  if (l.show && r.show) p.arc((l.x + l.rx + r.x - r.rx) / 2, cy + 1 * u, Math.max(1.5 * u, (r.x - r.rx - l.x - l.rx) / 2), 3 * u, 200, 340, w);
+  if (G.sn > 0.35) {
+    // turned: the arm leaves the back lens (or the only lens in profile) for the ear
+    const L = lens.find((k) => k.show && k.s !== G.vs) ?? lens.find((k) => k.show)!;
+    p.stroke([[L.x - G.vs * L.rx, cy - 3 * u], [G.earX, cy - 1 * u]], w * 0.8);
+    if (!(l.show && r.show)) p.stroke([[L.x + G.vs * L.rx, cy - 1 * u], [L.x + G.vs * (L.rx + 3 * u), cy + 1 * u]], w); // bridge stub
+  } else for (const L of lens) p.stroke([[L.x + L.s * L.rx, cy - 3 * u], [cx + L.s * h.a * 0.98, cy - 6 * u]], w * 0.8);
 };
 
 export const moustache = (p: Pen, h: Head) => {
-  const { cx, cy, u, facing } = h, mx = cx + 8 * u * facing, my = cy + 13 * u;
+  const G = faceGeom(h), { cy, u } = h, mx = G.mx, my = cy + 13 * u, k = 1 - 0.45 * G.sn;
+  if (G.back) return;
   for (const s of [-1, 1]) {
-    p.taper([mx + s * u, my], [mx + s * 15 * u, my + 4 * u], 9.5 * u, 3.5 * u, INK);
-    p.taper([mx + s * u, my], [mx + s * 15 * u, my + 4 * u], 7 * u, 1.6 * u, "#ece6dc");
+    const w = s === G.vs || G.sn < 0.05 ? k : k * 0.6; // the far half foreshortens more
+    p.taper([mx + s * u, my], [mx + s * 15 * u * w, my + 4 * u], 9.5 * u, 3.5 * u, INK);
+    p.taper([mx + s * u, my], [mx + s * 15 * u * w, my + 4 * u], 7 * u, 1.6 * u, "#ece6dc");
   }
 };
 
@@ -283,10 +301,10 @@ export const rips = (under: string, seed: number) => (p: Pen, t: { cx: number; t
 
 /** Zombie face extras (over the face): sunken under-eye rings, a stitched scar, a drool drip. */
 export const zombieFace = (seed: number) => (p: Pen, h: Head) => {
-  const { cx, cy, a, b, u, facing } = h, yaw = h.yaw ?? 0;
+  const { cx, cy, a, b, u } = h, yaw = h.yaw ?? 0;
   if (Math.abs(yaw) > 100) return;
-  const sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), vs = yaw < 0 ? -1 : 1, fx = cx + 7 * u * facing + vs * 0.5 * a * sn;
-  for (const s of [-1, 1]) p.arc(fx + s * 15 * u * (1 - 0.45 * sn), cy + 2 * u, 6.5 * u, 5 * u, 20, 160, 1.8 * u, "#4a3a5a");
+  const G = faceGeom(h), fx = G.fx;
+  for (const s of [-1, 1] as const) if (G.eye(s).show) p.arc(fx + s * G.ex, cy + 2 * u, 6.5 * u * G.eye(s).squash, 5 * u, 20, 160, 1.8 * u, "#4a3a5a");
   // Scar with stitches across the forehead or cheek (seeded side).
   const sd = rnd(seed, 3) < 0.5 ? -1 : 1, up = rnd(seed, 4) < 0.5;
   const s0: P2 = up ? [cx + sd * 0.15 * a, cy - 0.55 * b] : [fx + sd * 22 * u, cy + 6 * u], s1: P2 = up ? [cx + sd * 0.55 * a, cy - 0.32 * b] : [fx + sd * 32 * u, cy + 20 * u];
@@ -297,7 +315,7 @@ export const zombieFace = (seed: number) => (p: Pen, h: Head) => {
     p.stroke([[x - (dy / l) * 3 * u, y + (dx / l) * 3 * u], [x + (dy / l) * 3 * u, y - (dx / l) * 3 * u]], 1.1 * u);
   }
   if (rnd(seed, 5) < 0.6) {
-    const mx = cx + 8 * u * facing + vs * 0.55 * a * sn + 7 * u, my = cy + 22 * u;
+    const mx = G.mx + 7 * u, my = cy + 22 * u;
     p.stroke([[mx, my], [mx + 0.5 * u, my + 7 * u]], 2 * u, "#b8d8a8");
     p.dot(mx + 0.5 * u, my + 8 * u, 2.2 * u, "#b8d8a8");
   }

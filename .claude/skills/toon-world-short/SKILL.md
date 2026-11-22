@@ -15,11 +15,13 @@ Three pillars, all narrated in **second person ("you")**, all built to be as ent
 
 **Current style (R27-R28, user-approved direction 2026-11-21; wins over every older rule, value or reference note in
 this file, LOOK_SPEC and REFERENCE_NOTES):**
-- **Never lifeless** (user 2026-11-22 on the promise-flowers stills: "dull and looks lifeless, add some sort of vibe or
-  warm light"): every scene has a mood: a warm key (late-morning / golden sun, never flat noon grey), warm practicals
-  and bounce on faces, coloured shadow, atmosphere (dust motes, pollen, haze, god rays), saturated set dressing, and
-  something alive moving in the background. A neutral, evenly lit, empty frame only when the story wants it bleak,
-  and then say so in the shot comment.
+- **Never lifeless, and every scene its own identity** (user 2026-11-22, twice: first "dull and looks lifeless", then on
+  the ep5 preview "a vibe does NOT mean making everything warm"): each scene's light, palette and air come from its
+  story beat, place and time: an energetic setup gets crisp high sun and saturated colour, a nostalgic place the
+  honey low sun, a gross-out joke a sickly cast, a showdown hard contrast, a lonely night cool depth with one small
+  warm practical, the payoff golden. One preset per scene identity (promise-flowers `scene.tsx`: TOWN, DEBATE, MALL,
+  porch DAY, HOME_NIGHT, GOLD), never one warm filter over the whole episode. Every scene still gets atmosphere (motes,
+  pollen, haze), coloured shadow, saturated dressing and something alive in the background; richness.py on the 2K file.
 - **World**: section "R27" below: photo skies (`photoSky`, never the painted gradient), moving rippled water
   (`water`/`shoreFoam`), a different photo material with normal/ARM maps on every surface, CC0 models at three depths,
   motivated light pools, fire life (`fire.tsx`). Worked example: `src/videos/_look-test-r27` (LookTestR27).
@@ -176,6 +178,11 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
 - Channel profile picture: `ChannelPfp` composition -> `assets/brand/` (docs/CHANNEL.md); re-render it after any
   change to the protagonist.
 - Faces from the face library (character style above).
+- **Face pieces follow the face** (user 2026-11-22: Grandma's glasses stayed front-facing on a turned head, eyes ran into
+  hair): anything drawn over or around the face (glasses, moustaches, shades, scars, the hairline) positions itself with
+  `faceGeom(h)` (kit face.ts): the eye line `fx`/`ex` that slides and foreshortens with the turn, which eye shows, the
+  ear. Never `cx + k * u * facing`. The hairline (`capPts`) stays above the brows over the face. Check every speaking
+  role on a turn sheet (`PromiseTurnSheet` pattern: seven angles per role) after any face or hair change.
 - Expressions: neutral (plain ovals), tired, worried, scared, shocked (white circles almost touching), smug, determined,
   sad, angry, sneaky, relieved, confused, deadpan, laughing. Extras: sweat drop, steam puffs, colour fill, "!" pop.
 
@@ -347,6 +354,11 @@ The look values below make a frame pretty; these rules make the frames tell the 
   pull-out or dissolve in and a match cut back to the story.
 - **Time of day follows the story**, not the clock: bright day for the setup, blue night or rain for the scheme or
   setback (warm practicals), a clean bright morning or golden light for the payoff. Change it on a dissolve.
+- **The narrated thing is the focal point, and it changes on screen** (user 2026-11-22, ep5 preview): "your bud turns
+  brown" = an insert on the bud that browns and droops across the line (ramp the state over the words, never a cut to
+  the end state); "your fly leaves you for Derek" = the lens chases the fly from your shoulder to Derek's face with
+  the destination visible the whole way; a runner gets a leading track at her speed, not a static wide she crosses. A
+  shot that technically contains the object but where it is small, edge-of-frame or hidden behind the set fails.
 - **Every action the narration names is shown on screen, on its word** (user, 2026-11-16: "in this world your shoes
   are full of soup does not show a close-up of the shoe full of soup"). Soup in the shoes = a close-up of the
   sneaker pouring soup into a puddle; "the red bar crawls, 90 %" = a fat bar with a big 90 % on it; "then I notice" =
@@ -399,9 +411,17 @@ The first pilot showed the PLACE where each gag would happen, wide and small, an
   `tape`, `wave`, `bang` (kit poses.ts); faces `grin` and `smirk` besides the rest. Held props sit in the hand
   (`handWorld`, QA "Moving props").
 - **Sitting is a pose, not a sunk card** (user 2026-11-18, ep 4: "they just stand and clip through the chair"):
-  `pose.sit = 1` drops the torso to `SEAT_M` (0.38 m) and bends the knees; stand the card on the floor at the seat's
-  front edge (lawn chair: `SEAT_AHEAD`), mark the role `sit: true`, frame on `headHeight(look, { ...REST, sit: 1 })`.
+  `pose.sit = 1` drops the torso to `SEAT_M` (0.38 m) and bends the knees; mark the role `sit: true`, frame on
+  `headHeight(look, { ...REST, sit: 1 })`. **Stand the card ~0.1-0.12 m IN FRONT of the seat's front face** (measure the
+  model: `sofa_02` cushion front is +0.34 m from its origin), never on it: cards turn to face the lens, so a card on
+  the front face swings half into the furniture (ep5 preview: legs through the sofa). Never `allow` "Card penetration"
+  for seated cards: the drawn lap needs no overlap, and the guard then catches every sunk sitter.
 - **Hits get a shake**: `impact(pose, frame)` (kit camera.ts) on slams, crashes and kicks, declared in `kicks`.
+- **Screens are displays, not stickers** (user 2026-11-22, ep5 TV poll): put screen content on the device's glass with
+  kit `build/screen.ts` `curvedScreen(tex, { x, y, w, h, z, zMap })`, added to the model's inner group
+  (`model(...).children[0]`) in model units. Measure the glass by raycasting the model on a grid (a CRT is not a clean
+  dome; `zMap` takes the measured heights). It brings rounded corners, scanlines, edge falloff, a glass sheen and a
+  bloom-level glow; light the room from it with a `screen` practical.
 - **Every window shows the outside**: `streetViewTex` + `windowViews` (kit build/views.ts), day and night.
 - **Sets say what they are**: set dressing that names the place's role at phone size (a fortress gets barbed wire,
   sandbags, a MEMBERS ONLY board: kit build/storyprops.ts `barbedWire`, `sandbags`; signs via build/signs.ts).

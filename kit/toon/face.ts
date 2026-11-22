@@ -104,8 +104,31 @@ export const drawFill = (p: Pen, h: Head, fx: Effects) => {
 // width); at .7 our dots and dash mouths vanished on a big blank head.
 const FEAT = 1.0;
 
+/**
+ * Where the face sits on a head in its view (turnaround + R20 head-turn slide). drawFace draws the eyes and mouth here,
+ * and every accessory over the face (glasses, moustaches, shades) and the hairline (extras capPts) read the same
+ * numbers, so nothing stays front-facing on a turned head (user 2026-11-22: Grandma's glasses stayed put while her
+ * eyes slid). fx/ex: eye centre line and half-spacing; the far eye (side !== vs) narrows and hides past 60 deg.
+ */
+export const faceGeom = (h: Head) => {
+  const { cx, u, a, facing } = h, yaw = h.yaw ?? 0, ay = Math.abs(yaw);
+  const sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), cs = Math.cos((yaw * Math.PI) / 180), vs = yaw < 0 ? -1 : 1;
+  const turn = h.look * (1 - sn);
+  const fx = cx + 7 * u * facing + 0.22 * a * turn + vs * 0.5 * a * sn;
+  const mx = cx + 8 * u * facing + 0.26 * a * turn + vs * 0.55 * a * sn;
+  const ex = 15 * u * (1 - 0.45 * sn) * (1 - 0.12 * Math.abs(turn));
+  /** Is eye `side` visible, and its horizontal squash. */
+  const eye = (side: -1 | 1) => {
+    const far = sn > 0.05 && side !== vs;
+    return { show: !(far && ay > 60), squash: far ? 1 - 0.35 * sn : 1 };
+  };
+  /** The ear the figure draws on a turned head (figure.ts), where glasses' arms go. */
+  const earX = cx - vs * a * (0.1 + (cs >= 0 ? 0.73 : 1.02) * cs);
+  return { yaw, ay, sn, cs, vs, turn, fx, mx, ex, eye, earX, back: ay > 100 };
+};
+
 export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: Effects; brim?: boolean }) => {
-  const { cx, cy, u, facing } = h;
+  const { cy, u, facing } = h;
   // Turnaround: the features slide toward the side faced (profile: near the edge), the eyes close up and the far eye
   // narrows, then hides past 60 deg; from behind (> 100 deg) there is no face.
   const yaw = h.yaw ?? 0, ay = Math.abs(yaw), sn = Math.abs(Math.sin((yaw * Math.PI) / 180)), vs = yaw < 0 ? -1 : 1;
@@ -113,10 +136,10 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
   const F: Face = o.fx.ringEyes ? { ...FACE[expr], eye: ["shock", "shock"], brow: "arc" } : FACE[expr];
   // R20 (visual-ref1-6, moving images): a head turn slides the whole face across the head, not just the pupils
   // (refs ~35-45 % of the radius at a full turn; we slid 14 %), and the eyes close up a little as they turn away.
-  const turn = h.look * (1 - sn);
-  const fx = cx + 7 * u * facing + 0.22 * h.a * turn + vs * 0.5 * h.a * sn, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
+  const G = faceGeom(h);
+  const fx = G.fx, lw = 3.8 * u, look = h.look + (F.glance ?? 0) * (facing >= 0 ? 1 : -1);
   const shock = F.eye[0] === "shock";
-  const ex = (shock ? 14 : 15) * u * (1 - 0.45 * sn) * (1 - 0.12 * Math.abs(turn)), ey = cy;
+  const ex = G.ex * (shock ? 14 / 15 : 1), ey = cy;
   const g = p.g;
   ([-1, 1] as const).forEach((side, i) => {
     const far = sn > 0.05 && side !== vs;
@@ -180,7 +203,7 @@ export const drawFace = (p: Pen, h: Head, expr: Expr, o: { blink: boolean; fx: E
       p.ell(fx + side * (ex + 2 * u), ey + 11 * u, 8 * u, 4.2 * u, `rgba(240,110,125,${0.5 * Math.min(o.fx.blush, 1)})`);
     }
   }
-  const mx = cx + 8 * u * facing + 0.26 * h.a * turn + vs * 0.55 * h.a * sn, my = cy + 19 * u, mw = 4 * u;
+  const mx = G.mx, my = cy + 19 * u, mw = 4 * u;
   // A turned mouth foreshortens (narrower toward the profile).
   g.save();
   g.translate(mx, my);

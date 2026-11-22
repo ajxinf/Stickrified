@@ -1,3 +1,4 @@
+import { faceGeom } from "./face";
 import type { Head } from "./face";
 import type { Torso } from "./figure";
 import { INK, Pen, SH_HAIR, WHITE, mix, mul } from "./toon";
@@ -168,8 +169,9 @@ export const headband = (col: string): HeadLayer => (p, h) => {
 
 /** Sunglasses pushed up on the forehead (cool-dad / influencer). */
 export const shadesUp = (frame = "#2a2a34", lens = "#3a5a7a"): HeadLayer => (p, h) => {
-  const { cx, cy, b, u, facing } = h, x = cx + 7 * u * facing, y = cy - 0.55 * b;
-  for (const s of [-1, 1]) p.ell(x + s * 14 * u, y, 11 * u, 7 * u, lens, 2.4 * u, 0, 360, 0, frame);
+  const G = faceGeom(h), { cy, b, u } = h, x = G.fx, y = cy - 0.55 * b;
+  if (G.back) return;
+  for (const s of [-1, 1] as const) if (G.eye(s).show) p.ell(x + s * 14 * u * (1 - 0.45 * G.sn), y, 11 * u * (1 - 0.4 * G.sn) * G.eye(s).squash, 7 * u, lens, 2.4 * u, 0, 360, 0, frame);
   p.stroke([[x - 3 * u, y - 2 * u], [x + 3 * u, y - 2 * u]], 2.4 * u, frame);
 };
 
@@ -177,7 +179,8 @@ export const shadesUp = (frame = "#2a2a34", lens = "#3a5a7a"): HeadLayer => (p, 
 
 /** Moustaches: walrus (big, droopy), handlebar (curled), pencil (thin). */
 export const tache = (style: "walrus" | "handlebar" | "pencil", col = "#5a3a28"): HeadLayer => (p, h) => {
-  const { cx, cy, u, facing } = h, mx = cx + 8 * u * facing, my = cy + 13 * u;
+  const G = faceGeom(h), { cy, u } = h, mx = G.mx, my = cy + 13 * u;
+  if (G.back) return;
   if (style === "pencil") return void p.stroke([[mx - 10 * u, my + 2 * u], [mx + 10 * u, my + 2 * u]], 2.6 * u, col);
   for (const s of [-1, 1]) {
     if (style === "walrus") {

@@ -1,3 +1,4 @@
+import { curvedScreen } from "../../../kit/toon/build/screen";
 import { BoxGeometry, BufferGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SRGBColorSpace, SphereGeometry, Vector3 } from "three";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
@@ -499,7 +500,7 @@ export const BUCKET = V(-1.7, 0, -1.82);
 export const TABLE = V(-0.7, 0, 0.6);
 export const DAD_SEAT = V(-0.75, 0, -0.35); // Dad sits at the table's far side, facing the lens (+z)
 export const SOFA = V(2.15, 0, -1.9);
-export const YOU_SOFA = V(2.15, 0, -1.55); // seated card on the sofa, facing +z
+export const YOU_SOFA = V(2.15, 0, -1.44); // seated card 12 cm in front of the seat cushion (front z -1.56, top 0.41 m): a card turns to the lens, so on the front face half of it sank into the sofa
 export const TV = V(1.15, 0.72, 1.4); // facing -z (the sofa)
 export const FLOOR_LAMP = V(3.3, 1.55, -2.2);
 export const WINDOW = V(0.6, 1.55, HOME.z0 + 0.01);
@@ -520,6 +521,8 @@ const windowTex = (night: boolean) => canvasTex(512, 512, (c) => {
   if (night) { c.fillStyle = "#ffe8c0"; c.beginPath(); c.arc(400, 90, 22, 0, 7); c.fill(); }
   else { c.fillStyle = "#4e8a3a"; c.beginPath(); c.arc(70, 300, 90, 0, 7); c.fill(); }
 });
+/** television_02 glass height (model z) over the screen opening, 17 x 13, rows bottom -> top (raycast of the model). */
+const TV_GLASS: number[][] = [[0.0946, 0.0983, 0.1015, 0.1039, 0.1059, 0.1075, 0.1087, 0.1096, 0.1099, 0.1095, 0.1085, 0.1072, 0.1056, 0.1035, 0.1009, 0.0976, 0.0938], [0.0964, 0.1007, 0.1044, 0.1073, 0.1096, 0.1113, 0.1126, 0.1136, 0.1139, 0.1135, 0.1124, 0.111, 0.1092, 0.1068, 0.1037, 0.0999, 0.0954], [0.098, 0.1028, 0.1069, 0.1101, 0.1126, 0.1145, 0.1158, 0.1168, 0.1171, 0.1167, 0.1156, 0.1142, 0.1122, 0.1096, 0.1061, 0.1018, 0.0969], [0.0993, 0.1044, 0.1088, 0.1123, 0.1149, 0.1168, 0.1182, 0.1191, 0.1194, 0.119, 0.118, 0.1165, 0.1144, 0.1116, 0.108, 0.1034, 0.0981], [0.1002, 0.1055, 0.11, 0.1136, 0.1163, 0.1182, 0.1197, 0.1206, 0.121, 0.1205, 0.1194, 0.1179, 0.1158, 0.113, 0.1092, 0.1045, 0.099], [0.1007, 0.1061, 0.1106, 0.1142, 0.117, 0.1189, 0.1204, 0.1214, 0.1217, 0.1213, 0.1202, 0.1186, 0.1165, 0.1136, 0.1098, 0.105, 0.0995], [0.1008, 0.1062, 0.1107, 0.1143, 0.1171, 0.119, 0.1205, 0.1215, 0.1218, 0.1214, 0.1203, 0.1187, 0.1166, 0.1137, 0.1099, 0.1051, 0.0996], [0.1004, 0.1058, 0.1103, 0.1139, 0.1166, 0.1186, 0.12, 0.121, 0.1213, 0.1209, 0.1198, 0.1183, 0.1162, 0.1133, 0.1095, 0.1047, 0.0993], [0.0997, 0.105, 0.1094, 0.1129, 0.1156, 0.1175, 0.1189, 0.1198, 0.1202, 0.1197, 0.1187, 0.1172, 0.1151, 0.1123, 0.1086, 0.1039, 0.0986], [0.0986, 0.1036, 0.1079, 0.1112, 0.1138, 0.1156, 0.117, 0.1179, 0.1182, 0.1178, 0.1168, 0.1153, 0.1134, 0.1107, 0.1071, 0.1027, 0.0975], [0.0972, 0.1018, 0.1056, 0.1087, 0.111, 0.1128, 0.1141, 0.115, 0.1154, 0.1149, 0.1139, 0.1125, 0.1106, 0.1081, 0.1049, 0.1009, 0.0962], [0.0955, 0.0995, 0.1029, 0.1055, 0.1075, 0.1092, 0.1104, 0.1113, 0.1117, 0.1112, 0.1102, 0.1089, 0.1072, 0.105, 0.1022, 0.0987, 0.0947], [0.095, 0.097, 0.0997, 0.1019, 0.1036, 0.1051, 0.1062, 0.1071, 0.1074, 0.107, 0.106, 0.1048, 0.1033, 0.1015, 0.0993, 0.0964, 0.0954]];
 export const tvTex = () => canvasTex(640, 480, (c) => {
   c.fillStyle = "#14204a"; c.fillRect(0, 0, 640, 480);
   c.fillStyle = "#c8342c"; c.fillRect(0, 380, 640, 100);
@@ -584,7 +587,12 @@ export const home = (night: boolean) => {
   g.add(place(model("dining_chair_02", { collider: "chair" }), DAD_SEAT.x, 0, DAD_SEAT.z - 0.12, 0));
   g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 0.9, 0, TABLE.z + 0.85, Math.PI));
   g.add(place(model("sofa_02", { collider: "sofa" }), SOFA.x, 0, SOFA.z, 0));
-  g.add(place(model("television_02", { collider: "tv", scale: 1.5 }), TV.x, 0.5, TV.z, Math.PI));
+  const tv = place(model("television_02", { collider: "tv", scale: 1.5 }), TV.x, 0.5, TV.z, Math.PI);
+  // the poll ON the CRT glass (model units; opening x +-0.145, y .157-.372). Video.tsx switches it on/off.
+  const scr = curvedScreen(tvTex(), { x: -0.002, y: 0.266, w: 0.3, h: 0.224, z: 0.122, zMap: TV_GLASS, corner: 0.13, gain: 1.25 });
+  scr.name = "tvScreen";
+  tv.children[0].add(scr);
+  g.add(tv);
   g.add(place(model("wooden_bookshelf_worn", { collider: "bookshelf", scale: 0.9 }), x0 + 0.32, 0, 1.3, Math.PI / 2));
   const clock = model("wall_clock", { collider: false, scale: 1.2 });
   clock.position.copy(CLOCK);
@@ -593,10 +601,6 @@ export const home = (night: boolean) => {
   g.add(place(model("potted_plant_01", { collider: "plant", scale: 0.8 }), x1 - 0.4, 0, 1.6, 0));
   // the sticky note on the cabinet under the tap
   g.add(plane(0.16, 0.16, unlit("pf-fixme", () => boardTex(["FIX", "ME"], "#f6e65a", "#1c1414", 256, 256)), V(SINK.x + 0.42, 0.7, z0 + 0.615)));
-  // the TV screen (Video.tsx swaps it on/off)
-  const scr = plane(0.46, 0.35, M("pf-tv-on", () => new MeshBasicMaterial({ map: tvTex(), toneMapped: false })), TV.clone().add(V(0, 0.125, -0.33)), Math.PI); // in front of the bulging CRT glass
-  scr.name = "tvScreen";
-  g.add(scr);
   // the puddle round the bucket (Video.tsx scales it: it grows between line 5 and line 18)
   const pud = new Mesh(new CylinderGeometry(0.5, 0.5, 0.004, 32), M("pf-puddle", () => toonMaterial({ color: "#7aa0c8", gloss: 0.9, rough: 0.05, spec: 0.9 })));
   pud.position.set(BUCKET.x + 0.1, 0.004, BUCKET.z + 0.25);

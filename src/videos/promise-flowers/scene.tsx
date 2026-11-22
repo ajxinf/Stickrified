@@ -18,12 +18,24 @@ import { CLOCK, FLOOR_LAMP, TV, V, canvasTex, debateChairs, home, town } from ".
 // shadows, warm haze; the lens looking south at the houses and north at the stage both get it from the side.
 const DAY_SKY = photoSky({ ...LIGHTS.sunset, lit: [1.5, 1.24, 0.94], shade: [0.42, 0.45, 0.72], lift: [0.02, 0.016, 0.034], litTint: "#ffd9aa", sat: 1.18, haze: { color: "#f0c8a8", start: 40, amount: 0.18 }, char: { tint: [1.0, 0.95, 0.88], shade: 0.93 }, glow: 0.4 }, "qwantani_late_afternoon_puresky", { exposure: 1.05, yaw: 54 });
 export const DAY = DAY_SKY.preset, SUN = DAY_SKY.key;
+// Scene identities (user 2026-11-22: "a vibe does NOT mean making everything warm": each scene's light follows its
+// story beat). The honey low sun above stays for Grandma's porch and hives (nostalgia); the rest get their own:
+// Town setup: crisp late-morning, high sun, blue partly-cloudy sky, neutral-white light, saturated colour (energy).
+const TOWN_SKY = photoSky({ ...LIGHTS.day, lit: [1.44, 1.38, 1.26], shade: [0.34, 0.38, 0.56], lift: [0.03, 0.035, 0.07], litTint: "#fff3e0", sat: 1.22, haze: { color: "#cfe0f5", start: 45, amount: 0.12 }, char: { tint: [1.0, 0.98, 0.95], shade: 0.93 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.0, yaw: 56 });
+export const TOWN = TOWN_SKY.preset, TOWN_SUN = TOWN_SKY.key;
+// Debate: high hard sun raking from the stage's front-right (Derek lit, short dark shadows), cool shade, strong
+// contrast and saturated bunting: a showdown under a bright sky.
+const DEBATE_SKY = photoSky({ ...LIGHTS.day, lit: [1.56, 1.46, 1.3], shade: [0.26, 0.29, 0.48], lift: [0.015, 0.02, 0.05], litTint: "#fff6e8", sat: 1.28, haze: { color: "#c8dcf2", start: 50, amount: 0.1 }, char: { tint: [1.0, 0.98, 0.94], shade: 0.9 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.06, yaw: 101 });
+export const DEBATE = DEBATE_SKY.preset, DEBATE_SUN = DEBATE_SKY.key;
+// Mall: the stink joke: flat cool fluorescent air with a sickly green cast and close haze.
+const MALL_SKY = photoSky({ ...LIGHTS.day, lit: [1.06, 1.2, 1.06], shade: [0.38, 0.46, 0.42], lift: [0.03, 0.05, 0.035], litTint: "#e6fbe8", sat: 1.12, haze: { color: "#b6ccae", start: 10, amount: 0.32 }, char: { tint: [0.96, 1.02, 0.95], shade: 0.9 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 0.86, tint: "#d6efd8", yaw: 56 });
+export const MALL = MALL_SKY.preset, MALL_SUN = MALL_SKY.key;
 // Golden (last line): the late-afternoon photo sky, its sun turned to rake in from the front-right of the hives lens.
 const GOLD_SKY = photoSky({ ...LIGHTS.sunset, lit: [1.58, 0.96, 0.58], shade: [0.34, 0.35, 0.64], litTint: "#ffb878", sat: 1.22, char: { tint: [1.0, 0.9, 0.78], shade: 0.93 } }, "qwantani_late_afternoon_puresky", { exposure: 0.95, tint: "#ffdcb8", yaw: 100 });
 export const GOLD = GOLD_SKY.preset, GOLD_SUN = GOLD_SKY.key;
 // Home: day = warm window sun (a patch on the floor, dusty shafts), night = a warm lamp pool + the TV's blue, half the room dark.
 export const HOME_DAY: LightPreset = { ...LIGHTS.interior, lit: [1.08, 0.96, 0.8], shade: [0.44, 0.4, 0.5], litTint: "#ffe2bc", lamp: ["#ffc98a", 1.2], sat: 1.18, char: { tint: [1.0, 0.95, 0.88], shade: 0.92 } };
-export const HOME_NIGHT: LightPreset = { ...LIGHTS.interior, lit: [0.4, 0.42, 0.6], shade: [0.14, 0.15, 0.26], lift: [0.012, 0.014, 0.03], litTint: "#b8c8f0", lamp: ["#ffa850", 3.4], grade: "night", sat: 1.12 };
+export const HOME_NIGHT: LightPreset = { ...LIGHTS.interior, lit: [0.34, 0.38, 0.62], shade: [0.1, 0.11, 0.22], lift: [0.01, 0.012, 0.03], litTint: "#a8bce8", lamp: ["#ffa850", 3.4], grade: "night", sat: 1.12 };
 export const HOME_SUN = V(0.35, 0.85, 0.4).normalize();
 
 // ------------------------------------------------------------------ worlds
@@ -44,8 +56,8 @@ export const Home: React.FC<{ night: boolean; preset: LightPreset; puddle: numbe
   g.getObjectByName("puddle")!.scale.set(puddle, 1, puddle);
   g.getObjectByName("tvScreen")!.visible = tv;
   const list = useMemo(() => [
-    { pos: FLOOR_LAMP.clone().add(V(-0.25, -0.1, 0.3)), kind: "lamp" as const, color: [night ? "#ffb35c" : "#ffd9a8", night ? 2.2 : 0.5] as [string, number], glowAt: FLOOR_LAMP },
-    { pos: TV.clone().add(V(0, 0.2, -0.6)), kind: "screen" as const, color: ["#9fc8ff", tv ? 0.9 : 0] as [string, number] },
+    { pos: FLOOR_LAMP.clone().add(V(-0.25, -0.1, 0.3)), kind: "lamp" as const, color: [night ? "#ffb35c" : "#ffd9a8", night ? 1.4 : 0.5] as [string, number], glowAt: FLOOR_LAMP }, // night: a small warm pool, the TV blue carries the room
+    { pos: TV.clone().add(V(0, 0.2, -0.6)), kind: "screen" as const, color: ["#9fc8ff", tv ? 1.3 : 0] as [string, number] },
     { pos: CLOCK.clone().add(V(0.6, -0.2, 1.4)), kind: "lamp" as const, color: [night ? "#ffc27a" : "#fff2dc", night ? 0.4 : 0.7] as [string, number], noGlow: true },
   ], [night, tv]);
   const lights = useMemo(() => practicalLights(list, preset), [list, preset]);
@@ -103,7 +115,7 @@ const Sprites: React.FC<{ n: number; F: number; at: (i: number, F: number) => Ve
   return <primitive object={pts} />;
 };
 export const Bees: React.FC<{ n: number; F: number; at: (i: number, F: number) => Vector3 | null; size?: number }> = ({ n, F, at, size = 0.09 }) => <Sprites n={n} F={F} at={at} kind="bee" size={size} />;
-export const Fly: React.FC<{ F: number; at: (F: number) => Vector3 | null; size?: number }> = ({ F, at, size = 0.07 }) => <Sprites n={1} F={F} at={(_, f) => at(f)} kind="fly" size={size} />;
+export const Fly: React.FC<{ F: number; at: (F: number) => Vector3 | null; size?: number }> = ({ F, at, size = 0.09 }) => <Sprites n={1} F={F} at={(_, f) => at(f)} kind="fly" size={size} />;
 export const Stink: React.FC<{ n: number; F: number; at: (i: number, F: number) => Vector3 | null; size?: number }> = ({ n, F, at, size = 0.7 }) => <Sprites n={n} F={F} at={at} kind="puff" size={size} />;
 /** A single falling petal (line 16). */
 export const petal = () => {
