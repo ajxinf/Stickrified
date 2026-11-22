@@ -1,6 +1,7 @@
 // Shared setup for the render scripts: temp dir on C:/remotion-tmp (Windows), one bundle per run, laptop GPU flags.
 import { bundle } from "@remotion/bundler";
 import { openBrowser, renderStill, selectComposition } from "@remotion/renderer";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -11,6 +12,19 @@ if (process.platform === "win32") {
 }
 
 export const CHROMIUM = { gl: "angle" };
+
+// Render on the RTX 3050, not the Intel UHD (benchmark 2026-11-23, scripts/bench.mjs: 6x faster at 2K, and the iGPU's
+// shared memory caused the Chrome OOM / "context loss" crashes). Remotion cannot pass Chrome flags
+// (--force_high_performance_gpu), so set Windows' per-app GPU preference (Settings > Display > Graphics) for its Chrome.
+if (process.platform === "win32") {
+  const exe = path.resolve("node_modules/.remotion/chrome-headless-shell/win64/chrome-headless-shell-win64/chrome-headless-shell.exe");
+  const key = "HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences";
+  const q = spawnSync("reg", ["query", key, "/v", exe], { encoding: "utf8" });
+  if (!/GpuPreference=2;/.test(q.stdout ?? "")) {
+    spawnSync("reg", ["add", key, "/v", exe, "/t", "REG_SZ", "/d", "GpuPreference=2;", "/f"]);
+    console.log("GPU: set Remotion's Chrome to the high-performance GPU (Windows graphics preference)");
+  }
+}
 
 // One Chrome for every still of a run (was one launch per still: ~5 s each, x 200 stills per QA round). Its cache also
 // keeps the bundle's big models between pages. Callers pass `puppeteerInstance: await browser()`.

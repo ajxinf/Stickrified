@@ -27,6 +27,7 @@ if (!id || !out) {
   process.exit(2);
 }
 fs.mkdirSync(path.dirname(out), { recursive: true });
+if (process.platform === "win32") spawnSync("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", path.resolve("scripts/free_ram.ps1")], { stdio: "inherit" });
 const t0 = performance.now();
 const serveUrl = await bundleOnce();
 const composition = await pick(serveUrl, id).catch((e) => fail(id, e));
