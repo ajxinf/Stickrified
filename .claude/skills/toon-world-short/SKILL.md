@@ -21,7 +21,7 @@ this file, LOOK_SPEC and REFERENCE_NOTES):**
   honey low sun, a gross-out joke a sickly cast, a showdown hard contrast, a lonely night cool depth with one small
   warm practical, the payoff golden. One preset per scene identity (promise-flowers `scene.tsx`: TOWN, DEBATE, MALL,
   porch DAY, HOME_NIGHT, GOLD), never one warm filter over the whole episode. Every scene still gets atmosphere (motes,
-  pollen, haze), coloured shadow, saturated dressing and something alive in the background; richness.py on the 2K file.
+  pollen, haze), coloured shadow, saturated dressing and something alive in the background; richness.py on the final file.
 - **World**: section "R27" below: photo skies (`photoSky`, never the painted gradient), moving rippled water
   (`water`/`shoreFoam`), a different photo material with normal/ARM maps on every surface, CC0 models at three depths,
   motivated light pools, fire life (`fire.tsx`). Worked example: `src/videos/_look-test-r27` (LookTestR27).
@@ -78,12 +78,13 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
     into a look-ahead true-peak limiter (ceiling -1.3 dBTP). Loudnorm alone falls back to dynamic mode.
   - End the mix on the last word. A musical button may land on the last word and must decay before the last frame;
     no outro sting after it, no end card.
-- **Final export is 2K 1440x2560** (user 2026-11-21): scale `4/3` (`1.3333` gives 2559.936 px and Remotion refuses it;
-  `render.mjs` and `stills.mjs` take the fraction). ~34 min on the laptop for 83 s. The 2K master carries 2K photo
-  textures (`polyhaven.py tex <id> --res 2k`: diffuse + normal 2K, ARM 1K) and the Composer's contrast-adaptive sharpen
-  (`POST.sharpen`); every pixel-sized post value scales with the drawing-buffer height, so 2K looks like 1080 scaled.
+- **Final export is 1080x1920** (user 2026-11-23: 1080p is the default final output; it replaced the 2K 1440x2560
+  master of 2026-11-21). `render.mjs` scale 1 (its default). Keep the 2K photo textures (`polyhaven.py tex <id> --res
+  2k`: diffuse + normal 2K, ARM 1K) and the Composer's contrast-adaptive sharpen (`POST.sharpen`); every pixel-sized post
+  value scales with the drawing-buffer height, so a 2K render (scale `4/3`) still works if the user ever asks for one.
   **Review flow:** a 720p preview (downscale of a 1080 render) goes to the user only to spot visual defects (floating
-  objects, clipping); after their notes are fixed, render 2K, run QA layers 2-3 and richness ON THE 2K FILE, deliver it.
+  objects, clipping); after their notes are fixed, render the 1080 final, run QA layers 2-3 and richness ON THE FINAL
+  FILE, deliver it.
 - Checks are scripts first (QA layer 1, `preflight.py`, `richness.py`, `measure.py`), then one eye pass by you on
   the sheets the `video-qa` skill names. No verifier or critic agents; sub-agents only when the user asks. The user
   reviews the finished video.
@@ -282,7 +283,7 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
    colour with `python scripts/richness.py out/<slug>/pre/p_<frame>.png`. For a look question, one side-by-side against
    the R24 frames: `python scripts/sbs_sheet.py out.jpg --ours ... --ref docs/style/r24/...`.
 10. **Final render**:
-    `node scripts/render.mjs <Comp> out/<slug>/video.mp4 4/3 [--no-guard]` (2K, concurrency 2) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
+    `node scripts/render.mjs <Comp> out/<slug>/video.mp4 [--no-guard]` (1080, concurrency 2) (QA layer 1 + `out/<slug>/plan.json`, then h264 crf 16, angle; prints the total time),
     mux with `npx remotion ffmpeg -i out/<slug>/video.mp4 -i videos/<slug>/audio/mix.wav -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 320k out/<slug>/final.mp4`.
     QA: the **video-qa** layers 2, 2b and 3 on the final (`video_qa.py`, `short_qa.py`, `measure.py`, `richness.py`,
     `frames.py` sheets, `line_sheet.py`), written to `out/<slug>/QA.md`. Fix, re-render only the changed part, re-QA

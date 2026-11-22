@@ -18,7 +18,7 @@ Windows 11 laptop: i5-11400H, RTX 3050 4 GB VRAM, 16 GB RAM. Commands must work 
 Script (`videos/<slug>/script.json`, the single source of truth; Claude drafts, the user edits) → voice + word timings → shot plan timed to words → world, cast, captions → sound → pre-render QA (`scripts/preflight.py`) → render, mux, QA. Details in the skill.
 
 ## Formats
-- Shorts: 61–150 s (user 2026-11-22: was 61–90; more room for story and setup), 1080×1920 composition, 30 fps. **Final export 2K 1440×2560** (user 2026-11-21: the 2K file is the final output, its quality and QA are what count); the 720p preview is only for the user's defect review (floating objects, clipping) before the 2K render.
+- Shorts: 61–150 s (user 2026-11-22: was 61–90; more room for story and setup), 1080×1920 composition, 30 fps. **Final export 1080×1920** (user 2026-11-23: 1080p is the default final output, replacing the 2K master of 2026-11-21; its quality and QA are what count); the 720p preview is only for the user's defect review (floating objects, clipping) before the final render.
 - Shorts: burned-in captions, at most 2 white words at a time, no pop; the `*key*` word is coloured: yellow in narration, the speaker's colour on dialogue (user request 2026-11-16; see skill). Long-form (later): 1920×1080, no burned captions (export .srt).
 
 ## Content rules

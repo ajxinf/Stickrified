@@ -1,6 +1,6 @@
 // Render benchmark (user 2026-11-23: "do not assume a setting is faster without measuring it"). Renders one frame range
 // with the given settings and samples CPU, RAM, each GPU's 3D and video-encode load and Chrome's memory once a second.
-// usage: node scripts/bench.mjs <label> [--comp PromiseFlowers] [--frames 360-479] [--scale 4/3] [--concurrency 2]
+// usage: node scripts/bench.mjs <label> [--comp PromiseFlowers] [--frames 360-479] [--scale 1] [--concurrency 2]
 //        [--nvenc <bitrate, e.g. 40M>] [--frames-only]   -> one JSON line appended to out/bench/results.jsonl
 import { renderFrames, renderMedia } from "@remotion/renderer";
 import { spawn } from "node:child_process";
@@ -14,7 +14,7 @@ const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i
 const label = args[0];
 const comp = opt("comp", "PromiseFlowers");
 const [fa, fb] = opt("frames", "360-479").split("-").map(Number);
-const [num, den = "1"] = opt("scale", "4/3").split("/");
+const [num, den = "1"] = opt("scale", "1").split("/");
 const scale = Number(num) / Number(den), concurrency = Number(opt("concurrency", "2")), nvenc = opt("nvenc", null);
 const framesOnly = args.includes("--frames-only");
 const outDir = path.resolve("out/bench");
@@ -59,7 +59,7 @@ const luids = [...new Set(S.flatMap((s) => Object.keys(s.g3d ?? {})))];
 const gpu = Object.fromEntries(luids.map((l) => [l, { "3d": stat(S.map((s) => s.g3d?.[l] ?? 0)), enc: stat(S.map((s) => s.genc?.[l] ?? 0)) }]))
   ;
 const res = {
-  label, comp, frames: `${fa}-${fb}`, scale: opt("scale", "4/3"), concurrency, encoder: framesOnly ? "none (frames only)" : nvenc ? `h264_nvenc ${nvenc}` : "libx264 crf16",
+  label, comp, frames: `${fa}-${fb}`, scale: opt("scale", "1"), concurrency, encoder: framesOnly ? "none (frames only)" : nvenc ? `h264_nvenc ${nvenc}` : "libx264 crf16",
   total_s: +total.toFixed(1), first_frame_s: +(first / 1000).toFixed(1), ms_per_frame: Math.round((total * 1000) / n),
   ms_per_frame_after_load: Math.round(((total * 1000 - first) / Math.max(n - 1, 1))),
   samples: S.length, cpu: stat(S.map((s) => s.cpu)), free_ram_mb: stat(S.map((s) => s.free)), chrome_mb: stat(S.map((s) => s.chrome)), gpu,
