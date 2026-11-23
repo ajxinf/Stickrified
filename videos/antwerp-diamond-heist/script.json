@@ -1,0 +1,259 @@
+{
+  "slug": "antwerp-diamond-heist",
+  "title": "The GTA Heist That Actually Happened in Real Life",
+  "pillar": "Strange true history",
+  "formula": "Strange act (hairspray on a vault sensor) -> why (this weekend you rob it, 100 million dollars; threat: the vault on screen by 1 s) -> the perfect opponent (ten layers: heat, radar, magnets, a 100-million-combination lock) -> video-game framing (setup missions, two years) -> mission one: the fake dealer upstairs, guards stop looking -> mission two: the crew with nicknames, doubter Speedy ('We're gonna get caught') -> finale on Valentine's weekend: layer by layer (hairspray explained with 'You see' + breath on glasses, foam board, tape, aluminium plate, the lock nobody can explain) -> the loot (109 of 189 boxes) -> 'perfect heist' -> one job left: the trash -> reversal: Speedy panics and scatters it in the woods -> the litter-hating owner calls the police -> peak: receipt with your name, a videotape, a half-eaten salami sandwich with DNA -> doubter paid off (Speedy was right, because of Speedy) -> kicker (handcuffs, diamonds never found) -> loop (ten layers beaten with hairspray, undone by a sandwich)",
+  "loop": "Line 1: you spray hairspray on the safest vault on Earth (ten layers of security). Last two: 'Ten layers of security, beaten with hairspray. And undone by a sandwich.'",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "voices": {
+    "speedy": "TX3LPaxmHKxFdv7VOQHJ"
+  },
+  "voiceNotes": {
+    "speedy": "Liam (ElevenLabs premade): young man, can go high and jittery: the anxious best friend who panics at everything"
+  },
+  "facts": [
+    "True history: every stated fact is in sources.md. Main sources: Wikipedia 'Antwerp diamond heist' (which draws on the book Flawless, the police-side account) and CJR 2010 on the Wired 2009 story.",
+    "'You' = the inside man (Leonardo Notarbartolo, the convicted leader, a public figure in true facts only; never named in the narration, no invented thoughts beyond 'you visit until the guards stop looking').",
+    "Notarbartolo's own Wired account (hidden camera in the vault, insurance fraud, only $20 million) is disputed by the police and is NOT used as fact. How the combination lock was beaten is unknown, and the narration says so.",
+    "Speedy's two lines are invented, short and vague (Speedy is described in every account as anxious and paranoid; he scattered the trash).",
+    "No game logos, game art or game characters: the 'heist mission' feel is our own (mission cards live on props: a notebook, a crew board).",
+    "Numbers: ten layers (the motif: hook, finale count, loop); a hundred million (combinations and dollars, the joke); 109 of 189 boxes; five days to the arrest."
+  ],
+  "lines": [
+    {
+      "narration": "You're spraying *hairspray* on the safest vault on Earth.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open, two floors underground: a pink hairspray can in your hand hisses a cloud onto a small white sensor box high on a concrete wall. Hard cut at ~1 s: the giant round steel vault door, its big dial and spoked handle, lit by one cold ceiling lamp, a red alarm light blinking.",
+      "camera": "Macro on the can and sensor, hard cut to a low wide on the vault door",
+      "onScreenText": "",
+      "gag": "The sensor gets a cloud of glittery hairspray right in its face"
+    },
+    {
+      "narration": "Because this weekend, you and four friends are going to rob it of over a hundred million *dollars*.",
+      "spoken": "Because this weekend, you and four friends are going to rob it of over a hundred million dollars.",
+      "audioTag": "mischievous, excited",
+      "scene": "Back at you on a ladder: you look over your shoulder and grin (scheming). A desk calendar on a shelf: February 2003, the 15th circled with a little heart. Behind the vault door's window: shelves of glittering boxes.",
+      "camera": "Push in on your scheming grin, tilt to the calendar",
+      "onScreenText": "Calendar: FEBRUARY 2003, a heart on the 15th",
+      "gag": "Your grin glints like a diamond"
+    },
+    {
+      "narration": "This vault has ten layers of security. Heat sensors. Radar. Magnets on the *door*.",
+      "audioTag": "dramatic",
+      "scene": "Up on the street: a grey diamond-district building at night, a brass plate DIAMOND CENTRE. The camera drops through the floors (cross-section cut-away) to the vault two floors down; ten glowing layer rings light up around it one by one: a red heat cone, radar ripples, a blue magnet field over the door.",
+      "camera": "Crane down through a cross-section of the building",
+      "onScreenText": "Brass plate: DIAMOND CENTRE · ANTWERP",
+      "gag": "Ten glowing shields stack around the vault like an onion"
+    },
+    {
+      "narration": "And a lock with a hundred million combinations. One for every *dollar*.",
+      "spoken": "And a lock with a hundred million combinations. One for every dollar.",
+      "audioTag": "amused",
+      "scene": "Macro on the vault dial: it spins on its own and a waterfall of numbers spills out of it and piles on the floor.",
+      "camera": "Macro on the dial, tilt down to the pile of numbers",
+      "onScreenText": "",
+      "gag": "Numbers pour out of the dial like a slot machine jackpot"
+    },
+    {
+      "narration": "So you play it like a video game heist, and you've been doing the setup missions for two *years*.",
+      "spoken": "So you play it like a video game heist, and you've been doing the setup missions for two years.",
+      "audioTag": "playful",
+      "scene": "Your hotel room wall: a crew board of photos and string, a notebook with MISSION 1, MISSION 2, FINALE ticked off; a pile of empty espresso cups that grew over two years beside it.",
+      "camera": "Track along the board",
+      "onScreenText": "Notebook: MISSION 1 · MISSION 2 · FINALE",
+      "gag": "The espresso-cup tower is taller than you"
+    },
+    {
+      "narration": "Mission one: rent an office upstairs and pretend to be a diamond *dealer*.",
+      "audioTag": "excited",
+      "scene": "You in a sharp suit at a little office desk, a jeweller's loupe screwed in your eye, holding a tiny diamond up to the lamp and nodding way too seriously. A nameplate on the door: DIAMOND TRADING.",
+      "camera": "MCU, quick push on the loupe",
+      "onScreenText": "Office door sign: DIAMOND TRADING",
+      "gag": "Your loupe eye is three times bigger than the other one"
+    },
+    {
+      "narration": "Your office comes with a box in the vault. So you visit, again and again, until the guards stop *looking*.",
+      "audioTag": "mischievous",
+      "scene": "The guard desk at the vault stairs, three quick passes on one framing: day one the guard stares you down; day two he nods; day three he waves you through without looking up from his newspaper.",
+      "camera": "Locked-off match cut on the same framing, three passes",
+      "onScreenText": "",
+      "gag": "By the third pass the guard waves without lowering the newspaper"
+    },
+    {
+      "narration": "Mission two: the crew. The Genius does alarms. The Monster picks locks. And the King of Keys can copy any *key*.",
+      "audioTag": "building excitement",
+      "scene": "Crew reveal, one MCU each on the beat: The Genius (glasses, tool roll, wires), The Monster (huge, tiny lock pick in giant fingers), the King of Keys (older, a ring of hundreds of keys on his belt, jangling).",
+      "camera": "Three hard cuts, each a quick push-in",
+      "onScreenText": "Crew board name cards: THE GENIUS · THE MONSTER · THE KING OF KEYS",
+      "gag": "The Monster's lock pick looks like a toothpick in his hand"
+    },
+    {
+      "narration": "And Speedy, your best friend, who panics at *everything*.",
+      "audioTag": "amused",
+      "scene": "Speedy (skinny, cap, sweat drop) jumps a foot in the air when a pigeon lands next to him on the street.",
+      "camera": "Medium, kick on the jump",
+      "onScreenText": "Crew board name card: SPEEDY",
+      "gag": "Speedy jumps at a pigeon"
+    },
+    {
+      "narration": "We're gonna get *caught*.",
+      "speaker": "speedy",
+      "audioTag": "panicked",
+      "scene": "Speedy clutching your sleeve in the hotel room, eyes ring-shocked, sweating. You pat his shoulder, smug.",
+      "camera": "Two-shot, tight",
+      "onScreenText": "",
+      "gag": "Speedy's sweat drips onto your shoe"
+    },
+    {
+      "narration": "Then, on Valentine's weekend, it's time for the *finale*.",
+      "audioTag": "dramatic, booming",
+      "scene": "Night, the diamond district street: five figures walk out of the dark in a line toward the building, slow-motion, the Monster ducking under a shop awning.",
+      "camera": "Low tracking shot ahead of the crew",
+      "onScreenText": "A shop window full of Valentine's hearts",
+      "gag": "The heroic slow walk, and Speedy keeps checking behind him"
+    },
+    {
+      "narration": "Layer one, the heat sensor. You see, your hairspray coated its lens, like breath on cold glasses. It's *blind*.",
+      "audioTag": "urgent, building",
+      "scene": "Inside the dark vault corridor: the sensor box, its lens glazed and blurry. Insert: a pair of glasses fogging up from a breath, the same blur. Its red light stays dead as the crew walks under it.",
+      "camera": "Push on the sensor, hard cut to the glasses insert, match cut back",
+      "onScreenText": "",
+      "gag": "The sensor's view goes blurry like fogged glasses"
+    },
+    {
+      "narration": "Layer two: The Genius shuffles past the beam behind a sheet of foam, like a kid hiding behind a pizza *box*.",
+      "audioTag": "playful",
+      "scene": "The Genius tiptoes sideways behind a big white foam board, only his eyes and fingertips showing, past a second sensor.",
+      "camera": "Side-on tracking at his speed",
+      "onScreenText": "",
+      "gag": "His fingers and eyes peek over the foam like a cartoon spy"
+    },
+    {
+      "narration": "Layer three, the light sensor: *tape*.",
+      "audioTag": "quick",
+      "scene": "Macro: a strip of tape slaps over a little light sensor; its green light goes dark.",
+      "camera": "Macro, quick",
+      "onScreenText": "",
+      "gag": "One strip of tape, and the light just goes out"
+    },
+    {
+      "narration": "Then the magnets: an aluminium plate taped on, so the alarm thinks the door never *opened*.",
+      "spoken": "Then the magnets: an aluminium plate taped on, so the alarm thinks the door never opened.",
+      "audioTag": "urgent, building",
+      "scene": "The Genius tapes a shiny plate across the two magnet blocks on the vault door frame; the blue magnet field glows steady through it.",
+      "camera": "CU on the door frame, rack focus to the plate",
+      "onScreenText": "",
+      "gag": "The magnet field glows a happy steady blue"
+    },
+    {
+      "narration": "And the hundred million lock? It just... opens. Nobody knows how, even *today*.",
+      "spoken": "And the hundred million lock? It just... opens. Nobody knows how, even today.",
+      "audioTag": "dramatic, alarmed",
+      "scene": "The dial clicks, the spoked handle turns, the huge round door swings open, warm light and a sparkle pouring out over the crew's faces.",
+      "camera": "Low wide, slow push as the door swings",
+      "onScreenText": "",
+      "gag": "A sparkle of light floods out like a treasure chest"
+    },
+    {
+      "narration": "Inside: 189 boxes. By sunrise, 109 are open, and you're ankle-deep in *diamonds*.",
+      "spoken": "Inside: a hundred and eighty-nine boxes. By sunrise, a hundred and nine are open, and you're ankle-deep in diamonds.",
+      "audioTag": "excited",
+      "scene": "The Monster cracks box after box down a wall of small steel boxes, doors hanging open down the rows; the floor is littered with gems, gold and papers up to your ankles.",
+      "camera": "Fast track down the box wall, crane down to your shoes in the gems",
+      "onScreenText": "",
+      "gag": "You wade through diamonds like a ball pit"
+    },
+    {
+      "narration": "The perfect heist. Now there's just one job left: get rid of the *trash*.",
+      "audioTag": "proud",
+      "scene": "Dawn in the safe house: you, proud, next to a heap of black garbage bags full of empty boxes, tape and food wrappers.",
+      "camera": "Medium on your proud face, pull back to reveal the garbage heap",
+      "onScreenText": "",
+      "gag": "The trash pile is bigger than the loot"
+    },
+    {
+      "narration": "So you and Speedy drive it out to a little forest by the *highway*.",
+      "audioTag": "quick",
+      "scene": "A small car in morning mist, pulled over beside woods next to a motorway sign E19; the trunk full of bags.",
+      "camera": "Wide, then cut to the trunk opening",
+      "onScreenText": "Road sign: E19",
+      "gag": "The trunk can barely close on the bags"
+    },
+    {
+      "narration": "But Speedy panics. Instead of burning it, he flings it all over the *woods*.",
+      "audioTag": "panicked",
+      "scene": "Speedy spins on the spot and hurls bag after bag into the trees; papers and wrappers rain down everywhere.",
+      "camera": "Medium, fast whip as a bag flies past the lens",
+      "onScreenText": "",
+      "gag": "Trash rains over the forest like confetti"
+    },
+    {
+      "narration": "Just *drive*!",
+      "speaker": "speedy",
+      "audioTag": "panicked",
+      "scene": "Speedy yanks you back to the car by the sleeve; you look back at the mess, worried.",
+      "camera": "Two-shot, handheld",
+      "onScreenText": "",
+      "gag": "Your face goes from proud to worried"
+    },
+    {
+      "narration": "The next morning, the man who owns those woods finds it. He really hates litter. So he calls the *police*.",
+      "audioTag": "amused",
+      "scene": "An old man with a cardigan and a walking stick stares at the trash in his trees, face going red with steam puffs; he grabs his phone.",
+      "camera": "Medium on his face, he turns to the phone",
+      "onScreenText": "",
+      "gag": "Steam puffs out of his ears"
+    },
+    {
+      "narration": "In the pile: envelopes from the vault. A videotape. A receipt with your *name* on it.",
+      "audioTag": "urgent, building",
+      "scene": "Gloved police hands pull items out of the leaves one by one: a vault envelope, a videotape, a crumpled receipt; on the last, a name is circled in red.",
+      "camera": "Three macro inserts, hard cuts",
+      "onScreenText": "Envelope: DIAMOND CENTRE",
+      "gag": "The receipt is circled in red marker"
+    },
+    {
+      "narration": "And a half-eaten salami *sandwich*, covered in your crew's DNA.",
+      "spoken": "And a half-eaten... salami sandwich, covered in your crew's DNA.",
+      "audioTag": "dramatic, booming",
+      "scene": "The hero shot: a gloved hand lifts a half-eaten salami sandwich out of the leaves into a shaft of morning light, like a trophy; the bite mark faces the lens.",
+      "camera": "Slow push in on the sandwich, low angle, light flare",
+      "onScreenText": "Evidence bag tag",
+      "gag": "The sandwich gets a holy glow, like it's the real diamond"
+    },
+    {
+      "narration": "Speedy was right. You do get caught. Because of *Speedy*.",
+      "audioTag": "exasperated",
+      "scene": "Back in the hotel room: you turn slowly to Speedy; Speedy, mid-bite of another sandwich, freezes.",
+      "camera": "Two-shot, cut to Speedy frozen mid-bite",
+      "onScreenText": "",
+      "gag": "Speedy is eating another sandwich"
+    },
+    {
+      "narration": "Five days later, you're in *handcuffs*. Most of the diamonds are never *found*.",
+      "spoken": "Five days later, you're in handcuffs. Most of the diamonds are never found.",
+      "audioTag": "dramatic",
+      "scene": "Your office door bursts open with police; cut to a newspaper on the guard's desk: HEIST OF THE CENTURY, the guard finally looking up.",
+      "camera": "Hard cut to the newspaper, push in",
+      "onScreenText": "Newspaper: HEIST OF THE CENTURY",
+      "gag": "The guard lowers his newspaper at last"
+    },
+    {
+      "narration": "Ten layers of security, beaten with *hairspray*.",
+      "audioTag": "amused",
+      "scene": "The cold-open sensor again, same framing, still glazed with hairspray.",
+      "camera": "Mirror of the opening macro",
+      "onScreenText": "",
+      "gag": "The fogged sensor, same framing as line 1"
+    },
+    {
+      "narration": "And undone by a *sandwich*.",
+      "audioTag": "deadpan",
+      "scene": "Close-up on your face behind bars, deadpan; the sandwich in its evidence bag on a table, blurred behind you.",
+      "camera": "CU, hold",
+      "onScreenText": "",
+      "gag": "Your deadpan stare with the sandwich behind you"
+    }
+  ]
+}
