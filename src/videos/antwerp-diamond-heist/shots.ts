@@ -108,7 +108,7 @@ const DIAL = V(0, 1.8, 0.53);
 const E1 = P(DIAL.clone().add(V(0.22, 0.05, 0.82)), DIAL.clone(), 38);
 shot("E1-the-dial", B.dollar - 21, "vaultNight", [], (F) => creep(E1, F, L(5, 0), B.dollar - 21, 0.12), { subject: undefined, dof: close(0.85), fx: ["digits"], props: [fxOn("digits spill", L(5, 0) + 2), fxOn("digit waterfall", L(5, 6))] });
 // does: tilt down to the floor: a heap of numbers piles up in front of the door
-shot("E2-one-per-dollar", L(6, 0), "vaultNight", [], (F) => glideCam(P(V(0.35, 1.5, 2.6), V(0, 1.45, 0.6), 44), P(V(0.4, 1.3, 2.7), V(0, 0.3, 0.85), 44), F, B.dollar - 21, B.dollar + 36), { subject: undefined, wide: true, dof: NONE, fx: ["digits"] });
+shot("E2-one-per-dollar", L(6, 0), "vaultNight", [], (F) => glideCam(P(V(0.35, 1.5, 2.6), V(0, 1.45, 0.6), 44), P(V(0.4, 1.3, 2.7), V(0, 0.3, 0.85), 44), F, B.dollar - 21, B.dollar + 46), { subject: undefined, wide: true, dof: NONE, fx: ["digits"] });
 
 // ================================================================== line 6: two years of setup missions
 // does: the crew board slides by: photos, a vault floor plan, red string, the MISSION 1 / MISSION 2 / FINALE page
@@ -133,8 +133,8 @@ const KEY_A = V(0.95, 0.8, 7.75);
 const keyProp = free("vault key", vaultKey, (o, F) => { const h = handAt(youCounter, F, V(-0.3, 1.12, 8.3), "right"); o.position.copy(lerpV(KEY_A, h.clone().setY(0.8), span(F, L(8, 9) + 4, B.vaultKey))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
 shot("H2-vault-key", L(9, 0), "vaultDay", [youCounter, guard], (F) => creep(P(V(-0.3, 1.12, 8.3), V(0.35, 0.8, 7.75), 36), F, L(8, 9), L(9, 0), 0.15), { subject: undefined, dof: close(1.0), props: [keyProp], allow: { ...SEATED, "Subject size": "insert on the key sliding across the desk" } });
 // does: one locked framing, three visits: day one the guard stares you down; day ten he nods; day five hundred he waves you through from behind his newspaper (the calendar flips each time)
-const I = P(V(-1.0, 1.5, 3.6), V(0.6, 1.1, 7.6), 50);
-const Ic = (a: number, b: number) => (F: number) => creep(I, F, a, b, 0.05, 0, 0.1);
+const I = P(V(-1.0, 1.5, 3.6), V(0.85, 1.25, 7.6), 50);
+const Ic = (a: number, b: number) => (F: number) => creep(I, F, a, b, 0.1, 0, 0.15);
 const paperHeld = (headline: string, when: (F: number) => boolean) => held("newspaper", () => newspaper(headline), guard, "left", () => I, { fwd: 0.08, when });
 shot("I1-day-one", L(9, 8) - 3, "vaultDay", [youVisits, guard], Ic(L(9, 0), L(9, 8) - 3), { subject: "guard", wide: true, dof: NONE });
 shot("I2-day-ten", L(9, 12) - 4, "vaultDay", [youVisits, guard], Ic(L(9, 8) - 3, L(9, 12) - 4), { subject: "guard", wide: true, dof: NONE });
@@ -191,7 +191,7 @@ shot("O2-tape", L(17, 0), "vaultNight", [], (F) => creep(P(LIGHT_S.clone().add(V
 // does: close on the door frame: the blue magnetic field humming between the two blocks
 shot("P1-magnets", B.plate - 2, "vaultNight", [], (F) => creep(P(MAG.clone().add(V(-0.25, 0.0, 1.05)), MAG.clone().add(V(-0.18, 0, 0.08)), 36), F, L(17, 0), B.plate, 0.12), { subject: undefined, dof: close(1.1) });
 // does: The Genius tapes the aluminium plate across both blocks; the field stays a happy steady blue
-const P2C = P(V(0.55, 1.62, 2.95), V(1.05, 2.0, 0.7), 46);
+const P2C = P(V(0.55, 1.62, 2.95), V(1.0, 1.42, 0.7), 46);
 const plateHeld = held("aluminium plate", aluPlate, geniusVault, "right", () => P2C, { when: (F) => F < B.plate - 1 });
 shot("P2-the-plate", L(18, 0), "vaultNight", [geniusVault], (F) => creep(P2C, F, B.plate - 2, L(18, 0), 0.1), { dof: mid(1.9), props: [plateHeld], allow: SIGN });
 
@@ -265,7 +265,7 @@ shot("X2-another-sandwich", L(28, 0), "hideDawn", [speedyHide], (F) => creep(X2,
 const Y1 = P(V(1.2, 1.45, 0.2), V(-1.05, 1.15, 0.5), 50);
 shot("Y1-handcuffs", L(28, 6), "office", [youCuffed, copOffice], impact((F) => creep(Y1, F, L(28, 0), L(28, 6), 0.08), L(28, 0) + 8, 0.025), { subject: "you", dof: mid(2.6), kicks: [[8, 15]], props: [held("handcuffs", cuffs, youCuffed, "both", () => Y1, { when: (F) => F >= B.cuffs - 2, fwd: 0.08 })] });
 // does: the guard finally lowers his newspaper: HEIST OF THE CENTURY, and he looks up at last
-const Y2 = P(V(-0.35, 1.5, 8.05), V(1.35, 1.05, 7.55), 42);
+const Y2 = P(V(-0.35, 1.6, 8.05), V(1.6, 1.3, 7.55), 42);
 shot("Y2-never-found", L(29, 0), "vaultDay", [guard], (F) => creep(Y2, F, L(28, 6), L(29, 0), 0.1), { subject: undefined, dof: close(1.7), props: [held("headline", () => newspaper("HEIST OF THE CENTURY"), guard, "left", () => Y2 as CamPose, { fwd: 0.1 })], allow: { ...SEATED, "Subject covered": "the newspaper comes down off his face (the reveal)" } });
 // does: the cold-open sensor again, same framing, still glazed with hairspray
 shot("Z1-beaten-by-hairspray", L(30, 0), "vaultNight", [], (F) => creep(A1, F, L(29, 0), L(30, 0), 0.12), { subject: undefined, dof: close(0.9), fx: ["spray"], props: [canFree] });

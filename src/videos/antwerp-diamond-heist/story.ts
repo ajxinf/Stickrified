@@ -146,7 +146,7 @@ export const youMirror = role("you", youSuit, YOU_MIRROR, (F) => {
 export const YOU_DESK = V(-0.8, 0, -0.95);
 export const youDesk = role("you", youSuit, YOU_DESK, (F) => st(alive(pose([[0, POSES.hips], [L(8, 3) - 4, { ...POSES.point, arms: [REST.arms[0], { at: [0.6, 0.05], grip: "point" }] }], [B.dealer - 4, { ...POSES.hips, tilt: 8, bob: 6 }]], F), F, 3, [0.5, 0.2]), F, 3, [[0, "proud"], [L(8, 3), "excited"], [B.dealer, "smug"]], { heading: 0.5 }));
 // line 8b: your open hand at the guard desk (the key slides into it)
-export const YOU_COUNTER = V(-0.05, 0, 7.75);
+export const YOU_COUNTER = V(-0.2, 0, 7.75);
 export const youCounter = role("you", youSuit, YOU_COUNTER, (F) => st({ ...REST, arms: [REST.arms[0], { at: [0.55, 0.2], grip: "open" }] }, F, 3, [[0, "smug"], [B.vaultKey, "grin"]], { heading: Math.PI / 2 }));
 // line 9: three visits on one framing, each a walk from the stairs toward the vault
 const VISIT = (a: number, b: number) => walker(V(-0.2, 0, 8.8), V(-0.15, 0, 6.2), a, b);
@@ -266,15 +266,15 @@ export const speedyForest = role("speedy", speedyLook, (F) => (F < L(22, 0) ? SP
   return st({ ...REST, arms: [{ at: [0.62, -0.05], grip: "fist" }, REST.arms[1]], sway: -10, tilt: 8 }, F, 79, [[0, "scared"]], { heading: -0.6, fx: { talk: talk(F, 23), sweat: (F % 16) / 16 } });
 });
 // --- the guard
-const PAPER: Pose = { ...SIT, arms: arms([-0.28, -0.05], [-0.18, -0.05], { gl: "mitt", gr: "mitt", front: true }) };
+const PAPER: Pose = { ...REST, arms: arms([-0.28, -0.05], [-0.18, -0.05], { gl: "mitt", gr: "mitt", front: true }) };
 export const guard = role("guard", guardLook, GUARD_SEAT, (F) => {
-  if (F >= L(28, 0)) return st(pose([[0, PAPER], [B.found - 14, { ...SIT, arms: arms([-0.28, 0.25], [-0.18, 0.25], { gl: "mitt", gr: "mitt", front: true }) }]], F), F, 83, [[0, "neutral"], [B.found - 6, "shocked"]], { heading: -Math.PI / 2 - 0.3 });
-  if (F < L(9, 0)) return st({ ...SIT, arms: [REST.arms[0], { at: [0.25 + 0.4 * span(F, L(8, 9) + 4, B.vaultKey), 0.15], grip: "open" }] }, F, 83, [[0, "suspicious"], [B.vaultKey, "neutral"]], { heading: -Math.PI / 2 });
+  if (F >= L(28, 0)) return st(pose([[0, PAPER], [B.found - 14, { ...REST, arms: arms([-0.28, 0.25], [-0.18, 0.25], { gl: "mitt", gr: "mitt", front: true }) }]], F), F, 83, [[0, "neutral"], [B.found - 6, "shocked"]], { heading: -Math.PI / 2 - 0.3 });
+  if (F < L(9, 0)) return st({ ...REST, arms: [REST.arms[0], { at: [0.25 + 0.4 * span(F, L(8, 9) + 4, B.vaultKey), 0.15], grip: "open" }] }, F, 83, [[0, "suspicious"], [B.vaultKey, "neutral"]], { heading: -Math.PI / 2 });
   // line 9: day 1 stares, day 10 nods, day 500 waves from behind the paper
-  if (F < B.day500 - 8) return st({ ...SIT, tilt: F >= B.day10 && F < B.day10 + 16 ? 12 * Math.sin((F - B.day10) / 16 * Math.PI) : 0 }, F, 83, [[0, "suspicious"], [B.day1 + 10, "angry"], [B.day10 - 4, "neutral"], [B.day10 + 16, "relieved"]], { heading: -Math.PI / 2 - 0.25 });
+  if (F < B.day500 - 8) return st({ ...REST, tilt: F >= B.day10 && F < B.day10 + 16 ? 12 * Math.sin((F - B.day10) / 16 * Math.PI) : 0 }, F, 83, [[0, "suspicious"], [B.day1 + 10, "angry"], [B.day10 - 4, "neutral"], [B.day10 + 16, "relieved"]], { heading: -Math.PI / 2 - 0.25 });
   const w = Math.sin(F * 0.5) * 0.1;
-  return st({ ...SIT, arms: [{ at: [-0.28, -0.05], grip: "mitt", layer: "front" }, { at: [0.5 + w, -0.6], grip: "open" }] }, F, 83, [[0, "relieved"], [B.day500, "tired"]], { heading: -Math.PI / 2 - 0.25 });
-}, { sit: true });
+  return st({ ...REST, arms: [{ at: [-0.28, -0.05], grip: "mitt", layer: "front" }, { at: [0.5 + w, -0.6], grip: "open" }] }, F, 83, [[0, "relieved"], [B.day500, "tired"]], { heading: -Math.PI / 2 - 0.25 });
+});
 // --- the old man, the police
 export const oldMan = role("oldman", oldManLook, (F) => (F < L(24, 9) ? lerpV(OLD_MAN.clone().add(V(1.6, 0, 1.4)), OLD_MAN, span(F, L(24, 0), L(24, 8))) : OLD_MAN.clone()), (F) => {
   const walk = F < L(24, 9) ? walkPose(2.1 * span(F, L(24, 0), L(24, 8)), 0.7) : REST;

@@ -26,7 +26,7 @@ export const RADAR = V(0, 2.76, 3.4);
 export const MAG = V(1.4, 1.95, 0.04); // magnet block on the wall beside the door's free edge
 export const LADDER = V(1.45, 0, 1.75);
 export const DESK = V(0.65, 0, 7.6); // guard desk, long side along z, front toward -x
-export const GUARD_SEAT = V(1.35, 0, 7.55);
+export const GUARD_SEAT = V(1.6, 0, 7.55); // where the guard stands behind his desk
 export const CALENDAR = V(2.17, 1.62, 6.55);
 export const STAIRS_Z = 9.6;
 export const EMERGENCY = V(0, 2.62, 0.45);
@@ -292,7 +292,6 @@ export const vault = (withLadder = false) => {
   // the guard post: desk, lamp, chair, a monitor, the calendar
   g.add(place(model("metal_office_desk", { collider: "desk" }), DESK.x, 0, DESK.z, -Math.PI / 2));
   g.add(place(model("desk_lamp_arm_01", { collider: false, scale: 0.9 }), DESK.x + 0.15, 0.79, DESK.z + 0.7, -1.9));
-  g.add(place(model("painted_wooden_chair_01", { collider: "chair" }), GUARD_SEAT.x + 0.5, 0, GUARD_SEAT.z, -Math.PI / 2)); // front (-0.27) 23 cm behind the seated card, back clear of the wall
   g.add(place(new Mesh(new BoxGeometry(0.42, 0.32, 0.3), colMat("#2a2c32", { spec: 0.4 })), DESK.x + 0.15, 0.95, DESK.z - 0.8, -Math.PI / 2));
   g.add(place(new Mesh(new PlaneGeometry(0.36, 0.26), unlit("cctv", () => canvasTex(256, 192, (c) => {
     c.fillStyle = "#1a2a2a"; c.fillRect(0, 0, 256, 192); c.strokeStyle = "#6a9a8a"; c.lineWidth = 3;
