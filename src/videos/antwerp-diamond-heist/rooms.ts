@@ -15,12 +15,17 @@ import { MATS, V, boardTex, box, canvasTex, colMat, glassMat, litTex, place, pla
  *   interview   the police room (line 30). Lighting idea: one hard lamp over the table, cold green-grey walls.
  *               Materials: painted_concrete, concrete floor, steel table.
  */
-const room = (o: { x0: number; x1: number; z0: number; z1: number; h: number }, floor: ReturnType<typeof MATS.carpet>, wall: ReturnType<typeof MATS.carpet>, ceil: ReturnType<typeof MATS.carpet>) => {
+const room = (o: { x0: number; x1: number; z0: number; z1: number; h: number }, floor: ReturnType<typeof MATS.carpet>, wall: ReturnType<typeof MATS.carpet>, ceil: ReturnType<typeof MATS.carpet>, door?: { z0: number; z1: number; h: number }) => {
   const g = new Group();
   g.add(slab(o.x0, o.x1, o.z0, o.z1, 0, floor));
   const k = new Kit();
   k.box(wall, o.x1 - o.x0, o.h, 0.12, (o.x0 + o.x1) / 2, o.h / 2, o.z0 - 0.06);
-  k.box(wall, 0.12, o.h, o.z1 - o.z0, o.x0 - 0.06, o.h / 2, (o.z0 + o.z1) / 2);
+  if (door) {
+    // the left wall in three pieces round the doorway
+    k.box(wall, 0.12, o.h, door.z0 - o.z0, o.x0 - 0.06, o.h / 2, (o.z0 + door.z0) / 2);
+    k.box(wall, 0.12, o.h, o.z1 - door.z1, o.x0 - 0.06, o.h / 2, (door.z1 + o.z1) / 2);
+    k.box(wall, 0.12, o.h - door.h, door.z1 - door.z0, o.x0 - 0.06, (o.h + door.h) / 2, (door.z0 + door.z1) / 2);
+  } else k.box(wall, 0.12, o.h, o.z1 - o.z0, o.x0 - 0.06, o.h / 2, (o.z0 + o.z1) / 2);
   k.box(wall, 0.12, o.h, o.z1 - o.z0, o.x1 + 0.06, o.h / 2, (o.z0 + o.z1) / 2);
   k.box(ceil, o.x1 - o.x0 + 0.24, 0.1, o.z1 - o.z0, (o.x0 + o.x1) / 2, o.h + 0.05, (o.z0 + o.z1) / 2);
   k.box(MATS.trim(), o.x1 - o.x0, 0.1, 0.03, (o.x0 + o.x1) / 2, 0.05, o.z0 + 0.015);
@@ -68,7 +73,7 @@ export const OFFICE_CHAIR = V(0.35, 0, -1.75);
 export const MIRROR = V(2.37, 1.5, 0.6); // on the right wall, facing -x
 export const OFFICE_DOOR = V(-2.38, 0, 1.3); // the door on the left wall (hinge at its +z edge)
 export const office = () => {
-  const g = room(OFFICE, MATS.woodFloor(), MATS.wallPaint("#cfe0d0"), MATS.wallPaint("#f2efe8"));
+  const g = room(OFFICE, MATS.woodFloor(), MATS.wallPaint("#cfe0d0"), MATS.wallPaint("#f2efe8"), { z0: OFFICE_DOOR.z - 0.47, z1: OFFICE_DOOR.z + 0.47, h: 2.12 });
   windowOn(g, V(0.35, 1.55, OFFICE.z0 + 0.01), 0, 1.7, 1.3, "day");
   g.add(lightPatch(V(0.3, 0.012, -0.2), V(0, 1, 0), 1.7, 1.4, "#ffd9a0", 0.5, [2, 2]));
   g.add(lightShafts(V(0.35, 1.7, OFFICE.z0 + 0.15), V(-0.1, -0.7, 1).normalize(), { length: 2.4, width: 1.2, color: "#ffe2b0", strength: 0.12, count: 5 }));
