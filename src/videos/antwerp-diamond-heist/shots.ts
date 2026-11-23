@@ -221,7 +221,7 @@ shot("S1-perfect-heist", L(20, 7), "hideDawn", [youHide], (F) => creep(P(V(0.6, 
 // does: pull back: the trash heap is bigger than the loot bag on the table; your face drops on "trash"
 shot("S2-the-trash", L(21, 0), "hideDawn", [youHide], (F) => glideCam(P(V(0.6, 1.3, 1.55), V(-0.6, 1.05, -1.0), 44), P(V(1.5, 1.65, 2.25), V(-0.5, 0.75, -0.7), 50), F, L(20, 7), L(20, 11)), { wide: true, dof: NONE });
 // does: misty dawn by the motorway: the little car pulls up on the verge under the blue E19 sign
-shot("T1-the-woods", B.forest + 2, "forest", [youForest, speedyForest], (F) => creep(P(V(-0.5, 1.5, 0.9), V(-3.6, 1.05, -4.4), 46), F, L(21, 0), B.forest, 0.08), { wide: true, subject: undefined, dof: NONE, fx: ["forestMist"] });
+shot("T1-the-woods", B.forest + 2, "forest", [youForest, speedyForest], (F) => creep(P(V(-0.5, 1.5, 0.9), V(-3.6, 1.05, -4.4), 46), F, L(21, 0), B.forest, 0.08), { wide: true, subject: undefined, dof: NONE });
 // does: the hatch pops up on a trunk stuffed with bags; Speedy beside it, sweating
 const HATCH_CAM = P(V(-6.6, 1.45, -1.6), V(-4.9, 1.2, -3.9), 46);
 shot("T2-the-trunk", L(22, 0), "forest", [speedyForest, youForest], (F) => creep(HATCH_CAM, F, B.forest + 2, L(22, 0), 0.1), { wide: true, subject: "speedy", dof: mid(2.6), fx: ["forestMist"], allow: { "Text in frame": "the motorway sign far behind the trees, dressing" } });
@@ -232,7 +232,7 @@ shot("T3-flings", B.flings + 10, "forest", [speedyForest, youForest], (F) => cre
 // does: wide: paper and bags rain over the clearing like confetti
 shot("T4-confetti", L(23, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(2.6, 1.6, 3.6), V(-0.8, 1.5, -1.5), 52), F, B.flings + 10, L(23, 0), 0.06), { wide: true, subject: "speedy", dof: NONE, fx: ["forestMist", "trashRain"] });
 // does: Speedy yanks you back to the car by the sleeve; you look back at the mess
-shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-2.95, 1.25, -3.25), 48), F, L(23, 0), L(24, 0), 0.08), { dof: mid(2.2), fx: ["forestMist"] });
+shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-2.95, 1.25, -3.25), 48), F, L(23, 0), L(24, 0), 0.08), { dof: mid(2.2) });
 
 // ================================================================== line 24-26: the man who hates litter
 // does: the next morning an old man with a stick walks into the clearing and stops dead at the trash
