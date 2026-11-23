@@ -17,7 +17,7 @@
     "'You' = the inside man (Leonardo Notarbartolo, the convicted leader, a public figure in true facts only; never named in the narration, no invented thoughts beyond 'you visit until the guards stop looking').",
     "Notarbartolo's own Wired account (hidden camera in the vault, insurance fraud, only $20 million) is disputed by the police and is NOT used as fact. How the combination lock was beaten is unknown, and the narration says so.",
     "Speedy's two lines are invented, short and vague (Speedy is described in every account as anxious and paranoid; he scattered the trash).",
-    "No game logos, game art or game characters: the 'heist mission' feel is our own (mission cards live on props: a notebook, a crew board).",
+    "GTA is named in line 3 as a comparison only. No game logos, game art, HUD or game characters: the 'heist mission' feel is our own (mission cards live on props: a notebook, a crew board).",
     "Numbers: ten layers (the motif: hook, finale count, loop); a hundred million (combinations and dollars, the joke); 109 of 189 boxes; five days to the arrest."
   ],
   "lines": [
@@ -39,12 +39,13 @@
       "gag": "A sandwich lit like a horror-movie villain"
     },
     {
-      "narration": "It's the biggest diamond heist in history, and you're running it like a video *game*.",
+      "narration": "It's the biggest diamond heist in history, and you're running it like it's *GTA*.",
       "audioTag": "excited",
       "scene": "You on the ladder under the sensor grin over your shoulder (scheming). A desk calendar on a shelf: February 2003, the 15th circled with a little heart. Behind the vault door's window: shelves of glittering boxes.",
       "camera": "Push in on your scheming grin, tilt to the calendar",
       "onScreenText": "Calendar: FEBRUARY 2003, a heart on the 15th",
-      "gag": "Your grin glints like a diamond"
+      "gag": "Your grin glints like a diamond",
+      "spoken": "It's the biggest diamond heist in history, and you're running it like it's G-T-A."
     },
     {
       "narration": "Ten layers of security: heat sensors, radar, magnets on the *door*.",
