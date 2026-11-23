@@ -182,7 +182,7 @@ const litter = () => {
   const g = new Group();
   g.name = "litter";
   const n = 220, o = new Object3D();
-  const sheets = new InstancedMesh(new PlaneGeometry(0.2, 0.14), colMat("#f2ece2", { rough: 0.9 }), n);
+  const sheets = new InstancedMesh(new PlaneGeometry(0.2, 0.14), colMat("#cfc8bc", { rough: 0.9 }), n);
   const wraps = new InstancedMesh(new PlaneGeometry(0.12, 0.09), colMat("#d8423a", { rough: 0.6, spec: 0.4 }), 60);
   const at = (i: number, s: number) => { const a = rnd(i + s) * 6.28, r = Math.pow(rnd(i * 3 + s), 0.7) * 5.5; return V(PILE.x + Math.cos(a) * r, 0.015 + rnd(i + s + 5) * 0.02, PILE.z + Math.sin(a) * r * 0.8); };
   for (let i = 0; i < n; i++) { o.position.copy(at(i, 0)); o.rotation.set(-Math.PI / 2 + (rnd(i) - 0.5) * 0.4, 0, rnd(i + 1) * 6); o.updateMatrix(); sheets.setMatrixAt(i, o.matrix); }
@@ -197,7 +197,7 @@ const litter = () => {
     g.add(b);
   }
   // papers caught in the low branches
-  for (let i = 0; i < 16; i++) g.add(plane(0.2, 0.14, colMat("#f2ece2", { rough: 0.9 }), V(PILE.x + (rnd(i + 50) - 0.5) * 8, 0.6 + rnd(i + 51) * 1.6, PILE.z - 2 - rnd(i + 52) * 3), rnd(i + 53) * 6, 0.3, rnd(i + 54)));
+  for (let i = 0; i < 16; i++) g.add(plane(0.2, 0.14, colMat("#cfc8bc", { rough: 0.9 }), V(PILE.x + (rnd(i + 50) - 0.5) * 8, 0.6 + rnd(i + 51) * 1.6, PILE.z - 2 - rnd(i + 52) * 3), rnd(i + 53) * 6, 0.3, rnd(i + 54)));
   return g;
 };
 export const forest = () => {

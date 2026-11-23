@@ -35,8 +35,8 @@ export const EMERGENCY = V(0, 2.62, 0.45);
 export const BOX = { rows: 8, cols: 18, y0: 0.32, dy: 0.27, z0: -6.85, dz: 0.33, w: 0.3, h: 0.24 };
 
 const dialTex = () => canvasTex(512, 512, (g) => {
-  g.fillStyle = "#c8ccd2"; g.beginPath(); g.arc(256, 256, 250, 0, 7); g.fill();
-  g.fillStyle = "#9aa0a8"; g.beginPath(); g.arc(256, 256, 150, 0, 7); g.fill();
+  g.fillStyle = "#9ea4ac"; g.beginPath(); g.arc(256, 256, 250, 0, 7); g.fill();
+  g.fillStyle = "#6e747e"; g.beginPath(); g.arc(256, 256, 150, 0, 7); g.fill();
   g.fillStyle = "#1c1c22"; g.font = "800 34px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
   for (let i = 0; i < 100; i++) {
     const a = (i / 100) * Math.PI * 2 - Math.PI / 2, r0 = i % 10 ? 222 : 205;
@@ -44,7 +44,7 @@ const dialTex = () => canvasTex(512, 512, (g) => {
     g.beginPath(); g.moveTo(256 + Math.cos(a) * r0, 256 + Math.sin(a) * r0); g.lineTo(256 + Math.cos(a) * 246, 256 + Math.sin(a) * 246); g.stroke();
     if (i % 10 === 0) g.fillText(String(i), 256 + Math.cos(a) * 180, 256 + Math.sin(a) * 180);
   }
-  g.fillStyle = "#e8eaee"; g.beginPath(); g.arc(256, 256, 60, 0, 7); g.fill();
+  g.fillStyle = "#b8bcc4"; g.beginPath(); g.arc(256, 256, 60, 0, 7); g.fill();
 });
 const boxFaceTex = () => canvasTex(128, 104, (g) => {
   g.fillStyle = "#b8bcc4"; g.fillRect(0, 0, 128, 104);
@@ -128,7 +128,7 @@ const doorWall = () => {
 const sensorBox = () => {
   const g = new Group();
   g.position.copy(SENSOR);
-  const body = new Mesh(new BoxGeometry(0.12, 0.13, 0.17), colMat("#eeece6", { rough: 0.5 }));
+  const body = new Mesh(new BoxGeometry(0.12, 0.13, 0.17), colMat("#b8b6b0", { rough: 0.5 }));
   g.add(body);
   const lens = new Mesh(new CylinderGeometry(0.045, 0.05, 0.03, 20).rotateZ(Math.PI / 2), colMat("#6a2a2a", { spec: 0.8, gloss: 0.7, rough: 0.1 }));
   lens.position.set(-0.075, -0.02, 0);
