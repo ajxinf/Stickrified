@@ -2,7 +2,7 @@ import { Object3D, Vector3 } from "three";
 import { CamPose, impact } from "../../../kit/toon/camera";
 import { DOF, Dof } from "../../../kit/toon/Composer";
 import type { MovingProp, Plan, Shot } from "../../../kit/toon/guard";
-import { V } from "./common";
+import { V, boardTex, plane, unlit } from "./common";
 import { MAT_SIZE, tarString, cashFan, cerealBox, keys, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
 import { BOX, COUNTER_BOX, EYE, HOME_SUN, LIVING, SILL, TOASTER, dotAt, moonDayDir } from "./rooms";
 import type { Place } from "./scene";
@@ -120,14 +120,16 @@ const E1 = P(V(21.7, 1.42, -10.6), V(20.9, 1.3, -7.1), 50);
 shot("E1-faces-glass", B.darkness + 6, "day", SHOPPERS, (F) => creep(E1, F, L(5, 0), B.darkness + 6, 0.1), { subject: undefined, wide: true, dof: mid(2.2), props: STREET_PROPS(L(5, 0)), allow: { "Card penetration": "faces pressed against the shop glass" } });
 // does: between two heads, close on the box: the tag DARKNESS $10,000 under its spotlight
 const E2 = P(V(21.45, 1.3, -6.45), DISPLAY.clone().add(V(0.3, 0.02, 0.08)), 36);
-shot("E2-price-tag", L(6, 0), "day", [], (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box", "Card penetration": "faces pressed against the shop glass" } });
+// the SOLD OUT! sticker slaps onto the tag on "Earth"
+const soldOut = free("sold out sticker", () => { const g = new Object3D(); g.add(plane(0.3, 0.12, unlit("soldout", () => boardTex(["SOLD OUT!"], "#e8342c", "#fff8ec", 512, 200)), V(0, 0, 0))); return g; }, (o, F) => { const t = Math.min(1, Math.max(0, (F - B.earth + 3) / 4)); o.position.copy(DISPLAY).add(V(0.36, -0.06, 0.16)); o.rotation.set(0, -0.2, 0.22); o.scale.setScalar(1.6 - 0.6 * t); return F >= B.earth - 3; }, ["mart"]);
+shot("E2-price-tag", L(6, 0), "day", [], (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), props: [soldOut], allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box", "Card penetration": "faces pressed against the shop glass" } });
 
 // ================================================================== line 6: closets and cinemas
 // does: a hallway closet, door open with FOR RENT $900 PER NIGHT taped on; a man curled up asleep among the coats
 const F1 = P(V(-1.3, 1.3, 2.75), V(0.24, 1.05, 0.1), 58);
 shot("F1-closet", L(6, 7), "closet", [closetMan], (F) => creep(F1, F, L(6, 0), L(6, 7), 0.12), { dof: mid(2.0), allow: { "Card penetration": "he sits curled up inside the closet among the coats", "Text in frame": "the FOR RENT sign on the open door at the frame edge" } });
 // does: a dark cinema, rows of people asleep in the seats in the screen's blue glow, HOTEL hung over the back wall
-const F2 = P(V(1.25, 1.4, -2.0), V(-0.7, 0.95, 2.2), 50);
+const F2 = P(V(0.15, 2.0, -3.7), V(0.05, 1.55, 3.0), 56);
 shot("F2-cinema", L(7, 0), "cinema", sleepersCinema, (F) => creep(F2, F, L(6, 7), L(7, 0), 0.08), { subject: undefined, wide: true, dof: NONE, allow: { ...SEAT_OK, "Cast overlap": "rows of sleepers, one behind the other", "Caption vs face": "a crowd of extras; the caption sits over the far heads" } });
 
 // ================================================================== line 7: the guy in Ohio
@@ -228,7 +230,7 @@ const Q1 = P(V(-1.95, 1.05, 2.65), V(-2.32, 1.0, 0.4), 40);
 shot("Q1-waiting", B.rings - 17, "day", [youMat], (F) => creep(Q1, F, L(17, 0), B.rings - 17, 0.1), { dof: mid(2.1), props: STREET_PROPS(L(17, 0)), allow: SEAT_OK });
 // does: the phone in your hand buzzes and jumps: ALARM 2:14 PM
 const Q2h = handAt(youMat, B.rings + 6, V(-1.85, 1.05, 2.55), "right");
-const Q2c = (F: number) => creep(P(Q2h.clone().add(V(0.1, 0.06, 0.42)), Q2h.clone().add(V(0, 0.05, 0)), 34), F, B.rings - 17, L(18, 0), 0.12);
+const Q2c = (F: number) => creep(P(Q2h.clone().add(V(0.1, 0.03, 0.46)), Q2h.clone().add(V(0, 0.0, 0)), 34), F, B.rings - 17, L(18, 0), 0.12);
 const buzz = (ob: Object3D, F: number) => { ob.rotation.z = F >= B.rings - 2 ? 0.08 * Math.sin(F * 2.7) : 0; ob.position.x += F >= B.rings - 2 ? 0.004 * Math.sin(F * 3.3) : 0; };
 shot("Q2-alarm-rings", L(18, 0), "day", [youMat], Q2c, { subject: undefined, dof: close(0.42), props: [...STREET_PROPS(B.rings), held("phone ringing", () => phone("2:14", "PM", true), youMat, "right", () => P(V(-1.85, 1.05, 2.55), V(0, 0, 0), 40), { fwd: 0.1, orient: buzz })], allow: { "Subject size": "insert on the ringing phone", ...SEAT_OK } });
 
