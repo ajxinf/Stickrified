@@ -105,7 +105,8 @@ export const office = () => {
   door.add(plane(0.36, 0.1, unlit("doorplate", () => boardTex(["DIAMOND TRADING"], "#e8c860", "#1c1c22", 1024, 256)), V(0.03, 1.55, -0.45), Math.PI / 2));
   door.add(place(new Mesh(new CylinderGeometry(0.025, 0.025, 0.08, 10).rotateZ(Math.PI / 2), colMat("#c8a050", { spec: 0.8 })), 0.05, 1.0, -0.8));
   g.add(door);
-  g.add(box(0.1, 2.15, 1.05, MATS.trim(), V(OFFICE_DOOR.x - 0.02, 1.07, OFFICE_DOOR.z))); // frame behind the leaf
+  for (const dz of [-0.5, 0.5]) g.add(box(0.14, 2.15, 0.06, MATS.trim(), V(OFFICE_DOOR.x - 0.02, 1.07, OFFICE_DOOR.z + dz))); // jambs
+  g.add(box(0.14, 0.08, 1.06, MATS.trim(), V(OFFICE_DOOR.x - 0.02, 2.11, OFFICE_DOOR.z))); // head
   // the corridor outside the door (the cops come from it)
   g.add(slab(-4.4, OFFICE.x0, 0, 2.6, 0, MATS.carpet()));
   g.add(box(0.12, OFFICE.h, 2.6, MATS.wallPaint("#d8d0c0"), V(-4.45, OFFICE.h / 2, 1.3)));

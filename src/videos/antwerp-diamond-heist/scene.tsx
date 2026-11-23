@@ -105,7 +105,7 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
     // boxes open in a wave down the rows (rows nearest the lens first)
     const doors = named(g, "boxHinges")!;
     doors.children.forEach((h, i) => {
-      const r = Math.floor(i / BOX.cols), c = i % BOX.cols, order = c * BOX.rows + (BOX.rows - 1 - r);
+      const r = Math.floor(i / BOX.cols), c = i % BOX.cols, order = (BOX.cols - 1 - c) * BOX.rows + (BOX.rows - 1 - r);
       const t = Math.min(Math.max(s.boxes - order * 0.62, 0), 1);
       h.rotation.y = -1.9 * t * t * (3 - 2 * t);
     });

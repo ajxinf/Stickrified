@@ -77,7 +77,7 @@ export const street = () => {
   // a red awning over the next shop, bikes, bins, a bollard row
   g.add(place(new Mesh(new BoxGeometry(3.2, 0.06, 1.3), colMat("#9a2a2a", { rough: 0.8 })), -10.5, 2.55, STREET.front + 0.6, 0));
   for (const x of [-12, -2.5, 6.5, 12]) g.add(place(new Mesh(new CylinderGeometry(0.07, 0.08, 0.8, 10), MATS.darkSteel()), x, 0.52, STREET.z0 + 0.25));
-  g.add(place(model("metal_trash_can", { collider: "bin" }), -3.8, 0.12, STREET.front + 0.8, 0.3));
+  g.add(place(model("metal_trash_can", { collider: "bin" }), -9.2, 0.12, STREET.front + 0.8, 0.3));
   for (const p of LAMPS) g.add(place(model("street_lamp_01", { collider: "lamp", glow: ["glass", "#ffd08a", 5] }), p.x, 0.12, p.z, 0));
   return g;
 };

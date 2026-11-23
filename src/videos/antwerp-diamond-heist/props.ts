@@ -21,7 +21,7 @@ export const hairspray = () => {
 /** The Genius's foam board (line 15): 1.3 x 1.7 white sheet held in front of him, origin at his hands. */
 export const foamBoard = () => {
   const g = new Group();
-  g.add(box(1.0, 1.3, 0.04, M("adh-foam", () => toonMaterial({ color: "#f4f4f0", rough: 0.95, mottle: 0.05 })), V(0, -0.58, 0.06)));
+  g.add(box(1.0, 1.3, 0.04, M("adh-foam", () => toonMaterial({ color: "#f4f4f0", rough: 0.95, mottle: 0.05 })), V(0, -0.72, 0.06)));
   return g;
 };
 /** A strip of tan tape on its roll (line 16). */
@@ -65,16 +65,16 @@ const sandwichShape = () => {
 };
 export const sandwich = (bagged = false) => {
   const g = new Group();
-  const bread = M("adh-bread", () => toonMaterial({ color: "#e8c890", rough: 0.9, mottle: 0.2 }));
+  const bread = M("adh-bread", () => toonMaterial({ color: "#c89858", rough: 0.9, mottle: 0.3 }));
   const geo = new ExtrudeGeometry(sandwichShape(), { depth: 0.022, bevelEnabled: true, bevelSize: 0.006, bevelThickness: 0.006, bevelSegments: 2 }).rotateX(-Math.PI / 2);
   for (const y of [0.006, 0.044]) { const m = new Mesh(geo, bread); m.position.y = y; g.add(m); }
   // crust edges as a thin box ring on the uncut sides, the salami poking out
     const salami = colMat("#c8343a", { rough: 0.6, spec: 0.3 });
-  for (const [x, z] of [[-0.06, -0.035], [0.0, -0.045], [0.06, -0.04], [-0.07, 0.03], [0.02, 0.02]]) g.add(place(new Mesh(new CylinderGeometry(0.034, 0.034, 0.01, 18), salami), x, 0.038, z));
+  for (const [x, z] of [[-0.06, -0.035], [0.0, -0.045], [0.06, -0.04], [-0.07, 0.03], [0.02, 0.02]]) g.add(place(new Mesh(new CylinderGeometry(0.04, 0.04, 0.012, 18), salami), x * 1.15, 0.038, z * 1.25));
   g.add(place(new Mesh(new SphereGeometry(0.012, 8, 6), colMat("#7ab84a")), -0.02, 0.022, 0.05)); // a lettuce corner
   if (bagged) {
-    g.add(box(0.26, 0.07, 0.2, M("adh-bag", () => toonMaterial({ color: "#b8c4d0", spec: 0.5, gloss: 0.4, rough: 0.2 })), V(0, 0.03, 0)));
-    g.add(plane(0.12, 0.05, litTex("evidence", () => boardTex(["EVIDENCE", "DNA"], "#f2c23a", "#1c1c22", 300, 140), { rough: 0.8 }), V(0.05, 0.068, -0.02), 0, -Math.PI / 2));
+    g.add(box(0.26, 0.09, 0.2, M("adh-bag", () => new MeshBasicMaterial({ color: "#e8f2ff", transparent: true, opacity: 0.22, depthWrite: false })), V(0, 0.04, 0)));
+    g.add(plane(0.12, 0.05, litTex("evidence", () => boardTex(["EVIDENCE", "DNA"], "#f2c23a", "#1c1c22", 300, 140), { rough: 0.8 }), V(0.05, 0.088, -0.02), 0, -Math.PI / 2));
   }
   return g;
 };
@@ -109,7 +109,7 @@ export const newspaper = (headline: string) => {
   g.add(plane(0.56, 0.4, litTex(`paper-${headline}`, () => canvasTex(560, 400, (c) => {
     c.fillStyle = "#efeadf"; c.fillRect(0, 0, 560, 400); c.fillStyle = "#1c1c22"; c.font = "900 46px serif"; c.textAlign = "center"; c.fillText("THE DAILY", 280, 52);
     c.fillRect(20, 66, 520, 4);
-    c.font = `900 ${headline.length > 14 ? 50 : 58}px sans-serif`; c.fillText(headline, 280, 130);
+    let fs = 58; c.font = `900 ${fs}px sans-serif`; while (c.measureText(headline).width > 500) { fs -= 2; c.font = `900 ${fs}px sans-serif`; } c.fillText(headline, 280, 130);
     c.fillStyle = "#8a8a94"; c.fillRect(30, 160, 230, 180); for (let y = 170; y < 360; y += 16) c.fillRect(290, y, 240, 6);
     c.fillStyle = "#c8ccd4"; c.beginPath(); c.arc(145, 250, 60, 0, 7); c.fill(); // a vault door photo
   }), { rough: 0.9 }), V(0, 0.12, 0.03)));
