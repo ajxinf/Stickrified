@@ -16,6 +16,23 @@
    0.7121
   ]
  },
+ "kloofendal_misty_morning_puresky": {
+  "bright": [
+   34.8,
+   49.6
+  ],
+  "crop": 0.55556,
+  "horizon": [
+   0.7255,
+   0.7235,
+   0.7361
+  ],
+  "zenith": [
+   0.8306,
+   0.8692,
+   0.9273
+  ]
+ },
  "kloppenheim_07_puresky": {
   "bright": [
    27.8,

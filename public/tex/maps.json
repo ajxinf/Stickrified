@@ -24,6 +24,21 @@
   "nor": true,
   "res": "1k"
  },
+ "cobblestone_floor_04": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "concrete_block_wall": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "concrete_floor_painted": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
  "concrete_pavement": {
   "arm": true,
   "nor": true,
@@ -44,7 +59,22 @@
   "nor": true,
   "res": "2k"
  },
+ "dirty_carpet": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
  "floor_tiles_06": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "forest_leaves_02": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "granite_tile": {
   "arm": true,
   "nor": true,
   "res": "2k"
@@ -75,6 +105,16 @@
   "res": "2k"
  },
  "leafy_grass": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "metal_plate": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "painted_concrete": {
   "arm": true,
   "nor": true,
   "res": "2k"
@@ -110,6 +150,11 @@
   "res": "2k"
  },
  "white_stucco": {
+  "arm": true,
+  "nor": true,
+  "res": "2k"
+ },
+ "wood_floor": {
   "arm": true,
   "nor": true,
   "res": "2k"
