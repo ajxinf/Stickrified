@@ -108,7 +108,7 @@ const DIAL = V(0, 1.8, 0.53);
 const E1 = P(DIAL.clone().add(V(0.22, 0.05, 0.82)), DIAL.clone(), 38);
 shot("E1-the-dial", B.dollar - 21, "vaultNight", [], (F) => creep(E1, F, L(5, 0), B.dollar - 21, 0.12), { subject: undefined, dof: close(0.85), fx: ["digits"], props: [fxOn("digits spill", L(5, 0) + 2), fxOn("digit waterfall", L(5, 6))] });
 // does: tilt down to the floor: a heap of numbers piles up in front of the door
-shot("E2-one-per-dollar", L(6, 0), "vaultNight", [], (F) => glideCam(P(V(0.35, 1.5, 2.6), V(0, 1.45, 0.6), 44), P(V(0.4, 1.3, 2.7), V(0, 0.3, 0.85), 44), F, B.dollar - 21, B.dollar + 56), { subject: undefined, wide: true, dof: NONE, fx: ["digits"] });
+shot("E2-one-per-dollar", L(6, 0), "vaultNight", [], (F) => glideCam(P(V(0.35, 1.5, 2.6), V(0, 1.3, 0.6), 44), P(V(0.4, 1.35, 2.7), V(0, 0.45, 0.85), 44), F, B.dollar - 21, L(6, 0)), { subject: undefined, wide: true, dof: NONE, fx: ["digits"] });
 
 // ================================================================== line 6: two years of setup missions
 // does: the crew board slides by: photos, a vault floor plan, red string, the MISSION 1 / MISSION 2 / FINALE page
