@@ -36,12 +36,12 @@ const HEAT_SKY = photoSky({ ...LIGHTS.day, lit: [1.7, 1.55, 1.22], shade: [0.42,
 export const HEAT = HEAT_SKY.preset, HEAT_SUN = HEAT_SKY.key;
 const DIM_SKY = photoSky({ ...LIGHTS.dusk, lit: [0.66, 0.72, 0.96], shade: [0.2, 0.24, 0.42], lift: [0.015, 0.02, 0.05], litTint: "#c8d8ff", lamp: ["#ffb35c", 2.6], sat: 1.1, haze: { color: "#8a9ac8", start: 30, amount: 0.2 }, char: { tint: [0.9, 0.94, 1.0], shade: 0.9 }, grade: "moonlit" }, "kloofendal_43d_clear_puresky", { exposure: 0.42, tint: "#9fb4e8", yaw: 114.5 });
 export const DIM = DIM_SKY.preset;
-const NIGHT_SKY = photoSky({ ...LIGHTS.night, lit: [0.4, 0.48, 0.78], shade: [0.1, 0.12, 0.24], lift: [0.01, 0.012, 0.03], lamp: ["#ffa850", 4.2], sat: 1.14, fogNear: 30, fogFar: 260 }, "kloppenheim_07_puresky", { exposure: 0.32, tint: "#bccbe8", yaw: 242.2 });
+const NIGHT_SKY = photoSky({ ...LIGHTS.night, lit: [0.56, 0.64, 0.98], shade: [0.16, 0.18, 0.34], lift: [0.015, 0.018, 0.04], lamp: ["#ffa850", 4.6], sat: 1.14, fogNear: 30, fogFar: 260 }, "kloppenheim_07_puresky", { exposure: 0.42, tint: "#bccbe8", yaw: 242.2 });
 export const NIGHT = NIGHT_SKY.preset;
-const KITCHEN_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.6, 1.56, 1.48], shade: [0.3, 0.36, 0.52], lift: [0.02, 0.03, 0.06], litTint: "#fff8ee", sat: 1.12, char: { tint: [1.0, 0.98, 0.96], shade: 0.9 } }, "qwantani_late_afternoon_puresky", { exposure: 1.05, tint: "#f4f0ff", yaw: -35.5 });
+const KITCHEN_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.7, 1.64, 1.54], shade: [0.52, 0.56, 0.7], lift: [0.05, 0.06, 0.09], litTint: "#fff8ee", lamp: ["#dfeaff", 1.4], sat: 1.14, char: { tint: [1.0, 0.98, 0.96], shade: 0.9 } }, "qwantani_late_afternoon_puresky", { exposure: 1.05, tint: "#f4f0ff", yaw: -35.5 });
 export const KITCHEN = KITCHEN_SKY.preset, KITCHEN_SUN = KITCHEN_SKY.key;
 export const CLOSET_L: LightPreset = { ...LIGHTS.interior, lit: [0.5, 0.42, 0.34], shade: [0.12, 0.1, 0.14], lift: [0.01, 0.01, 0.02], litTint: "#ffd8a8", lamp: ["#ffc27a", 3.2], sat: 1.14, grade: "night" };
-export const CINEMA_L: LightPreset = { ...LIGHTS.interior, lit: [0.3, 0.34, 0.52], shade: [0.08, 0.07, 0.12], lift: [0.008, 0.006, 0.02], litTint: "#b8c8ff", lamp: ["#a8c8ff", 3.4], sat: 1.16, char: { tint: [0.86, 0.9, 1.0], shade: 0.86 }, charInk: "#141a2c", grade: "night" };
+export const CINEMA_L: LightPreset = { ...LIGHTS.interior, lit: [0.46, 0.5, 0.72], shade: [0.14, 0.12, 0.2], lift: [0.015, 0.012, 0.03], litTint: "#b8c8ff", lamp: ["#a8c8ff", 3.4], sat: 1.16, char: { tint: [0.86, 0.9, 1.0], shade: 0.86 }, charInk: "#141a2c", grade: "night" };
 export const OHIO_L: LightPreset = { ...LIGHTS.interior, lit: [1.02, 1.06, 1.1], shade: [0.4, 0.44, 0.52], litTint: "#eef6ff", lamp: ["#f4fbff", 2.2], sat: 1.12 };
 export const TV_L: LightPreset = { ...LIGHTS.interior, lit: [0.62, 0.5, 0.42], shade: [0.16, 0.13, 0.18], lift: [0.012, 0.01, 0.02], litTint: "#ffd0a0", lamp: ["#ffb060", 2.8], sat: 1.18, grade: "night" };
 export const BOX_L: LightPreset = { ...LIGHTS.interior, lit: [0.5, 0.4, 0.3], shade: [0.16, 0.12, 0.1], lift: [0.02, 0.015, 0.01], litTint: "#ffe0b0", lamp: ["#fff2d0", 2.0], sat: 1.1, grade: "night" };
@@ -59,9 +59,10 @@ const practicals = (w: Place, s: WorldState, night: boolean): P[] => {
     ...STREET_LAMP_HEADS.map((h, i) => ({ pos: h.clone().add(V(0, -0.4, 0.3)), kind: "lamp" as const, color: ["#ffb35c", s.lamps > i * 3 ? (night ? 2.2 : 1.6) : 0] as [string, number], glowAt: h })),
     ...PORCH_LAMPS.map((h, i) => ({ pos: h.clone().add(V(0, -0.3, 0.5)), kind: "lamp" as const, color: ["#ffc27a", s.lamps > 4 + i * 3 ? 1.1 : 0] as [string, number], glowAt: h })),
   ];
-  if (w === "home") return [{ pos: V(-1.95, 1.2, -1.4), kind: "lamp", color: ["#7aff9a", 0.15], noGlow: true }];
+  // the window's bounce fills the room (cool), the beam does the rest
+  if (w === "home") return [{ pos: V(0, 1.7, -1.2), kind: "window", color: ["#eaf2ff", 1.3], noGlow: true }, { pos: V(-0.4, 1.6, 1.2), kind: "lamp", color: ["#dce8ff", 0.6], noGlow: true }];
   if (w === "closet") return [{ pos: V(0, CLOSET.h - 0.3, -0.2), kind: "lamp", color: ["#ffc27a", 1.6], glowAt: V(0, CLOSET.h - 0.12, -CLOSET.d / 2) }];
-  if (w === "cinema") return [{ pos: CINEMA_SCREEN.clone().add(V(0, -0.4, 2.5)), kind: "screen", color: ["#a8c8ff", 2.6], noGlow: true }, { pos: V(0, 0.6, 1.0), kind: "lamp", color: ["#ff3a3a", 0.35], noGlow: true }];
+  if (w === "cinema") return [{ pos: CINEMA_SCREEN.clone().add(V(0, -0.6, 3.5)), kind: "screen", color: ["#a8c8ff", 4.2], noGlow: true }, { pos: V(0, 0.6, 1.0), kind: "lamp", color: ["#ff3a3a", 0.35], noGlow: true }];
   if (w === "ohio") return [{ pos: V(FRIDGE.x, 1.4, FRIDGE.z + 0.6), kind: "lamp", color: ["#f4fbff", s.fridgeLamp ? 1.6 : 0], noGlow: true }, { pos: V(1.5, 2.2, 1.5), kind: "window", color: ["#eef6ff", 0.8], noGlow: true }];
   if (w === "tv") return [{ pos: LIVING.tv.clone().add(V(-0.3, 0.3, -0.7)), kind: "screen", color: ["#8fb8ff", 2.4 * tvShade(s.tvBlock)], noGlow: true }, { pos: V(-2.2, 1.5, -1.0), kind: "lamp", color: ["#ffb060", 0.9], glowAt: V(-2.4, 1.5, -1.2) }];
   return [{ pos: V(0, BOX.h / 2, -BOX.l + 0.12), kind: "lamp", color: ["#fff2d0", 0.25], noGlow: true }];
@@ -111,8 +112,6 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
 export const EclipseSky: React.FC<{ cam: Vector3; sun: Vector3; s: WorldState; night: boolean }> = ({ cam, sun, s, night }) => {
   const g = useMemo(eclipseSky, []);
   placeSky(g, cam, sun.clone().normalize(), s.moon < 2.08 ? s.moon : null, s.total);
-  // in daylight the Moon's far side is sky-bright (it only shows where it covers the sun); in totality it is black
-  ((named(g, "moon") as Mesh).material as MeshBasicMaterial).color.set(night || s.total > 0 ? "#06060a" : "#a9c6ea");
   return <primitive object={g} />;
 };
 

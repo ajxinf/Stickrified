@@ -27,17 +27,17 @@ export const STAIR_TOP = V((STAIR.x0 + STAIR.x1) / 2, 0, STAIR.z1 + 0.5);
 export const NEON = V((STAIR.x0 + STAIR.x1) / 2, 2.45, KYLE_HOUSE.front + 0.07);
 export const PRICE_BOARD = V(11.0, 0, -8.3);
 export const FENCE_X = 0, FENCE_H = 1.25;
-export const TALLY = V(FENCE_X - 0.05, 0.78, -7.6); // the chalk tally on your side of the fence
+export const TALLY = V(-2.6, 0.62, -9.95); // the chalk tally on a lawn chalkboard behind the mower line
 export const PORCH_POST = V(YOU_HOUSE.door + 1.05, 0, YOU_HOUSE.front + 1.35);
 export const THERMO = PORCH_POST.clone().add(V(0, 1.45, 0.09)); // the dial on the porch post, facing +z
 export const SUNDIAL = V(-11.2, 0, -7.2);
 export const MART = { x: 21, front: -7.6, w: 7, h: 4.4 };
 export const DISPLAY = V(MART.x, 1.05, MART.front - 0.6); // the darkness box on its velvet stand behind the glass
-export const MOWER_START = V(-5.2, 0, -8.6);
+export const MOWER_START = V(-4.6, 0, -8.6);
 export const MATTRESS_AT = V(-3.6, 0, 0.6); // in the middle of the road in front of your house (long side along x)
 export const BEDTIME = V(-1.5, 0, 7.6); // the kicked-over sign on the south lawn
 /** Lawn chairs the neighbours fall asleep in (line 29): three on the north lawns facing +z, two on the south facing -z. */
-export const SLEEP_CHAIRS = [V(-6.4, 0, -6.6), V(-8.9, 0, -6.4), V(4.2, 0, -6.6), V(2.6, 0, 6.6), V(-0.6, 0, 6.8)];
+export const SLEEP_CHAIRS = [V(-6.4, 0, -6.6), V(-8.9, 0, -6.4), V(4.2, 0, -6.6), V(2.6, 0, 8.7), V(-0.6, 0, 8.9)];
 export const POLES = [-18, -6, 6, 18, 30].map((x) => V(x, 0, WALK_S - 0.7));
 export const WIRE_Y = 5.45;
 export const OWL_AT = V(-3.4, 0, POLES[1].z + 0.1); // perched on the wire between poles 1 and 2
@@ -205,20 +205,37 @@ const fence = () => {
   g.userData.collider = "fence";
   const out = new Group();
   out.add(g);
-  out.add(plane(0.9, 0.45, M("snc-tally", () => new MeshBasicMaterial({ map: tallyTex(), transparent: true, toneMapped: false, depthWrite: false })), TALLY, -Math.PI / 2));
+  // a little A-frame chalkboard on the lawn: 11 strokes and MOWS
+  const cb = new Kit();
+  for (const s of [-1, 1]) cb.add(MATS.darkWood(), new CylinderGeometry(0.02, 0.02, 0.95, 6).rotateX(0.18), TALLY.x + s * 0.4, 0.45, TALLY.z - 0.06);
+  cb.box(MAT.color("#24302a"), 0.86, 0.5, 0.03, TALLY.x, TALLY.y, TALLY.z - 0.03);
+  const cbg = cb.build();
+  cbg.userData.collider = "chalkboard";
+  out.add(cbg);
+  out.add(plane(0.8, 0.42, M("snc-tally", () => new MeshBasicMaterial({ map: tallyTex(), transparent: true, toneMapped: false, depthWrite: false })), TALLY.clone().add(V(0, 0, 0.0))));
   return out;
 };
 const sundial = () => {
   const k = new Kit(), S = MATS.stone();
   k.add(S, new CylinderGeometry(0.16, 0.22, 0.85, 12), SUNDIAL.x, 0.425, SUNDIAL.z);
   k.add(S, new CylinderGeometry(0.34, 0.3, 0.06, 20), SUNDIAL.x, 0.88, SUNDIAL.z);
-  const gnomon = new BoxGeometry(0.02, 0.2, 0.26);
-  gnomon.translate(0, 0.1, 0);
-  gnomon.rotateX(-0.6);
+  const gnomon = new BoxGeometry(0.012, 0.11, 0.2);
+  gnomon.translate(0, 0.055, 0);
+  gnomon.rotateX(-0.5);
   k.add(MAT.metal(), gnomon, SUNDIAL.x, 0.91, SUNDIAL.z);
   const g = k.build();
   g.userData.collider = "sundial";
-  return g;
+  const out = new Group();
+  out.add(g);
+  // the dial face: roman hours round a brass ring
+  const face = plane(0.6, 0.6, M("snc-dialface", () => toonMaterial({ map: canvasTex(512, 512, (c) => {
+    c.fillStyle = "#c8a860"; c.beginPath(); c.arc(256, 256, 250, 0, 7); c.fill();
+    c.strokeStyle = "#6a5020"; c.lineWidth = 8; c.beginPath(); c.arc(256, 256, 236, 0, 7); c.stroke();
+    c.fillStyle = "#3a2810"; c.font = `900 44px ${FONT}`; c.textAlign = "center"; c.textBaseline = "middle";
+    ["VI", "VII", "VIII", "IX", "X", "XI", "XII", "I", "II", "III", "IV", "V", "VI"].forEach((t, i) => { const a = Math.PI + (i / 12) * Math.PI; c.fillText(t, 256 + Math.cos(a) * 190, 256 + Math.sin(a) * 190); });
+  }), color: "#ffffff", rough: 0.5, spec: 0.5 })), V(SUNDIAL.x, 0.915, SUNDIAL.z), 0, -Math.PI / 2);
+  out.add(face);
+  return out;
 };
 const bedtimeSign = () => {
   const o = new Group();
@@ -334,7 +351,7 @@ export const street = () => {
   g.add(place(model("shrub_03", { collider: false }), -12.5, 0, -10.4, 0.2));
   g.add(place(model("garden_gnome", { collider: "gnome", height: 0.42 }), -10.4, 0, -7.9, 0.5));
   g.add(place(model("garden_sprinkler_01", { collider: "sprinkler" }), -6.2, 0, -6.6, 0));
-  g.add(place(model("metal_trash_can", { part: "metal_trash_can", collider: "bin" }), -0.9, 0, WALK_N + 0.4, 0));
+  g.add(place(model("metal_trash_can", { part: "metal_trash_can_rust", collider: "bin" }), -11.8, 0, WALK_N - 0.4, 0));
   g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), 5.0, 0, WALK_S - 0.35, 0.3));
   g.add(place(model("potted_plant_02", { collider: "planter" }), YOU_HOUSE.door + 1.5, 0, YOU_HOUSE.front + 0.5, 0.4));
   for (const p of POLES) g.add(place(model("modular_electricity_poles", { part: "preset_01", collider: "pole" }), p.x, 0, p.z, 0));

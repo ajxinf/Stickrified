@@ -1,7 +1,6 @@
 import { AdditiveBlending, BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from "three";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
-import { sunDisc } from "../../../kit/toon/glow";
 import { SKY } from "../../../kit/toon/ink";
 import { toonMaterial } from "../../../kit/toon/shade";
 import { FONT, MATS, V, canvasTex, colMat, glowMat, litTex, plane, rnd, unlit } from "./common";
@@ -147,9 +146,9 @@ export const cashFan = () => {
 };
 export const roller = () => {
   const g = new Group(), k = new Kit();
-  k.add(colMat("#2a2a30"), new CylinderGeometry(0.012, 0.012, 0.32, 6), 0, 0.12, 0);
-  k.add(MAT.metal(), new CylinderGeometry(0.006, 0.006, 0.14, 6), 0.06, 0.3, 0, { rz: Math.PI / 2 });
-  k.add(colMat("#0c0a10", { rough: 0.3, gloss: 0.4 }), new CylinderGeometry(0.035, 0.035, 0.2, 12).rotateZ(Math.PI / 2), 0.16, 0.3, 0);
+  k.add(colMat("#2a2a30"), new CylinderGeometry(0.012, 0.012, 0.3, 6), 0, -0.1, 0);
+  k.add(MAT.metal(), new CylinderGeometry(0.006, 0.006, 0.14, 6), 0.06, -0.26, 0, { rz: Math.PI / 2 });
+  k.add(colMat("#0c0a10", { rough: 0.3, gloss: 0.4 }), new CylinderGeometry(0.035, 0.035, 0.2, 12).rotateZ(Math.PI / 2), 0.16, -0.26, 0);
   g.add(k.build());
   return g;
 };
@@ -240,14 +239,45 @@ const coronaTex = () => canvasTex(512, 512, (c) => {
   c.strokeStyle = "rgba(255,255,255,0.35)"; c.lineCap = "round";
   for (let i = 0; i < 26; i++) { const a = (i / 26) * 6.28 + rnd(i) * 0.2, l = 120 + rnd(i + 5) * 120; c.lineWidth = 3 + rnd(i + 2) * 5; c.beginPath(); c.moveTo(256 + Math.cos(a) * 70, 256 + Math.sin(a) * 70); c.lineTo(256 + Math.cos(a) * l, 256 + Math.sin(a) * l); c.stroke(); }
 });
-/** Sun disc + the Moon's black disc + the corona (only in totality), all on the SKY layer. Place with `placeSky`. */
+/** The sun as a painted disc with the Moon's bite cut in (a filtered-photo look: the bite reads dark at phone size),
+ * or the black disc in totality. One canvas, redrawn only when the bite moves. */
+const SUN_CANVAS = typeof document !== "undefined" ? document.createElement("canvas") : null;
+let sunTexC: CanvasTexture | null = null, sunKey = "";
+export const sunTexture = (moon: number | null, total: number) => {
+  if (!SUN_CANVAS) return null;
+  if (!sunTexC) { SUN_CANVAS.width = SUN_CANVAS.height = 512; sunTexC = new CanvasTexture(SUN_CANVAS); sunTexC.colorSpace = "srgb"; }
+  const key = `${moon === null ? "x" : Math.round(moon * 300)}|${total > 0 ? 1 : 0}`;
+  if (key !== sunKey) {
+    sunKey = key;
+    const c = SUN_CANVAS.getContext("2d")!, R = 64, cx = 256, cy = 256;
+    c.clearRect(0, 0, 512, 512);
+    if (total > 0) { c.fillStyle = "#020205"; c.beginPath(); c.arc(cx, cy, R * 1.03, 0, 7); c.fill(); }
+    else {
+      const halo = c.createRadialGradient(cx, cy, R * 0.9, cx, cy, R * 4); halo.addColorStop(0, "rgba(255,246,220,0.55)"); halo.addColorStop(0.35, "rgba(255,240,210,0.16)"); halo.addColorStop(1, "rgba(255,240,210,0)");
+      c.fillStyle = halo; c.fillRect(0, 0, 512, 512);
+      const disc = c.createRadialGradient(cx, cy, 0, cx, cy, R); disc.addColorStop(0, "#fffdf6"); disc.addColorStop(0.82, "#fff4d0"); disc.addColorStop(1, "#ffd27a");
+      c.fillStyle = disc; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.fill();
+      if (moon !== null && moon < 2.06) {
+        // the Moon comes in from the lower left; only the part over the disc shows (dark)
+        const mx = cx - 0.82 * moon * R, my = cy + 0.57 * moon * R;
+        c.save(); c.beginPath(); c.arc(cx, cy, R + 1, 0, 7); c.clip();
+        c.fillStyle = "#141a2c"; c.beginPath(); c.arc(mx, my, R * 1.04, 0, 7); c.fill();
+        c.restore();
+      }
+    }
+    sunTexC.needsUpdate = true;
+  }
+  return sunTexC;
+};
+/** Sun disc (with the bite) + the corona (only in totality), on the SKY layer. Place with `placeSky`. */
 export const eclipseSky = () => {
   const g = new Group();
-  const sun = sunDisc(SUN_R, "#fffdf4", "#ffe6a8", "#fff2d0");
+  const sun = new Mesh(new PlaneGeometry(SUN_R * 8, SUN_R * 8), new MeshBasicMaterial({ transparent: true, depthWrite: false, fog: false, toneMapped: false }));
+  (sun.material as MeshBasicMaterial).color.setScalar(1.9); // HDR: the disc blooms, the bite stays dark
+  sun.layers.set(SKY);
+  sun.renderOrder = 2;
   sun.name = "sun";
-  const moon = new Mesh(new SphereGeometry(SUN_R * 1.04, 32, 16), new MeshBasicMaterial({ color: "#07070c", fog: false, toneMapped: false }));
-  moon.layers.set(SKY);
-  moon.renderOrder = 3;
+  const moon = new Object3D();
   moon.name = "moon";
   const corona = new Mesh(new PlaneGeometry(SUN_R * 9, SUN_R * 9), new MeshBasicMaterial({ map: coronaTex(), transparent: true, blending: AdditiveBlending, depthWrite: false, fog: false, toneMapped: false }));
   corona.layers.set(SKY);
@@ -265,11 +295,21 @@ export const placeSky = (g: Object3D, cam: Vector3, sunDir: Vector3, moonOff: nu
   cor.position.copy(c).addScaledVector(sunDir, 5); cor.lookAt(cam);
   // the Moon comes in from the lower left of the disc
   const up = V(0, 1, 0), right = new Vector3().crossVectors(sunDir, up).normalize().negate(), u2 = new Vector3().crossVectors(right, sunDir).normalize();
-  moon.visible = moonOff !== null;
-  if (moonOff !== null) moon.position.copy(c).addScaledVector(right, -0.82 * moonOff * SUN_R).addScaledVector(u2, -0.57 * moonOff * SUN_R).addScaledVector(sunDir, -8);
-  sun.visible = total < 1;
+  moon.position.copy(c).addScaledVector(right, -0.82 * (moonOff ?? 3) * SUN_R).addScaledVector(u2, -0.57 * (moonOff ?? 3) * SUN_R);
+  const m = (sun as Mesh).material as MeshBasicMaterial, t = sunTexture(moonOff, total);
+  if (t && m.map !== t) { m.map = t; m.needsUpdate = true; }
+  sun.visible = true;
   cor.visible = total > 0;
   (cor as Mesh<PlaneGeometry, MeshBasicMaterial>).material.opacity = total;
   (cor as Mesh<PlaneGeometry, MeshBasicMaterial>).material.transparent = true;
 };
 export { CanvasTexture, glowMat, model, unlit };
+
+/** The melted road sticking to your sole: a thin dark strand with a blob at the road (origin on the road). */
+export const tarString = () => {
+  const g = new Group(), k = new Kit(), tar = colMat("#141216", { gloss: 0.6, rough: 0.2, spec: 0.6 });
+  k.add(tar, new CylinderGeometry(0.006, 0.018, 0.13, 8), 0, 0.065, 0);
+  k.add(tar, new SphereGeometry(0.04, 10, 6).scale(1, 0.25, 1), 0, 0.004, 0);
+  g.add(k.build());
+  return g;
+};

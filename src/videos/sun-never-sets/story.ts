@@ -146,7 +146,7 @@ const asleep = (s: CharState, F: number, seed: number): CharState => ({ ...s, ex
 
 // ================================================================== you
 // Kitchen, line 1: 3 AM, eyes red, the toaster talks.
-export const YOU_K1 = V(-1.0, 0, -1.28);
+export const YOU_K1 = V(-0.38, 0, -1.25);
 export const youK1 = role("you", youLook, YOU_K1, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.25, 0.62], [0.3, 0.6]), tilt: 6 }], [B.toaster - 4, { ...REST, arms: arms([0.25, 0.62], [0.55, 0.3], { gr: "open" }), tilt: -4, look: -0.5 }], [B.relax, { ...REST, arms: arms([0.6, 0.0], [0.6, 0.0], { gl: "open", gr: "open" }), shrug: 14, bob: 4 }]], F);
   return st({ ...alive(p, F, 3, [0, -0.4]), squash: reactSquash(F - B.relax) }, F, 3, [[0, "tired"], [B.n29, "deadpan"], [B.toaster, "confused"], [L(1, 10), "suspicious"], [B.relax, "shocked"]], { heading: -0.55, fx: F >= snap(B.relax) ? { ringEyes: F < B.relax + 20 } : {} });
@@ -158,7 +158,7 @@ export const youFence = role("you", youLook, YOU_FENCE, (F) => {
   return st(alive(p, F, 3, [0.5, -0.2]), F, 3, [[0, "tired"], [B.cash, "deadpan"], [L(10, 0), "sad"], [B.afford, "crying"], [L(10, 4), "suspicious"], [B.weird, "scheming"]], { heading: F < L(10, 0) ? Math.PI / 2 - 0.2 : 0.4 });
 });
 // Kitchen, line 11: a pencil through the box, then the box up to your eye.
-export const YOU_K11 = V(-0.55, 0, -1.25);
+export const YOU_K11 = V(-1.8, 0, -1.25);
 export const youK11 = role("you", youLook, YOU_K11, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.3, 0.55], [0.35, 0.5]) }], [B.box - 10, { ...REST, arms: arms([0.25, 0.6], [-0.05, -0.12], { gr: "mitt", front: true }), tilt: -6, look: 0.4 }]], F);
   return st(alive(p, F, 3, [0.3, 0]), F, 3, [[0, "determined"], [B.hole, "scheming"], [B.box, "grin"]], { heading: 0.35 });
@@ -213,12 +213,12 @@ export const youMat = role("you", youLook, YOU_MAT, (F) => {
 // ================================================================== Kyle
 export const KYLE_STAIR = STAIR_TOP.clone().add(V(-0.95, 0, 0.35));
 export const KYLE_FENCE = V(FENCE_X + 0.45, 0, -7.3);
-const ROLLER: Pose = { ...REST, arms: arms([0.62, -0.35], [0.2, 0.55], { gl: "fist" }), sway: -5, bob: 2 };
+const ROLLER: Pose = { ...REST, arms: arms([0.62, 0.3], [0.2, 0.55], { gl: "fist" }), sway: -5, bob: 2 };
 const FAN: Pose = { ...REST, arms: arms([0.55, -0.1], [0.3, 0.45], { gl: "fist", gr: "fist" }), sway: 8, lean: 0.25 };
 export const kyleStair = role("kyle", kyleLook, KYLE_STAIR, (F) => {
   if (F < L(9, 0)) {
     // line 8: paint roller on his shoulder, proud of the neon, then the hustle
-    const p = pose([[0, ROLLER], [B.sells - 6, { ...ROLLER, arms: arms([0.62, -0.35], [0.7, 0.1], { gl: "fist", gr: "point" }), sway: 6 }]], F);
+    const p = pose([[0, ROLLER], [B.sells - 6, { ...ROLLER, arms: arms([0.62, 0.3], [0.7, 0.1], { gl: "fist", gr: "point" }), sway: 6 }]], F);
     return st(alive(p, F, 9, [0.4]), F, 9, [[0, "proud"], [B.paints, "smug"], [B.sells, "grin"], [B.hour, "scheming"]], { heading: 0.45 });
   }
   if (F < L(17, 0)) {
@@ -245,16 +245,16 @@ export const kyleFence = role("kyle", kyleLook, KYLE_FENCE, (F) => {
     return st(p, F, 9, [[0, "smug"], [L(9, 2), "grin"], [B.cash, "smug"]], { heading: -Math.PI / 2 + 0.25, fx: { talk: talk(F, 9) } });
   }
   // line 14: laughing at you on your mattress
-  return st(pose([[0, { ...REST, arms: arms([-0.2, 0.3], [0.65, -0.3], { gr: "point" }), sway: 10 }]], F), F, 9, [[0, "laughing"]], { heading: -2.4, fx: { talk: laughFlap(F, L(14, 0), L(14, 6) - L(14, 0)) } });
+  return st(pose([[0, { ...REST, arms: arms([-0.2, 0.3], [0.65, -0.3], { gr: "point" }), sway: 10 }]], F), F, 9, [[0, "laughing"]], { heading: face(KYLE_FENCE, YOU_MAT), fx: { talk: laughFlap(F, L(14, 0), L(14, 6) - L(14, 0)) } });
 });
 
 // ================================================================== Mom, Dad, kids
 export const MOM_KEYS = KYLE_STAIR.clone().add(V(-0.75, 0, 0.35));
 export const mom = role("mom", momLook, MOM_KEYS, (F) => {
   const p = pose([[0, REST], [B.mom - 6, { ...REST, arms: arms([0.25, 0.6], [0.7, 0.05], { gr: "fist" }) }], [B.car + 6, { ...REST, arms: arms([0.25, 0.6], [0.3, -0.2], { gr: "open" }), tilt: 8 }]], F);
-  return st(p, F, 13, [[0, "tired"], [B.mom, "pleading"], [B.car, "relieved"]], { heading: face(MOM_KEYS, KYLE_STAIR) + 0.3 });
+  return st(p, F, 13, [[0, "tired"], [B.mom, "pleading"], [B.car, "relieved"]], { heading: 1.0 });
 });
-const MOW_A = MOWER_START.clone(), MOW_B = MOWER_START.clone().add(V(2.2, 0, 0.3));
+const MOW_A = MOWER_START.clone(), MOW_B = MOWER_START.clone().add(V(1.9, 0, 0.3));
 export const mowerAt = (F: number) => (F < L(29, 0) ? lerpV(MOW_A, MOW_B, span(F, B.dad - 10, L(4, 0) + 20)) : MOW_B.clone().add(V(-1.0, 0, 0.6)));
 export const DAD_ON_MOWER = V(-0.25, 0.04, 0.0); // the card in the mower's frame (seat at x -0.25)
 export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F) => {
@@ -265,7 +265,7 @@ export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F)
   return asleep(st({ ...SIT, arms: arms([0.4, 0.4], [0.45, 0.4]) }, F, 17, [[0, "tired"]], { heading: 0.4 }), F, 17);
 }, { sit: true });
 export const DAD_SEAT_H = MOWER_SEAT;
-const KID_A = [V(-8, 0, 6.6), V(2.5, 0, 6.2)] as const, KID_B = [V(-9.2, 0, 7.2), V(1.0, 0, 6.9)] as const;
+const KID_A = [V(-8, 0, 6.6), V(1.2, 0, 5.9)] as const, KID_B = [V(-9.2, 0, 7.3), V(0.2, 0, 6.8)] as const;
 const runner = (name: string, look: Look, [a, b]: readonly [Vector3, Vector3], seed: number, off: number) => role(name, look, (F) => lerpV(a, b, clamp01((F - L(3, 0) - off) / 70)), (F) => {
   const t = clamp01((F - L(3, 0) - off) / 70);
   const r = t > 0 && t < 1 ? runPose(a.distanceTo(b) * t * 0.9) : REST;
@@ -301,13 +301,13 @@ export const SHOPPERS = SHOP_FACES.map((_, i) => shopper(i));
 /** Line 27: Kyle's customers climb out of the stairwell and run into the street to look up. */
 const stairY = (z: number) => -STAIR.depth * clamp01((STAIR.z1 - z) / (STAIR.z1 - STAIR.z0 - 0.6));
 export const climber = (i: number) => {
-  const x = STAIR.x0 + 0.35 + (i % 2) * 0.6, z0 = STAIR.z0 + 0.55, t0 = B.empties - 26 + i * 9;
+  const x = STAIR.x0 + 0.35 + (i % 2) * 0.6, z0 = STAIR.z0 + 0.55, t0 = B.empties - 34 + i * 15;
   const at = (F: number) => {
-    const t = clamp01((F - t0) / 34), z = z0 + (STAIR.z1 + 2.6 - z0) * t;
+    const t = clamp01((F - t0) / 60), z = z0 + (STAIR.z1 + 2.6 - z0) * t;
     return V(x + (t > 0.7 ? (i % 2 ? 0.8 : -0.8) * (t - 0.7) : 0), z < STAIR.z1 ? stairY(z) : 0, z);
   };
   return role(`c${i}`, QUEUE_LOOKS[(i * 2 + 3) % QUEUE_LOOKS.length], at, (F) => {
-    const t = clamp01((F - t0) / 34);
+    const t = clamp01((F - t0) / 60);
     const r = t > 0 && t < 1 ? runPose(5 * t) : REST;
     return st({ ...r, arms: arms([0.6, -0.55], [0.65, -0.5], { gl: "open", gr: "open" }) }, F, 51 + i, [[0, "excited"], [B.up, "relieved"]], { heading: 0.15 }, 0.5);
   }, { crowd: true });

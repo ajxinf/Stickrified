@@ -1,9 +1,9 @@
-import { Object3D, Vector3 } from "three";
+﻿import { Object3D, Vector3 } from "three";
 import { CamPose, impact } from "../../../kit/toon/camera";
 import { DOF, Dof } from "../../../kit/toon/Composer";
 import type { MovingProp, Plan, Shot } from "../../../kit/toon/guard";
 import { V } from "./common";
-import { MAT_SIZE, cashFan, cerealBox, keys, marker, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
+import { MAT_SIZE, tarString, cashFan, cerealBox, keys, marker, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
 import { BOX, COUNTER_BOX, EYE, HOME_SUN, LIVING, SILL, TOASTER, dotAt, moonDayDir } from "./rooms";
 import type { Place } from "./scene";
 import { DAY, FUN_SUN, HEAT_SUN, IN_SUN, KITCHEN_SUN, SKYWIDE_SUN, SUN } from "./scene";
@@ -76,13 +76,13 @@ const STREET_PROPS = (F0: number) => (F0 >= L(13, 0) - 6 ? [theMattress, matToas
 
 // ================================================================== line 1: 3 AM, the sun blazing, the toaster talks
 // does: you at the counter, red-eyed and twitching, the microwave says 3:00 AM, white sun blasts through the window
-const A1 = P(V(-0.3, 1.38, 0.55), V(-1.3, 1.12, -1.6), 44);
+const A1 = P(V(0.1, 1.38, 0.65), V(-0.78, 1.12, -1.65), 50);
 shot("A1-3am", B.n29, "kitchen", [youK1], (F) => creep(A1, F, 0, B.n29, 0.06), { dof: mid(2.2), props: [kitchenToaster] });
 // does: hard cut up to the sun itself, huge and glaring over the south rooftops (heat shimmer of motes)
 const A2p = V(-6, 1.5, -1.6), A2 = P(A2p, A2p.clone().addScaledVector(V(0, 0, 0).add(skyDirDeg(150, 26)), 20), 52);
 shot("A2-the-sun", L(1, 6), "day", [], (F) => creep(A2, F, B.n29, L(1, 6), 0.02, 0.15, 0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT, fx: ["heat"] });
 // does: close on you and the toaster: its slot mouth says "relax", the toast pops up, you jump ring-eyed
-const A3 = P(V(-0.75, 1.3, -0.42), V(-1.3, 1.12, -1.75), 40);
+const A3 = P(V(-0.32, 1.28, -0.05), V(-0.72, 1.16, -1.65), 44);
 shot("A3-relax", L(2, 0), "kitchen", [youK1], impact((F) => creep(A3, F, L(1, 6), L(2, 0), 0.1), B.relax, 0.012, 6), { dof: close(1.4), kicks: [[B.relax - L(1, 6), B.relax - L(1, 6) + 6]], props: [kitchenToaster] });
 
 // ================================================================== line 2: the sun stops
@@ -91,16 +91,17 @@ const B1p = V(-2.5, 2.0, -8.6), B1 = P(B1p, B1p.clone().addScaledVector(skyDirDe
 const sunSlide = (F: number) => { const el = F < B.stopped ? 43 + 19 * (1 - span(F, L(2, 0), B.stopped)) : 43 - 1.6 * Math.exp(-(F - B.stopped) / 5) * Math.sin((F - B.stopped) / 2.2); return skyDirDeg(150, el); };
 shot("B1-sun-stops", B.sky, "skywide", [], impact((F) => creep(B1, F, L(2, 0), B.sky, 0.02, 0, 0), B.stopped, 0.02, 7), { wide: true, subject: undefined, dof: NONE, kicks: [[B.stopped - L(2, 0), B.stopped - L(2, 0) + 7]], sunAt: sunSlide, allow: SKY_TEXT });
 // does: macro on the garden sundial: its shadow sits frozen on III while the lens creeps round it
-const B2 = P(SUNDIAL.clone().add(V(0.45, 1.25, 0.55)), SUNDIAL.clone().add(V(0, 0.88, 0)), 40);
+const B2 = P(SUNDIAL.clone().add(V(0.5, 1.55, 0.95)), SUNDIAL.clone().add(V(0, 0.9, 0)), 38);
 shot("B2-sundial", L(3, 0), "day", [], (F) => creep(B2, F, B.sky, L(3, 0), 0.18, 0, 0.25), { subject: undefined, dof: close(0.75), props: STREET_PROPS(B.sky) });
 
 // ================================================================== line 3: at first it's awesome
 // does: two kids sprint along the south lawn past the kicked-over BEDTIME? sign, the lens tracking with them
-const kidX = (F: number) => (kidA.at(F).x + kidB.at(F).x) / 2;
-shot("C1-kids", L(3, 7), "fun", [kidA, kidB], (F) => { const x = kidX(F); return P(V(x - 1.6, 1.0, 3.0), V(x + 0.4, 0.85, 6.9), 46); }, { dof: mid(4.2), props: STREET_PROPS(L(3, 0)) });
+// a fixed lens (a tracking lens smears the kids with the camera's motion blur): they sprint at it, growing
+const C1 = P(V(3.4, 1.0, 4.0), V(-2.6, 0.9, 6.9), 46);
+shot("C1-kids", L(3, 7), "fun", [kidA, kidB], (F) => creep(C1, F, L(3, 0), L(3, 7), 0.06), { dof: NONE, props: STREET_PROPS(L(3, 0)) });
 // does: Dad rides his mower across a lawn mown to dirt, then waves at the chalk tally: 11 MOWS
-const C2 = P(V(-5.8, 1.35, -4.6), V(-2.4, 0.85, -8.0), 46);
-shot("C2-dad-mows", L(4, 0), "fun", [dad], (F) => creep(C2, F, L(3, 7), L(4, 0), 0.08), { dof: mid(4.0), props: STREET_PROPS(L(3, 7)), allow: { "Text in frame": "the chalk tally on the fence reads at an angle (11 strokes + MOWS)" } });
+const C2 = P(V(-2.9, 1.3, -4.7), V(-3.0, 0.85, -9.4), 50);
+shot("C2-dad-mows", L(4, 0), "fun", [dad], (F) => creep(C2, F, L(3, 7), L(4, 0), 0.08), { wide: true, dof: NONE, props: STREET_PROPS(L(3, 7)), allow: {} });
 
 // ================================================================== line 4: the 2D cutaway (Video.tsx) covers L(4,0) .. L(5,0)
 cursor = L(5, 0);
@@ -108,23 +109,23 @@ export const INSERTS: [number, number][] = [[L(4, 0), L(5, 0)]];
 
 // ================================================================== line 5: darkness, the most expensive thing on Earth
 // does: from inside the corner mart: four red-eyed faces press against the glass behind the black box on its stand
-const E1 = P(V(21.25, 1.42, -9.5), V(21.0, 1.3, -7.2), 48);
+const E1 = P(V(21.7, 1.42, -10.6), V(20.9, 1.3, -7.1), 50);
 shot("E1-faces-glass", B.darkness + 6, "day", SHOPPERS, (F) => creep(E1, F, L(5, 0), B.darkness + 6, 0.1), { subject: undefined, wide: true, dof: mid(2.2), props: STREET_PROPS(L(5, 0)) });
 // does: between two heads, close on the box: the tag DARKNESS $10,000 under its spotlight
-const E2 = P(V(21.05, 1.32, -6.55), DISPLAY.clone().add(V(0.18, 0.12, 0)), 32);
+const E2 = P(V(21.45, 1.3, -6.45), DISPLAY.clone().add(V(0.3, 0.02, 0.08)), 36);
 shot("E2-price-tag", L(6, 0), "day", SHOPPERS, (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box" } });
 
 // ================================================================== line 6: closets and cinemas
 // does: a hallway closet, door open with FOR RENT $900 PER NIGHT taped on; a man curled up asleep among the coats
-const F1 = P(V(-0.45, 1.22, 1.75), V(0.15, 0.95, -0.25), 46);
+const F1 = P(V(-0.9, 1.3, 2.7), V(0.75, 1.05, -0.2), 52);
 shot("F1-closet", L(6, 7), "closet", [closetMan], (F) => creep(F1, F, L(6, 0), L(6, 7), 0.12), { dof: mid(2.0) });
 // does: a dark cinema, rows of people asleep in the seats in the screen's blue glow, HOTEL hung over the back wall
-const F2 = P(V(0.7, 2.1, -3.9), V(0, 1.2, 2.2), 52);
+const F2 = P(V(0.4, 1.35, -2.1), V(0, 1.0, 2.2), 50);
 shot("F2-cinema", L(7, 0), "cinema", sleepersCinema, (F) => creep(F2, F, L(6, 7), L(7, 0), 0.08), { subject: undefined, wide: true, dof: NONE });
 
 // ================================================================== line 7: the guy in Ohio
 // does: a man folded up inside his open fridge hugging his knees; the door swings shut on "fridge", the light clicks off
-const G1 = P(V(0.3, 1.12, 1.3), V(0, 0.85, -0.95), 44);
+const G1 = P(V(0.7, 1.25, 2.6), V(0, 0.95, -0.95), 50);
 shot("G1-fridge", L(8, 0), "ohio", [fridgeMan], (F) => creep(G1, F, L(7, 0), L(8, 0), 0.1), { dof: mid(2.2), allow: { "Card penetration": "he sits inside the fridge shell (the door closes in front of him)" } });
 
 // ================================================================== line 8: Kyle sells night
@@ -148,8 +149,9 @@ shot("I2-you-deadpan", L(10, 0), "day", [youFence], (F) => creep(I2, F, B.cash, 
 
 // ================================================================== line 10: you can't afford it
 // does: close on your hands: the wallet opens and a moth flutters out of it
-const J1 = P(V(-0.35, 1.18, -6.75), YOU_FENCE.clone().add(V(0.1, 1.0, 0.05)), 36);
-shot("J1-wallet", L(10, 4), "day", [youFence], (F) => creep(J1, F, L(10, 0), L(10, 4), 0.1), { subject: undefined, dof: close(0.9), fx: ["moth"], props: [...STREET_PROPS(L(10, 0)), held("wallet", wallet, youFence, "right", () => J1, { fwd: 0.1, when: (F) => F < L(10, 4) + 6 })], allow: { "Subject size": "insert on the wallet in your hands" } });
+const J1v = YOU_FENCE.clone().add(V(0.45, 1.3, 1.45));
+const J1 = (F: number) => creep(P(J1v, YOU_FENCE.clone().add(V(0, 1.12, 0)), 40), F, L(10, 0), L(10, 4), 0.1);
+shot("J1-wallet", L(10, 4), "day", [youFence], J1, { subject: undefined, dof: close(0.9), fx: ["moth"], props: [...STREET_PROPS(L(10, 0)), held("wallet", wallet, youFence, "right", J1, { fwd: 0.1, when: (F) => F < L(10, 4) + 6 })], allow: {} });
 // does: your face narrows into a scheme, a hand to your chin
 const J2 = P(V(-0.55, 1.5, -6.3), V(-0.95, 1.45, -7.55), 34);
 shot("J2-scheme", L(11, 0), "day", [youFence], (F) => creep(J2, F, L(10, 4), L(11, 0), 0.14), { dof: close(1.3), props: STREET_PROPS(L(10, 4)) });
@@ -162,13 +164,13 @@ const pencilIn = free("pencil", pencil, (o, F) => { const t = span(F, L(11, 0), 
 const K1 = P(HOLE.clone().add(V(0.32, 0.12, 0.42)), HOLE.clone().add(V(0, -0.04, 0)), 36);
 shot("K1-pencil", L(11, 6), "kitchen", [], (F) => creep(K1, F, L(11, 0), L(11, 6), 0.18), { subject: undefined, dof: close(0.5), props: [counterBox, pencilIn, kitchenToaster] });
 // does: you hold the box up to one eye and peer in, grinning
-const K2 = P(V(-0.15, 1.5, -0.25), V(-0.6, 1.42, -1.25), 38);
+const K2 = P(V(-1.3, 1.5, -0.05), V(-1.8, 1.4, -1.25), 44);
 const K2c = (F: number) => creep(K2, F, L(11, 6), L(12, 0), 0.1);
 shot("K2-peer", L(12, 0), "kitchen", [youK11], K2c, { dof: close(1.1), props: [kitchenToaster, held("cereal box", () => cerealBox(), youK11, "right", K2c, { fwd: 0.12, up: -0.1, when: (F) => F >= L(11, 6) })], allow: { "Cast overlap": "the box at your eye is the gag", "Subject covered": "the box at your eye is the gag" } });
 
 // ================================================================== line 12: a dot every morning
 // does: your phone on the sill says 7:00 AM under the same blazing sun; marker dots trail across the glass
-const L1 = P(V(0.75, 1.25, -1.15), V(0.15, 1.42, -2.2), 46);
+const L1 = P(V(0.38, 1.18, -1.45), V(0.36, 1.38, -2.2), 44);
 const sillPhone = free("phone 7am", () => phone("7:00", "MORNING?"), (o, F) => { o.position.copy(SILL); o.rotation.set(-0.25, -0.3, 0); }, ["kitchen"]);
 shot("L1-7am", L(12, 8), "kitchen", [], (F) => creep(L1, F, L(12, 0), L(12, 8), 0.12), { subject: undefined, dof: close(0.75), props: [sillPhone, kitchenToaster] });
 // does: from outside the window: you lean in with a marker and today's dot lands on the glass on "dot"
@@ -188,7 +190,7 @@ shot("M2-alarm-set", L(14, 0), "day", [youDrag], M2c, { subject: undefined, dof:
 
 // ================================================================== line 14: Kyle thinks you've snapped
 // does: telephoto: Kyle over his fence laughing, twirling a finger at his temple
-const N1 = P(V(-1.4, 1.45, -1.4), V(0.45, 1.45, -7.3), 22);
+const N1 = P(V(-1.4, 1.45, -1.4), V(0.25, 1.4, -7.3), 24);
 shot("N1-kyle-laughs", B.snapped + 20, "day", [kyleFence], (F) => creep(N1, F, L(14, 0), B.snapped + 20, 0.05), { dof: close(5.8), props: STREET_PROPS(L(14, 0)) });
 // does: close on the toaster on your mattress: its eyes roll up on "toaster", you blurred behind
 const N2 = P(TOASTER_MAT.clone().add(V(0.12, 0.3, 0.75)), TOASTER_MAT.clone().add(V(0, 0.12, 0)), 36);
@@ -199,7 +201,7 @@ shot("N2-toaster-rolls", L(15, 0), "day", [youMat], (F) => creep(N2, F, B.snappe
 const O1 = P(THERMO.clone().add(V(0.1, 0.06, 0.55)), THERMO.clone(), 36);
 shot("O1-thermo", L(15, 9), "heat", [], (F) => creep(O1, F, L(15, 0), L(15, 9), 0.15), { subject: undefined, dof: close(0.55), fx: ["heat"], props: STREET_PROPS(L(15, 0)) });
 // does: low macro: your sneaker peels up off the melting road with a long string of tar
-const gum = free("tar string", () => { const g = new Object3D(); return g; }, (o, F) => { o.position.copy(YOU_GUM); return F >= B.stove - 30; }, ["ground"]);
+const gum = free("tar string", tarString, (o, F) => { o.position.copy(YOU_GUM).add(V(0.1, 0, 0.04)); o.scale.set(1, Math.min(1, Math.max(0.05, (F - B.stove + 30) / 10)), 1); return F >= B.stove - 30; }, ["ground"]);
 const O2 = P(YOU_GUM.clone().add(V(0.5, 0.32, 0.95)), YOU_GUM.clone().add(V(0, 0.28, 0)), 38);
 shot("O2-tar", L(16, 0), "heat", [youGum], (F) => creep(O2, F, L(15, 9), L(16, 0), 0.12), { dof: close(1.1), fx: ["heat"], props: [...STREET_PROPS(L(15, 9)), gum], allow: { "Subject size": "a low insert on your foot peeling off the road" } });
 
@@ -209,7 +211,7 @@ const P1a = P(V(13.5, 2.2, 1.6), V(14.5, 0.8, -5.6), 50), P1b = P(V(13.0, 5.6, 3
 const P1c = (F: number) => glideCam(P1a, P1b, F, L(16, 0), B.mom);
 shot("P1-line-block", B.mom, "day", QUEUERS, P1c, { subject: undefined, wide: true, dof: NONE, props: [...STREET_PROPS(L(16, 0)), ...pillowsFor(QUEUERS, P1c)] });
 // does: Mom hands Kyle the car keys; he spins them on his finger
-const P2 = P(V(7.0, 1.4, -5.3), V(8.0, 1.3, -7.55), 40);
+const P2 = P(V(6.3, 1.45, -4.5), V(8.0, 1.3, -7.5), 42);
 const P2c = (F: number) => creep(P2, F, B.mom, L(17, 0), 0.08);
 shot("P2-the-car", L(17, 0), "day", [kyleStair, mom], P2c, { dof: mid(2.4), props: [...STREET_PROPS(B.mom), held("keys mom", keys, mom, "right", P2c, { when: (F) => F < B.car })] });
 
@@ -250,7 +252,7 @@ shot("T2-the-bite", L(21, 0), "box", [], (F) => creep(P(V(0, BOX.h / 2 + 0.03, -
 // ================================================================== line 21: the Moon didn't stop
 // does: telephoto on the sun: the Moon's disc slides further in, the bite growing on "didn't"
 const sunCam = (pos: Vector3, fov: number) => P(pos, pos.clone().addScaledVector(SUN, 100), fov);
-shot("U1-moon-slides", L(22, 0), "day", [], (F) => creep(sunCam(V(-2.6, 1.3, 0.9), 15), F, L(21, 0), L(22, 0), 0.0, 0, 0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
+shot("U1-moon-slides", L(22, 0), "day", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5), 15), F, L(21, 0), L(22, 0), 0.0, 0, 0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
 
 // ================================================================== line 22: the dots were the Moon
 // does: back in the kitchen, from where you drew them: the dot trail on the glass runs straight to the Moon on the sun
@@ -259,10 +261,10 @@ shot("V1-dots-moon", L(23, 0), "kitchen", [], (F) => creep(V1, F, L(22, 0), L(23
 
 // ================================================================== line 23: every 29 days
 // does: behind the pyjama line, all of them turning their faces up to the bitten sun
-const W1p = V(16.5, 0.9, -7.2), W1 = P(W1p, W1p.clone().addScaledVector(skyDirDeg(150, 24), 10), 60);
+const W1p = V(11.5, 0.8, -7.4), W1 = P(W1p, W1p.clone().addScaledVector(skyDirDeg(140, 22), 10), 60);
 shot("W1-all-look-up", B.walks + 6, "day", QUEUERS.slice(3, 11), (F) => creep(W1, F, L(23, 0), B.walks + 6, 0.02, 0.05, 0), { subject: undefined, wide: true, dof: NONE, props: STREET_PROPS(L(23, 0)), allow: SKY_TEXT });
 // does: a living room: the little brother strolls in front of the TV and the room goes dark; Mom and Dad groan
-const W2 = P(V(2.5, 1.3, 3.2), V(0, 0.72, -1.0), 46);
+const W2 = P(V(-2.4, 1.35, 3.1), V(0.2, 0.75, -0.9), 46);
 shot("W2-little-brother", L(24, 0), "tv", [tvMom, tvDad, brother], (F) => creep(W2, F, B.walks + 6, L(24, 0), 0.06), { subject: undefined, dof: mid(4.2) });
 
 // ================================================================== line 24: the street goes dim
@@ -275,9 +277,9 @@ shot("X2-lights-on", L(25, 0), "dim", QUEUERS.slice(5, 14), (F) => creep(X2, F, 
 
 // ================================================================== line 25: the last sliver
 // does: telephoto: the last bead of sun shrinks to a point...
-shot("Y1-last-bead", B.vanishes, "dim", [], (F) => creep(sunCam(V(-2.6, 1.3, 0.9), 15), F, L(25, 0), B.vanishes, 0.0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
+shot("Y1-last-bead", B.vanishes, "dim", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5), 15), F, L(25, 0), B.vanishes, 0.0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
 // does: ...and vanishes: the sky snaps to night, the corona blooms white round a black disc
-shot("Y2-corona", L(26, 0), "night", [], (F) => creep(sunCam(V(-2.6, 1.3, 0.9), 15), F, B.vanishes, L(26, 0), 0.0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
+shot("Y2-corona", L(26, 0), "night", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5), 15), F, B.vanishes, L(26, 0), 0.0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT });
 
 // ================================================================== line 26: the stars come out
 // does: from your amazed face on the mattress the lens cranes up into a sky full of stars
@@ -285,7 +287,7 @@ const Z1a = P(V(-1.9, 1.0, 2.4), V(-2.3, 1.05, 0.4), 44), Z1b = P(V(-1.8, 1.6, 2
 shot("Z1-stars", B.stars + 6, "night", [youMat], (F) => glideCam(Z1a, Z1b, F, L(26, 0) + 10, B.stars), { subject: "you", subjectFrom: 0, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(26, 0)), allow: { ...SKY_TEXT, "Subject in frame": "the crane leaves you for the stars" } });
 // does: an owl on the power line hoots like it has waited a month, fireflies blinking below
 const OWL = V(-1.0, wireY(-1.0) + 0.16, OWL_AT.z);
-const Z2 = P(OWL.clone().add(V(-0.6, -1.0, -2.4)), OWL.clone().add(V(0, 0.4, 0)), 50);
+const Z2 = P(OWL.clone().add(V(-0.35, -0.6, -1.4)), OWL.clone().add(V(0, -0.35, 0)), 48);
 shot("Z2-owl", L(27, 0), "night", [], (F) => creep(Z2, F, B.stars + 6, L(27, 0), 0.12), { subject: undefined, dof: NONE, fx: ["owl", "fireflies"], allow: { ...SKY_TEXT, "Camera clearance": "the lens floats below the wire" } });
 
 // ================================================================== line 27: Kyle's basement empties
@@ -300,7 +302,7 @@ shot("AB1-my-night", L(29, 0), "night", [kyleStair], (F) => creep(AB, F, L(28, 0
 
 // ================================================================== line 29: the whole street asleep
 // does: a high crane drifts across the street: neighbours asleep in lawn chairs, you on your mattress in the road
-const AC1a = P(V(-6.5, 6.2, 7.0), V(-2.0, 0.2, -2.6), 48), AC1b = P(V(-1.0, 6.0, 7.4), V(-1.5, 0.2, -2.8), 48);
+const AC1a = P(V(-5.5, 2.6, 4.6), V(-2.4, 0.6, -2.0), 52), AC1b = P(V(-1.0, 2.5, 4.9), V(-2.0, 0.6, -2.2), 52);
 shot("AC1-asleep", L(29, 3), "night", [youMat, ...SLEEPERS], (F) => glideCam(AC1a, AC1b, F, L(29, 0), L(29, 3) + 10), { subject: undefined, wide: true, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(29, 0)) });
 // does: Dad asleep on his mower, chin on his chest, two neighbours asleep in lawn chairs behind
 const AC2 = P(V(-1.6, 1.15, -4.6), V(-4.2, 0.9, -7.6), 42);
@@ -311,7 +313,7 @@ shot("AC2-dad-asleep", L(30, 0), "night", [dad, ...SLEEPERS.slice(0, 2)], (F) =>
 const AD1 = P(V(-1.55, 1.0, 2.8), V(-2.15, 0.9, 0.3), 44);
 shot("AD1-three-minutes", L(30, 4), "night", [youMat], (F) => creep(AD1, F, L(30, 0), L(30, 4), 0.1), { dof: mid(2.4), fx: ["fireflies"], props: STREET_PROPS(L(30, 0)) });
 // does: mirror of the cold open: you and the toaster close; your eyes close into a smile, the toaster smiles too
-const AD2 = P(V(-1.95, 0.98, 1.55), V(-2.12, 0.92, 0.3), 40);
+const AD2 = P(V(-2.0, 1.0, 1.8), V(-2.12, 0.92, 0.35), 44);
 shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, 0.14), { dof: close(1.25), fx: ["fireflies"], props: STREET_PROPS(L(30, 4)) });
 
 export const PLAN: Plan = { slug: "sun-never-sets", shots: SHOTS, inserts: INSERTS };

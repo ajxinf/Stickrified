@@ -25,11 +25,11 @@ import { FONT, MATS, V, boardTex, canvasTex, colMat, glassMat, glowMat, litTex, 
 export const HOME = { x0: -2.6, x1: 2.6, z0: -2.2, z1: 2.4, h: 2.6 };
 export const WIN = { x0: -0.8, x1: 0.8, y0: 1.05, y1: 2.2 };
 export const TOP = 0.92; // worktop height
-export const TOASTER = V(-1.45, TOP, -1.9);
-export const MICRO = V(-2.12, TOP, -1.93);
-export const MICRO_CLOCK = V(-1.95, TOP + 0.17, -1.72);
+export const TOASTER = V(-0.95, TOP, -1.9);
+export const MICRO = V(-1.62, TOP, -1.93);
+export const MICRO_CLOCK = V(-1.45, TOP + 0.17, -1.72);
 export const SILL = V(0.35, WIN.y0 + 0.04, HOME.z0 + 0.12);
-export const COUNTER_BOX = V(-0.85, TOP, -1.85); // the cereal box on the worktop (line 11)
+export const COUNTER_BOX = V(-2.2, TOP, -1.85); // the cereal box on the worktop (line 11)
 /** The frozen sun as seen from the kitchen: low, straight out of the window. */
 export const HOME_SUN_AZ = 0, HOME_SUN_EL = 19.3;
 export const HOME_SUN = skyDir(HOME_SUN_AZ, HOME_SUN_EL);
@@ -42,14 +42,13 @@ export const moonDayDir = (k: number) => { const a = 3.0 * k; return skyDir(HOME
 export const dotAt = (k: number) => { const d = moonDayDir(k), t = (GLASS_Z - EYE.z) / d.z; return EYE.clone().addScaledVector(d, t); };
 export const DOTS_MAX = 9;
 /** The marker dots on the glass: `n` of them, the newest (k = 1 is yesterday's ... ) nearest the sun. */
-const dotsTex = (n: number) => canvasTex(512, 384, (g) => {
-  g.clearRect(0, 0, 512, 384);
+const dotsTex = (n: number) => canvasTex(1024, 768, (g) => {
+  g.clearRect(0, 0, 1024, 768);
   for (let i = 0; i < n; i++) {
     const k = DOTS_MAX - i, p = dotAt(k);
     if (p.x < WIN.x0 || p.x > WIN.x1 || p.y < WIN.y0 || p.y > WIN.y1) continue;
-    const u = ((p.x - WIN.x0) / (WIN.x1 - WIN.x0)) * 512, v = ((WIN.y1 - p.y) / (WIN.y1 - WIN.y0)) * 384;
-    g.fillStyle = "#141018"; g.beginPath(); g.arc(u, v, 9 + rnd(k) * 2, 0, 7); g.fill();
-    g.fillStyle = "rgba(255,255,255,0.35)"; g.beginPath(); g.arc(u - 3, v - 3, 2.5, 0, 7); g.fill();
+    const u = ((p.x - WIN.x0) / (WIN.x1 - WIN.x0)) * 1024, v = ((WIN.y1 - p.y) / (WIN.y1 - WIN.y0)) * 768;
+    g.fillStyle = "#141018"; g.beginPath(); g.ellipse(u, v, 4.2 + rnd(k), 3.8 + rnd(k + 1), rnd(k + 2), 0, 7); g.fill();
   }
 });
 const DOT_MATS = new Map<number, MeshBasicMaterial>();
@@ -81,7 +80,6 @@ export const home = () => {
   k.box(T, WIN.x1 - WIN.x0 + 0.14, 0.07, 0.16, 0, WIN.y1 + 0.035, z0);
   k.box(T, WIN.x1 - WIN.x0 + 0.2, 0.06, 0.26, 0, WIN.y0 - 0.03, z0 + 0.06);
   for (const x of [WIN.x0 - 0.035, WIN.x1 + 0.035]) k.box(T, 0.07, WIN.y1 - WIN.y0, 0.16, x, (WIN.y0 + WIN.y1) / 2, z0);
-  k.box(T, 0.035, WIN.y1 - WIN.y0, 0.05, 0, (WIN.y0 + WIN.y1) / 2, z0 + 0.0);
   // the counter run along the back wall, upper cabinets on the left, a fridge on the right
   k.box(MATS.cabinet(), 4.1, 0.86, 0.6, -0.55, 0.43, z0 + 0.3);
   for (let i = 0; i < 6; i++) k.box(MAT.color("#c8962e"), 0.02, 0.7, 0.02, -2.35 + i * 0.68, 0.45, z0 + 0.61); // door gaps
@@ -177,9 +175,9 @@ export const closet = () => {
   dk.box(MATS.trim(), w, h - 0.02, 0.05, -w / 2, h / 2, 0);
   dk.add(MAT.color("#e2c25a"), new SphereGeometry(0.035, 8, 6), -w + 0.1, 1.0, 0.04);
   door.add(dk.build());
-  door.add(plane(0.5, 0.38, unlit("rent", rentTex), V(-w / 2, 1.45, 0.03)));
+  door.add(plane(0.5, 0.38, unlit("rent", rentTex), V(-w / 2, 1.45, -0.03), Math.PI));
   door.position.set(w / 2, 0, 0.12);
-  door.rotation.y = -1.9;
+  door.rotation.y = 1.9;
   g.add(door);
   g.add(place(model("potted_plant_01", { collider: false, scale: 0.7 }), -1.7, 0, 0.6, 0.4));
   // the bare bulb inside
@@ -234,7 +232,7 @@ const ohioTex = () => canvasTex(256, 128, (c) => { c.fillStyle = "#c8342c"; c.be
 export const ohio = () => {
   const g = new Group(), { x, z, w, h, d } = FRIDGE, zf = z + d / 2;
   g.add(slab(-3, 3, -2, 3, 0, MATS.tiles()));
-  const k = new Kit(), W = MATS.wall("#f2e8c8");
+  const k = new Kit(), W = MATS.wall("#e8a888");
   k.box(W, 6, 2.7, 0.12, 0, 1.35, z - d / 2 - 0.08);
   for (const s of [-1, 1]) k.box(MATS.cabinet(), 1.8, 0.88, 0.6, x + s * 1.45, 0.44, z - 0.05);
   for (const s of [-1, 1]) k.box(MATS.worktop(), 1.84, 0.05, 0.64, x + s * 1.45, 0.905, z - 0.05);
@@ -312,8 +310,9 @@ export const boxInside = () => {
   b.userData.collider = "box";
   g.add(b);
   // the white card taped on the far end (the projection screen: Video.tsx draws the sun on `projection`)
-  g.add(plane(w - 0.04, h - 0.06, litTex("card", () => canvasTex(64, 64, (c) => { c.fillStyle = "#f6f2ea"; c.fillRect(0, 0, 64, 64); })), V(0, h / 2, -l + 0.002)));
+  g.add(plane(w - 0.04, h - 0.06, litTex("card", () => canvasTex(64, 64, (c) => { c.fillStyle = "#d8d0c0"; c.fillRect(0, 0, 64, 64); })), V(0, h / 2, -l + 0.002)));
   const proj = new Mesh(new PlaneGeometry(0.14, 0.14), new MeshBasicMaterial({ transparent: true, toneMapped: false, depthWrite: false }));
+  proj.material.color.setScalar(2.2);
   proj.position.set(0, h / 2 + 0.01, -l + 0.004);
   proj.name = "projection";
   g.add(proj);

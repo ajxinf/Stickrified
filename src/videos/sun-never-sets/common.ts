@@ -95,7 +95,7 @@ export const MATS = {
   wall: (c: string) => PM("painted_plaster_wall", 2.4, c, { rough: 0.85 })(),
   plaster: (c: string) => PM("grey_plaster", 2.5, c, { rough: 0.9 })(),
   tiles: PM("floor_tiles_06", 0.9, "#e4ecee", { rough: 0.35, gloss: 0.2 }),
-  cabinet: PM("white_planks_clean", 1.2, "#e8b860", { rough: 0.6 }),
+  cabinet: PM("white_planks_clean", 1.2, "#f6cc6a", { rough: 0.6 }),
   worktop: PM("granite_tile", 1.0, "#5a5a62", { rough: 0.4, gloss: 0.3 }),
   carpet: (c: string) => PM("dirty_carpet", 1.6, c, { rough: 0.95 })(),
   cloth: (c: string) => PM("hessian_230", 0.5, c, { rough: 0.95 })(),
