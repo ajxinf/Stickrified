@@ -182,7 +182,7 @@ shot("M3-fogged-glasses", L(14, 17), "vaultNight", [geniusVault], (F) => creep(M
 shot("M4-blind", L(15, 0), "vaultNight", [speedyVault, youVault], (F) => creep(P(V(-0.6, 1.0, 4.2), V(1.4, 1.95, 1.9), 50), F, L(14, 17), L(15, 0), 0.08), { wide: true, subject: undefined, dof: NONE, props: [torch] });
 // does: side-on track: The Genius shuffles across the corridor behind a white foam board through the red beam
 const foamHeld = (cam: (F: number) => CamPose) => held("foam board", foamBoard, geniusVault, "both", cam, { fwd: 0.1 });
-const N1 = (F: number) => { const g = geniusFoamAt(F); return P(V(g.x * 0.55 + 0.25, 1.45, 5.7), V(g.x * 0.65, 1.15, 2.2), 54); };
+const N1 = (F: number) => { const g = geniusFoamAt(F); return P(V(g.x * 0.6 + 0.25, 1.45, 5.7), V(g.x * 0.8, 1.15, 2.2), 54); };
 shot("N1-foam-board", L(15, 12), "vaultNight", [geniusVault], N1, { dof: mid(2.3), props: [foamHeld(N1)], allow: { "Subject covered": "gag: he hides behind the foam board", "Moving props": "the board slides through the beam" } });
 // does: close: only his eyes and fingertips peek over the foam, like a kid behind a pizza box
 const N2 = (F: number) => creep(P(V(-1.25, 1.5, 4.5), V(-1.4, 1.3, 2.2), 34), F, L(15, 12), L(16, 0), 0.1);
