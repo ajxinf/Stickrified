@@ -97,6 +97,8 @@ export const office = () => {
   door.name = "officeDoor";
   door.userData.door = 2.05;
   door.userData.opens = true;
+  door.userData.out = V(-1, 0, 0);
+  door.userData.doorway = OFFICE_DOOR.clone().add(V(0.1, 0, 0));
   door.position.set(OFFICE_DOOR.x + 0.02, 0, OFFICE_DOOR.z + 0.45);
   const leaf = box(0.05, 2.05, 0.9, MATS.darkWood(), V(0, 1.025, -0.45));
   door.add(leaf);
@@ -104,6 +106,11 @@ export const office = () => {
   door.add(place(new Mesh(new CylinderGeometry(0.025, 0.025, 0.08, 10).rotateZ(Math.PI / 2), colMat("#c8a050", { spec: 0.8 })), 0.05, 1.0, -0.8));
   g.add(door);
   g.add(box(0.1, 2.15, 1.05, MATS.trim(), V(OFFICE_DOOR.x - 0.02, 1.07, OFFICE_DOOR.z))); // frame behind the leaf
+  // the corridor outside the door (the cops come from it)
+  g.add(slab(-4.4, OFFICE.x0, 0, 2.6, 0, MATS.carpet()));
+  g.add(box(0.12, OFFICE.h, 2.6, MATS.wallPaint("#d8d0c0"), V(-4.45, OFFICE.h / 2, 1.3)));
+  g.add(box(2.0, 0.1, 2.6, MATS.wallPaint("#f2efe8"), V(-3.4, OFFICE.h + 0.05, 1.3)));
+  g.add(plane(0.6, 0.8, litTex("hallposter", () => boardTex(["FLOOR 3"], "#2a4a6a", "#ffffff", 300, 400)), V(-4.38, 1.6, 1.3), Math.PI / 2));
   return g;
 };
 

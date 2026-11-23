@@ -31,7 +31,7 @@ const sprayAt = (i: number, F: number) => {
 };
 const DIAL = V(0, 1.8, 0.53);
 const digitAt = (k: number) => (i: number, F: number) => {
-  const t0 = L(5, 0) + 6 + (i * 5 + k * 1.7) % 70, t = (F - t0) / 30;
+  const t0 = L(5, 0) + 2 + (i * 3 + k * 1.7) % 70, t = (F - t0) / 30;
   if (t < 0 || F >= L(6, 0)) return null;
   const vx = (rnd(i * 5 + k) - 0.5) * 0.9, vz = 0.5 + rnd(i * 3 + k) * 0.6;
   const p = DIAL.clone().add(V(vx * t, 0.25 * t - 4.9 * t * t, vz * t));
@@ -82,8 +82,8 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <Dust center={look.clone().setY(Math.max(look.y, 1.0))} size={V(3, 2.2, 3)} count={s.w === "forest" ? 260 : 180} color={mc} strength={ms} />
       {fx.includes("gold") && <Dust center={look.clone()} size={V(2.4, 2, 2.4)} count={160} color="#ffe2a0" strength={1.4} />}
       {fx.includes("forestMist") && <Dust center={V(look.x, 1.2, look.z)} size={V(8, 2.4, 8)} count={120} color="#ffffff" strength={0.5} />}
-      {fx.includes("spray") && <Sprites n={30} F={F} at={sprayAt} kind="mist" size={0.07} />}
-      {fx.includes("digits") && (["d0", "d1", "d4", "d7", "d9"] as const).map((k, j) => <Sprites key={k} n={22} F={F} at={digitAt(j)} kind={k} size={0.075} />)}
+      {fx.includes("spray") && <Sprites n={30} F={F} at={sprayAt} kind="mist" size={0.1} />}
+      {fx.includes("digits") && (["d0", "d1", "d4", "d7", "d9"] as const).map((k, j) => <Sprites key={k} n={30} F={F} at={digitAt(j)} kind={k} size={0.11} />)}
       {fx.includes("pigeon") && <Sprites n={1} F={F} at={pigeonAt} kind="pigeon" size={0.32} />}
       {fx.includes("breath") && <Sprites n={8} F={F} at={breathAt(camPos)} kind="mist" size={0.09} />}
       {fx.includes("glint") && <Sprites n={1} F={F} at={glintAt(camPos)} kind="sparkle" size={0.16 * (1 - Math.abs(F - B.gta - 4) / 10)} />}

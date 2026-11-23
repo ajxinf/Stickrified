@@ -93,7 +93,7 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
     show(g, "lightLed", s.lightLed);
     show(g, "loot", s.loot);
     const torch = named(g, "torch");
-    if (torch) { torch.visible = s.torch !== null; if (s.torch !== null) torch.position.set(2.17, 1.5 + 0.5 * Math.sin(s.torch / 17), 2.6 + 1.6 * Math.sin(s.torch / 23)); }
+    if (torch) { torch.visible = s.torch !== null; if (s.torch !== null) torch.position.set(2.17, 2.0 + 0.35 * Math.sin(s.torch / 11), 1.9 + 0.9 * Math.sin(s.torch / 15)); }
     show(g, "spill", s.door > 0.05);
     const spill = named(g, "spill");
     if (spill) spill.scale.set(1, 1, 0.3 + 0.7 * s.door);
@@ -103,7 +103,7 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
       if (s.radar !== null) { const ph = (s.radar / 24 + k / 3) % 1; r.scale.setScalar(0.2 + 2.2 * ph); ((r as Mesh).material as Material & { opacity: number }).opacity = 0.6 * (1 - ph); }
     }
     // boxes open in a wave down the rows (rows nearest the lens first)
-    const doors = named(g, "boxDoors")!;
+    const doors = named(g, "boxHinges")!;
     doors.children.forEach((h, i) => {
       const r = Math.floor(i / BOX.cols), c = i % BOX.cols, order = c * BOX.rows + (BOX.rows - 1 - r);
       const t = Math.min(Math.max(s.boxes - order * 0.62, 0), 1);

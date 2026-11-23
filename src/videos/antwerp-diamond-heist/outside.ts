@@ -188,7 +188,7 @@ export const forest = () => {
     g.add(f);
   }
   g.add(place(model("tree_stump_01", { collider: "stump" }), -2.4, 0, 2.6, 0.5));
-  g.add(place(model("tree_stump_02", { collider: "stump 2" }), 3.6, 0, -2.2, 1.5));
+  g.add(place(model("tree_stump_02", { collider: "stump 2" }), 4.6, 0, -0.4, 1.5));
   g.add(place(model("dead_tree_trunk_02", { collider: "log" }), 2.6, 0, -3.2, 0.3));
   g.add(...grassTufts(260, (_t, r) => { for (;;) { const p = V(-9 + r() * 18, 0, -10 + r() * 20); if (p.distanceTo(PILE) > 1.6) return p; } }, ["#5a6a3a", "#7a7a4a", "#9a8a5a"], 19));
   // the car on the verge, hatch toward the clearing

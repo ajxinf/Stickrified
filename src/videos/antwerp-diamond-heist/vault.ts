@@ -25,8 +25,8 @@ export const LIGHT_S = V(-2.17, 1.12, 2.8); // light sensor on the left wall (fa
 export const RADAR = V(0, 2.76, 3.4);
 export const MAG = V(1.4, 1.95, 0.04); // magnet block on the wall beside the door's free edge
 export const LADDER = V(1.45, 0, 1.75);
-export const DESK = V(1.0, 0, 7.6); // guard desk, long side along z, front toward -x
-export const GUARD_SEAT = V(1.62, 0, 7.55);
+export const DESK = V(0.75, 0, 7.6); // guard desk, long side along z, front toward -x
+export const GUARD_SEAT = V(1.52, 0, 7.55);
 export const CALENDAR = V(2.17, 1.62, 6.55);
 export const STAIRS_Z = 9.6;
 export const EMERGENCY = V(0, 2.62, 0.45);
@@ -85,6 +85,8 @@ const vaultDoor = () => {
   pivot.userData.collider = false;
   pivot.userData.door = 2.24;
   pivot.userData.opens = true;
+  pivot.userData.out = V(0, 0, 1);
+  pivot.userData.doorway = V(0, 0.3, 0.3);
   return pivot;
 };
 
@@ -239,7 +241,7 @@ export const vault = (withLadder = false) => {
   k.box(B, x1 - x0, h, 0.12, 0, h / 2, z1 + 0.06);
   // stairs up at the far end
   for (let i = 0; i < 8; i++) k.box(MATS.vaultFloor(), 1.6, 0.18 * (i + 1), 0.3, -1.1, 0.09 * (i + 1), STAIRS_Z - 0.3 + i * 0.12 + 0.6);
-  k.box(MATS.steel(), 0.05, 0.05, 2.2, -0.28, 0.95, STAIRS_Z + 0.5); // handrail
+  k.box(MATS.steel(), 0.05, 0.05, 1.2, -0.28, 1.2, STAIRS_Z + 0.9); // handrail
   // pipes and a cable tray along the ceiling
   k.add(MATS.darkSteel(), new CylinderGeometry(0.06, 0.06, z1 - z0, 12).rotateX(Math.PI / 2), 1.6, h - 0.18, (z0 + z1) / 2);
   k.add(MATS.steel(), new CylinderGeometry(0.035, 0.035, z1 - z0, 10).rotateX(Math.PI / 2), 1.42, h - 0.14, (z0 + z1) / 2);
@@ -260,9 +262,7 @@ export const vault = (withLadder = false) => {
   walls.userData.collider = "vault";
   g.add(walls);
   const doors = new Group();
-  doors.name = "boxDoors";
-  doors.userData.door = BOX.h;
-  doors.userData.opens = true;
+  doors.name = "boxHinges";
   const recess = colMat("#15161a");
   for (let r = 0; r < BOX.rows; r++) for (let c = 0; c < BOX.cols; c++) {
     const zc = BOX.z0 + c * BOX.dz, y = BOX.y0 + r * BOX.dy;
@@ -273,8 +273,6 @@ export const vault = (withLadder = false) => {
     door.position.z = -BOX.w / 2;
     hinge.add(door);
     hinge.name = `box${r * BOX.cols + c}`;
-    hinge.userData.door = BOX.h;
-    hinge.userData.opens = true;
     doors.add(hinge);
   }
   g.add(doors);
@@ -294,7 +292,7 @@ export const vault = (withLadder = false) => {
   // the guard post: desk, lamp, chair, a monitor, the calendar
   g.add(place(model("metal_office_desk", { collider: "desk" }), DESK.x, 0, DESK.z, -Math.PI / 2));
   g.add(place(model("desk_lamp_arm_01", { collider: false, scale: 0.9 }), DESK.x + 0.15, 0.79, DESK.z + 0.7, -1.9));
-  g.add(place(model("painted_wooden_chair_01", { collider: "chair" }), GUARD_SEAT.x + 0.4, 0, GUARD_SEAT.z, -Math.PI / 2)); // front (-0.27) 13 cm behind the seated card
+  g.add(place(model("painted_wooden_chair_01", { collider: "chair" }), GUARD_SEAT.x + 0.38, 0, GUARD_SEAT.z, -Math.PI / 2)); // front (-0.27) 11 cm behind the seated card, back clear of the wall
   g.add(place(new Mesh(new BoxGeometry(0.42, 0.32, 0.3), colMat("#2a2c32", { spec: 0.4 })), DESK.x + 0.15, 0.95, DESK.z - 0.8, -Math.PI / 2));
   g.add(place(new Mesh(new PlaneGeometry(0.36, 0.26), unlit("cctv", () => canvasTex(256, 192, (c) => {
     c.fillStyle = "#1a2a2a"; c.fillRect(0, 0, 256, 192); c.strokeStyle = "#6a9a8a"; c.lineWidth = 3;

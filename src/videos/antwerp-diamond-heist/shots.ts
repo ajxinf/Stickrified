@@ -11,10 +11,10 @@ import type { Place } from "./scene";
 import { FOREST_SUN, IN_SUN, STREET_SUN } from "./scene";
 import {
   B, COP_F, FRAMES, L, MON_TAPE, Role, SIT, YOU_DAWN, YOU_DESK, YOU_LADDER, YOU_MIRROR, copForest, copOffice, geniusFoamAt, geniusHide, geniusStreet, geniusVault,
-  guard, handAt, held, kingHide, kingStreet, kingVault, lerpV, monsterHide, monsterStreet, monsterVault, oldMan, span, speedyForest, speedyHide, speedyStreet, speedyVault, speedyWin,
+  guard, handAt, held, kingHide, kingStreet, kingVault, lerpV, monsterHide, monsterStreet, monsterVault, oldMan, span, speedyForest, speedyHide, speedyPast, speedyStreet, speedyVault, speedyWin,
   words, youCell, youCounter, youCuffed, youCups, youDesk, youForest, youHide, youLadder, youMirror, youStreet, youVault, youVisits,
 } from "./story";
-import { CALENDAR, DOOR, GUARD_SEAT, LIGHT_S, MAG, RADAR, SENSOR } from "./vault";
+import { CALENDAR, DOOR, GUARD_SEAT, LIGHT_S, MAG, SENSOR } from "./vault";
 
 /**
  * antwerp-diamond-heist shot plan: one canvas per shot, hard cuts (time and place jumps cut on the word). Each shot's
@@ -63,7 +63,7 @@ const free = (name: string, make: () => Object3D, at: (o: Object3D, F: number) =
 // ================================================================== line 1-3: the cold open
 // does: macro: a pink hairspray can hisses a glittery cloud onto the vault's heat sensor
 const CAN_AT = SENSOR.clone().add(V(-0.42, -0.2, 0.42));
-const canFree = free("hairspray", hairspray, (o) => { o.position.copy(CAN_AT); o.rotation.set(0, 0.67, 0.25); });
+const canFree = free("hairspray", hairspray, (o, F) => { const k = Math.sin(F * 0.5) * 0.02; o.position.copy(CAN_AT).add(V(k, 0.015 * Math.sin(F * 0.9), 0)); o.rotation.set(0, 0.67, 0.25 + Math.sin(F * 0.5) * 0.1); });
 const A1 = P(SENSOR.clone().add(V(-1.15, -0.3, 1.05)), SENSOR.clone().add(V(-0.2, -0.12, 0.2)), 40);
 shot("A1-hairspray", B.hundred, "vaultNight", [], (F) => creep(A1, F, 0, B.hundred, 0.12), { subject: undefined, dof: close(0.9), fx: ["spray"], props: [canFree] });
 // does: hard cut to the threat: the giant round vault door, its red alarm LED blinking, you on a ladder by the sensor
@@ -74,7 +74,7 @@ const A3 = on(youLadder, YOU_LADDER, V(-1.25, 0.0, 1.55), "ms", { fov: 44 });
 const canHeld = (cam: (F: number) => CamPose) => held("hairspray", hairspray, youLadder, "right", cam, { when: (F) => F < L(3, 0) });
 shot("A3-you-spray", L(2, 0), "vaultNight", [youLadder], (F) => creep(A3, F, L(1, 5), L(2, 0), 0.1), { dof: mid(2.0), fx: ["spray"], props: [canHeld((F) => creep(A3, F, L(1, 5), L(2, 0), 0.1))], allow: ON_LADDER });
 // does: you freeze mid-spray and look down, suspicious to nervous
-const B0 = on(youLadder, YOU_LADDER, V(-1.05, 0, 1.15), "mcu", { fov: 42 });
+const B0 = on(youLadder, YOU_LADDER, V(-0.35, 0, 1.6), "mcu", { fov: 42 });
 shot("B0-only-thing", B.sandwich - 2, "vaultNight", [youLadder], (F) => creep(B0, F, L(2, 0), B.sandwich, 0.12), { dof: close(1.7), props: [canHeld(() => B0 as CamPose)], allow: ON_LADDER });
 // does: smash cut: a half-eaten salami sandwich alone on dead leaves in the mist, lit from below like a horror villain
 const B1 = P(SANDWICH.clone().add(V(0.08, 0.2, 0.62)), SANDWICH.clone().add(V(0, 0.03, 0)), 40);
@@ -95,8 +95,7 @@ shot("C3-like-gta", L(4, 0), "vaultNight", [youLadder], (F) => creep(C3, F, L(3,
 const D1 = P(V(0.15, 1.35, 4.6), DOOR.clone().add(V(0, 0.05, 0)), 52);
 shot("D1-ten-layers", B.heat - 2, "vaultNight", [], (F) => creep(D1, F, B.ten, B.heat, 0.1), { wide: true, subject: undefined, dof: NONE });
 // does: the lens pans across the defences as each fires on its word: the sensor's red cone, the radar ripples, the blue field on the door's magnets
-const D2look = (F: number) => F < B.radar - 3 ? SENSOR.clone().add(V(-0.6, -0.4, 0)) : F < B.magnets - 3 ? lerpV(SENSOR.clone().add(V(-0.6, -0.4, 0)), RADAR.clone().add(V(0, -0.3, 0)), span(F, B.radar - 8, B.radar + 14)) : lerpV(RADAR.clone().add(V(0, -0.3, 0)), MAG.clone().add(V(-0.2, 0, 0)), span(F, B.magnets - 6, B.magnets + 26));
-shot("D2-defences", L(5, 0), "vaultNight", [], (F) => P(V(-1.25, 1.25, 6.4), D2look(F), 40), { wide: true, subject: undefined, dof: NONE, allow: SIGN });
+shot("D2-defences", L(5, 0), "vaultNight", [], (F) => creep(P(V(-0.7, 1.35, 6.9), V(0.75, 1.75, 1.4), 50), F, B.heat - 2, L(5, 0), 0.08), { wide: true, subject: undefined, dof: NONE, allow: SIGN });
 // does: macro on the dial: it spins by itself and digits pour out of it like a jackpot
 const DIAL = V(0, 1.8, 0.53);
 const E1 = P(DIAL.clone().add(V(0.22, 0.05, 0.82)), DIAL.clone(), 38);
@@ -120,14 +119,14 @@ shot("G1-the-suit", L(7, 9), "office", [youMirror], (F) => creep(G1, F, L(7, 0),
 const G2 = on(youMirror, YOU_MIRROR, V(1.45, 0, 0.12), "cu", { fov: 46 });
 shot("G2-serious-face", L(8, 0), "office", [youMirror], (F) => creep(G2, F, L(7, 9), L(8, 0), 0.1), { dof: close(1.4), props: [loupeHeld(() => G2 as CamPose)] });
 // does: you stand proud by your desk, DIAMOND TRADING on the nameplate, sun through the window
-const H1 = P(V(0.0, 1.3, 1.7), V(-0.6, 1.12, -0.95), 44);
+const H1 = P(V(-0.1, 1.3, 1.7), V(-0.75, 1.12, -0.95), 44);
 shot("H1-the-office", L(8, 9), "office", [youDesk], (F) => creep(H1, F, L(8, 0), L(8, 9), 0.1), { dof: mid(2.9) });
 // does: at the guard desk a long brass key with a KLUIS tag slides across into your open hand
-const KEY_A = V(1.3, 0.8, 7.75);
-const keyProp = free("vault key", vaultKey, (o, F) => { const h = handAt(youCounter, F, V(0.42, 1.08, 8.35), "right"); o.position.copy(lerpV(KEY_A, h.clone().setY(0.8), span(F, L(8, 9) + 4, B.vaultKey))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
-shot("H2-vault-key", L(9, 0), "vaultDay", [youCounter, guard], (F) => creep(P(V(0.42, 1.08, 8.35), V(0.8, 0.84, 7.75), 40), F, L(8, 9), L(9, 0), 0.15), { subject: undefined, dof: close(1.0), props: [keyProp], allow: { ...SEATED, "Subject size": "insert on the key sliding across the desk" } });
+const KEY_A = V(1.05, 0.8, 7.75);
+const keyProp = free("vault key", vaultKey, (o, F) => { const h = handAt(youCounter, F, V(0.0, 1.15, 8.65), "right"); o.position.copy(lerpV(KEY_A, h.clone().setY(0.8), span(F, L(8, 9) + 4, B.vaultKey))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
+shot("H2-vault-key", L(9, 0), "vaultDay", [youCounter, guard], (F) => creep(P(V(0.0, 1.15, 8.65), V(0.5, 0.84, 7.75), 40), F, L(8, 9), L(9, 0), 0.15), { subject: undefined, dof: close(1.0), props: [keyProp], allow: { ...SEATED, "Subject size": "insert on the key sliding across the desk" } });
 // does: one locked framing, three visits: day one the guard stares you down; day ten he nods; day five hundred he waves you through from behind his newspaper (the calendar flips each time)
-const I = P(V(-1.25, 1.5, 3.7), V(1.05, 1.1, 7.8), 46);
+const I = P(V(-1.25, 1.5, 3.7), V(0.8, 1.1, 7.7), 48);
 const Ic = (a: number, b: number) => (F: number) => creep(I, F, a, b, 0.05, 0, 0.1);
 const paperHeld = (headline: string, when: (F: number) => boolean) => held("newspaper", () => newspaper(headline), guard, "left", () => I, { fwd: 0.08, when });
 shot("I1-day-one", L(9, 8) - 3, "vaultDay", [youVisits, guard], Ic(L(9, 0), L(9, 8) - 3), { subject: "guard", wide: true, dof: NONE });
@@ -138,25 +137,25 @@ shot("I3-day-500", L(10, 0), "vaultDay", [youVisits, guard], Ic(L(9, 12) - 4, L(
 // does: push in on the crew board's four name cards
 shot("J1-the-crew", B.genius - 4, "hideNight", [], (F) => glideCam(P(V(-0.2, 1.65, -0.35), V(-0.25, 1.82, -2.18), 42), P(V(-0.2, 1.7, -1.0), V(-0.25, 1.84, -2.18), 40), F, L(10, 0), B.genius - 4), { subject: undefined, dof: close(1.6) });
 // does: The Genius points up, smug, his tool roll on his belt
-shot("J2-genius", B.monster - 6, "hideNight", [geniusHide], (F) => creep(on(geniusHide, V(-1.2, 0, 0.1), V(0.4, 0, 1.7), "mcu", { fov: 42 }), F, B.genius - 4, B.monster - 6, 0.1), { dof: close(1.8) });
+shot("J2-genius", B.monster - 6, "hideNight", [geniusHide], (F) => creep(on(geniusHide, V(-1.65, 0, 0.35), V(0.45, 0, 1.7), "mcu", { fov: 42 }), F, B.genius - 4, B.monster - 6, 0.1), { dof: close(1.8) });
 // does: The Monster, huge, holds up a lock pick that looks like a toothpick in his fingers
 const J3 = (F: number) => creep(on(monsterHide, V(1.5, 0, -0.55), V(-0.45, 0, 1.75), "mcu", { fov: 42, dy: 0.05 }), F, B.monster - 6, B.king - 4, 0.1);
 shot("J3-monster", B.king - 4, "hideNight", [monsterHide], J3, { dof: close(1.8), props: [held("lock pick", lockPick, monsterHide, "right", J3, { when: (F) => F >= B.monster - 2, fwd: 0.08 })] });
 // does: the King of Keys jangles the ring of keys on his belt, grinning
-shot("J4-king", L(11, 0), "hideNight", [kingHide], (F) => creep(on(kingHide, V(-0.7, 0, -1.25), V(-0.55, 0, 1.7), "mcu", { fov: 42 }), F, B.king - 4, L(11, 0), 0.1), { dof: close(1.8) });
+shot("J4-king", L(11, 0), "hideNight", [kingHide], (F) => creep(on(kingHide, V(-0.7, 0, -1.25), V(0.35, 0, 1.7), "mcu", { fov: 42 }), F, B.king - 4, L(11, 0), 0.1), { dof: close(1.8) });
 // does: Speedy at the window, a pigeon flaps down onto the sill beside him
 shot("K1-speedy", B.panics - 2, "hideNight", [speedyWin], (F) => creep(P(V(-0.55, 1.35, 1.05), V(-2.0, 1.2, -0.4), 44), F, L(11, 0), B.panics, 0.08), { dof: mid(2.0), fx: ["pigeon"] });
 // does: he jumps a foot in the air, ring-eyed (camera kick)
 shot("K2-pigeon-jump", L(12, 0), "hideNight", [speedyWin], impact((F) => creep(on(speedyWin, V(-1.95, 0, -0.35), V(1.3, 0, 1.2), "mcu", { fov: 44, dy: 0.15 }), F, B.panics, L(12, 0), 0.06), B.panics, 0.03), { dof: close(1.8), fx: ["pigeon"], kicks: [[0, 7]] });
 // does: two-shot: Speedy clutches your sleeve and says it; you pat his shoulder, smug
-shot("K3-gonna-get-caught", L(13, 0), "hideNight", [speedyHide, youHide], (F) => creep(P(V(0.55, 1.35, -0.6), V(0.6, 1.22, 1.55), 46), F, L(12, 0), L(13, 0), 0.1), { dof: mid(2.1) });
+shot("K3-gonna-get-caught", L(13, 0), "hideNight", [speedyHide, youHide], (F) => creep(P(V(0.5, 1.35, -0.6), V(0.48, 1.22, 1.55), 46), F, L(12, 0), L(13, 0), 0.1), { dof: mid(2.1) });
 
 // ================================================================== line 13: Valentine's weekend
 // does: the jeweller's window full of red hearts on the night street
-shot("L1-valentines", L(13, 4), "street", [], (F) => creep(P(V(-4.6, 1.4, -1.0), V(-5.1, 1.45, -4.98), 44), F, L(13, 0), L(13, 4), 0.12), { subject: undefined, dof: close(2.6) });
+shot("L1-valentines", L(13, 4), "street", [speedyPast], (F) => creep(P(V(-4.6, 1.4, 0.2), V(-5.3, 1.5, -4.98), 46), F, L(13, 0), L(13, 4), 0.1), { subject: undefined, dof: mid(3.6) });
 // does: the crew of five strides toward a low leading lens down the sidewalk, Speedy glancing back
 const walkX = (F: number) => 4 - 0.034 * Math.max(0, F - (L(13, 3) - 20)) * 0.8;
-shot("L2-showtime", L(14, 0), "street", [youStreet, kingStreet, geniusStreet, monsterStreet, speedyStreet], (F) => P(V(walkX(F) - 5.0, 0.7, 1.4), V(walkX(F) - 0.4, 1.3, -1.3), 44), { wide: true, dof: NONE });
+shot("L2-showtime", L(14, 0), "street", [youStreet, kingStreet, geniusStreet, monsterStreet, speedyStreet], (F) => P(V(walkX(F) - 5.2, 0.7, -0.4), V(walkX(F) - 0.4, 1.3, -0.6), 46), { wide: true, dof: NONE });
 
 // ================================================================== line 14-17: the layers
 const HEIST = [youVault, geniusVault, monsterVault, kingVault, speedyVault];
@@ -172,20 +171,20 @@ shot("M3-fogged-glasses", L(14, 17), "vaultNight", [geniusVault], (F) => creep(M
 shot("M4-blind", L(15, 0), "vaultNight", [speedyVault, youVault], (F) => creep(P(V(0.9, 1.15, 1.05), V(1.0, 1.45, 3.2), 50), F, L(14, 17), L(15, 0), 0.08), { wide: true, subject: undefined, dof: NONE });
 // does: side-on track: The Genius shuffles across the corridor behind a white foam board through the red beam
 const foamHeld = (cam: (F: number) => CamPose) => held("foam board", foamBoard, geniusVault, "both", cam, { fwd: 0.1 });
-const N1 = (F: number) => { const g = geniusFoamAt(F); return P(V(g.x + 0.25, 1.45, 6.4), V(g.x, 1.15, 2.2), 44); };
+const N1 = (F: number) => { const g = geniusFoamAt(F); return P(V(g.x * 0.85 + 0.25, 1.45, 6.8), V(g.x * 0.92, 1.15, 2.2), 44); };
 shot("N1-foam-board", L(15, 12), "vaultNight", [geniusVault], N1, { dof: mid(2.3), props: [foamHeld(N1)], allow: { "Subject covered": "gag: he hides behind the foam board", "Moving props": "the board slides through the beam" } });
 // does: close: only his eyes and fingertips peek over the foam, like a kid behind a pizza box
-const N2 = (F: number) => creep(P(V(-1.25, 1.5, 4.5), V(-1.4, 1.45, 2.2), 34), F, L(15, 12), L(16, 0), 0.1);
+const N2 = (F: number) => creep(P(V(-1.25, 1.5, 4.5), V(-1.4, 1.3, 2.2), 34), F, L(15, 12), L(16, 0), 0.1);
 shot("N2-pizza-box", L(16, 0), "vaultNight", [geniusVault], N2, { dof: close(2.3), props: [foamHeld(N2)], allow: { "Subject covered": "gag: only his eyes peek over the board" } });
 // does: The Monster lumbers up to the little light sensor, its green eye glowing
-shot("O1-light-sensor", L(16, 5), "vaultNight", [monsterVault], (F) => creep(P(V(0.1, 1.45, 1.6), V(-1.35, 1.35, 3.25), 46), F, L(16, 0), L(16, 5), 0.1), { dof: mid(2.4) });
+shot("O1-light-sensor", L(16, 5), "vaultNight", [monsterVault], (F) => P(V(0.5, 1.45, 1.4), monsterVault.at(F).add(V(-0.15, 1.35, 0)), 46), { dof: mid(2.4) });
 // does: macro: a strip of tape slaps over the sensor and its green light goes out
 const tapeFree = free("tape roll", tapeRoll, (o, F) => { o.position.copy(LIGHT_S).add(V(0.12, -0.1 + 0.05 * span(F, L(16, 5), B.tape), 0.1)); return F < B.tape + 6; });
 shot("O2-tape", L(17, 0), "vaultNight", [], (F) => creep(P(LIGHT_S.clone().add(V(0.72, 0.08, 0.32)), LIGHT_S.clone().add(V(0.02, 0, 0)), 38), F, L(16, 5), L(17, 0), 0.15), { subject: undefined, dof: close(0.75), props: [tapeFree] });
 // does: close on the door frame: the blue magnetic field humming between the two blocks
 shot("P1-magnets", B.plate - 2, "vaultNight", [], (F) => creep(P(MAG.clone().add(V(-0.75, -0.08, 0.95)), MAG.clone().add(V(-0.18, 0, 0.06)), 40), F, L(17, 0), B.plate, 0.12), { subject: undefined, dof: close(1.1) });
 // does: The Genius tapes the aluminium plate across both blocks; the field stays a happy steady blue
-const P2C = P(V(1.8, 1.65, 2.75), V(0.95, 1.5, 0.85), 46);
+const P2C = P(V(1.8, 1.65, 2.75), V(0.85, 1.72, 0.9), 46);
 const plateHeld = held("aluminium plate", aluPlate, geniusVault, "right", () => P2C, { when: (F) => F < B.plate - 1 });
 shot("P2-the-plate", L(18, 0), "vaultNight", [geniusVault], (F) => creep(P2C, F, B.plate - 2, L(18, 0), 0.1), { dof: mid(1.9), props: [plateHeld], allow: SIGN });
 
@@ -195,14 +194,14 @@ shot("Q1-dial-clicks", B.opens - 26, "vaultNight", [], (F) => creep(E1, F, L(18,
 // does: low wide: the huge round door swings open, warm gold light floods over the crew
 shot("Q2-it-opens", B.nobody - 2, "vaultNight", HEIST, (F) => creep(P(V(-0.1, 0.75, 6.6), V(0.0, 1.3, 0.2), 50), F, B.opens - 26, B.nobody, 0.08), { wide: true, subject: undefined, allow: SIGN, dof: NONE, fx: ["gold"] });
 // does: gold on their faces: the King of Keys shrugs, nobody knows how
-const Q3 = P(V(0.45, 1.45, 0.4), V(1.0, 1.42, 2.3), 44);
+const Q3 = P(V(0.45, 1.45, 0.4), V(1.0, 1.25, 2.3), 44);
 shot("Q3-nobody-knows", L(19, 0), "vaultGold", [kingVault, youVault], (F) => creep(Q3, F, B.nobody - 2, L(19, 0), 0.1), { dof: close(1.8), fx: ["gold"] });
 // does: inside the vault, a track along the wall of boxes: doors swing open one after another, The Monster cracking them
 shot("R1-189-boxes", B.sunrise, "vaultGold", [monsterVault], (F) => glideCam(P(V(-0.9, 1.3, -1.5), V(-3.0, 1.2, -2.9), 46), P(V(-0.85, 1.3, -3.2), V(-3.0, 1.15, -4.7), 46), F, L(19, 0), B.sunrise), { subject: undefined, dof: mid(2.4), fx: ["gold"] });
 // does: wide of the room: rows of open boxes, the floor glittering with gems
 shot("R2-109-open", L(19, 8), "vaultGold", [monsterVault, youVault], (F) => creep(P(V(0.8, 1.9, -1.05), V(-1.6, 0.7, -4.4), 54), F, B.sunrise, L(19, 8), 0.1), { wide: true, subject: undefined, dof: NONE, fx: ["gold"] });
 // does: crane down your laughing body to your shoes, ankle-deep in diamonds
-shot("R3-ankle-deep", L(20, 0), "vaultGold", [youVault], (F) => glideCam(P(V(-0.95, 1.55, -1.45), V(-2.25, 1.45, -3.2), 46), P(V(-0.85, 1.05, -1.55), V(-2.2, 0.62, -3.2), 46), F, L(19, 8), B.diamonds + 4), { dof: close(1.7), fx: ["gold"], subjectFrom: 0, allow: { "Subject size": "the crane ends on your shoes in the gems", "Subject in frame": "the crane leaves your face for your shoes", "Caption vs face": "the crane passes the caption band" } });
+shot("R3-ankle-deep", L(20, 0), "vaultGold", [youVault], (F) => glideCam(P(V(-0.95, 1.55, -1.45), V(-2.25, 1.45, -3.2), 46), P(V(-0.85, 1.05, -1.55), V(-2.2, 0.62, -3.2), 46), F, L(19, 8), B.diamonds + 12), { dof: close(1.7), fx: ["gold"], subjectFrom: 0, allow: { "Subject size": "the crane ends on your shoes in the gems", "Subject in frame": "the crane leaves your face for your shoes", "Caption vs face": "the crane passes the caption band" } });
 
 // ================================================================== line 20-23: the trash
 // does: dawn in the flat: you proud by a heap of black trash bags
@@ -212,16 +211,16 @@ shot("S2-the-trash", L(21, 0), "hideDawn", [youHide], (F) => glideCam(P(V(0.6, 1
 // does: misty dawn by the motorway: the little car pulls up on the verge under the blue E19 sign
 shot("T1-the-woods", B.forest + 2, "forest", [youForest, speedyForest], (F) => creep(P(V(-0.5, 1.5, 0.9), V(-3.6, 1.05, -4.4), 46), F, L(21, 0), B.forest, 0.08), { wide: true, subject: undefined, dof: NONE, fx: ["forestMist"] });
 // does: the hatch pops up on a trunk stuffed with bags; Speedy beside it, sweating
-const HATCH_CAM = P(V(-6.6, 1.45, -1.6), V(-4.6, 1.15, -4.1), 46);
-shot("T2-the-trunk", L(22, 0), "forest", [speedyForest, youForest], (F) => creep(HATCH_CAM, F, B.forest + 2, L(22, 0), 0.1), { wide: true, subject: "speedy", dof: mid(2.6), fx: ["forestMist"] });
+const HATCH_CAM = P(V(-6.6, 1.45, -1.6), V(-4.9, 1.2, -3.9), 46);
+shot("T2-the-trunk", L(22, 0), "forest", [speedyForest, youForest], (F) => creep(HATCH_CAM, F, B.forest + 2, L(22, 0), 0.1), { wide: true, subject: "speedy", dof: mid(2.6), fx: ["forestMist"], allow: { "Text in frame": "the motorway sign far behind the trees, dressing" } });
 // does: Speedy panics, spins and flings bag after bag into the trees
 const bagHeld = (cam: (F: number) => CamPose) => held("trash bag", heldBag, speedyForest, "right", cam, { when: (F) => F < B.flings + 4 || (F >= B.flings + 14 && F < B.flings + 18) });
-const T3 = P(V(-1.3, 1.45, -0.1), V(-3.2, 1.3, -2.7), 48);
+const T3 = P(V(-1.3, 1.45, -0.1), V(-2.85, 1.3, -3.2), 48);
 shot("T3-flings", B.flings + 10, "forest", [speedyForest, youForest], (F) => creep(T3, F, L(22, 0), B.flings + 10, 0.08), { subject: "speedy", dof: mid(2.6), props: [bagHeld(() => T3)], fx: ["forestMist", "trashRain"], whips: [[B.flings - L(22, 0), B.flings + 6 - L(22, 0)]] });
 // does: wide: paper and bags rain over the clearing like confetti
 shot("T4-confetti", L(23, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(2.6, 1.6, 3.6), V(-0.8, 1.5, -1.5), 52), F, B.flings + 10, L(23, 0), 0.06), { wide: true, subject: "speedy", dof: NONE, fx: ["forestMist", "trashRain"] });
 // does: Speedy yanks you back to the car by the sleeve; you look back at the mess
-shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-3.3, 1.25, -3.35), 48), F, L(23, 0), L(24, 0), 0.08), { dof: mid(2.2), fx: ["forestMist"] });
+shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-3.15, 1.25, -3.3), 48), F, L(23, 0), L(24, 0), 0.08), { dof: mid(2.2), fx: ["forestMist"] });
 
 // ================================================================== line 24-26: the man who hates litter
 // does: the next morning an old man with a stick walks into the clearing and stops dead at the trash
@@ -241,7 +240,7 @@ shot("V1-envelope", L(25, 7), "forest", [copForest], (F) => creep(V1, F, L(25, 0
 shot("V2-videotape", L(25, 10), "forest", [copForest], (F) => creep(V2, F, L(25, 7), L(25, 10), 0.12), { subject: undefined, dof: close(0.6), props: [evidence("videotape", videotape, L(25, 7), L(25, 10) + 1, V2)], allow: { "Subject size": "insert on the evidence in his hand" } });
 shot("V3-receipt", L(26, 0), "forest", [copForest], (F) => creep(V3, F, L(25, 10), L(26, 0), 0.12), { subject: undefined, dof: close(0.6), props: [evidence("receipt", receipt, L(25, 10), L(26, 0) + 1, V3)], allow: { "Subject size": "insert on the evidence in his hand" } });
 // does: the hero shot: the cop lifts the half-eaten salami sandwich out of the leaves into a shaft of morning light
-const W1 = P(V(2.2, 0.65, 3.6), V(0.95, 1.15, 1.55), 46);
+const W1 = P(V(2.2, 0.65, 3.6), V(0.82, 1.15, 1.55), 46);
 const sandwichHeld = held("sandwich", () => sandwich(false), copForest, "right", () => W1, { when: (F) => F >= L(26, 0), fwd: 0.05 });
 shot("W1-that-sandwich", L(26, 6), "forest", [copForest], (F) => creep(W1, F, L(26, 0), L(26, 6), 0.14), { dof: mid(1.6), fx: ["forestMist", "gold"], props: [sandwichHeld, groundSandwich] });
 // does: macro: the sandwich sealed in an evidence bag, its yellow tag: EVIDENCE DNA
@@ -250,13 +249,13 @@ shot("W2-dna", L(27, 0), "forest", [], (F) => creep(P(BAG_AT.clone().add(V(0.05,
 
 // ================================================================== line 27-30: caught
 // does: back at the flat you turn slowly to Speedy, steam rising
-shot("X1-speedy-was-right", B.because, "hideDawn", [youHide, speedyHide], (F) => creep(P(V(0.85, 1.35, -0.6), V(0.8, 1.22, 1.5), 48), F, L(27, 0), B.because, 0.1), { dof: mid(2.1) });
+shot("X1-speedy-was-right", B.because, "hideDawn", [youHide, speedyHide], (F) => creep(P(V(0.85, 1.35, -0.6), V(0.88, 1.22, 1.5), 48), F, L(27, 0), B.because, 0.1), { dof: mid(2.1) });
 // does: Speedy, mid-bite of ANOTHER sandwich, freezes
 const X2 = on(speedyHide, V(0.4, 0, 1.6), V(0.5, 0, -1.6), "mcu", { fov: 42 });
 const sandwich2 = held("sandwich 2", () => sandwich(false), speedyHide, "right", () => X2 as CamPose, { fwd: 0.08 });
 shot("X2-another-sandwich", L(28, 0), "hideDawn", [speedyHide], (F) => creep(X2, F, B.because, L(28, 0), 0.12), { dof: close(1.7), props: [sandwich2] });
 // does: your office door bursts open, a cop points, you jump; on "handcuffs" your wrists click together
-const Y1 = P(V(1.2, 1.45, 0.2), V(-1.2, 1.15, 0.55), 50);
+const Y1 = P(V(1.2, 1.45, 0.2), V(-1.05, 1.15, 0.5), 50);
 shot("Y1-handcuffs", L(28, 6), "office", [youCuffed, copOffice], impact((F) => creep(Y1, F, L(28, 0), L(28, 6), 0.08), L(28, 0) + 8, 0.025), { subject: "you", dof: mid(2.6), kicks: [[8, 15]], props: [held("handcuffs", cuffs, youCuffed, "both", () => Y1, { when: (F) => F >= B.cuffs - 2, fwd: 0.08 })] });
 // does: the guard finally lowers his newspaper: HEIST OF THE CENTURY, and he looks up at last
 const Y2 = on(guard, GUARD_SEAT, V(-1.6, 0, 0.45), "ms", { fov: 44 });
