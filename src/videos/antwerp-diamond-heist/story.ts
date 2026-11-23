@@ -261,7 +261,7 @@ export const speedyForest = role("speedy", speedyLook, (F) => (F < L(22, 0) ? SP
     // spins and flings: a bag at every turn (props.ts heldBag in his right hand until each release)
     const ph = (F - B.flings) / 14;
     const p = F < B.flings - 4 ? POSES.panic : { ...REST, arms: [{ at: [0.4, -0.2], grip: "open" }, { at: [0.62 + 0.1 * Math.sin(ph * 6.28), -0.45 + 0.3 * Math.cos(ph * 6.28)], grip: "fist" }] as Pose["arms"], sway: 8 * Math.sin(ph * 6.28) };
-    return st({ ...p, squash: reactSquash(F - B.panicsS) }, F, 79, [[0, "scared"], [B.flings, "angry"]], { heading: turnTo([[0, 2.4], [B.flings, 0.4], [B.flings + 14, 2.0], [B.flings + 28, 0.6]], F, 8), fx: { sweat: (F % 16) / 16 } });
+    return st({ ...p, squash: reactSquash(F - B.panicsS) }, F, 79, [[0, "scared"], [B.flings, "angry"]], { heading: turnTo([[0, 0.3], [B.flings, 0.9], [B.flings + 14, -0.3], [B.flings + 28, 0.6]], F, 8), fx: { sweat: (F % 16) / 16 } });
   }
   return st({ ...REST, arms: [{ at: [0.62, -0.05], grip: "fist" }, REST.arms[1]], sway: -10, tilt: 8 }, F, 79, [[0, "scared"]], { heading: -0.6, fx: { talk: talk(F, 23), sweat: (F % 16) / 16 } });
 });

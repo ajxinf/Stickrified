@@ -239,7 +239,7 @@ export const ROOMI = { x0: -2, x1: 2, z0: -1.8, z1: 2.2, h: 2.6 };
 export const ITABLE = V(0, 0, 0.55);
 export const interview = () => {
   const g = room(ROOMI, MATS.vaultFloor(), MATS.cellWall(), MATS.cellWall());
-  g.add(box(1.3, 0.05, 0.8, MATS.steel(), V(ITABLE.x, 0.74, ITABLE.z)));
+  g.add(box(1.3, 0.05, 0.8, MATS.darkSteel(), V(ITABLE.x, 0.74, ITABLE.z)));
   for (const [dx, dz] of [[-0.6, -0.35], [0.6, -0.35], [-0.6, 0.35], [0.6, 0.35]]) g.add(place(new Mesh(new CylinderGeometry(0.02, 0.02, 0.74, 8), MATS.darkSteel()), ITABLE.x + dx, 0.37, ITABLE.z + dz));
   g.add(place(model("caged_hanging_light", { collider: false, glow: ["glass", "#f4f8ff", 6] }), 0, ROOMI.h - 0.7, ITABLE.z - 0.2, 0));
   // the bars of the holding cell behind you, and a mirror window
