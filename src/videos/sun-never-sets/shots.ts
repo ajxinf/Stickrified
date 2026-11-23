@@ -1,4 +1,4 @@
-﻿import { Object3D, Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { CamPose, impact } from "../../../kit/toon/camera";
 import { DOF, Dof } from "../../../kit/toon/Composer";
 import type { MovingProp, Plan, Shot } from "../../../kit/toon/guard";
@@ -323,7 +323,7 @@ const AD1 = P(V(-1.7, 1.0, 2.9), V(-2.3, 0.9, 0.3), 44);
 shot("AD1-three-minutes", L(30, 4), "night", [youMat], (F) => creep(AD1, F, L(30, 0), L(30, 4), 0.1), { dof: mid(2.4), fx: ["fireflies"], props: STREET_PROPS(L(30, 0)), allow: SEAT_OK });
 // does: mirror of the cold open: you and the toaster close; your eyes close into a smile, the toaster smiles too
 const AD2 = P(V(-2.22, 1.0, 2.15), V(-2.3, 0.9, 0.35), 44);
-shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, 0.14), { dof: close(1.25), fx: ["fireflies"], props: [...STREET_PROPS(L(30, 4)), fxOn("your eyes close", B.toaster30 - 30), fxOn("the toaster smiles", B.toaster30 - 2)], allow: SEAT_OK });
+shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, 0.07), { dof: close(1.25), fx: ["fireflies"], props: [...STREET_PROPS(L(30, 4)), fxOn("your eyes close", B.toaster30 - 30), fxOn("the toaster smiles", B.toaster30 - 2)], allow: SEAT_OK });
 
 export const PLAN: Plan = { slug: "sun-never-sets", shots: SHOTS, words, inserts: INSERTS };
 function skyDirDeg(az: number, el: number) { const a = (az * Math.PI) / 180, e = (el * Math.PI) / 180; return new Vector3(Math.cos(e) * Math.sin(a), Math.sin(e), -Math.cos(e) * Math.cos(a)); }
