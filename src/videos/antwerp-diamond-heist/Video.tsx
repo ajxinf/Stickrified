@@ -23,9 +23,10 @@ const PRESET = { vaultNight: VAULT_NIGHT, vaultGold: VAULT_GOLD, vaultDay: VAULT
 const MOTES: Record<Lit, [string, number]> = { vaultNight: ["#bfe0ff", 0.7], vaultGold: ["#ffd890", 1.1], vaultDay: ["#f4f8ff", 0.5], office: ["#fff0c8", 1.0], hideNight: ["#ffcf90", 0.8], hideDawn: ["#ffe0e0", 0.8], street: ["#cfe0ff", 0.4], forest: ["#f2f6f2", 0.9], interview: ["#e8fff4", 0.6] };
 
 // ------------------------------------------------------------------ effects, per composition frame
-const NOZZLE = SENSOR.clone().add(V(-0.39, -0.12, 0.42)), LENS = SENSOR.clone().add(V(-0.09, -0.02, 0));
+const LENS = SENSOR.clone().add(V(-0.09, -0.02, 0));
 const sprayAt = (i: number, F: number) => {
-  if (F >= B.sandwich - 30 && F < L(29, 0)) return null;
+  if (F >= B.sandwich - 30) return null;
+  const NOZZLE = handAt(youLadder, F, V(0.2, 1.75, 3.35), "right").add(V(0.05, 0.2, 0));
   const t = ((F * 0.07 + i / 30) % 1);
   return NOZZLE.clone().lerp(LENS, t).add(V((rnd(i) - 0.5) * 0.12 * t, (rnd(i + 1) - 0.5) * 0.1 * t, (rnd(i + 2) - 0.5) * 0.12 * t));
 };

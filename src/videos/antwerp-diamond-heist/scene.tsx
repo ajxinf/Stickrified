@@ -29,7 +29,7 @@ export const VAULT_GOLD: LightPreset = { ...LIGHTS.interior, lit: [0.62, 0.56, 0
 export const VAULT_DAY: LightPreset = { ...LIGHTS.interior, lit: [0.98, 1.02, 1.0], shade: [0.4, 0.43, 0.48], litTint: "#eef8ff", lamp: ["#ffc27a", 1.8], sat: 1.12 };
 export const OFFICE_L: LightPreset = { ...LIGHTS.interior, lit: [1.22, 1.1, 0.92], shade: [0.44, 0.44, 0.56], lift: [0.025, 0.03, 0.05], litTint: "#ffe6c0", lamp: ["#ffe2b0", 1.0], sat: 1.22, char: { tint: [1.0, 0.97, 0.92], shade: 0.92 } };
 export const HIDE_NIGHT: LightPreset = { ...LIGHTS.interior, lit: [0.36, 0.38, 0.6], shade: [0.1, 0.1, 0.2], lift: [0.01, 0.01, 0.03], litTint: "#a8b8e8", lamp: ["#ffa850", 3.6], sat: 1.16, grade: "night" };
-export const HIDE_DAWN: LightPreset = { ...LIGHTS.interior, lit: [0.92, 0.8, 0.9], shade: [0.34, 0.32, 0.46], lift: [0.02, 0.02, 0.04], litTint: "#ffd8dc", lamp: ["#ffc27a", 1.4], sat: 1.14 };
+export const HIDE_DAWN: LightPreset = { ...LIGHTS.interior, lit: [0.8, 0.7, 0.8], shade: [0.3, 0.28, 0.42], lift: [0.02, 0.02, 0.04], litTint: "#ffd8dc", lamp: ["#ffc27a", 1.4], sat: 1.14 };
 export const INTERVIEW_L: LightPreset = { ...LIGHTS.interior, lit: [0.62, 0.74, 0.68], shade: [0.16, 0.2, 0.2], lift: [0.01, 0.015, 0.015], litTint: "#e8fff4", lamp: ["#f4f8ff", 3.0], sat: 1.04, grade: "night" };
 const STREET_SKY = photoSky({ ...LIGHTS.night, lit: [0.42, 0.5, 0.8], shade: [0.12, 0.14, 0.28], lamp: ["#ffa850", 4.4], sat: 1.14 }, "kloppenheim_07_puresky", { exposure: 0.3, tint: "#bccbe8", yaw: 30 });
 export const STREET_L = STREET_SKY.preset, STREET_SUN = STREET_SKY.key;
@@ -69,7 +69,7 @@ const practicals = (w: Place, s: WorldState): P[] => {
   if (w === "street") return [...LAMPS.map((p) => ({ pos: p.clone().add(V(0, 3.6, 0.5)), kind: "lamp" as const, color: ["#ffb35c", 1.8] as [string, number], glowAt: p.clone().add(V(0, 4.1, 0)) })), { pos: SHOP.clone().add(V(0, -0.2, 1.2)), kind: "shop", color: ["#ff9a8a", 1.4], noGlow: true }];
   if (w === "forest") return [
     { pos: CAR.clone().add(V(2.4, 0.7, 0.6)), kind: "lamp", color: ["#fff4d8", 0.6], noGlow: true },
-    ...(s.horror ? [{ pos: SANDWICH.clone().add(V(0.05, 0.12, 0.25)), kind: "lamp" as const, color: ["#9aff8a", 2.2] as [string, number], noGlow: true }] : []),
+    ...(s.horror ? [{ pos: SANDWICH.clone().add(V(0.05, 0.12, 0.25)), kind: "lamp" as const, color: ["#cfe0ff", 1.8] as [string, number], noGlow: true }] : []),
   ];
   return [{ pos: ITABLE.clone().add(V(0, 1.2, -0.2)), kind: "lamp", color: ["#f4f8ff", 1.6], noGlow: true }];
 };
@@ -110,6 +110,9 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
       h.rotation.y = -1.9 * t * t * (3 - 2 * t);
     });
     (named(g, "calendar") as Mesh).material = calendarMat(s.cal);
+    show(g, "desk1", s.cal === 1);
+    show(g, "desk10", s.cal === 2);
+    show(g, "desk500", s.cal !== 1 && s.cal !== 2);
   }
   if (w === "hideNight" || w === "hideDawn") { const c = named(g, "cups"); if (c) c.scale.set(1, Math.max(0.05, s.cups), 1); }
   if (w === "office") named(g, "officeDoor")!.rotation.y = 1.5 * s.officeDoor;

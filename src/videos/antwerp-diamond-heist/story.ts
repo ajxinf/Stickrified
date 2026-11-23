@@ -19,7 +19,7 @@ import { V } from "./common";
 import { OLD_MAN, PILE, SANDWICH } from "./outside";
 import { HEAP, OFFICE_DOOR, TABLE } from "./rooms";
 import type { WorldState } from "./scene";
-import { DOOR, GUARD_SEAT, LADDER, SENSOR } from "./vault";
+import { CRATE_TOP, DOOR, GUARD_SEAT, LADDER, SENSOR } from "./vault";
 
 /**
  * antwerp-diamond-heist (episode 6, strange true history), timing + cast. Every beat is locked to words.json through the
@@ -127,7 +127,7 @@ const talk = (F: number, line: number) => talkAt(MOUTH_T, F, [[L(line, 0), LEND(
 
 // --- you
 const SPRAY: Pose = { ...REST, arms: [{ at: [0.2, 0.3], grip: "open" }, { at: [0.62, -0.5], grip: "fist" }], tilt: -6, look: 0.4 };
-export const YOU_LADDER = V(LADDER.x - 0.05, 0.92, LADDER.z + 0.05);
+export const YOU_LADDER = V(LADDER.x, CRATE_TOP, LADDER.z);
 export const youLadder = role("you", youLook, YOU_LADDER, (F) => {
   const p = pose([[0, SPRAY], [B.sandwich - 30, { ...SPRAY, arms: [SPRAY.arms[0], { at: [0.3, 0.05], grip: "fist" }], tilt: 4 }], [L(3, 0), { ...REST, arms: [{ at: [0.62, -0.5], grip: "open" }, { at: [0.3, 0.05], grip: "fist" }], sway: -4 }], [B.gta - 8, { ...POSES.point, arms: [{ at: [0.62, -0.5], grip: "open" }, { at: [0.5, -0.1], grip: "point" }] }]], F);
   return st(alive(p, F, 3, [0.4, 0.1]), F, 3, [[0, "sneaky"], [B.hundred, "scheming"], [B.spray, "grin"], [L(2, 2), "suspicious"], [L(2, 6), "nervous"], [B.sandwich, "confused"], [L(3, 0), "smug"], [B.history, "proud"], [B.gta, "grin"]], { heading: F < L(3, 0) ? 0.45 : turnTo([[L(3, 0), 0.45], [L(3, 0) + 14, -0.4]], F, 14) });
@@ -149,7 +149,7 @@ export const youDesk = role("you", youSuit, YOU_DESK, (F) => st(alive(pose([[0, 
 export const YOU_COUNTER = V(-0.2, 0, 7.75);
 export const youCounter = role("you", youSuit, YOU_COUNTER, (F) => st({ ...REST, arms: [REST.arms[0], { at: [0.55, 0.2], grip: "open" }] }, F, 3, [[0, "smug"], [B.vaultKey, "grin"]], { heading: Math.PI / 2 }));
 // line 9: three visits on one framing, each a walk from the stairs toward the vault
-const VISIT = (a: number, b: number) => walker(V(-0.2, 0, 8.8), V(-0.15, 0, 6.2), a, b);
+const VISIT = (a: number, b: number) => walker(V(-0.2, 0, 8.8), V(-0.15, 0, 5.5), a, b);
 const V1 = VISIT(L(9, 3) - 12, L(9, 8) - 2), V2 = VISIT(L(9, 8) - 6, L(9, 12) - 4), V3 = VISIT(L(9, 12) - 8, L(10, 0) - 6);
 const visit = (F: number) => (F < L(9, 8) - 6 ? V1 : F < L(9, 12) - 8 ? V2 : V3);
 export const youVisits = role("you", youSuit, (F) => visit(F).at(F), (F) => { const v = visit(F); return st(v.pose(F), F, 3, [[0, "nervous"], [B.day10, "smug"], [B.day500, "grin"]], { heading: v.heading }); });
@@ -283,10 +283,10 @@ export const oldMan = role("oldman", oldManLook, (F) => (F < L(24, 9) ? lerpV(OL
 });
 export const COP_F = SANDWICH.clone().add(V(0.35, -0.02, 0.45));
 export const copForest = role("cop", copLook, COP_F, (F) => {
-  if (F < L(26, 0)) return st(pose([[0, POSES.crouch], [B.envelopes - 6, { ...POSES.crouch, arms: [POSES.crouch.arms[0], { at: [0.45, -0.1], grip: "fist" }] }]], F), F, 97, [[0, "suspicious"], [B.name, "smug"]], { heading: face(COP_F, PILE) });
+  if (F < L(26, 0)) return st(pose([[0, POSES.crouch], [B.envelopes - 6, { ...POSES.crouch, arms: [POSES.crouch.arms[0], { at: [0.45, -0.1], grip: "fist" }] }]], F), F, 97, [[0, "suspicious"], [B.name, "smug"]], { heading: 0.9 });
   const lift = span(F, L(26, 0), L(26, 3));
   const p = { ...POSES.crouch, bob: -70 + 62 * lift, tilt: 0, lean: 0, arms: [{ at: [0.2, 0.55], grip: "fist" }, { at: [0.5 + 0.4 * lift, 0.6 - 0.3 * lift], grip: "fist" }] as Pose["arms"] };
-  return st(p, F, 97, [[0, "suspicious"], [L(26, 4), "disgusted"], [B.dna, "proud"]], { heading: face(COP_F, SANDWICH) + 0.6 });
+  return st(p, F, 97, [[0, "suspicious"], [L(26, 4), "disgusted"], [B.dna, "proud"]], { heading: 0.95 });
 });
 export const COP_DOOR = OFFICE_DOOR.clone().add(V(0.55, 0, 0.0));
 export const copOffice = role("cop", copLook, (F) => lerpV(OFFICE_DOOR.clone().add(V(0.3, 0, -0.05)), COP_DOOR, span(F, L(28, 0) + 6, L(28, 0) + 20)), (F) => st(pose([[0, REST], [L(28, 0) + 8, POSES.point]], F), F, 97, [[0, "angry"], [B.cuffs, "smug"]], { heading: face(COP_DOOR, V(-0.9, 0, 0.35)) + 0.6 }));

@@ -1,4 +1,4 @@
-import { BoxGeometry, CylinderGeometry, Group, InstancedMesh, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SphereGeometry } from "three";
+import { BoxGeometry, CylinderGeometry, ExtrudeGeometry, Group, InstancedMesh, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Shape, ShapeGeometry, SphereGeometry } from "three";
 import { Kit, M } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { grassTufts } from "../../../kit/toon/build/ground";
@@ -22,7 +22,7 @@ import { MATS, V, boardTex, box, canvasTex, colMat, glassMat, glowMat, place, pl
 export const STREET = { z0: -3, z1: 3, front: -5 };
 export const CENTRE_DOOR = V(2, 0, STREET.front);
 export const SHOP = V(-5.5, 1.3, STREET.front + 0.02);
-export const LAMPS = [V(-8, 0, -3.6), V(1.2, 0, -3.6), V(9, 0, -3.6)];
+export const LAMPS = [V(-8, 0, -3.6), V(1.2, 0, -3.6), V(9, 0, -3.6), V(17, 0, -3.6), V(25, 0, -3.6)];
 const heartsTex = () => canvasTex(768, 512, (c) => {
   const gr = c.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, "#ffe2c0"); gr.addColorStop(1, "#ffb08a");
   c.fillStyle = gr; c.fillRect(0, 0, 768, 512);
@@ -56,8 +56,15 @@ export const street = () => {
   k.box(MATS.granite(), 7.2, 0.5, 1.3, 2.5, 13, STREET.front - 0.4);
   // south side (behind the lens in most shots): a low brick terrace so reverse angles see buildings, not void
   k.box(MATS.brick("#9a5a4a"), 70, 9, 1, 0, 4.5, STREET.z1 + 2.7);
+  // the cross streets' corner buildings close both ends of the view
+  k.box(MATS.brick("#946456"), 2, 13, 12, 31, 6.5, -1.5);
+  k.box(MATS.brick("#8a5a4a"), 2, 12, 12, -31, 6, -1.5);
   const walls = k.build();
   walls.userData.collider = "facades";
+  for (const sx of [-1, 1]) for (let r = 0; r < 4; r++) for (let z = -6; z < 4; z += 1.4) {
+    const on = rnd(r * 13 + z * 7 + sx * 5) < 0.5;
+    g.add(plane(0.75, 1.1, on ? glowMat("#ffc27a", 1.8) : glassMat(), V(sx * 29.98, 1.6 + r * 2.4, z), sx > 0 ? -Math.PI / 2 : Math.PI / 2));
+  }
   g.add(walls);
   facadeWindows(g, -29, -1.5, 3.6, 3, 11, 0.45);
   facadeWindows(g, 6.2, 29, 3.6, 3, 23, 0.4);
@@ -99,30 +106,75 @@ const sign = () => {
   })), V(0, 4.0, 0.08)));
   return g;
 };
-/** A small 2000s hatchback from primitives (no CC0 car model exists): body, cabin, glass, wheels, lights. */
+/** A small 2000s hatchback (no CC0 car model exists): a side profile extruded with rounded edges, glass, wheels with
+ * rims, bumpers, lights, mirrors, and the boot lid on a real hinge at the back of the roof (line 21 opens it). Local +x
+ * is the front; the car is 1.62 m wide. */
+const BODY_W = 1.5;
+const profile = () => {
+  const s = new Shape();
+  s.moveTo(1.86, 0.3);
+  s.bezierCurveTo(1.95, 0.42, 1.95, 0.62, 1.84, 0.72); // nose
+  s.lineTo(0.78, 0.9); // bonnet
+  s.bezierCurveTo(0.5, 1.15, 0.25, 1.36, 0.0, 1.42); // windscreen
+  s.lineTo(-1.3, 1.44); // roof
+  s.lineTo(-1.4, 1.4); // the boot opening's top (the lid hinges here)
+  s.lineTo(-1.62, 0.84); // the opening's back edge (under the lid)
+  s.lineTo(-1.82, 0.8);
+  s.bezierCurveTo(-1.92, 0.62, -1.92, 0.42, -1.84, 0.3); // tail
+  s.lineTo(1.86, 0.3);
+  return s;
+};
 export const car = () => {
   const g = new Group();
-  const paint = M("adh-carpaint", () => toonMaterial({ color: "#4a5a72", spec: 0.8, gloss: 0.55, rough: 0.25 }));
-  const k = new Kit();
-  k.box(paint, 3.7, 0.62, 1.66, 0, 0.62, 0);
-  k.box(paint, 2.1, 0.55, 1.5, -0.35, 1.2, 0);
-  k.box(colMat("#2a2a30", { rough: 0.6 }), 3.75, 0.14, 1.7, 0, 0.32, 0);
-  for (const [x, z] of [[-1.15, 0.8], [1.2, 0.8], [-1.15, -0.8], [1.2, -0.8]]) k.add(colMat("#1c1c20", { rough: 0.8 }), new CylinderGeometry(0.31, 0.31, 0.22, 20).rotateX(Math.PI / 2), x, 0.31, z);
-  const body = k.build();
+  const paint = M("adh-carpaint", () => toonMaterial({ color: "#2f5a8a", spec: 0.9, gloss: 0.65, rough: 0.18 }));
+  const plastic = colMat("#22242a", { rough: 0.7 }), chrome = colMat("#d8dce4", { spec: 1, gloss: 0.6, rough: 0.12 });
+  const bodyGeo = new ExtrudeGeometry(profile(), { depth: BODY_W, bevelEnabled: true, bevelSize: 0.07, bevelThickness: 0.07, bevelSegments: 4, curveSegments: 16 });
+  bodyGeo.translate(0, 0, -BODY_W / 2);
+  const body = new Mesh(bodyGeo, paint);
   body.userData.collider = "car";
   g.add(body);
-  g.add(box(2.12, 0.42, 1.52, glassMat(), V(-0.35, 1.22, 0)));
-  for (const z of [-0.6, 0.6]) {
-    g.add(place(new Mesh(new SphereGeometry(0.09, 12, 8), glowMat("#fff4d8", 4)), 1.86, 0.72, z));
-    g.add(place(new Mesh(new BoxGeometry(0.04, 0.12, 0.22), glowMat("#ff2a1a", 2.2)), -1.86, 0.78, z));
+  // side windows (both sides), windscreen and the dark trunk inside the opening
+  const win = new Shape();
+  win.moveTo(0.72, 0.96); win.bezierCurveTo(0.5, 1.15, 0.28, 1.32, 0.02, 1.36); win.lineTo(-1.22, 1.37); win.lineTo(-1.32, 0.98); win.lineTo(0.72, 0.96);
+  for (const z of [-1, 1]) { const w = new Mesh(new ShapeGeometry(win), glassMat()); w.position.z = z * (BODY_W / 2 + 0.072); if (z < 0) w.rotation.y = Math.PI, w.position.x = 0, w.scale.x = -1; g.add(w); }
+  g.add(place(new Mesh(new BoxGeometry(0.04, 0.42, 0.04), paint), -0.42, 1.17, BODY_W / 2 + 0.075), place(new Mesh(new BoxGeometry(0.04, 0.42, 0.04), paint), -0.42, 1.17, -BODY_W / 2 - 0.075)); // B-pillars
+  const screen = new Mesh(new PlaneGeometry(1.35, 0.62), glassMat());
+  screen.position.set(0.39, 1.17, 0); screen.rotation.set(0, Math.PI / 2, 0); screen.rotateX(-0.95);
+  g.add(screen);
+  g.add(box(0.2, 0.5, BODY_W - 0.05, colMat("#141418", { rough: 0.9 }), V(-1.5, 1.08, 0))); // the trunk's dark inside
+  // bumpers, grille, lights, mirrors, number plate
+  g.add(box(0.14, 0.18, BODY_W + 0.12, plastic, V(1.9, 0.38, 0)), box(0.14, 0.18, BODY_W + 0.12, plastic, V(-1.9, 0.38, 0)));
+  g.add(box(0.04, 0.12, 0.7, plastic, V(1.92, 0.58, 0)));
+  for (const z of [-0.55, 0.55]) {
+    g.add(place(new Mesh(new SphereGeometry(0.09, 14, 10), glowMat("#fff4d8", 3.5)), 1.88, 0.62, z));
+    g.add(place(new Mesh(new BoxGeometry(0.16, 0.06, 0.24), plastic), 0.6, 1.0, z * 1.55)); // mirrors
   }
-  // the open hatch (line 21) and the bags inside it
+  g.add(plane(0.36, 0.09, unlit("plate", () => boardTex(["1-ABC-123"], "#f6f2ea", "#b0243a", 400, 100)), V(1.975, 0.4, 0), Math.PI / 2));
+  // wheels: tyre + silver rim + hub, in the arches
+  for (const [x, z] of [[1.2, 0.72], [-1.2, 0.72], [1.2, -0.72], [-1.2, -0.72]]) {
+    const w = new Group();
+    w.add(new Mesh(new CylinderGeometry(0.33, 0.33, 0.22, 24).rotateX(Math.PI / 2), colMat("#18181c", { rough: 0.85 })));
+    w.add(place(new Mesh(new CylinderGeometry(0.2, 0.2, 0.23, 16).rotateX(Math.PI / 2), chrome), 0, 0, 0));
+    w.add(place(new Mesh(new CylinderGeometry(0.06, 0.06, 0.24, 10).rotateX(Math.PI / 2), plastic), 0, 0, 0));
+    w.position.set(x, 0.33, z);
+    g.add(w);
+  }
+  // the boot lid, hinged at the back of the roof: it swings up and back (scene sets rotation.z = -1.4 * open)
   const hatch = new Group();
   hatch.name = "hatch";
-  hatch.position.set(-1.38, 1.46, 0);
-  hatch.add(box(0.06, 0.9, 1.5, paint, V(-0.4, -0.2, 0)));
+  hatch.position.set(-1.4, 1.42, 0);
+  const lid = new Shape();
+  lid.moveTo(0, 0); lid.lineTo(-0.22, -0.56); lid.lineTo(-0.5, -0.62); lid.lineTo(-0.52, -0.58); lid.lineTo(-0.06, 0.04); lid.lineTo(0, 0);
+  const lidGeo = new ExtrudeGeometry(lid, { depth: BODY_W, bevelEnabled: true, bevelSize: 0.04, bevelThickness: 0.04, bevelSegments: 2 });
+  lidGeo.translate(0, 0, -BODY_W / 2);
+  hatch.add(new Mesh(lidGeo, paint));
+  const back = new Mesh(new PlaneGeometry(0.42, BODY_W - 0.2), glassMat());
+  back.position.set(-0.12, -0.24, 0); back.rotation.set(0, -Math.PI / 2, 0); back.rotateX(0.38);
+  hatch.add(back);
+  for (const z of [-0.6, 0.6]) hatch.add(place(new Mesh(new BoxGeometry(0.05, 0.14, 0.24), glowMat("#ff2a1a", 2.2)), -0.47, -0.5, z));
   g.add(hatch);
-  for (let i = 0; i < 4; i++) g.add(place(model("trashbag", { collider: false, scale: 1.0 }), -1.35, 0.6, -0.45 + i * 0.3, i));
+  // the bags inside the boot
+  for (let i = 0; i < 3; i++) g.add(place(model("trashbag", { collider: false, scale: 0.95 }), -1.25, 0.82, -0.42 + i * 0.42, i));
   return g;
 };
 /** Litter scattered over the leaves round the pile (papers, wrappers, envelopes, bags): visible from line 22. */

@@ -14,7 +14,7 @@ import {
   guard, handAt, held, kingHide, kingStreet, kingVault, lerpV, monsterHide, monsterStreet, monsterVault, oldMan, span, speedyForest, speedyHide, speedyPast, speedyStreet, speedyVault, speedyWin,
   words, youCell, youCounter, youCuffed, youCups, youDesk, youForest, youHide, youLadder, youMirror, youStreet, youVault, youVisits,
 } from "./story";
-import { CALENDAR, DOOR, LIGHT_S, MAG, SENSOR } from "./vault";
+import { CALENDAR, CRATE_TOP, DOOR, LADDER, LIGHT_S, MAG, RADAR, SENSOR } from "./vault";
 
 /**
  * antwerp-diamond-heist shot plan: one canvas per shot, hard cuts (time and place jumps cut on the word). Each shot's
@@ -29,7 +29,7 @@ const SUN: Record<Lit, Vector3> = { vaultNight: IN_SUN, vaultGold: IN_SUN, vault
 const P = (pos: Vector3, look: Vector3, fov: number, roll = 0): CamPose => ({ pos, look, fov, roll });
 const castIn = (from: number, roles: Role[]) => roles.map((r) => ({ name: r.name, look: r.look, at: (f: number) => r.at(f + from), state: (f: number) => r.state(f + from), sit: r.sit }));
 const SEATED = { "Moving props": "seated: the chair holds the seated card" };
-const ON_LADDER = { "Feet on the ground": "you stand on the ladder's top step", "Card penetration": "you stand on the ladder" };
+const ON_LADDER = {};
 const SIGN = { "Text in frame": "the KLUIS sign over the door is set dressing, cut by design" };
 let cursor = 0;
 export const SHOTS: S[] = [];
@@ -68,13 +68,13 @@ const torch = free("flashlight pool", () => { const g = new Object3D(); const m 
 
 // ================================================================== line 1-3: the cold open
 // does: macro: a pink hairspray can hisses a glittery cloud onto the vault's heat sensor
-const CAN_AT = SENSOR.clone().add(V(-0.42, -0.2, 0.42));
-const canSweep = (F: number) => V(0, 0, F < L(29, 0) ? 0 : -0.4 * span(F, L(29, 0), L(30, 0)));
-const canFree = free("hairspray", hairspray, (o, F) => { const k = Math.sin(F * 0.5) * 0.02; o.position.copy(CAN_AT).add(V(k, 0.015 * Math.sin(F * 0.9), 0)).add(canSweep(F)); o.rotation.set(0, 0.67, 0.25 + Math.sin(F * 0.5) * 0.1); });
-const A1 = P(SENSOR.clone().add(V(-1.15, -0.3, 1.05)), SENSOR.clone().add(V(-0.2, -0.12, 0.2)), 40);
-shot("A1-hairspray", B.hundred, "vaultNight", [], (F) => creep(A1, F, 0, B.hundred, 0.12), { subject: undefined, dof: close(0.9), fx: ["spray"], props: [canFree] });
+// the empty can left lying on the top crate (line 29): it rolls a little toward the edge and stops
+const canResting = free("hairspray", hairspray, (o, F) => { const t = span(F, L(29, 0), L(29, 4)); o.position.set(LADDER.x - 0.05 - 0.25 * t, CRATE_TOP + 0.033, LADDER.z - 0.12); o.rotation.set(Math.PI / 2, 0.3, t * 6); }, ["crate 2"]);
+const A1H = handAt(youLadder, 10, V(0.2, 1.75, 3.35), "right");
+const A1 = P(A1H.clone().lerp(SENSOR, 0.5).add(V(-1.05, -0.25, 0.85)), A1H.clone().lerp(SENSOR, 0.5), 40);
+shot("A1-hairspray", B.hundred, "vaultNight", [youLadder], (F) => creep(A1, F, 0, B.hundred, 0.12), { subject: undefined, dof: close(1.4), fx: ["spray"], props: [held("hairspray", hairspray, youLadder, "right", (F) => creep(A1, F, 0, B.hundred, 0.12))], allow: { "Subject size": "macro on the can in your hand and the sensor" } });
 // does: hard cut to the threat: the giant round vault door, its red alarm LED blinking, you on a ladder by the sensor
-const A2a = P(V(-1.4, 0.5, 6.2), V(0.25, 1.45, 0.4), 50), A2b = P(V(-1.15, 0.55, 5.4), V(0.3, 1.5, 0.4), 50);
+const A2a = P(V(-1.0, 0.55, 6.4), V(-0.35, 1.45, 0.4), 56), A2b = P(V(-0.85, 0.6, 5.8), V(-0.3, 1.5, 0.4), 56);
 shot("A2-the-vault", L(1, 5), "vaultNight", [youLadder], (F) => glideCam(A2a, A2b, F, B.hundred, L(1, 5)), { wide: true, subject: undefined, dof: NONE, fx: ["spray"], allow: ON_LADDER });
 // does: on the ladder you spray the sensor, a sneaky grin landing on "hairspray"
 const A3 = on(youLadder, YOU_LADDER, V(-1.25, 0.0, 1.55), "ms", { fov: 44 });
@@ -102,7 +102,11 @@ shot("C3-like-gta", L(4, 0), "vaultNight", [youLadder], (F) => creep(C3, F, L(3,
 const D1 = P(V(0.15, 1.35, 4.6), DOOR.clone().add(V(0, 0.05, 0)), 52);
 shot("D1-ten-layers", B.heat - 2, "vaultNight", [], (F) => creep(D1, F, B.ten, B.heat, 0.1), { wide: true, subject: undefined, dof: NONE });
 // does: the lens pans across the defences as each fires on its word: the sensor's red cone, the radar ripples, the blue field on the door's magnets
-shot("D2-defences", L(5, 0), "vaultNight", [], (F) => creep(P(V(-0.7, 1.35, 6.9), V(0.75, 1.75, 1.4), 50), F, B.heat - 2, L(5, 0), 0.08), { wide: true, subject: undefined, dof: NONE, allow: SIGN, props: [fxOn("heat cone", B.heat - 2), fxOn("radar", B.radar - 2), fxOn("magnet field", B.magnets - 2)] });
+shot("D2-heat-sensor", B.radar - 2, "vaultNight", [], (F) => creep(P(SENSOR.clone().add(V(-1.45, -0.55, 1.6)), SENSOR.clone().add(V(-0.25, -0.25, 0.15)), 40), F, B.heat - 2, B.radar - 2, 0.3), { subject: undefined, dof: close(2.2), props: [fxOn("heat cone", B.heat - 2)] });
+// does: up at the ceiling: the radar dome pulses rings across the corridor
+shot("D3-radar", B.magnets - 2, "vaultNight", [], (F) => creep(P(RADAR.clone().add(V(-0.9, -1.25, 1.6)), RADAR.clone().add(V(0, -0.2, 0)), 42), F, B.radar - 2, B.magnets - 2, 0.3), { subject: undefined, dof: close(2.0), props: [fxOn("radar", B.radar - 2)] });
+// does: close on the door's magnets: the blue field snaps on between them
+shot("D4-magnets", L(5, 0), "vaultNight", [], (F) => creep(P(MAG.clone().add(V(-0.3, 0.0, 1.15)), MAG.clone().add(V(-0.18, 0, 0.08)), 38), F, B.magnets - 2, L(5, 0), 0.25), { subject: undefined, dof: close(1.1), props: [fxOn("magnet field", B.magnets - 2)] });
 // does: macro on the dial: it spins by itself and digits pour out of it like a jackpot
 const DIAL = V(0, 1.8, 0.53);
 const E1 = P(DIAL.clone().add(V(0.22, 0.05, 0.82)), DIAL.clone(), 38);
@@ -130,10 +134,11 @@ const H1 = P(V(-0.1, 1.3, 1.7), V(-0.75, 1.12, -0.95), 44);
 shot("H1-the-office", L(8, 9), "office", [youDesk], (F) => creep(H1, F, L(8, 0), L(8, 9), 0.1), { dof: mid(2.9) });
 // does: at the guard desk a long brass key with a KLUIS tag slides across into your open hand
 const KEY_A = V(0.95, 0.8, 7.75);
-const keyProp = free("vault key", vaultKey, (o, F) => { const h = handAt(youCounter, F, V(-0.3, 1.12, 8.3), "right"); o.position.copy(lerpV(KEY_A, h.clone().setY(0.8), span(F, L(8, 9) + 4, B.vaultKey))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
+const KEY_B = V(0.3, 0.8, 7.75); // the desk's front edge
+const keyProp = free("vault key", vaultKey, (o, F) => { o.position.copy(lerpV(KEY_A, KEY_B, span(F, L(8, 9) + 4, B.vaultKey - 4))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
 shot("H2-vault-key", L(9, 0), "vaultDay", [youCounter, guard], (F) => creep(P(V(-0.3, 1.12, 8.3), V(0.35, 0.8, 7.75), 36), F, L(8, 9), L(9, 0), 0.15), { subject: undefined, dof: close(1.0), props: [keyProp], allow: { ...SEATED, "Subject size": "insert on the key sliding across the desk" } });
 // does: one locked framing, three visits: day one the guard stares you down; day ten he nods; day five hundred he waves you through from behind his newspaper (the calendar flips each time)
-const I = P(V(-1.0, 1.5, 3.6), V(1.2, 1.25, 7.6), 50);
+const I = P(V(-0.25, 1.35, 3.7), V(0.7, 1.2, 7.6), 56);
 const Ic = (a: number, b: number) => (F: number) => creep(I, F, a, b, 0.1, 0, 0.04);
 const paperHeld = (headline: string, when: (F: number) => boolean) => held("newspaper", () => newspaper(headline), guard, "left", () => I, { fwd: 0.08, when });
 shot("I1-day-one", L(9, 8) - 3, "vaultDay", [youVisits, guard], Ic(L(9, 0), L(9, 8) - 3), { subject: "guard", wide: true, dof: NONE });
@@ -268,10 +273,11 @@ shot("Y1-handcuffs", L(28, 6), "office", [youCuffed, copOffice], impact((F) => c
 const Y2 = P(V(-0.35, 1.6, 8.05), V(1.6, 1.3, 7.55), 42);
 shot("Y2-never-found", L(29, 0), "vaultDay", [guard], (F) => creep(Y2, F, L(28, 6), L(29, 0), 0.1), { subject: undefined, dof: close(1.7), props: [held("headline", () => newspaper("HEIST OF THE CENTURY"), guard, "left", () => Y2 as CamPose, { fwd: 0.1 })], allow: { ...SEATED, "Subject covered": "the newspaper comes down off his face (the reveal)" } });
 // does: the cold-open sensor again, same framing, still glazed with hairspray
-shot("Z1-beaten-by-hairspray", L(30, 0), "vaultNight", [], (F) => creep(A1, F, L(29, 0), L(30, 0), 0.12), { subject: undefined, dof: close(0.9), fx: ["spray"], props: [canFree] });
+const Z1C = P(V(LADDER.x - 1.55, 1.75, LADDER.z + 1.55), V(LADDER.x - 0.05, 1.7, LADDER.z - 0.05), 46);
+shot("Z1-beaten-by-hairspray", L(30, 0), "vaultNight", [], (F) => creep(Z1C, F, L(29, 0), L(30, 0), 0.1), { subject: undefined, dof: close(2.1), props: [canResting] });
 // does: close on you in the police room, deadpan; the bagged sandwich soft in the foreground
-const Z2 = P(V(0.12, 1.2, 1.55), V(0, 0.9, -0.35), 40);
-shot("Z2-undone", FRAMES, "interview", [youCell], (F) => creep(Z2, F, L(30, 0), FRAMES, 0.08), { dof: close(1.85), props: [free("bagged sandwich", () => sandwich(true), (o) => { o.position.copy(ITABLE).add(V(0.16, 0.77, -0.05)); o.rotation.set(0, -0.4, 0); }, ["room"])] });
+const Z2 = P(V(0.12, 1.3, 1.75), V(0.02, 0.78, -0.2), 44);
+shot("Z2-undone", FRAMES, "interview", [youCell], (F) => creep(Z2, F, L(30, 0), FRAMES, 0.08), { dof: close(1.85), props: [free("bagged sandwich", () => sandwich(true), (o) => { o.position.copy(ITABLE).add(V(0.1, 0.77, 0.32)); o.rotation.set(0, -0.4, 0); }, ["room"])] });
 
 if (cursor !== FRAMES) throw new Error(`shots end at ${cursor}, composition ${FRAMES}`);
 export const PLAN: Plan = { slug: "antwerp-diamond-heist", shots: SHOTS, words };

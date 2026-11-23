@@ -210,7 +210,18 @@ export const hideout = (t: "night" | "dawn") => {
     g.add(place(new Mesh(new CylinderGeometry(0.06, 0.09, 0.14, 12), colMat("#3a2a6a", { rough: 0.95 })), TABLE.x + 0.15, 0.56, TABLE.z, 0));
   }
   g.add(place(new Mesh(new BoxGeometry(0.2, 0.06, 0.15), colMat("#e8d8b0", { rough: 0.9 })), TABLE.x - 0.25, 0.53, TABLE.z + 0.1, 0.3)); // a pizza box
-  // the front wall (behind the two-shots): the flat's door, coat hooks with jackets, a city map
+  // the front wall (behind the two-shots): faded green damask wallpaper, a shelf of odds and ends, a clock, a picture
+  g.add(plane(HIDE.x1 - HIDE.x0, HIDE.h, litTex("wallpaper", () => canvasTex(1024, 512, (c) => {
+    c.fillStyle = "#5e7058"; c.fillRect(0, 0, 1024, 512);
+    for (let x = 0; x < 1024; x += 40) { c.fillStyle = "#566650"; c.fillRect(x, 0, 18, 512); }
+    c.fillStyle = "#7a8a68";
+    for (let y = 20; y < 512; y += 60) for (let x = 29; x < 1024; x += 40) { c.beginPath(); c.ellipse(x, y + ((x / 40) % 2) * 30, 5, 10, 0, 0, 7); c.fill(); }
+  }), { rough: 0.9 }), V(0, HIDE.h / 2, HIDE.z1 - 0.012), Math.PI));
+  g.add(box(1.1, 0.04, 0.22, MATS.darkWood(), V(1.55, 1.95, HIDE.z1 - 0.12)));
+  for (const [x, h, c] of [[1.15, 0.24, "#3a6a3a"], [1.27, 0.3, "#8a3a2a"], [1.38, 0.2, "#d8c89a"], [1.75, 0.22, "#2a3a6a"], [1.86, 0.26, "#c8a050"]] as const) g.add(box(0.08, h, 0.16, colMat(c, { rough: 0.6 }), V(x, 1.97 + h / 2, HIDE.z1 - 0.12)));
+  g.add(place(model("wall_clock", { collider: false, scale: 1.1 }), -0.35, 2.05, HIDE.z1 - 0.03, Math.PI));
+  g.add(plane(0.55, 0.42, litTex("photo-lake", () => canvasTex(330, 250, (c) => { const gr = c.createLinearGradient(0, 0, 0, 250); gr.addColorStop(0, "#9ac0e0"); gr.addColorStop(1, "#e8d8b8"); c.fillStyle = gr; c.fillRect(0, 0, 330, 250); c.fillStyle = "#4a7a5a"; c.beginPath(); c.moveTo(0, 170); c.lineTo(90, 90); c.lineTo(170, 160); c.lineTo(250, 70); c.lineTo(330, 150); c.lineTo(330, 250); c.lineTo(0, 250); c.fill(); c.strokeStyle = "#5a3a20"; c.lineWidth = 16; c.strokeRect(0, 0, 330, 250); }), { rough: 0.8 }), V(0.95, 1.45, HIDE.z1 - 0.03), Math.PI));
+  // the flat's door, coat hooks with jackets, a city map
   g.add(box(0.95, 2.05, 0.06, MATS.darkWood(), V(-1.3, 1.025, HIDE.z1 - 0.03)));
   g.add(place(new Mesh(new CylinderGeometry(0.025, 0.025, 0.08, 10).rotateX(Math.PI / 2), colMat("#c8a050", { spec: 0.8 })), -0.95, 1.0, HIDE.z1 - 0.08));
   g.add(box(0.9, 0.05, 0.08, MATS.darkWood(), V(0.4, 1.65, HIDE.z1 - 0.05)));

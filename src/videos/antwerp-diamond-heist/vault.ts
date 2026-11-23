@@ -4,7 +4,7 @@ import { model } from "../../../kit/toon/build/models";
 import { lightPatch } from "../../../kit/toon/glow";
 import { SKY } from "../../../kit/toon/ink";
 import { toonMaterial } from "../../../kit/toon/shade";
-import { MATS, V, boardTex, canvasTex, colMat, glowMat, litTex, place, plane, rnd, slab, unlit } from "./common";
+import { MATS, V, boardTex, box, canvasTex, colMat, glowMat, litTex, place, plane, rnd, slab, unlit } from "./common";
 
 /**
  * The basement two floors under the diamond centre: a corridor from the stairs (z +10) past the guard desk to the
@@ -24,7 +24,8 @@ export const SENSOR = V(1.98, 2.32, 1.7); // heat / motion sensor on the right w
 export const LIGHT_S = V(-2.17, 1.12, 2.8); // light sensor on the left wall (faces +x)
 export const RADAR = V(0, 2.76, 3.4);
 export const MAG = V(1.4, 1.95, 0.04); // magnet block on the wall beside the door's free edge
-export const LADDER = V(1.45, 0, 1.75);
+export const LADDER = V(1.72, 0, 1.75); // the crate stack you stand on (name kept: lines 1-5 and 29)
+export const CRATE_TOP = 3 * 0.35;
 export const DESK = V(0.65, 0, 7.6); // guard desk, long side along z, front toward -x
 export const GUARD_SEAT = V(1.6, 0, 7.55); // where the guard stands behind his desk
 export const CALENDAR = V(2.17, 1.62, 6.55);
@@ -120,7 +121,7 @@ const doorWall = () => {
     g.add(m);
   }
   // sign over the door
-  g.add(plane(1.3, 0.3, unlit("sign-vault", () => boardTex(["KLUIS · VAULT"], "#1e3a5a", "#f2f2ea", 1024, 236)), V(0, 2.6, 0.02)));
+  g.add(plane(0.78, 0.4, unlit("sign-vault2", () => boardTex(["KLUIS", "VAULT"], "#1e3a5a", "#f2f2ea", 780, 400)), V(-1.72, 1.95, 0.02)));
   return g;
 };
 
@@ -142,14 +143,22 @@ const sensorBox = () => {
   fog.name = "sensorFog";
   fog.visible = false;
   g.add(fog);
-  // its red detection cone (line 4), pointing down the corridor
-  const cone = new Mesh(new ConeGeometry(1.4, 3.2, 32, 1, true), new MeshBasicMaterial({ color: "#ff5a3a", transparent: true, opacity: 0.07, blending: AdditiveBlending, depthWrite: false, side: DoubleSide, toneMapped: false }));
-  cone.rotation.z = -Math.PI / 2 - 0.55;
-  cone.position.set(-1.35, -0.9, 0.4);
-  cone.name = "heatCone";
-  cone.visible = false;
-  cone.layers.set(SKY);
-  g.add(cone);
+  // its detection field (lines 4, 15): a fan of red beams from the lens down to the corridor floor
+  const fan = new Group();
+  fan.name = "heatCone";
+  fan.visible = false;
+  const beamMat = new MeshBasicMaterial({ color: "#ff3a2a", transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false, toneMapped: false });
+  const eye = V(-0.09, -0.02, 0);
+  for (let k = 0; k < 7; k++) {
+    const to = V(-1.6 - 0.35 * Math.abs(k - 3), -SENSOR.y + 0.02, -1.4 + k * 0.62); // on the floor, fanned along the corridor
+    const d = to.clone().sub(eye), len = d.length();
+    const b = new Mesh(new CylinderGeometry(0.006, 0.018, len, 6), beamMat);
+    b.position.copy(eye.clone().add(to).multiplyScalar(0.5));
+    b.quaternion.setFromUnitVectors(V(0, 1, 0), d.normalize());
+    b.layers.set(SKY);
+    fan.add(b);
+  }
+  g.add(fan);
   g.userData.collider = false;
   return g;
 };
@@ -223,11 +232,11 @@ export const calendarMat = (k: number) => litTex(`cal-${k}`, () => canvasTex(360
   c.fillStyle = "#f6f2ea"; c.fillRect(0, 0, 360, 460);
   c.fillStyle = "#c8342c"; c.fillRect(0, 0, 360, 110);
   c.fillStyle = "#ffffff"; c.font = "900 64px sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(m, 180, 58);
-  c.fillStyle = "#1c1c22"; c.font = "900 220px sans-serif"; c.fillText(d, 180, 290);
-  if (k === 0) { // the heist weekend: a red heart drawn round the 15th
+  if (k === 0) { // the heist weekend: a red heart drawn round the 15th, the number small inside it
     c.strokeStyle = "#e0243a"; c.lineWidth = 12;
-    c.beginPath(); c.moveTo(180, 440); c.bezierCurveTo(-40, 290, 40, 110, 180, 200); c.bezierCurveTo(320, 110, 400, 290, 180, 440); c.stroke();
-  }
+    c.beginPath(); c.moveTo(180, 446); c.bezierCurveTo(-10, 330, 10, 140, 180, 215); c.bezierCurveTo(350, 140, 370, 330, 180, 446); c.stroke();
+    c.fillStyle = "#1c1c22"; c.font = "900 120px sans-serif"; c.fillText(d, 180, 300);
+  } else { c.fillStyle = "#1c1c22"; c.font = "900 220px sans-serif"; c.fillText(d, 180, 290); }
 }), { rough: 0.9 });
 
 export const vault = (withLadder = false) => {
@@ -282,9 +291,8 @@ export const vault = (withLadder = false) => {
   const cam = model("security_camera_01", { collider: false, scale: 1.1 });
   cam.position.set(-2.05, 2.45, 1.2); cam.rotation.y = 2.4;
   g.add(cam);
-  const ladder = place(model("wooden_ladder", { collider: "ladder", height: 1.8 }), LADDER.x, 0, LADDER.z, Math.PI / 2);
-  ladder.name = "ladder";
-  if (withLadder) g.add(ladder);
+  // three crates stacked under the sensor (you stand on the top one, the can rests on it at the end)
+  if (withLadder) for (let i = 0; i < 3; i++) g.add(place(model("wooden_crate_01", { collider: `crate ${i}` }), LADDER.x + (i % 2 ? 0.03 : -0.02), i * 0.35, LADDER.z + (i === 1 ? 0.04 : 0), Math.PI / 2 + (i - 1) * 0.06));
   g.add(plane(0.5, 0.36, unlit("sign-auth", () => boardTex(["ALLEEN BEVOEGD", "STAFF ONLY"], "#f2c23a", "#1c1c22", 720, 520)), V(-2.15, 1.75, 5.2), Math.PI / 2));
   g.add(plane(0.4, 0.4, unlit("sign-level", () => boardTex(["-2"], "#1e3a5a", "#ffffff", 400, 400)), V(-2.15, 1.9, 8.8), Math.PI / 2));
   g.add(place(new Mesh(new BoxGeometry(0.5, 0.6, 0.18), colMat("#c8342c", { rough: 0.5 })), -2.1, 1.25, 6.6, Math.PI / 2));
@@ -298,6 +306,7 @@ export const vault = (withLadder = false) => {
     c.beginPath(); c.arc(128, 100, 60, 0, 7); c.stroke(); c.strokeRect(20, 20, 216, 152);
     c.fillStyle = "#9ad8c0"; c.font = "700 18px monospace"; c.fillText("CAM 2  KLUIS", 28, 40);
   }))), DESK.x - 0.01, 0.96, DESK.z - 0.8, -Math.PI / 2));
+  g.add(deskClutter());
   const cal = plane(0.36, 0.46, calendarMat(1), CALENDAR, -Math.PI / 2);
   cal.name = "calendar";
   g.add(cal);
@@ -320,6 +329,28 @@ export const vault = (withLadder = false) => {
   t.name = "torch";
   t.visible = false;
   g.add(t);
+  return g;
+};
+
+/** The guard's desk top on day 1 (tidy), day 10 (lived in) and day 500 (a nest): Video shows one per visit. */
+const deskClutter = () => {
+  const g = new Group();
+  const top = 0.79, X = DESK.x, Z = DESK.z;
+  const cup = (x: number, z: number, y = top) => { const m = new Mesh(new CylinderGeometry(0.045, 0.036, 0.1, 14), colMat("#f2ece2", { spec: 0.4, rough: 0.4 })); m.position.set(x, y + 0.05, z); return m; };
+  const d1 = new Group(); d1.name = "desk1";
+  d1.add(cup(X - 0.1, Z + 0.25), box(0.22, 0.01, 0.3, colMat("#f6f2ea"), V(X - 0.05, top + 0.006, Z - 0.1)));
+  d1.add(place(new Mesh(new CylinderGeometry(0.04, 0.04, 0.1, 10), colMat("#3a5a8a")), X + 0.2, top + 0.05, Z - 0.3));
+  const d10 = new Group(); d10.name = "desk10";
+  d10.add(cup(X - 0.1, Z + 0.25), cup(X + 0.05, Z + 0.38), cup(X - 0.2, Z - 0.35));
+  d10.add(place(model("potted_plant_01", { collider: false, scale: 0.35 }), X + 0.25, top, Z - 0.25, 0.3));
+  d10.add(box(0.26, 0.04, 0.26, colMat("#e8d8b0", { rough: 0.9 }), V(X - 0.05, top + 0.02, Z - 0.05)));
+  const d500 = new Group(); d500.name = "desk500";
+  for (let i = 0; i < 4; i++) d500.add(box(0.36, 0.045, 0.36, colMat(i % 2 ? "#e8d8b0" : "#d8c49a", { rough: 0.9 }), V(X - 0.1 + (i % 2) * 0.02, top + 0.023 + i * 0.046, Z - 0.05))); // a tower of pizza boxes
+  for (let i = 0; i < 7; i++) d500.add(cup(X + 0.25 - (i % 3) * 0.06, Z + 0.3 + (i % 2) * 0.05, top + Math.floor(i / 3) * 0.1)); // stacked cups
+  d500.add(place(model("potted_plant_01", { collider: false, scale: 0.6 }), X + 0.25, top, Z - 0.4, 0.3)); // the plant, much bigger now
+  d500.add(box(0.3, 0.1, 0.2, colMat("#c84a6a", { rough: 0.95 }), V(X - 0.15, top + 0.05, Z + 0.32))); // a nap pillow
+  d500.add(place(new Mesh(new CylinderGeometry(0.06, 0.06, 0.01, 16), colMat("#3a3a44")), X + 0.15, top + 0.005, Z - 0.05)); // a radio
+  g.add(d1, d10, d500);
   return g;
 };
 
