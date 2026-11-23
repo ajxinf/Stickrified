@@ -35,13 +35,13 @@ export const MART = { x: 21, front: -7.6, w: 7, h: 4.4 };
 export const DISPLAY = V(MART.x, 1.05, MART.front - 0.6); // the darkness box on its velvet stand behind the glass
 export const MOWER_START = V(-4.6, 0, -8.6);
 export const MATTRESS_AT = V(-3.6, 0, 0.6); // in the middle of the road in front of your house (long side along x)
-export const BEDTIME = V(-1.5, 0, 7.6); // the kicked-over sign on the south lawn
+export const BEDTIME = V(-1.5, 0, 8.4); // the kicked-over sign on the south lawn
 /** Lawn chairs the neighbours fall asleep in (line 29): three on the north lawns facing +z, two on the south facing -z. */
 export const SLEEP_CHAIRS = [V(-6.4, 0, -6.6), V(-8.9, 0, -6.4), V(4.2, 0, -6.6), V(2.6, 0, 8.7), V(-0.6, 0, 8.9)];
 export const POLES = [-18, -6, 6, 18, 30].map((x) => V(x, 0, WALK_S - 0.7));
 export const WIRE_Y = 5.45;
 export const OWL_AT = V(-3.4, 0, POLES[1].z + 0.1); // perched on the wire between poles 1 and 2
-export const LAMPS = [V(-12.5, 0, WALK_N + 1.2), V(3.0, 0, WALK_N + 1.2), V(16.5, 0, WALK_N + 1.2), V(-4.0, 0, WALK_S - 1.4), V(10.5, 0, WALK_S - 1.4), V(24, 0, WALK_S - 1.4)];
+export const LAMPS = [V(-12.5, 0, WALK_N + 1.6), V(3.0, 0, WALK_N + 1.6), V(16.8, 0, WALK_N + 1.6), V(-4.0, 0, WALK_S - 1.4), V(10.5, 0, WALK_S - 1.4), V(24, 0, WALK_S - 1.4)];
 export const LAMP_HEAD = (p: Vector3) => p.clone().add(V(0, 3.62, 0));
 export const PORCH_LAMPS = [V(YOU_HOUSE.door - 0.85, 2.2, YOU_HOUSE.front + 0.12), V(KYLE_HOUSE.door + 0.85, 2.2, KYLE_HOUSE.front + 0.12)];
 /** The queue for Kyle's basement: up his path from the stairwell top to the sidewalk, then east past the mart. */

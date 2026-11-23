@@ -81,10 +81,10 @@ export const home = () => {
   k.box(T, WIN.x1 - WIN.x0 + 0.2, 0.06, 0.26, 0, WIN.y0 - 0.03, z0 + 0.06);
   for (const x of [WIN.x0 - 0.035, WIN.x1 + 0.035]) k.box(T, 0.07, WIN.y1 - WIN.y0, 0.16, x, (WIN.y0 + WIN.y1) / 2, z0);
   // the counter run along the back wall, upper cabinets on the left, a fridge on the right
-  k.box(MATS.cabinet(), 4.1, 0.86, 0.6, -0.55, 0.43, z0 + 0.3);
-  for (let i = 0; i < 6; i++) k.box(MAT.color("#c8962e"), 0.02, 0.7, 0.02, -2.35 + i * 0.68, 0.45, z0 + 0.61); // door gaps
-  for (let i = 0; i < 6; i++) k.box(MAT.metal(), 0.14, 0.02, 0.03, -2.2 + i * 0.68, 0.78, z0 + 0.62); // handles
-  k.box(MATS.worktop(), 4.2, 0.06, 0.66, -0.55, TOP - 0.03, z0 + 0.33);
+  k.box(MATS.cabinet(), 3.5, 0.86, 0.6, -0.85, 0.43, z0 + 0.3);
+  for (let i = 0; i < 5; i++) k.box(MAT.color("#c8962e"), 0.02, 0.7, 0.02, -2.35 + i * 0.68, 0.45, z0 + 0.61); // door gaps
+  for (let i = 0; i < 5; i++) k.box(MAT.metal(), 0.14, 0.02, 0.03, -2.2 + i * 0.68, 0.78, z0 + 0.62); // handles
+  k.box(MATS.worktop(), 3.55, 0.06, 0.66, -0.85, TOP - 0.03, z0 + 0.33);
   k.box(MATS.tiles(), WIN.x0 - x0, 0.58, 0.02, (x0 + WIN.x0) / 2, TOP + 0.29, z0 + 0.01);
   k.box(MATS.tiles(), 1.6, 0.58, 0.02, WIN.x1 + 0.4, TOP + 0.29, z0 + 0.01);
   k.box(MATS.cabinet(), 1.75, 0.68, 0.34, -1.72, 1.92, z0 + 0.17);
@@ -265,10 +265,7 @@ export const ohio = () => {
   door.name = "fridgeDoor";
   door.userData.door = h;
   door.userData.opens = true;
-  door.userData.door = h;
-  door.userData.opens = true;
-  door.userData.door = h;
-  door.userData.opens = true;
+  door.userData.out = new Vector3(0, 0, 1);
   g.add(door);
   g.add(place(model("potted_plant_01", { collider: false, scale: 0.5 }), 1.6, 0.93, z - 0.1, 0.4));
   return g;

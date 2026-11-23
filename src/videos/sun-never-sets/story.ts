@@ -256,7 +256,7 @@ export const mom = role("mom", momLook, MOM_KEYS, (F) => {
 });
 const MOW_A = MOWER_START.clone(), MOW_B = MOWER_START.clone().add(V(1.9, 0, 0.3));
 export const mowerAt = (F: number) => (F < L(29, 0) ? lerpV(MOW_A, MOW_B, span(F, B.dad - 10, L(4, 0) + 20)) : MOW_B.clone().add(V(-1.0, 0, 0.6)));
-export const DAD_ON_MOWER = V(-0.25, 0.0, 0.0); // the card in the mower's frame (seat at x -0.25)
+export const DAD_ON_MOWER = V(-0.25, 0.06, 0.0); // feet on the footboard // the card in the mower's frame (seat at x -0.25)
 export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F) => {
   if (F < L(29, 0)) {
     const p = pose([[0, { ...SIT, arms: arms([0.6, 0.25], [0.6, 0.25]) }], [B.eleven - 6, { ...SIT, arms: arms([0.6, 0.25], [0.6, -0.6], { gr: "open" }) }]], F);
@@ -280,13 +280,12 @@ export const kidB = runner("kidB", kidBLook, KID_B, 23, 0);
 export const queuer = (i: number) => {
   const at = QUEUE[i], look = QUEUE_LOOKS[i % QUEUE_LOOKS.length];
   return role(`q${i}`, look, () => at.clone(), (F) => {
-    const yawn = (F + i * 37) % 160 < 30;
     const pillow = i % 3 === 0;
     let p = pose([[0, pillow ? { ...REST, arms: arms([-0.25, 0.4], [-0.2, 0.38], { gl: "mitt", gr: "mitt" }) } : { ...REST, arms: arms([0.25, 0.6], [0.3, -0.05], { gr: "fist" }) }]], F);
     p = alive(p, F, 31 + i, [0.3, -0.3]);
     const lookUp = F >= L(23, 0) - 10 + (i % 4) * 2;
     const heading = F >= B.nothing + 6 + (i % 5) * 2 && F < L(19, 0) ? face(at, YOU_MAT) : lookUp ? 0.6 : Math.PI / 2;
-    const keys: [number, Expr][] = [[0, yawn ? "tired" : "deadpan"], [B.nothing + 6, "suspicious"], [L(19, 0), "laughing"], [L(20, 0), "tired"], [B.walks, "confused"], [B.dim, "excited"], [B.stars, "relieved"]];
+    const keys: [number, Expr][] = [[0, i % 2 ? "tired" : "deadpan"], [B.nothing + 6, "suspicious"], [L(19, 0), "laughing"], [L(20, 0), "tired"], [B.walks, "confused"], [B.dim, "excited"], [B.stars, "relieved"]];
     const s = st({ ...p, tilt: lookUp ? -12 : p.tilt }, F, 31 + i, keys, { heading }, 0.5);
     return F >= L(29, 0) ? asleep(s, F, i) : s;
   }, { crowd: true });
