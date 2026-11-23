@@ -73,6 +73,7 @@ export const MATS = {
   // vault + corridor
   steel: PM("metal_plate", 1.2, "#98a4b8", { rough: 0.35, spec: 0.7, gloss: 0.3 }),
   darkSteel: PM("metal_plate", 0.8, "#6a7078", { rough: 0.4, spec: 0.6 }),
+  tableSteel: PM("metal_plate", 0.5, "#7e8692", { rough: 0.4, spec: 0.5, mottle: 0.2 }),
   vaultFloor: PM("concrete_floor_painted", 2.5, "#8a9a92", { rough: 0.5, gloss: 0.25 }),
   block: PM("concrete_block_wall", 2.4, "#a8b8c0", { rough: 0.9, mottle: 0.18 }),
   blockDark: PM("concrete_block_wall", 2.4, "#7a8a84", { rough: 0.9, mottle: 0.18 }),

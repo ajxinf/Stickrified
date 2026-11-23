@@ -56,7 +56,7 @@ const practicals = (w: Place, s: WorldState): P[] => {
     return [
       { pos: EMERGENCY.clone().add(V(0, -0.3, 0.8)), kind: "lamp", color: ["#8fd0ff", 1.5], glowAt: EMERGENCY },
       { pos: V(DESK.x - 0.2, 1.25, DESK.z + 0.5), kind: "lamp", color: ["#ffb35c", 0.9], noGlow: true }, // the guard's lamp, left on
-      { pos: SENSOR.clone().add(V(-0.3, -0.2, 0)), kind: "lamp", color: ["#ff3a2a", s.heatLed ? 0.06 : 0], noGlow: true },
+      { pos: SENSOR.clone().add(V(-0.3, -0.2, 0)), kind: "lamp", color: ["#ff3a2a", s.heatLed ? 0.14 : 0], noGlow: true },
       { pos: DOOR.clone().add(V(0, 0.4, 0.6)), kind: "lamp", color: ["#ffc066", 1.9 * s.door], noGlow: true },
       { pos: V(0, 1.8, -3.5), kind: "lamp", color: ["#ffc870", 1.5 * Math.min(1, s.door * 2)], noGlow: true },
     ];

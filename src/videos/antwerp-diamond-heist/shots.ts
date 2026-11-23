@@ -221,10 +221,10 @@ shot("S1-perfect-heist", L(20, 7), "hideDawn", [youHide], (F) => creep(P(V(0.6, 
 // does: pull back: the trash heap is bigger than the loot bag on the table; your face drops on "trash"
 shot("S2-the-trash", L(21, 0), "hideDawn", [youHide], (F) => glideCam(P(V(0.6, 1.3, 1.55), V(-0.6, 1.05, -1.0), 44), P(V(1.5, 1.65, 2.25), V(-0.5, 0.75, -0.7), 50), F, L(20, 7), L(20, 11)), { wide: true, dof: NONE });
 // does: misty dawn by the motorway: the little car pulls up on the verge under the blue E19 sign
-shot("T1-the-woods", B.forest + 2, "forest", [youForest, speedyForest], (F) => creep(P(V(-0.5, 1.5, 0.9), V(-3.6, 1.05, -4.4), 46), F, L(21, 0), B.forest, 0.08), { wide: true, subject: undefined, dof: NONE });
+shot("T1-the-woods", B.forest + 2, "forest", [youForest, speedyForest], (F) => creep(P(V(-1.0, 1.45, 0.2), V(-3.6, 1.05, -4.4), 48), F, L(21, 0), B.forest, 0.08), { wide: true, subject: undefined, dof: NONE });
 // does: the hatch pops up on a trunk stuffed with bags; Speedy beside it, sweating
 const HATCH_CAM = P(V(-6.6, 1.45, -1.6), V(-4.9, 1.2, -3.9), 46);
-shot("T2-the-trunk", L(22, 0), "forest", [speedyForest, youForest], (F) => creep(HATCH_CAM, F, B.forest + 2, L(22, 0), 0.1), { wide: true, subject: "speedy", dof: mid(2.6), fx: ["forestMist"], allow: { "Text in frame": "the motorway sign far behind the trees, dressing" } });
+shot("T2-the-trunk", L(22, 0), "forest", [speedyForest, youForest], (F) => creep(HATCH_CAM, F, B.forest + 2, L(22, 0), 0.1), { wide: true, subject: "speedy", dof: NONE, allow: { "Text in frame": "the motorway sign far behind the trees, dressing" } });
 // does: Speedy panics, spins and flings bag after bag into the trees
 const bagHeld = (cam: (F: number) => CamPose) => held("trash bag", heldBag, speedyForest, "right", cam, { when: (F) => F < B.flings + 4 || (F >= B.flings + 14 && F < B.flings + 18) });
 const T3 = P(V(-1.3, 1.45, -0.1), V(-2.6, 1.3, -3.35), 48);
