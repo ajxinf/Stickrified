@@ -23,3 +23,7 @@ vendor/cartoon-3d-short/references/sheets/
 
 # 8K sky originals (20-30 MB each): re-downloaded by scripts/polyhaven.py sky; public/sky/ holds the served crops
 assets/sky/
+
+# Poly Haven tree meshes over GitHub's 100 MB limit (re-download: python scripts/polyhaven.py model fir_tree_01 pine_tree_01)
+public/models/fir_tree_01/fir_tree_01.bin
+public/models/pine_tree_01/pine_tree_01.bin
