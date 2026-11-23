@@ -47,8 +47,8 @@ export const PORCH_LAMPS = [V(YOU_HOUSE.door - 0.85, 2.2, YOU_HOUSE.front + 0.12
 /** The queue for Kyle's basement: up his path from the stairwell top to the sidewalk, then east past the mart. */
 export const QUEUE: Vector3[] = [];
 for (let i = 0; i < 18; i++) {
-  if (i < 3) QUEUE.push(V(9.7 + 0.2 * (i % 2), 0, -7.6 + i * 0.85));
-  else QUEUE.push(V(10.6 + (i - 3) * 0.95, 0, WALK_N + 0.55 + 0.18 * Math.sin(i * 1.9)));
+  if (i < 3) QUEUE.push(V(9.4 + 0.55 * (i % 2), 0, -7.6 + i * 0.85));
+  else QUEUE.push(V(10.6 + (i - 3) * 0.95, 0, WALK_N + 0.55 + (i % 2 ? 0.17 : -0.17)));
 }
 
 // ------------------------------------------------------------------ ground
@@ -143,7 +143,7 @@ const priceTex = () => canvasTex(512, 640, (g) => {
   g.strokeStyle = "#f6f0e6"; g.lineWidth = 8; g.strokeRect(16, 16, 480, 608);
   g.fillStyle = "#f6f0e6"; g.textAlign = "center"; g.font = `900 64px ${FONT}`; g.fillText("REAL DARK", 256, 92);
   g.font = `800 50px ${FONT}`;
-  [["1 HR", "$500"], ["NAP", "$250"], ["FULL NIGHT", "$4,000"]].forEach(([a, b], i) => {
+  [["1 HR", "$500"], ["NAP", "$250"], ["NIGHT", "$4,000"]].forEach(([a, b], i) => {
     g.textAlign = "left"; g.fillText(a, 44, 210 + i * 110);
     g.textAlign = "right"; g.fillStyle = "#ffd23f"; g.fillText(b, 468, 210 + i * 110); g.fillStyle = "#f6f0e6";
   });
@@ -240,7 +240,7 @@ const sundial = () => {
 const bedtimeSign = () => {
   const o = new Group();
   const k = new Kit();
-  k.add(MATS.darkWood(), new CylinderGeometry(0.03, 0.03, 1.1, 6).rotateZ(Math.PI / 2), BEDTIME.x + 0.2, 0.05, BEDTIME.z);
+  k.add(MATS.darkWood(), new CylinderGeometry(0.03, 0.03, 1.1, 6).rotateZ(Math.PI / 2), BEDTIME.x + 0.2, 0.03, BEDTIME.z);
   const g = k.build();
   g.userData.collider = "bedtime sign";
   o.add(g);
@@ -350,10 +350,10 @@ export const street = () => {
   for (const [x, z] of [[-10.2, -10.6], [-5.5, -10.6], [4.2, -10.6], [10.6, -10.6]] as const) g.add(place(model("shrub_01", { collider: false, scale: 0.9 }), x, 0, z, 0));
   g.add(place(model("shrub_03", { collider: false }), -12.5, 0, -10.4, 0.2));
   g.add(place(model("garden_gnome", { collider: "gnome", height: 0.42 }), -10.4, 0, -7.9, 0.5));
-  g.add(place(model("garden_sprinkler_01", { collider: "sprinkler" }), -6.2, 0, -6.6, 0));
+  g.add(place(model("garden_sprinkler_01", { collider: "sprinkler" }), -5.0, 0, -7.6, 0));
   g.add(place(model("metal_trash_can", { part: "metal_trash_can_rust", collider: "bin" }), -11.8, 0, WALK_N - 0.4, 0));
-  g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), 5.0, 0, WALK_S - 0.35, 0.3));
-  g.add(place(model("potted_plant_02", { collider: "planter" }), YOU_HOUSE.door + 1.5, 0, YOU_HOUSE.front + 0.5, 0.4));
+  g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), 3.2, 0, WALK_S - 0.35, 0.3));
+  g.add(place(model("potted_plant_02", { collider: "planter" }), YOU_HOUSE.door + 1.6, 0, YOU_HOUSE.front + 0.8, 0.4));
   for (const p of POLES) g.add(place(model("modular_electricity_poles", { part: "preset_01", collider: "pole" }), p.x, 0, p.z, 0));
   g.add(wires());
   for (const p of LAMPS) g.add(place(model("street_lamp_01", { collider: "street lamp" }), p.x, 0, p.z, p.z > 0 ? 0 : Math.PI));

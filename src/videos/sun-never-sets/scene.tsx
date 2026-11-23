@@ -116,7 +116,7 @@ export const EclipseSky: React.FC<{ cam: Vector3; sun: Vector3; s: WorldState; n
 };
 
 export const Moving: React.FC<{ prop: MovingProp; f: number }> = ({ prop, f }) => {
-  const o = useMemo(prop.make, [prop]);
+  const o = useMemo(() => { const x = prop.make(); x.traverse((c) => delete c.userData.collider); return x; }, [prop]);
   o.visible = prop.pose(o, f) !== false;
   return <primitive object={o} />;
 };

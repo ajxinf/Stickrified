@@ -200,7 +200,7 @@ export const youGum = role("you", youLook, YOU_GUM, (F) => {
   return st(p, F, 3, [[0, "tired"], [B.stove - 30, "disgusted"]], { heading: 0.6, fx: { sweat: ((F % 30) / 30) } });
 });
 export const youMat = role("you", youLook, YOU_MAT, (F) => {
-  const keys: [number, Pose][] = [[0, { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]) }], [L(17, 0), { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]), tilt: 4 }], [B.rings - 6, HOLD_PHONE], [L(18, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -8 }], [L(20, 0) - 4, BOX_UP], [L(21, 0), { ...SIT, arms: arms([0.6, -0.1], [0.6, -0.12], { gl: "open", gr: "open" }), tilt: -10, shrug: 10 }], [L(24, 0), { ...SIT, arms: arms([-0.35, 0.3], [-0.3, 0.25]), tilt: -8 }], [L(26, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -10 }]];
+  const keys: [number, Pose][] = [[0, { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]) }], [L(17, 0), { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]), tilt: 4 }], [B.rings - 6, HOLD_PHONE], [L(18, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -8 }], [L(20, 0) - 4, BOX_UP], [L(21, 0), { ...SIT, arms: arms([0.6, -0.1], [0.6, -0.12], { gl: "open", gr: "open" }), tilt: -10, shrug: 10 }], [L(24, 0), { ...SIT, arms: arms([-0.35, 0.3], [-0.3, 0.25]), tilt: -8 }], [L(26, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -10 }], [L(30, 3) - 4, { ...SIT, arms: arms([0.55, -0.7], [0.55, -0.72], { gl: "open", gr: "open" }), tilt: 8, bob: 6 }], [L(30, 6), { ...SIT, arms: arms([0.3, 0.5], [0.3, 0.48]), tilt: 12 }]];
   const p = pose(keys, F);
   const sweat = F >= L(14, 0) && F < L(24, 0) ? { sweat: ((F % 36) / 36) } : {};
   const s = st({ ...alive(p, F, 3, [0.5, -0.3]), squash: reactSquash(F - B.bite) }, F, 3, [
@@ -234,7 +234,7 @@ export const kyleStair = role("kyle", kyleLook, KYLE_STAIR, (F) => {
   }
   // lines 27-28: his customers stream past; he shakes his fist at the sky
   const shake = (k: number) => [0.55 + 0.05 * Math.sin(F * 1.6 + k), -0.6 + 0.07 * Math.sin(F * 1.9 + k)] as [number, number];
-  const p = F < L(28, 0) - 6 ? pose([[0, POSES.panic]], F) : { ...REST, arms: [{ at: [0.25, 0.55], grip: "fist" }, { at: shake(0), grip: "fist" }] as Pose["arms"], sway: -6, bob: 5 };
+  const p = F < L(28, 0) - 6 ? pose([[0, POSES.panic]], F) : F < L(28, 2) - 4 ? { ...REST, arms: [{ at: [0.25, 0.55], grip: "fist" }, { at: shake(0), grip: "fist" }] as Pose["arms"], sway: -6, bob: 5 } : { ...REST, arms: [{ at: shake(1), grip: "fist" }, { at: shake(0), grip: "fist" }] as Pose["arms"], sway: 4, bob: 10, squash: reactSquash(F - L(28, 2) + 4) };
   return st(p, F, 9, [[0, "shocked"], [B.empties, "worried"], [L(28, 0), "angry"]], { heading: -0.3, fx: { talk: talk(F, 28), ...(F >= L(28, 0) ? { steam: (F - L(28, 0)) / 30 } : {}) } });
 });
 export const kyleFence = role("kyle", kyleLook, KYLE_FENCE, (F) => {
@@ -256,13 +256,14 @@ export const mom = role("mom", momLook, MOM_KEYS, (F) => {
 });
 const MOW_A = MOWER_START.clone(), MOW_B = MOWER_START.clone().add(V(1.9, 0, 0.3));
 export const mowerAt = (F: number) => (F < L(29, 0) ? lerpV(MOW_A, MOW_B, span(F, B.dad - 10, L(4, 0) + 20)) : MOW_B.clone().add(V(-1.0, 0, 0.6)));
-export const DAD_ON_MOWER = V(-0.25, 0.04, 0.0); // the card in the mower's frame (seat at x -0.25)
+export const DAD_ON_MOWER = V(-0.25, 0.0, 0.0); // the card in the mower's frame (seat at x -0.25)
 export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F) => {
   if (F < L(29, 0)) {
     const p = pose([[0, { ...SIT, arms: arms([0.6, 0.25], [0.6, 0.25]) }], [B.eleven - 6, { ...SIT, arms: arms([0.6, 0.25], [0.6, -0.6], { gr: "open" }) }]], F);
     return st(p, F, 17, [[0, "excited"], [B.eleven, "proud"]], { heading: 0.35 });
   }
-  return asleep(st({ ...SIT, arms: arms([0.4, 0.4], [0.45, 0.4]) }, F, 17, [[0, "tired"]], { heading: 0.4 }), F, 17);
+  // asleep at the wheel; one arm slides off it on "asleep"
+  return asleep(st(pose([[0, { ...SIT, arms: arms([0.6, 0.25], [0.6, 0.25]) }], [L(29, 8), { ...SIT, arms: arms([0.6, 0.25], [0.3, 0.75]), sway: -6 }]], F), F, 17, [[0, "tired"]], { heading: 0.4 }), F, 17);
 }, { sit: true });
 export const DAD_SEAT_H = MOWER_SEAT;
 const KID_A = [V(-8, 0, 6.6), V(1.2, 0, 5.9)] as const, KID_B = [V(-9.2, 0, 7.3), V(0.2, 0, 6.8)] as const;
@@ -292,7 +293,7 @@ export const queuer = (i: number) => {
 };
 export const QUEUERS = QUEUE.map((_, i) => queuer(i));
 /** Line 5: faces pressed to the corner-mart window, staring at the box. */
-export const SHOP_FACES = [V(19.3, 0, -7.1), V(20.35, 0, -7.05), V(21.75, 0, -7.1), V(22.65, 0, -7.05)];
+export const SHOP_FACES = [V(19.3, 0, -7.1), V(20.35, 0, -6.75), V(21.75, 0, -7.1), V(22.65, 0, -6.75)];
 export const shopper = (i: number) => role(`s${i}`, QUEUE_LOOKS[(i * 3 + 1) % QUEUE_LOOKS.length], SHOP_FACES[i], (F) => {
   const p = alive({ ...REST, arms: arms([0.62, -0.2], [0.6, -0.25], { gl: "open", gr: "open" }), lean: 0.3 }, F, 41 + i, [0, 0.2]);
   return st(p, F, 41 + i, [[0, "tired"], [B.darkness, "pleading"], [B.earth, "excited"]], { heading: Math.PI }, 0.5);
@@ -301,10 +302,10 @@ export const SHOPPERS = SHOP_FACES.map((_, i) => shopper(i));
 /** Line 27: Kyle's customers climb out of the stairwell and run into the street to look up. */
 const stairY = (z: number) => -STAIR.depth * clamp01((STAIR.z1 - z) / (STAIR.z1 - STAIR.z0 - 0.6));
 export const climber = (i: number) => {
-  const x = STAIR.x0 + 0.35 + (i % 2) * 0.6, z0 = STAIR.z0 + 0.55, t0 = B.empties - 34 + i * 15;
+  const x = STAIR.x0 + 0.65, z0 = STAIR.z0 + 0.55, t0 = B.empties - 40 + i * 24;
   const at = (F: number) => {
     const t = clamp01((F - t0) / 60), z = z0 + (STAIR.z1 + 2.6 - z0) * t;
-    return V(x + (t > 0.7 ? (i % 2 ? 0.8 : -0.8) * (t - 0.7) : 0), z < STAIR.z1 ? stairY(z) : 0, z);
+    return V(x + (t > 0.62 ? (i % 2 ? 2.6 : -2.6) * (t - 0.62) : 0), z < STAIR.z1 ? stairY(z) : 0, z);
   };
   return role(`c${i}`, QUEUE_LOOKS[(i * 2 + 3) % QUEUE_LOOKS.length], at, (F) => {
     const t = clamp01((F - t0) / 60);
@@ -312,15 +313,16 @@ export const climber = (i: number) => {
     return st({ ...r, arms: arms([0.6, -0.55], [0.65, -0.5], { gl: "open", gr: "open" }) }, F, 51 + i, [[0, "excited"], [B.up, "relieved"]], { heading: 0.15 }, 0.5);
   }, { crowd: true });
 };
-export const CLIMBERS = [0, 1, 2, 3].map(climber);
+export const CLIMBERS = [0, 1, 2].map(climber);
 /** Line 29: neighbours asleep where they stand or sit (lawn chairs on the lawn, the hood of a car). */
 export const sleeper = (i: number) => role(`z${i}`, QUEUE_LOOKS[(i * 3 + 2) % QUEUE_LOOKS.length], SLEEP_CHAIRS[i].clone().add(V(0, 0, i < 3 ? 0.42 : -0.42)), (F) =>
   asleep(st({ ...SIT, arms: arms([0.35, 0.45], [0.4, 0.42]) }, F, 61 + i, [[0, "tired"]], { heading: i < 3 ? 0 : Math.PI }), F, i), { sit: true });
 export const SLEEPERS = SLEEP_CHAIRS.map((_, i) => sleeper(i));
 
 // ================================================================== the small rooms
+// he pulls a coat sleeve over himself like a blanket on "night"
 export const closetMan = role("closet", closetLook, CLOSET_SEAT.clone().add(V(0, 0, 0.12)), (F) =>
-  asleep(st({ ...SIT, arms: arms([-0.3, 0.32], [-0.28, 0.3]), tilt: 6 }, F, 71, [[0, "relieved"]], { heading: 0 }), F, 71), { sit: true });
+  asleep(st(pose([[0, { ...SIT, arms: arms([-0.3, 0.32], [-0.28, 0.3]), tilt: 6 }], [L(6, 5) - 4, { ...SIT, arms: arms([-0.3, 0.32], [0.45, -0.55], { gr: "fist" }), tilt: 12, bob: -6 }]], F), F, 71, [[0, "relieved"]], { heading: 0 }), F, 71), { sit: true });
 export const CINEMA_SEATS = ROWS.flatMap((z, r) => SEATS_X.filter((_, c) => (r + c) % 2 === 0).map((x) => V(x, 0, z - 0.3)));
 export const sleepersCinema = CINEMA_SEATS.map((p, i) => role(`m${i}`, QUEUE_LOOKS[(i * 7) % QUEUE_LOOKS.length], p, (F) =>
   asleep(st({ ...SIT, arms: arms([0.35, 0.45], [0.4, 0.42]) }, F, 81 + i, [[0, "tired"]], { heading: Math.PI }), F, i), { sit: true }));

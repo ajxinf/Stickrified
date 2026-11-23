@@ -173,7 +173,6 @@ export const mattress = () => {
   k.box(T, l, h, w, 0, h / 2, 0, true);
   k.box(colMat("#e0dacb"), l + 0.02, 0.03, w + 0.02, 0, h - 0.01, 0);
   k.box(colMat("#e0dacb"), l + 0.02, 0.03, w + 0.02, 0, 0.02, 0);
-  k.add(MATS.cloth("#f2f0ea"), new SphereGeometry(0.3, 12, 8).scale(1, 0.32, 0.7), -l / 2 + 0.35, h + 0.05, 0);
   g.add(k.build());
   g.userData.collider = "mattress";
   return g;

@@ -98,12 +98,12 @@ export const home = () => {
   const walls = k.build();
   walls.userData.collider = "kitchen";
   g.add(walls);
-  g.add(place(model("electric_stove", { collider: "stove" }), 1.25, 0, z0 + 0.3, 0));
+  g.add(place(model("electric_stove", { collider: "stove" }), 1.25, 0, z0 + 0.36, 0));
   g.add(place(model("vintage_microwave", { collider: "microwave", scale: 0.55 }), MICRO.x, TOP, MICRO.z, 0));
   g.add(place(model("potted_plant_02", { collider: false, scale: 0.32 }), -0.55, WIN.y0, z0 + 0.1, 0.3));
   g.add(plane(0.13, 0.05, unlit("clock", () => canvasTex(256, 100, (c) => { c.fillStyle = "#061008"; c.fillRect(0, 0, 256, 100); c.fillStyle = "#6aff8a"; c.shadowColor = "#6aff8a"; c.shadowBlur = 12; c.font = `900 70px ${FONT}`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("3:00", 112, 54); c.font = `900 30px ${FONT}`; c.fillText("AM", 222, 66); })), MICRO_CLOCK));
   g.add(place(model("dining_table", { collider: "table", scale: 0.6 }), -0.2, 0, 1.5, 0));
-  g.add(place(model("dining_chair_02", { collider: "chair" }), 0.6, 0, 1.4, -Math.PI / 2));
+  g.add(place(model("dining_chair_02", { collider: "chair" }), 0.95, 0, 1.4, -Math.PI / 2));
   g.add(plane(0.26, 0.32, litTex("fridgeArt", fridgeArt), V(2.0, 1.35, z0 + 0.705), 0, 0, 0.06));
   // a wall calendar of crossed-out days on the side wall
   g.add(plane(0.5, 0.62, litTex("calendar", () => canvasTex(400, 500, (c) => {
@@ -177,7 +177,7 @@ export const closet = () => {
   door.add(dk.build());
   door.add(plane(0.5, 0.38, unlit("rent", rentTex), V(-w / 2, 1.45, -0.03), Math.PI));
   door.position.set(w / 2, 0, 0.12);
-  door.rotation.y = 1.9;
+  door.rotation.y = 1.4;
   g.add(door);
   g.add(place(model("potted_plant_01", { collider: false, scale: 0.7 }), -1.7, 0, 0.6, 0.4));
   // the bare bulb inside
@@ -263,6 +263,12 @@ export const ohio = () => {
   door.add(plane(0.16, 0.2, litTex("ohioArt", fridgeArt), V(-w / 2 + 0.15, 1.2, 0.065), 0, 0, -0.08));
   door.position.set(x + w / 2, 0, zf);
   door.name = "fridgeDoor";
+  door.userData.door = h;
+  door.userData.opens = true;
+  door.userData.door = h;
+  door.userData.opens = true;
+  door.userData.door = h;
+  door.userData.opens = true;
   g.add(door);
   g.add(place(model("potted_plant_01", { collider: false, scale: 0.5 }), 1.6, 0.93, z - 0.1, 0.4));
   return g;

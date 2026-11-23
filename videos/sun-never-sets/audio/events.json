@@ -1,0 +1,280 @@
+{
+ "fps": 30,
+ "frames": 3627,
+ "music": {
+  "track": "in_this_world(default).mp3",
+  "frames": 3627,
+  "button": {
+   "word": "toaster",
+   "n": 2
+  },
+  "button_db": -26,
+  "stops": [
+   [
+    {
+     "word": "vanishes",
+     "lead": 2
+    },
+    {
+     "word": "stars",
+     "lead": -6
+    }
+   ]
+  ]
+ },
+ "ambience": {
+  "kitchen": "amb_kitchen_day",
+  "fun": "amb_suburb_morning",
+  "skywide": "amb_suburb_morning",
+  "day": "amb_heat_noon",
+  "heat": "amb_heat_noon",
+  "box": "amb_heat_noon",
+  "dim": "amb_eclipse_hush",
+  "night": "amb_night_crickets",
+  "closet": "amb_bedroom_night",
+  "cinema": "amb_bedroom_night",
+  "ohio": "amb_kitchen_day",
+  "tv": "amb_flat_night"
+ },
+ "space": {
+  "kitchen": 0.5,
+  "fun": 0.45,
+  "skywide": 0.45,
+  "day": 0.45,
+  "heat": 0.45,
+  "box": 0.2,
+  "dim": 0.5,
+  "night": 0.55,
+  "closet": 0.5,
+  "cinema": 1.1,
+  "ohio": 0.5,
+  "tv": 0.5
+ },
+ "events": [
+  {
+   "word": "relax",
+   "lead": 0,
+   "sfx": "toaster_pop",
+   "pan": -0.2,
+   "note": "the toast pops on 'relax'"
+  },
+  {
+   "word": "stopped",
+   "lead": 6,
+   "sfx": "sun_brake",
+   "note": "the sun brakes in the sky"
+  },
+  {
+   "word": "Kids",
+   "lead": 4,
+   "sfx": "running_steps",
+   "pan": 0.3,
+   "max_s": 1.6,
+   "note": "kids sprint at the lens"
+  },
+  {
+   "word": "mows",
+   "lead": 4,
+   "sfx": "mower_ride",
+   "pan": -0.2,
+   "note": "Dad's mower"
+  },
+  {
+   "word": "dark",
+   "lead": 2,
+   "sfx": "water_drip",
+   "note": "the sleepy tap opens in the dark"
+  },
+  {
+   "word": "expensive",
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "note": "the darkness box price"
+  },
+  {
+   "word": "night",
+   "n": 0,
+   "lead": 0,
+   "sfx": "snore_soft",
+   "note": "the closet renter snores"
+  },
+  {
+   "word": "hotels",
+   "lead": 4,
+   "sfx": "cinema_snores",
+   "note": "the cinema full of sleepers"
+  },
+  {
+   "word": "fridge",
+   "lead": 4,
+   "sfx": "fridge_shut",
+   "note": "the fridge door shuts on 'fridge'"
+  },
+  {
+   "word": "Kyle",
+   "n": 0,
+   "lead": 0,
+   "sfx": "neon_fizzle",
+   "gain_db": -4,
+   "note": "Kyle's neon buzzing"
+  },
+  {
+   "word": "Cash",
+   "lead": 2,
+   "sfx": "cash_fan",
+   "pan": 0.3,
+   "note": "Kyle fans the cash"
+  },
+  {
+   "word": "afford",
+   "lead": 2,
+   "sfx": "moth_swarm",
+   "max_s": 0.9,
+   "gain_db": -4,
+   "note": "a moth flutters out of the wallet"
+  },
+  {
+   "word": "weird",
+   "lead": 2,
+   "sfx": "cartoon_boing",
+   "note": "the scheme face"
+  },
+  {
+   "word": "hole",
+   "lead": 2,
+   "sfx": "pencil_poke",
+   "note": "the pencil through the box"
+  },
+  {
+   "word": "dot",
+   "lead": 2,
+   "sfx": "marker_squeak",
+   "note": "today's dot on the glass"
+  },
+  {
+   "word": "drag",
+   "lead": 4,
+   "sfx": "mattress_drag",
+   "note": "the mattress scrapes down the drive"
+  },
+  {
+   "word": "alarm",
+   "n": 0,
+   "lead": 0,
+   "sfx": "phone_beeps",
+   "note": "alarm set"
+  },
+  {
+   "word": "toaster",
+   "n": 1,
+   "lead": 2,
+   "sfx": "cartoon_boing",
+   "gain_db": -3,
+   "note": "the toaster rolls its eyes"
+  },
+  {
+   "word": "pan",
+   "lead": 0,
+   "sfx": "tar_stretch",
+   "note": "your sneaker peels off the melting road"
+  },
+  {
+   "word": "car",
+   "lead": 2,
+   "sfx": "keys_jingle",
+   "note": "Mom's keys to Kyle"
+  },
+  {
+   "word": "rings",
+   "lead": 2,
+   "sfx": "phone_alarm",
+   "note": "the alarm goes off"
+  },
+  {
+   "word": "Ten",
+   "lead": 0,
+   "sfx": "heartbeat_thud",
+   "note": "the stretch"
+  },
+  {
+   "word": "Nice",
+   "lead": 0,
+   "sfx": "crowd_laugh",
+   "max_s": 1.4,
+   "gain_db": -3,
+   "note": "the line laughs with Kyle"
+  },
+  {
+   "word": "bite",
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "note": "the bite in the box"
+  },
+  {
+   "word": "didn't",
+   "lead": 2,
+   "sfx": "shock_sting",
+   "note": "the Moon didn't stop"
+  },
+  {
+   "word": "TV",
+   "lead": 2,
+   "sfx": "cushion_land",
+   "note": "Dad flops back as the TV is blocked"
+  },
+  {
+   "word": "dim",
+   "lead": 4,
+   "sfx": "crowd_ooh",
+   "note": "the street goes dim"
+  },
+  {
+   "word": "flick",
+   "lead": 0,
+   "sfx": "lamps_on",
+   "note": "the streetlights click on"
+  },
+  {
+   "word": "vanishes",
+   "lead": 2,
+   "sfx": "star_shimmer",
+   "note": "totality"
+  },
+  {
+   "word": "come",
+   "lead": 0,
+   "sfx": "owl_hoot",
+   "pan": 0.2,
+   "note": "the owl on the wire"
+  },
+  {
+   "word": "empties",
+   "lead": 6,
+   "sfx": "stampede",
+   "max_s": 1.6,
+   "gain_db": -4,
+   "note": "customers pour out of the basement"
+  },
+  {
+   "word": "street",
+   "n": 2,
+   "lead": 0,
+   "sfx": "paper_rain",
+   "note": "cash fluttering down"
+  },
+  {
+   "word": "night",
+   "n": 4,
+   "lead": 0,
+   "sfx": "neon_fizzle",
+   "note": "Kyle's sign flickers"
+  },
+  {
+   "word": "asleep",
+   "lead": 2,
+   "sfx": "snore_soft",
+   "gain_db": -3,
+   "note": "the street asleep"
+  }
+ ]
+}

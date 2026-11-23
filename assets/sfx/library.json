@@ -613,5 +613,83 @@
   "prompt": "Ambience of a bare police interview room: fluorescent light buzz, low air vent hum, a muffled phone ringing far away. No voices, no music.",
   "dur": 20,
   "loop": true
+ },
+ "toaster_pop": {
+  "prompt": "A chrome toaster popping up two slices of toast: a springy metal clack and a little bounce. No music.",
+  "dur": 0.6
+ },
+ "sun_brake": {
+  "prompt": "A cartoon car screeching to a sudden stop with squealing brakes, ending in a small springy wobble. No music.",
+  "dur": 1.2,
+  "max_s": 1.1
+ },
+ "mower_ride": {
+  "prompt": "A small ride-on lawn mower engine puttering and buzzing past on a lawn. No music.",
+  "dur": 2.0,
+  "max_s": 1.5
+ },
+ "pencil_poke": {
+  "prompt": "A pencil punching straight through a thin cardboard cereal box: one crisp papery poke. No music.",
+  "dur": 0.5
+ },
+ "marker_squeak": {
+  "prompt": "A felt marker pen squeaking a single dot onto window glass. No music.",
+  "dur": 0.5
+ },
+ "mattress_drag": {
+  "prompt": "A heavy mattress being dragged over concrete then asphalt: a long rough fabric scrape with grunting effort. No music.",
+  "dur": 2.5,
+  "max_s": 2.0
+ },
+ "phone_alarm": {
+  "prompt": "A smartphone alarm ringing loudly with a buzzing vibration rattling on a surface. No music.",
+  "dur": 2.0,
+  "max_s": 1.5
+ },
+ "owl_hoot": {
+  "prompt": "An owl hooting twice at night outdoors, close. No music.",
+  "dur": 1.5
+ },
+ "amb_night_crickets": {
+  "prompt": "Calm suburban night: crickets chirping steadily, a faint warm breeze, very distant traffic. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_heat_noon": {
+  "prompt": "Scorching hot suburban afternoon: cicadas buzzing in waves, air conditioners humming, no wind. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_eclipse_hush": {
+  "prompt": "An eerie hush falling over a suburb: the birds go quiet, a cool low breeze, a distant dog. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "fridge_shut": {
+  "prompt": "A fridge door thudding shut with a rubber seal suck and a small light-switch click. No music.",
+  "dur": 0.8
+ },
+ "snore_soft": {
+  "prompt": "One man snoring peacefully, a single slow deep snore and a whistle out. No music.",
+  "dur": 1.5,
+  "max_s": 1.4
+ },
+ "cinema_snores": {
+  "prompt": "A big dark room full of people snoring in different rhythms, slightly echoing. No music.",
+  "dur": 2.5,
+  "max_s": 1.8
+ },
+ "cash_fan": {
+  "prompt": "A thick wad of banknotes flicked and fanned close to the microphone. No music.",
+  "dur": 0.7
+ },
+ "tar_stretch": {
+  "prompt": "A sneaker peeling up off sticky melted tar: a slow gooey stretching squelch. No music.",
+  "dur": 1.2
+ },
+ "crowd_ooh": {
+  "prompt": "A crowd of people outdoors going 'ooooh' softly in delighted amazement. No music.",
+  "dur": 1.6,
+  "max_s": 1.5
  }
 }
