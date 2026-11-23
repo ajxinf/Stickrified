@@ -3,7 +3,7 @@ import { CamPose, impact } from "../../../kit/toon/camera";
 import { DOF, Dof } from "../../../kit/toon/Composer";
 import type { MovingProp, Plan, Shot } from "../../../kit/toon/guard";
 import { V } from "./common";
-import { MAT_SIZE, tarString, cashFan, cerealBox, keys, marker, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
+import { MAT_SIZE, tarString, cashFan, cerealBox, keys, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
 import { BOX, COUNTER_BOX, EYE, HOME_SUN, LIVING, SILL, TOASTER, dotAt, moonDayDir } from "./rooms";
 import type { Place } from "./scene";
 import { DAY, FUN_SUN, HEAT_SUN, IN_SUN, KITCHEN_SUN, SKYWIDE_SUN, SUN } from "./scene";
@@ -120,14 +120,14 @@ const E1 = P(V(21.7, 1.42, -10.6), V(20.9, 1.3, -7.1), 50);
 shot("E1-faces-glass", B.darkness + 6, "day", SHOPPERS, (F) => creep(E1, F, L(5, 0), B.darkness + 6, 0.1), { subject: undefined, wide: true, dof: mid(2.2), props: STREET_PROPS(L(5, 0)), allow: { "Card penetration": "faces pressed against the shop glass" } });
 // does: between two heads, close on the box: the tag DARKNESS $10,000 under its spotlight
 const E2 = P(V(21.45, 1.3, -6.45), DISPLAY.clone().add(V(0.3, 0.02, 0.08)), 36);
-shot("E2-price-tag", L(6, 0), "day", SHOPPERS, (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box", "Card penetration": "faces pressed against the shop glass" } });
+shot("E2-price-tag", L(6, 0), "day", [], (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box", "Card penetration": "faces pressed against the shop glass" } });
 
 // ================================================================== line 6: closets and cinemas
 // does: a hallway closet, door open with FOR RENT $900 PER NIGHT taped on; a man curled up asleep among the coats
 const F1 = P(V(-1.3, 1.3, 2.75), V(0.24, 1.05, 0.1), 58);
 shot("F1-closet", L(6, 7), "closet", [closetMan], (F) => creep(F1, F, L(6, 0), L(6, 7), 0.12), { dof: mid(2.0), allow: { "Card penetration": "he sits curled up inside the closet among the coats", "Text in frame": "the FOR RENT sign on the open door at the frame edge" } });
 // does: a dark cinema, rows of people asleep in the seats in the screen's blue glow, HOTEL hung over the back wall
-const F2 = P(V(0.0, 1.35, -2.1), V(0, 1.0, 2.2), 50);
+const F2 = P(V(1.25, 1.4, -2.0), V(-0.7, 0.95, 2.2), 50);
 shot("F2-cinema", L(7, 0), "cinema", sleepersCinema, (F) => creep(F2, F, L(6, 7), L(7, 0), 0.08), { subject: undefined, wide: true, dof: NONE, allow: { ...SEAT_OK, "Cast overlap": "rows of sleepers, one behind the other", "Caption vs face": "a crowd of extras; the caption sits over the far heads" } });
 
 // ================================================================== line 7: the guy in Ohio
@@ -184,8 +184,7 @@ shot("L1-7am", L(12, 8), "kitchen", [], (F) => creep(L1, F, L(12, 0), L(12, 8), 
 const L2tip = dotAt(2);
 const L2 = P(L2tip.clone().add(V(0.12, 0.05, -1.7)), YOU_K12.clone().add(V(0, 1.2, 0)), 32);
 const L2c = (F: number) => creep(L2, F, L(12, 8), L(13, 0), 0.08);
-const markerOn = free("marker", marker, (o, F) => { o.position.copy(L2tip).add(V(0.02, -0.11, 0.06)); o.rotation.set(-0.5, 0, 0.15); return F >= L(12, 8) + 4 && F < B.window + 10; }, ["kitchen"]);
-shot("L2-the-dot", L(13, 0), "kitchen", [youK12], L2c, { dof: close(1.7), props: [markerOn], allow: { "Moving props": "the marker tip on the glass, your hand just below frame" } });
+shot("L2-the-dot", L(13, 0), "kitchen", [youK12], L2c, { dof: close(1.7), props: [fxOn("today's dot lands", B.dot)] });
 
 // ================================================================== line 13: the mattress into the street
 // does: side-on track: you haul your mattress down the drive and into the road, leaning into it, the toaster riding on top

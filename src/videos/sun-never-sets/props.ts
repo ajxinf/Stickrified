@@ -1,4 +1,4 @@
-import { AdditiveBlending, BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from "three";
+import { AdditiveBlending, BufferAttribute, BufferGeometry, Points, PointsMaterial, BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from "three";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { SKY } from "../../../kit/toon/ink";
@@ -282,7 +282,19 @@ export const eclipseSky = () => {
   corona.layers.set(SKY);
   corona.renderOrder = 1;
   corona.name = "corona";
-  g.add(corona, sun, moon);
+  // stars for totality: points scattered over the upper sky, unlit, sized in pixels
+  const N = 2600, pos = new Float32Array(N * 3), sz = 450;
+  for (let i = 0; i < N; i++) {
+    const a = rnd(i * 3 + 1) * Math.PI * 2, e = Math.asin(0.05 + 0.95 * rnd(i * 3 + 2));
+    pos.set([Math.cos(e) * Math.sin(a) * sz, Math.sin(e) * sz, -Math.cos(e) * Math.cos(a) * sz], i * 3);
+  }
+  const sg = new BufferGeometry();
+  sg.setAttribute("position", new BufferAttribute(pos, 3));
+  const stars = new Points(sg, new PointsMaterial({ color: "#f4f6ff", size: 2.2, sizeAttenuation: false, transparent: true, depthWrite: false, fog: false, toneMapped: false }));
+  stars.layers.set(SKY);
+  stars.frustumCulled = false;
+  stars.name = "stars";
+  g.add(corona, sun, moon, stars);
   g.renderOrder = 2;
   return g;
 };
@@ -298,6 +310,10 @@ export const placeSky = (g: Object3D, cam: Vector3, sunDir: Vector3, moonOff: nu
   const m = (sun as Mesh).material as MeshBasicMaterial, t = sunTexture(moonOff, total);
   if (t && m.map !== t) { m.map = t; m.needsUpdate = true; }
   sun.visible = true;
+  const st = g.getObjectByName("stars")!;
+  st.position.copy(cam);
+  st.visible = total > 0;
+  ((st as Points).material as PointsMaterial).opacity = Math.min(1, total * 1.2);
   cor.visible = total > 0;
   (cor as Mesh<PlaneGeometry, MeshBasicMaterial>).material.opacity = total;
   (cor as Mesh<PlaneGeometry, MeshBasicMaterial>).material.transparent = true;
@@ -307,8 +323,8 @@ export { CanvasTexture, glowMat, model, unlit };
 /** The melted road sticking to your sole: a thin dark strand with a blob at the road (origin on the road). */
 export const tarString = () => {
   const g = new Group(), k = new Kit(), tar = colMat("#141216", { gloss: 0.6, rough: 0.2, spec: 0.6 });
-  k.add(tar, new CylinderGeometry(0.006, 0.018, 0.13, 8), 0, 0.065, 0);
-  k.add(tar, new SphereGeometry(0.04, 10, 6).scale(1, 0.25, 1), 0, 0.004, 0);
+  k.add(tar, new CylinderGeometry(0.0035, 0.007, 0.12, 6), 0, 0.06, 0);
+  k.add(tar, new SphereGeometry(0.07, 12, 6).scale(1, 0.08, 0.8), 0, 0.002, 0);
   g.add(k.build());
   return g;
 };

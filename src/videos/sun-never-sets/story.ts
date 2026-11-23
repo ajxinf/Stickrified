@@ -95,7 +95,7 @@ const pw = (F: number, keys: [number, number][]) => {
   return keys[keys.length - 1][1];
 };
 /** The Moon's offset from the sun's centre, in sun radii (2.04 = first contact). */
-export const moonOff = (F: number) => pw(F, [[2300, 2.2], [B.bite - 6, 1.62], [B.didnt, 1.22], [L(23, 0), 0.82], [B.dim, 0.36], [L(25, 0), 0.12], [B.vanishes, 0]]);
+export const moonOff = (F: number) => pw(F, [[2300, 2.2], [B.bite - 6, 1.62], [B.didnt, 1.22], [L(23, 0), 0.82], [B.dim, 0.42], [L(25, 0), 0.24], [B.vanishes - 6, 0.04], [B.vanishes, 0]]);
 /** Totality 0..1: the last bead goes on "vanishes". */
 export const totality = (F: number) => clamp01((F - B.vanishes + 3) / 6);
 export type WorldState = {
@@ -200,7 +200,7 @@ export const youGum = role("you", youLook, YOU_GUM, (F) => {
   return st(p, F, 3, [[0, "tired"], [B.stove - 30, "disgusted"]], { heading: 0.6, fx: { sweat: ((F % 30) / 30) } });
 });
 export const youMat = role("you", youLook, YOU_MAT, (F) => {
-  const keys: [number, Pose][] = [[0, { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]) }], [L(17, 0), { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]), tilt: 4 }], [B.rings - 6, HOLD_PHONE], [L(18, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -8 }], [L(20, 0) - 4, BOX_UP], [L(21, 0), { ...SIT, arms: arms([0.6, -0.1], [0.6, -0.12], { gl: "open", gr: "open" }), tilt: -10, shrug: 10 }], [L(24, 0), { ...SIT, arms: arms([-0.35, 0.3], [-0.3, 0.25]), tilt: -8 }], [L(26, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -10 }], [L(30, 3) - 4, { ...SIT, arms: arms([0.55, -0.7], [0.55, -0.72], { gl: "open", gr: "open" }), tilt: 8, bob: 6 }], [L(30, 6), { ...SIT, arms: arms([0.3, 0.5], [0.3, 0.48]), tilt: 12 }]];
+  const keys: [number, Pose][] = [[0, { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]) }], [L(17, 0), { ...SIT, arms: arms([0.3, 0.45], [0.3, 0.4]), tilt: 4 }], [B.rings - 26, HOLD_PHONE], [L(18, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -8 }], [L(20, 0) - 4, BOX_UP], [L(21, 0), { ...SIT, arms: arms([0.6, -0.1], [0.6, -0.12], { gl: "open", gr: "open" }), tilt: -10, shrug: 10 }], [L(24, 0), { ...SIT, arms: arms([-0.35, 0.3], [-0.3, 0.25]), tilt: -8 }], [L(26, 0), { ...SIT, arms: arms([0.35, 0.5], [0.3, 0.45]), tilt: -10 }], [L(30, 3) - 4, { ...SIT, arms: arms([0.55, -0.7], [0.55, -0.72], { gl: "open", gr: "open" }), tilt: 8, bob: 6 }], [L(30, 6), { ...SIT, arms: arms([0.3, 0.5], [0.3, 0.48]), tilt: 12 }]];
   const p = pose(keys, F);
   const sweat = F >= L(14, 0) && F < L(24, 0) ? { sweat: ((F % 36) / 36) } : {};
   const s = st({ ...alive(p, F, 3, [0.5, -0.3]), squash: reactSquash(F - B.bite) }, F, 3, [
