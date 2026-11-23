@@ -70,11 +70,14 @@ export const street = () => {
   g.add(plane(3.0, 1.9, M("adh-hearts", () => new MeshBasicMaterial({ map: heartsTex(), toneMapped: false })), SHOP));
   g.add(box(3.3, 0.14, 0.2, MATS.darkWood(), V(SHOP.x, SHOP.y + 1.02, SHOP.z + 0.08)));
   g.add(box(3.3, 0.5, 0.2, MATS.darkWood(), V(SHOP.x, 0.37, SHOP.z + 0.08)));
+  const heart = plane(0.5, 0.45, unlit("neonheart", () => canvasTex(128, 116, (c) => { c.strokeStyle = "#ff3a6a"; c.lineWidth = 12; c.beginPath(); c.moveTo(64, 104); c.bezierCurveTo(-10, 50, 20, 0, 64, 34); c.bezierCurveTo(108, 0, 138, 50, 64, 104); c.stroke(); }), true), V(SHOP.x + 1.8, SHOP.y + 1.45, SHOP.z + 0.03));
+  heart.name = "neonHeart";
+  g.add(heart);
   g.add(plane(2.4, 0.42, unlit("shopsign", () => boardTex(["JUWELEN"], "#1c1c22", "#e8c860", 1024, 180)), V(SHOP.x, SHOP.y + 1.45, SHOP.z + 0.02)));
   // a red awning over the next shop, bikes, bins, a bollard row
   g.add(place(new Mesh(new BoxGeometry(3.2, 0.06, 1.3), colMat("#9a2a2a", { rough: 0.8 })), -10.5, 2.55, STREET.front + 0.6, 0));
   for (const x of [-12, -2.5, 6.5, 12]) g.add(place(new Mesh(new CylinderGeometry(0.07, 0.08, 0.8, 10), MATS.darkSteel()), x, 0.52, STREET.z0 + 0.25));
-  g.add(place(model("metal_trash_can", { collider: "bin" }), -3.8, 0.12, STREET.front + 0.5, 0.3));
+  g.add(place(model("metal_trash_can", { collider: "bin" }), -3.8, 0.12, STREET.front + 0.8, 0.3));
   for (const p of LAMPS) g.add(place(model("street_lamp_01", { collider: "lamp", glow: ["glass", "#ffd08a", 5] }), p.x, 0.12, p.z, 0));
   return g;
 };
@@ -170,13 +173,13 @@ export const forest = () => {
     spots.push([x, z]);
   }
   spots.forEach(([x, z], i) => {
-    const t = model(i % 3 ? "fir_tree_01" : "pine_tree_01", { collider: `tree ${i}`, height: 13 + rnd(i + 70) * 8 });
+    const t = model(i % 3 ? "fir_tree_01" : "pine_tree_01", { collider: false, height: 13 + rnd(i + 70) * 8 });
     t.position.set(x, 0, z);
     t.rotation.y = rnd(i + 80) * 6;
     g.add(t);
   });
   // near trunks framing the clearing
-  for (const [x, z, hgt] of [[-5.2, 4.5, 16], [6.4, -1.5, 18], [-6.5, -4.5, 15], [7.2, 6.5, 14]] as const) g.add(place(model("fir_tree_01", { collider: "near tree", height: hgt }), x, 0, z, x));
+  for (const [x, z, hgt] of [[-5.2, 4.5, 16], [6.4, -1.5, 18], [-6.5, -4.5, 15], [7.2, 6.5, 14]] as const) g.add(place(model("fir_tree_01", { collider: false, height: hgt }), x, 0, z, x));
   for (let i = 0; i < 26; i++) {
     const f = model("fern_02", { collider: false, scale: 0.6 + rnd(i + 90) * 0.5 });
     const a = rnd(i + 91) * 6.28, r = 3.2 + rnd(i + 92) * 6;

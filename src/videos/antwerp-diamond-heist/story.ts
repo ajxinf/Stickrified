@@ -71,7 +71,7 @@ export const B = {
 /** What the sets show at frame F. */
 export const worldAt = (F: number): WorldState => ({
   door: F < B.opens - 22 ? 0 : clamp01((F - B.opens + 22) / 30) ** 1.5,
-  dial: F < L(5, 0) ? 0 : F < L(6, 0) ? (F - L(5, 0)) * 0.35 : F >= L(18, 0) && F < B.opens - 22 ? Math.floor((F - L(18, 0)) / 7) * 0.62 : 2.1,
+  dial: F < L(5, 0) ? 0 : F < L(6, 0) ? (F - L(5, 0)) * 0.11 : F >= L(18, 0) && F < B.opens - 22 ? Math.floor((F - L(18, 0)) / 7) * 0.62 : 2.1,
   rings: F >= B.ten - 2 && F < L(5, 0) ? Math.min(10, Math.floor((F - B.ten + 2) / 4)) : 0,
   heat: (F >= B.heat - 2 && F < L(5, 0)) || (F >= L(15, 0) && F < L(16, 0)),
   radar: F >= B.radar - 2 && F < L(5, 0) ? F - B.radar : null,
@@ -81,7 +81,7 @@ export const worldAt = (F: number): WorldState => ({
   fogLens: F >= B.spray && F < L(6, 0) || F >= L(14, 0),
   heatLed: !(F >= L(14, 0) && F < L(28, 0)),
   lightLed: !(F >= B.tape - 1 && F < L(28, 0)),
-  boxes: F < B.boxes ? 0 : (F - B.boxes) * 0.75,
+  boxes: F < B.boxes ? 0 : (F - B.boxes) * 0.9,
   loot: F >= B.sunrise - 30 && F < L(20, 0),
   cal: F < L(6, 0) ? 0 : F < B.day10 - 4 ? 1 : F < B.day500 - 4 ? 2 : F < L(10, 0) ? 3 : 4,
   cups: F < B.years - 4 ? 0.25 : 0.25 + 0.75 * span(F, B.years - 4, B.years + 26),
@@ -89,7 +89,7 @@ export const worldAt = (F: number): WorldState => ({
   hatch: F < L(21, 8) ? 0 : clamp01((F - L(21, 8)) / 14),
   litter: F >= B.flings + 6,
   horror: F < L(3, 0),
-  ladder: F < L(6, 0) || F >= L(29, 0),
+  torch: F >= L(14, 0) && F < L(18, 0) ? F : null,
   lightsOn: (F >= L(8, 0) && F < L(10, 0)) || (F >= L(28, 0) && F < L(29, 0)),
 });
 
@@ -143,13 +143,13 @@ export const youMirror = role("you", youSuit, YOU_MIRROR, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.3, 0.05], [0.3, 0.05], { gl: "open", gr: "open" }) }], [B.glass - 8, LOUPE]], F);
   return st(p, F, 3, [[0, "proud"], [L(7, 3), "smug"], [B.glass, "suspicious"], [B.serious, "deadpan"], [L(7, 13), "determined"], [B.belgium, "grin"]], { heading: Math.PI / 2 });
 });
-export const YOU_DESK = V(-0.5, 0, -1.25);
-export const youDesk = role("you", youSuit, YOU_DESK, (F) => st(alive(pose([[0, POSES.hips], [L(8, 9), { ...POSES.point, arms: [REST.arms[0], { at: [0.6, 0.05], grip: "point" }] }]], F), F, 3, [0.5, 0.2]), F, 3, [[0, "proud"], [B.dealer, "smug"]], { heading: 0.5 }));
+export const YOU_DESK = V(-0.8, 0, -0.95);
+export const youDesk = role("you", youSuit, YOU_DESK, (F) => st(alive(pose([[0, POSES.hips], [L(8, 3) - 4, { ...POSES.point, arms: [REST.arms[0], { at: [0.6, 0.05], grip: "point" }] }], [B.dealer - 4, { ...POSES.hips, tilt: 8, bob: 6 }]], F), F, 3, [0.5, 0.2]), F, 3, [[0, "proud"], [L(8, 3), "excited"], [B.dealer, "smug"]], { heading: 0.5 }));
 // line 8b: your open hand at the guard desk (the key slides into it)
 export const YOU_COUNTER = V(0.35, 0, 7.75);
 export const youCounter = role("you", youSuit, YOU_COUNTER, (F) => st({ ...REST, arms: [REST.arms[0], { at: [0.55, 0.2], grip: "open" }] }, F, 3, [[0, "smug"], [B.vaultKey, "grin"]], { heading: Math.PI / 2 }));
 // line 9: three visits on one framing, each a walk from the stairs toward the vault
-const VISIT = (a: number, b: number) => walker(V(-0.5, 0, 9.4), V(-0.4, 0, 5.7), a, b);
+const VISIT = (a: number, b: number) => walker(V(-0.45, 0, 9.0), V(-0.4, 0, 5.7), a, b);
 const V1 = VISIT(L(9, 3) - 12, L(9, 8) - 2), V2 = VISIT(L(9, 8) - 6, L(9, 12) - 4), V3 = VISIT(L(9, 12) - 8, L(10, 0) - 6);
 const visit = (F: number) => (F < L(9, 8) - 6 ? V1 : F < L(9, 12) - 8 ? V2 : V3);
 export const youVisits = role("you", youSuit, (F) => visit(F).at(F), (F) => { const v = visit(F); return st(v.pose(F), F, 3, [[0, "nervous"], [B.day10, "smug"], [B.day500, "grin"]], { heading: v.heading }); });
@@ -164,11 +164,11 @@ export const youHide = role("you", youLook, (F) => (F >= L(20, 0) && F < L(27, 0
   }
   if (F < L(27, 0)) {
     // line 20: dawn, proud beside the trash heap
-    const p = pose([[0, POSES.hips], [L(20, 4), { ...POSES.hips, tilt: 6 }], [B.trash - 4, { ...REST, arms: [REST.arms[0], { at: [0.66, 0.1], grip: "open" }] }]], F);
-    return st(alive(p, F, 3, [0.3, -0.2]), F, 3, [[0, "proud"], [L(20, 5), "smug"], [B.trash, "deadpan"]], { heading: 0.75 });
+    const p = pose([[0, { ...REST, arms: arms([0.62, -0.5], [0.62, -0.5], { gl: "open", gr: "open" }), bob: 8 }], [L(20, 3), POSES.hips], [L(20, 5), { ...POSES.hips, tilt: 8, bob: 6 }], [B.trash - 4, { ...REST, arms: [REST.arms[0], { at: [0.66, 0.1], grip: "open" }] }]], F);
+    return st(alive(p, F, 3, [0.3, -0.2]), F, 3, [[0, "excited"], [L(20, 3), "proud"], [L(20, 5), "smug"], [B.trash, "deadpan"]], { heading: 0.75 });
   }
   // line 27: you turn slowly to Speedy
-  return st(alive(pose([[0, POSES.crossed]], F), F, 3, [0, -0.5]), F, 3, [[0, "suspicious"], [B.because, "angry"]], { heading: turnTo([[0, 0.2], [L(27, 2), -1.3]], F, 26), fx: F >= snap(B.speedy27) ? { steam: (F - snap(B.speedy27)) / FPS } : {} });
+  return st(alive(pose([[0, POSES.crossed], [L(27, 3) - 4, { ...POSES.crossed, bob: 8, tilt: -6 }]], F), F, 3, [0, -0.5]), F, 3, [[0, "suspicious"], [L(27, 3), "angry"], [B.because, "disgusted"]], { heading: turnTo([[0, 0.2], [L(27, 0) + 4, -1.3]], F, 20), fx: F >= snap(L(27, 3)) ? { steam: (F - snap(L(27, 3))) / FPS } : {} });
 });
 // line 13: the walk (crew in a line on the sidewalk toward the lens, -x)
 const WALK0 = L(13, 3) - 20;
@@ -184,7 +184,7 @@ export const youVault = role("you", youLook, (F) => (F < L(19, 0) ? YOU_VAULT.cl
   const p = pose([[0, { ...REST, arms: [REST.arms[0], { at: [0.4, 0.05], grip: "fist" }] }], [B.opens - 6, { ...POSES.panic }]], F);
   return st(alive(p, F, 3, [0.4, -0.3]), F, 3, [[0, "determined"], [L(14, 5), "sneaky"], [B.blind, "grin"], [L(18, 0), "nervous"], [B.opens, "shocked"], [B.opens + 20, "excited"]], { heading: Math.PI, prop: F < L(18, 0) ? "flashlight" : undefined });
 });
-export const YOU_FOREST = V(-3.3, 0, -3.6);
+export const YOU_FOREST = V(-3.9, 0, -3.4);
 export const youForest = role("you", youLook, YOU_FOREST, (F) => {
   const p = pose([[0, REST], [L(23, 0) - 2, { ...REST, sway: -8, tilt: -6, arms: [{ at: [0.55, 0.0], grip: "open" }, REST.arms[1]] }]], F);
   return st(p, F, 3, [[0, "determined"], [B.panicsS, "worried"], [B.flings, "shocked"], [L(23, 0), "worried"]], { heading: F < L(23, 0) ? 0.9 : turnTo([[L(23, 0), 0.9], [L(23, 0) + 10, 2.6]], F, 10) });
@@ -199,7 +199,7 @@ export const YOU_CELL = V(0, 0, -0.35);
 export const youCell = role("you", youLook, YOU_CELL, (F) => st(alive({ ...SIT, arms: arms([-0.2, 0.4], [-0.2, 0.4], { gl: "fist", gr: "fist" }) }, F, 3, [0, 0.3]), F, 3, [[0, "tired"], [B.end, "deadpan"]], { heading: 0 }), { sit: true });
 
 // --- the crew
-const GEN_HIDE = V(-1.2, 0, 0.1), MON_HIDE = V(1.5, 0, -0.55), KING_HIDE = V(-0.7, 0, -1.25);
+const GEN_HIDE = V(-1.5, 0, 0.35), MON_HIDE = V(1.5, 0, -0.55), KING_HIDE = V(-0.7, 0, -1.25);
 export const geniusHide = role("genius", geniusLook, GEN_HIDE, (F) => st(alive(pose([[0, REST], [B.genius - 6, { ...REST, arms: [{ at: [0.4, -0.5], grip: "point" }, REST.arms[1]], tilt: -4 }]], F), F, 61, [0, 0.4]), F, 61, [[0, "neutral"], [B.genius, "smug"], [L(10, 7), "scheming"]], { heading: 0.4 }));
 export const monsterHide = role("monster", monsterLook, MON_HIDE, (F) => st(alive(pose([[0, POSES.crossed], [B.monster - 6, { ...REST, arms: [{ at: [0.2, -0.15], grip: "fist", layer: "front" }, { at: [0.35, 0.0], grip: "fist", layer: "front" }] }]], F), F, 67, [0, 0.3]), F, 67, [[0, "deadpan"], [B.monster, "grin"], [L(10, 11), "proud"]], { heading: -0.4 }));
 export const kingHide = role("king", kingLook, KING_HIDE, (F) => {
@@ -226,7 +226,7 @@ export const geniusStreet = role("genius", geniusLook, crewWalk(-0.55, 1.0), (F)
 export const monsterStreet = role("monster", monsterLook, crewWalk(-0.7, 2.2), (F) => st(walkPose(0.034 * Math.max(0, F - WALK0) * 0.8, 1), F, 67, [[0, "deadpan"]], { heading: -Math.PI / 2 + 0.2 }));
 export const speedyStreet = role("speedy", speedyLook, crewWalk(-0.5, -1.6), (F) => st(walkPose(0.034 * Math.max(0, F - WALK0) * 0.8, 1), F, 79, [[0, "nervous"]], { heading: turnTo([[0, -Math.PI / 2], [WALK0 + 20, Math.PI / 2 - 0.3], [WALK0 + 40, -Math.PI / 2]], F, 10), fx: { sweat: (F % 24) / 24 } }));
 // heist positions
-export const GEN_V = V(0.55, 0, 2.35), MON_V = V(-1.25, 0, 3.4), KING_V = V(0.45, 0, 1.5), SPEEDY_V = V(1.15, 0, 3.9);
+export const GEN_V = V(0.2, 0, 2.9), MON_V = V(-1.25, 0, 3.4), KING_V = V(1.05, 0, 2.3), SPEEDY_V = V(1.15, 0, 3.9);
 const FOG: Pose = { ...REST, arms: [{ at: [0.05, -0.55], grip: "open", layer: "front" }, REST.arms[1]], tilt: -6 };
 const FOAM_GO = L(15, 2), FOAM_STOP = L(15, 12);
 export const geniusFoamAt = (F: number) => lerpV(V(1.6, 0, 2.2), V(-1.4, 0, 2.2), span(F, FOAM_GO, FOAM_STOP));
@@ -242,18 +242,18 @@ export const geniusVault = role("genius", geniusLook, (F) => (F >= L(15, 0) && F
 });
 const TAPE_P: Pose = { ...REST, arms: [{ at: [0.62, -0.1], grip: "fist" }, REST.arms[1]], sway: -4 };
 export const MON_TAPE = V(-1.6, 0, 3.15);
-export const monsterVault = role("monster", monsterLook, (F) => (F >= L(19, 0) ? V(-2.2, 0, -4.8) : F >= L(16, 0) && F < L(17, 0) ? MON_TAPE.clone() : MON_V.clone()), (F) => {
+export const monsterVault = role("monster", monsterLook, (F) => (F >= L(19, 0) ? V(-2.2, 0, -4.8) : F >= L(16, 0) && F < L(17, 0) ? lerpV(V(-0.7, 0, 3.9), MON_TAPE, span(F, L(16, 0), L(16, 4))) : MON_V.clone()), (F) => {
   if (F >= L(19, 0)) { const k = Math.sin(F * 0.7) * 0.06; return st({ ...REST, arms: [{ at: [0.62 + k, -0.15], grip: "fist" }, { at: [0.5, 0.05 - k], grip: "fist" }], sway: -6 }, F, 67, [[0, "determined"], [B.sunrise, "grin"]], { heading: -Math.PI / 2 + 0.2 }); }
-  if (F >= L(16, 0) && F < L(17, 0)) return st(pose([[0, REST], [B.tape - 10, TAPE_P]], F), F, 67, [[0, "sneaky"], [B.tape, "proud"]], { heading: Math.PI });
+  if (F >= L(16, 0) && F < L(17, 0)) return st(F < L(16, 4) + 8 ? walkPose(1.2 * span(F, L(16, 0), L(16, 4)), Math.min(1, (L(16, 4) + 8 - F) / 10)) : pose([[0, REST], [B.tape - 10, TAPE_P]], F), F, 67, [[0, "sneaky"], [B.tape, "proud"]], { heading: F < L(16, 4) ? face(V(-0.7, 0, 3.9), MON_TAPE) : Math.PI });
   return st(alive(REST, F, 67, [0.2]), F, 67, [[0, "deadpan"], [B.opens, "shocked"], [B.opens + 20, "laughing"]], { heading: Math.PI });
 });
 export const kingVault = role("king", kingLook, KING_V, (F) => {
-  const p = pose([[0, REST], [L(18, 0) - 4, { ...REST, arms: [{ at: [0.38, -0.32], grip: "fist" }, REST.arms[1]], tilt: -4 }], [B.nobody - 4, { ...POSES.shrug }]], F);
-  return st(p, F, 71, [[0, "determined"], [L(18, 3), "scheming"], [B.opens, "smug"], [B.nobody, "smirk"]], { heading: face(KING_V, V(0.15, 0, 0)) });
+  const p = pose([[0, REST], [L(18, 0) - 4, { ...REST, arms: [{ at: [0.38, -0.32], grip: "fist" }, REST.arms[1]], tilt: -4 }], [B.nobody - 4, { ...POSES.shrug }], [L(18, 11) - 4, { ...POSES.shrug, shrug: 30, bob: 10, tilt: -8 }]], F);
+  return st(p, F, 71, [[0, "determined"], [L(18, 3), "scheming"], [B.opens, "smug"], [B.nobody, "smirk"], [L(18, 11), "laughing"]], { heading: face(KING_V, V(0.15, 0, 0)) });
 });
 export const speedyVault = role("speedy", speedyLook, SPEEDY_V, (F) => st(alive(pose([[0, POSES.chin], [B.opens - 4, POSES.panic]], F), F, 79, [0.6, -0.6, 0.6]), F, 79, [[0, "nervous"], [B.opens, "shocked"], [B.opens + 26, "excited"]], { heading: Math.PI, fx: { sweat: (F % 24) / 24 } }));
 // the woods
-export const SPEEDY_F = V(-4.3, 0, -3.9);
+export const SPEEDY_F = V(-5.1, 0, -3.7);
 export const speedyForest = role("speedy", speedyLook, (F) => (F < L(22, 0) ? SPEEDY_F.clone() : F < L(23, 0) ? V(-3.0, 0, -2.5) : V(-2.75, 0, -3.25)), (F) => {
   if (F < L(22, 0)) return st(alive(REST, F, 79, [0.4, -0.4]), F, 79, [[0, "nervous"], [B.forest, "scared"]], { heading: 2.4, fx: { sweat: (F % 20) / 20 } });
   if (F < L(23, 0)) {
@@ -268,7 +268,7 @@ export const speedyForest = role("speedy", speedyLook, (F) => (F < L(22, 0) ? SP
 const PAPER: Pose = { ...SIT, arms: arms([-0.28, -0.05], [-0.18, -0.05], { gl: "mitt", gr: "mitt", front: true }) };
 export const guard = role("guard", guardLook, GUARD_SEAT, (F) => {
   if (F >= L(28, 0)) return st(pose([[0, PAPER], [B.found - 14, { ...SIT, arms: arms([-0.28, 0.25], [-0.18, 0.25], { gl: "mitt", gr: "mitt", front: true }) }]], F), F, 83, [[0, "neutral"], [B.found - 6, "shocked"]], { heading: -Math.PI / 2 - 0.3 });
-  if (F < L(9, 0)) return st({ ...SIT, arms: [REST.arms[0], { at: [0.62, 0.15], grip: "open" }] }, F, 83, [[0, "suspicious"], [B.vaultKey, "neutral"]], { heading: -Math.PI / 2 });
+  if (F < L(9, 0)) return st({ ...SIT, arms: [REST.arms[0], { at: [0.25 + 0.4 * span(F, L(8, 9) + 4, B.vaultKey), 0.15], grip: "open" }] }, F, 83, [[0, "suspicious"], [B.vaultKey, "neutral"]], { heading: -Math.PI / 2 });
   // line 9: day 1 stares, day 10 nods, day 500 waves from behind the paper
   if (F < B.day500 - 8) return st({ ...SIT, tilt: F >= B.day10 && F < B.day10 + 16 ? 12 * Math.sin((F - B.day10) / 16 * Math.PI) : 0 }, F, 83, [[0, "suspicious"], [B.day1 + 10, "angry"], [B.day10 - 4, "neutral"], [B.day10 + 16, "relieved"]], { heading: -Math.PI / 2 - 0.25 });
   const w = Math.sin(F * 0.5) * 0.1;
@@ -288,7 +288,7 @@ export const copForest = role("cop", copLook, COP_F, (F) => {
   return st(p, F, 97, [[0, "suspicious"], [L(26, 4), "disgusted"], [B.dna, "proud"]], { heading: face(COP_F, SANDWICH) + 0.6 });
 });
 export const COP_DOOR = OFFICE_DOOR.clone().add(V(0.55, 0, 0.0));
-export const copOffice = role("cop", copLook, (F) => lerpV(OFFICE_DOOR.clone().add(V(-0.4, 0, -0.1)), COP_DOOR, span(F, L(28, 0) + 6, L(28, 0) + 20)), (F) => st(pose([[0, REST], [L(28, 0) + 8, POSES.point]], F), F, 97, [[0, "angry"], [B.cuffs, "smug"]], { heading: face(COP_DOOR, V(-0.9, 0, 0.35)) + 0.6 }));
+export const copOffice = role("cop", copLook, (F) => lerpV(OFFICE_DOOR.clone().add(V(0.3, 0, -0.05)), COP_DOOR, span(F, L(28, 0) + 6, L(28, 0) + 20)), (F) => st(pose([[0, REST], [L(28, 0) + 8, POSES.point]], F), F, 97, [[0, "angry"], [B.cuffs, "smug"]], { heading: face(COP_DOOR, V(-0.9, 0, 0.35)) + 0.6 }));
 
 // ------------------------------------------------------------------ held props
 export const held = (name: string, make: () => Object3D, r: Role, hand: Hand, cam: (F: number) => CamPose, o: { fwd?: number; up?: number; orient?: (ob: Object3D, F: number) => void; when?: (F: number) => boolean; touches?: string[] } = {}): MovingProp => ({

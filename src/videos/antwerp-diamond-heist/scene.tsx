@@ -37,28 +37,28 @@ const FOREST_SKY = photoSky({ ...LIGHTS.day, lit: [1.08, 1.06, 1.0], shade: [0.3
 export const FOREST_L = FOREST_SKY.preset, FOREST_SUN = FOREST_SKY.key;
 export const IN_SUN = V(0.35, 0.85, 0.4).normalize();
 
-export type Place = "vault" | "office" | "hideNight" | "hideDawn" | "street" | "forest" | "interview";
+export type Place = "vault" | "vaultA" | "office" | "hideNight" | "hideDawn" | "street" | "forest" | "interview";
 /** What the sets show at a composition frame (story.ts `worldAt`). */
 export type WorldState = {
   door: number; dial: number; rings: number; heat: boolean; radar: number | null; mag: boolean; plate: boolean; tape: boolean;
   fogLens: boolean; heatLed: boolean; lightLed: boolean; boxes: number; loot: boolean; cal: number; cups: number;
-  officeDoor: number; hatch: number; litter: boolean; horror: boolean; lightsOn: boolean; ladder: boolean;
+  officeDoor: number; hatch: number; litter: boolean; horror: boolean; lightsOn: boolean; torch: number | null;
 };
 
-const builders: Record<Place, () => Object3D> = { vault, office, hideNight: () => hideout("night"), hideDawn: () => hideout("dawn"), street, forest, interview };
+const builders: Record<Place, () => Object3D> = { vault: () => vault(false), vaultA: () => vault(true), office, hideNight: () => hideout("night"), hideDawn: () => hideout("dawn"), street, forest, interview };
 type P = { pos: Vector3; kind: PracticalKind; color: [string, number]; glowAt?: Vector3; noGlow?: boolean };
 const practicals = (w: Place, s: WorldState): P[] => {
-  if (w === "vault") {
+  if (w === "vault" || w === "vaultA") {
     if (s.lightsOn) return [
-      ...[2.4, 5.4, 8.4].map((z) => ({ pos: V(0, 2.4, z), kind: "lamp" as const, color: ["#eef8ff", 0.9] as [string, number], noGlow: true })),
-      { pos: V(DESK.x - 0.1, 1.2, DESK.z + 0.6), kind: "lamp", color: ["#ffc27a", 1.3], noGlow: true },
+      ...[2.4, 5.4, 8.4].map((z) => ({ pos: V(0, 2.4, z), kind: "lamp" as const, color: ["#eef8ff", 0.65] as [string, number], noGlow: true })),
+      { pos: V(DESK.x + 0.1, 1.2, DESK.z + 0.6), kind: "lamp", color: ["#ffc27a", 0.8], noGlow: true },
     ];
     return [
       { pos: EMERGENCY.clone().add(V(0, -0.3, 0.8)), kind: "lamp", color: ["#8fd0ff", 1.5], glowAt: EMERGENCY },
       { pos: V(DESK.x - 0.2, 1.25, DESK.z + 0.5), kind: "lamp", color: ["#ffb35c", 0.9], noGlow: true }, // the guard's lamp, left on
       { pos: SENSOR.clone().add(V(-0.3, -0.2, 0)), kind: "lamp", color: ["#ff3a2a", s.heatLed ? 0.25 : 0], noGlow: true },
-      { pos: DOOR.clone().add(V(0, 0.4, 0.6)), kind: "lamp", color: ["#ffc066", 3.2 * s.door], noGlow: true },
-      { pos: V(0, 1.8, -3.5), kind: "lamp", color: ["#ffc870", 2.2 * Math.min(1, s.door * 2)], noGlow: true },
+      { pos: DOOR.clone().add(V(0, 0.4, 0.6)), kind: "lamp", color: ["#ffc066", 1.9 * s.door], noGlow: true },
+      { pos: V(0, 1.8, -3.5), kind: "lamp", color: ["#ffc870", 1.5 * Math.min(1, s.door * 2)], noGlow: true },
     ];
   }
   if (w === "office") return [{ pos: V(0.35, 1.6, OFFICE.z0 + 0.8), kind: "window", color: ["#fff0d8", 1.2], noGlow: true }, { pos: MIRROR.clone().add(V(-1.2, 0.4, 0)), kind: "lamp", color: ["#fff6e8", 0.4], noGlow: true }];
@@ -79,7 +79,7 @@ const show = (g: Object3D, n: string, v: boolean) => { const o = named(g, n); if
 /** One set for a shot, updated every frame from `s`. */
 export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: number }> = ({ w, preset, s, F }) => {
   const g = useMemo(builders[w], [w]);
-  if (w === "vault") {
+  if (w === "vault" || w === "vaultA") {
     named(g, "vaultDoor")!.rotation.y = -1.75 * s.door;
     named(g, "dial")!.rotation.z = s.dial;
     for (let k = 0; k < 10; k++) show(g, `ring${k}`, k < s.rings);
@@ -92,7 +92,8 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
     show(g, "heatLed", s.heatLed && (s.lightsOn || Math.floor(F / 12) % 2 === 0));
     show(g, "lightLed", s.lightLed);
     show(g, "loot", s.loot);
-    show(g, "ladder", s.ladder);
+    const torch = named(g, "torch");
+    if (torch) { torch.visible = s.torch !== null; if (s.torch !== null) torch.position.set(2.17, 1.5 + 0.5 * Math.sin(s.torch / 17), 2.6 + 1.6 * Math.sin(s.torch / 23)); }
     show(g, "spill", s.door > 0.05);
     const spill = named(g, "spill");
     if (spill) spill.scale.set(1, 1, 0.3 + 0.7 * s.door);
@@ -112,6 +113,7 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
   }
   if (w === "hideNight" || w === "hideDawn") { const c = named(g, "cups"); if (c) c.scale.set(1, Math.max(0.05, s.cups), 1); }
   if (w === "office") named(g, "officeDoor")!.rotation.y = 1.5 * s.officeDoor;
+  if (w === "street") { const n = named(g, "neonHeart"); if (n) n.visible = Math.floor(F / 9) % 3 !== 0; }
   if (w === "forest") { show(g, "litter", s.litter); const h = named(g, "hatch"); if (h) h.rotation.z = -1.4 * s.hatch; }
   const list = practicals(w, s);
   const key = list.map((p) => p.color.join()).join("|");

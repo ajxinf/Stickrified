@@ -449,5 +449,169 @@
   "prompt": "Bees humming around wooden beehives in a sunny garden, gentle and constant, birds faint. No music.",
   "dur": 12,
   "loop": true
+ },
+ "spray_hiss": {
+  "prompt": "An aerosol hairspray can sprayed in two short bursts: a pressurised hiss. No music.",
+  "dur": 1.5
+ },
+ "vault_boom": {
+  "prompt": "A deep cinematic low boom with a metallic resonance, like a heavy bank vault. No music.",
+  "dur": 1.5
+ },
+ "horror_sting": {
+  "prompt": "A short comedic horror sting: a low dissonant string swell ending in a deep thud. No melody.",
+  "dur": 1.2
+ },
+ "layer_rings": {
+  "prompt": "Ten quick rising electronic security beeps in a row, a high-tech system arming. No music.",
+  "dur": 1.5
+ },
+ "sensor_whir": {
+  "prompt": "An infrared security sensor powering on: a soft electronic whir and one beep.",
+  "dur": 0.8
+ },
+ "radar_ping": {
+  "prompt": "A subtle radar sweep: two soft sonar pings with an electronic pulse.",
+  "dur": 1.0
+ },
+ "magnet_hum": {
+  "prompt": "A low electromagnetic hum buzzing steadily, electric.",
+  "dur": 1.5
+ },
+ "dial_spin": {
+  "prompt": "A heavy steel safe combination dial spun fast: rapid ratcheting metal clicks.",
+  "dur": 1.2
+ },
+ "dial_click": {
+  "prompt": "Three heavy mechanical clicks of a safe combination dial, then the deep clunk of a bolt releasing.",
+  "dur": 1.5
+ },
+ "vault_door_open": {
+  "prompt": "A massive round steel bank vault door swinging open slowly: a deep metal groan and heavy hinge creak.",
+  "dur": 2.5
+ },
+ "coins_pile": {
+  "prompt": "Hundreds of small diamonds and coins pouring and clinking onto a hard floor.",
+  "dur": 2.0
+ },
+ "cups_clink": {
+  "prompt": "A tall stack of small porcelain espresso cups clinking and rattling as it grows taller.",
+  "dur": 1.0
+ },
+ "key_slide": {
+  "prompt": "A heavy brass key sliding across a metal desk and landing in a palm with a small jingle.",
+  "dur": 0.8
+ },
+ "footsteps_tile": {
+  "prompt": "Smart leather shoes walking on a hard concrete basement floor, five steady steps.",
+  "dur": 2.0
+ },
+ "knuckle_crack": {
+  "prompt": "A big man cracking his knuckles: a loud cartoonish crunch.",
+  "dur": 0.6
+ },
+ "keys_jingle": {
+  "prompt": "A huge ring of keys jingling, shaken in a hand.",
+  "dur": 0.8
+ },
+ "pigeon_flap": {
+  "prompt": "A pigeon flapping its wings and landing on a window sill, then one coo.",
+  "dur": 1.0
+ },
+ "footsteps_cobbles": {
+  "prompt": "Five people walking together on wet cobblestones at night, steady footsteps.",
+  "dur": 3.0
+ },
+ "breath_fog": {
+  "prompt": "A man huffing one warm breath onto his glasses: a short soft haaah.",
+  "dur": 0.6
+ },
+ "foam_squeak": {
+  "prompt": "A big sheet of styrofoam squeaking as it is shuffled along.",
+  "dur": 1.0
+ },
+ "boxes_crack": {
+  "prompt": "Small steel safe-deposit box doors being prised open one after another: metallic clanks and creaks.",
+  "dur": 2.5
+ },
+ "bag_rustle": {
+  "prompt": "Heavy black plastic trash bags rustling as they are dropped on a pile.",
+  "dur": 0.8
+ },
+ "car_hatch": {
+  "prompt": "A small car's hatchback boot popping open with a click and a hydraulic swoosh.",
+  "dur": 1.0
+ },
+ "bag_throw": {
+  "prompt": "A full plastic trash bag flung through the air: a heavy rustle and a soft thud on dry leaves.",
+  "dur": 0.8
+ },
+ "paper_rain": {
+  "prompt": "Lots of paper scraps and wrappers fluttering down onto forest leaves.",
+  "dur": 1.8
+ },
+ "kettle_whistle": {
+  "prompt": "A comedic cartoon kettle whistle: a furious old man boiling over.",
+  "dur": 1.0
+ },
+ "phone_beeps": {
+  "prompt": "An early-2000s mobile phone keypad: three quick dial beeps.",
+  "dur": 0.8
+ },
+ "evidence_zip": {
+  "prompt": "A plastic evidence bag rustling and a zip seal pressed shut.",
+  "dur": 0.8
+ },
+ "door_bang": {
+  "prompt": "An office door flung open hard, banging against the wall.",
+  "dur": 0.8
+ },
+ "handcuffs": {
+  "prompt": "Handcuffs clicking shut on wrists: two sharp metal ratchets.",
+  "dur": 0.6
+ },
+ "newspaper_rustle": {
+  "prompt": "A newspaper rustling as it is slowly lowered.",
+  "dur": 0.8
+ },
+ "amb_vault_night": {
+  "prompt": "Ambience of an underground bank vault corridor at night: low ventilation hum, faint buzz of an emergency light, deep room tone. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_vault_day": {
+  "prompt": "Ambience of a basement security corridor by day: fluorescent light hum, a quiet air vent, faint footsteps far upstairs. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_office_day": {
+  "prompt": "Ambience of a quiet upstairs office on a sunny morning: faint city traffic through the window, a ticking clock, birds outside. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_flat_night": {
+  "prompt": "Ambience of a small rented flat at night: fridge hum, a ticking clock, distant traffic outside the window. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_flat_dawn": {
+  "prompt": "Ambience of a small flat at dawn: early birds outside the window, a fridge hum, distant morning traffic. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_city_night": {
+  "prompt": "Ambience of an old European city street at night: distant traffic hum, light drizzle on cobbles, a far-off tram bell. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_forest_road": {
+  "prompt": "Ambience of a misty forest beside a motorway at dawn: birds chirping, soft wind in fir trees, a steady distant motorway rush. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_police_room": {
+  "prompt": "Ambience of a bare police interview room: fluorescent light buzz, low air vent hum, a muffled phone ringing far away. No voices, no music.",
+  "dur": 20,
+  "loop": true
  }
 }

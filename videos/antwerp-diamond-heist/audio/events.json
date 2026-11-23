@@ -1,0 +1,421 @@
+{
+ "fps": 30,
+ "frames": "auto",
+ "events": [
+  {
+   "word": "You're",
+   "n": 0,
+   "lead": 4,
+   "sfx": "spray_hiss",
+   "note": "hairspray hisses onto the sensor",
+   "max_s": 1.4
+  },
+  {
+   "word": "hundred-million-dollar",
+   "n": 0,
+   "lead": 2,
+   "sfx": "vault_boom",
+   "note": "hard cut to the vault door"
+  },
+  {
+   "word": "hairspray",
+   "n": 0,
+   "lead": 2,
+   "sfx": "spray_hiss",
+   "gain_db": -3,
+   "note": "the spray on 'hairspray'",
+   "max_s": 0.8
+  },
+  {
+   "word": "sandwich",
+   "n": 0,
+   "lead": 3,
+   "sfx": "horror_sting",
+   "note": "smash cut: the sandwich lit like a villain"
+  },
+  {
+   "word": "history",
+   "n": 0,
+   "lead": 2,
+   "sfx": "stamp_thump",
+   "gain_db": -4,
+   "note": "calendar: FEB 2003, the heart"
+  },
+  {
+   "word": "GTA",
+   "n": 0,
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "note": "the glint on 'GTA'"
+  },
+  {
+   "word": "Ten",
+   "n": 0,
+   "lead": 3,
+   "sfx": "layer_rings",
+   "note": "ten rings light up round the door"
+  },
+  {
+   "word": "heat",
+   "n": 0,
+   "lead": 2,
+   "sfx": "sensor_whir",
+   "note": "the heat cone fires"
+  },
+  {
+   "word": "radar",
+   "n": 0,
+   "lead": 2,
+   "sfx": "radar_ping",
+   "note": "radar ripples"
+  },
+  {
+   "word": "magnets",
+   "n": 0,
+   "lead": 2,
+   "sfx": "magnet_hum",
+   "note": "the magnet field",
+   "max_s": 1.0
+  },
+  {
+   "word": "lock",
+   "n": 0,
+   "lead": 2,
+   "sfx": "dial_spin",
+   "note": "the dial spins by itself"
+  },
+  {
+   "word": "One",
+   "n": 0,
+   "lead": 2,
+   "sfx": "coins_pile",
+   "note": "numbers pile up on the floor",
+   "max_s": 1.4
+  },
+  {
+   "word": "two",
+   "n": 0,
+   "lead": 4,
+   "sfx": "cups_clink",
+   "note": "the espresso tower shoots up"
+  },
+  {
+   "word": "tiny",
+   "n": 0,
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "gain_db": -3,
+   "note": "the loupe goes up"
+  },
+  {
+   "word": "box",
+   "n": 0,
+   "lead": 8,
+   "sfx": "key_slide",
+   "note": "the key slides into your palm"
+  },
+  {
+   "word": "one",
+   "n": 2,
+   "lead": 4,
+   "sfx": "footsteps_tile",
+   "note": "visit one",
+   "max_s": 1.4,
+   "gain_db": -4
+  },
+  {
+   "word": "ten",
+   "n": 1,
+   "lead": 4,
+   "sfx": "footsteps_tile",
+   "note": "visit ten",
+   "max_s": 1.2,
+   "gain_db": -4
+  },
+  {
+   "word": "five",
+   "n": 0,
+   "lead": 2,
+   "sfx": "paper_slap",
+   "gain_db": -5,
+   "note": "day 500: the newspaper wave"
+  },
+  {
+   "word": "Genius",
+   "n": 0,
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "gain_db": -4,
+   "note": "The Genius"
+  },
+  {
+   "word": "Monster",
+   "n": 0,
+   "lead": 2,
+   "sfx": "knuckle_crack",
+   "note": "The Monster"
+  },
+  {
+   "word": "King",
+   "n": 0,
+   "lead": 2,
+   "sfx": "keys_jingle",
+   "note": "the King of Keys jangles"
+  },
+  {
+   "word": "friend",
+   "n": 0,
+   "lead": 14,
+   "sfx": "pigeon_flap",
+   "note": "the pigeon lands on the sill"
+  },
+  {
+   "word": "panics",
+   "n": 0,
+   "lead": 2,
+   "sfx": "cartoon_boing",
+   "note": "Speedy jumps a foot in the air"
+  },
+  {
+   "word": "Valentine's",
+   "n": 0,
+   "lead": 0,
+   "sfx": "footsteps_cobbles",
+   "note": "the crew walks",
+   "max_s": 2.6,
+   "gain_db": -4
+  },
+  {
+   "word": "breath",
+   "n": 0,
+   "lead": 2,
+   "sfx": "breath_fog",
+   "note": "the Genius breathes on his glasses"
+  },
+  {
+   "word": "shuffles",
+   "n": 0,
+   "lead": 2,
+   "sfx": "foam_squeak",
+   "note": "the foam board shuffle",
+   "max_s": 1.2
+  },
+  {
+   "word": "tape",
+   "n": 0,
+   "lead": 3,
+   "sfx": "tape_rip",
+   "note": "tape slaps over the light sensor"
+  },
+  {
+   "word": "taped",
+   "n": 0,
+   "lead": 2,
+   "sfx": "tape_rip",
+   "gain_db": -4,
+   "note": "the plate taped on"
+  },
+  {
+   "word": "million",
+   "n": 1,
+   "lead": 2,
+   "sfx": "dial_click",
+   "note": "the dial clicks round"
+  },
+  {
+   "word": "opens",
+   "n": 0,
+   "lead": 14,
+   "sfx": "vault_door_open",
+   "note": "the vault door swings open"
+  },
+  {
+   "word": "Nobody",
+   "n": 0,
+   "lead": 2,
+   "sfx": "star_shimmer",
+   "gain_db": -6,
+   "note": "gold light spills",
+   "max_s": 1.4
+  },
+  {
+   "word": "189",
+   "n": 0,
+   "lead": 2,
+   "sfx": "boxes_crack",
+   "note": "box doors popping open"
+  },
+  {
+   "word": "ankle-deep",
+   "n": 0,
+   "lead": 2,
+   "sfx": "coins_pile",
+   "note": "ankle-deep in diamonds"
+  },
+  {
+   "word": "trash",
+   "n": 0,
+   "lead": 2,
+   "sfx": "bag_rustle",
+   "note": "the trash heap"
+  },
+  {
+   "word": "forest",
+   "n": 0,
+   "lead": 2,
+   "sfx": "car_hatch",
+   "note": "the hatch pops up"
+  },
+  {
+   "word": "panics",
+   "n": 1,
+   "lead": 2,
+   "sfx": "shock_sting",
+   "gain_db": -4,
+   "note": "Speedy panics"
+  },
+  {
+   "word": "flings",
+   "n": 0,
+   "lead": 2,
+   "sfx": "bag_throw",
+   "note": "first bag flung"
+  },
+  {
+   "word": "over",
+   "n": 0,
+   "lead": 0,
+   "sfx": "bag_throw",
+   "gain_db": -2,
+   "note": "second bag"
+  },
+  {
+   "word": "woods",
+   "n": 0,
+   "lead": 2,
+   "sfx": "paper_rain",
+   "note": "trash rains like confetti",
+   "max_s": 1.6
+  },
+  {
+   "word": "HATES",
+   "n": 0,
+   "lead": 2,
+   "sfx": "kettle_whistle",
+   "note": "steam out of his ears"
+  },
+  {
+   "word": "calls",
+   "n": 0,
+   "lead": 2,
+   "sfx": "phone_beeps",
+   "note": "he dials the police"
+  },
+  {
+   "word": "envelopes",
+   "n": 0,
+   "lead": 2,
+   "sfx": "bag_rustle",
+   "gain_db": -4,
+   "note": "envelope pulled from the leaves"
+  },
+  {
+   "word": "videotape",
+   "n": 0,
+   "lead": 2,
+   "sfx": "plastic_click",
+   "note": "the videotape"
+  },
+  {
+   "word": "name",
+   "n": 0,
+   "lead": 4,
+   "sfx": "marker_circle",
+   "note": "the name circled in red"
+  },
+  {
+   "word": "sandwich",
+   "n": 1,
+   "lead": 2,
+   "sfx": "horror_sting",
+   "gain_db": -3,
+   "note": "remember that sandwich?"
+  },
+  {
+   "word": "DNA",
+   "n": 0,
+   "lead": 2,
+   "sfx": "evidence_zip",
+   "note": "sealed: EVIDENCE DNA"
+  },
+  {
+   "word": "Speedy",
+   "n": 4,
+   "lead": 2,
+   "sfx": "shock_sting",
+   "gain_db": -4,
+   "note": "Speedy freezes mid-bite"
+  },
+  {
+   "word": "Five",
+   "n": 1,
+   "lead": -6,
+   "sfx": "door_bang",
+   "note": "the office door bursts open"
+  },
+  {
+   "word": "handcuffs",
+   "n": 0,
+   "lead": 2,
+   "sfx": "handcuffs",
+   "note": "the cuffs click"
+  },
+  {
+   "word": "are",
+   "n": 1,
+   "lead": 4,
+   "sfx": "newspaper_rustle",
+   "note": "the guard lowers his paper"
+  },
+  {
+   "word": "hairspray",
+   "n": 2,
+   "lead": 2,
+   "sfx": "spray_hiss",
+   "gain_db": -6,
+   "max_s": 0.6,
+   "note": "mirror of the open: the glazed sensor"
+  }
+ ],
+ "music": {
+  "track": "in_this_world(default).mp3",
+  "frames": "auto",
+  "button": {
+   "word": "sandwich",
+   "n": 2
+  },
+  "button_db": -26
+ },
+ "ambience": {
+  "vaultNight": "amb_vault_night",
+  "vaultGold": "amb_vault_night",
+  "vaultDay": "amb_vault_day",
+  "office": "amb_office_day",
+  "hideNight": "amb_flat_night",
+  "hideDawn": "amb_flat_dawn",
+  "street": "amb_city_night",
+  "forest": "amb_forest_road",
+  "interview": "amb_police_room"
+ },
+ "space": {
+  "vaultNight": 1.2,
+  "vaultGold": 1.2,
+  "vaultDay": 1.0,
+  "office": 0.5,
+  "hideNight": 0.5,
+  "hideDawn": 0.5,
+  "street": 0.6,
+  "forest": 0.4,
+  "interview": 0.7
+ }
+}

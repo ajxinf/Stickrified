@@ -64,7 +64,7 @@ const windowOn = (g: Group, at: ReturnType<typeof V>, ry: number, w: number, h: 
 // ================================================================== office
 export const OFFICE = { x0: -2.4, x1: 2.4, z0: -2.1, z1: 2.6, h: 2.75 };
 export const OFFICE_DESK = V(0.35, 0, -0.9);
-export const OFFICE_CHAIR = V(0.35, 0, -1.45);
+export const OFFICE_CHAIR = V(0.35, 0, -1.75);
 export const MIRROR = V(2.37, 1.5, 0.6); // on the right wall, facing -x
 export const OFFICE_DOOR = V(-2.38, 0, 1.3); // the door on the left wall (hinge at its +z edge)
 export const office = () => {
@@ -76,7 +76,7 @@ export const office = () => {
   g.add(place(model("painted_wooden_chair_01", { collider: "chair" }), OFFICE_CHAIR.x, 0, OFFICE_CHAIR.z, 0));
   g.add(place(model("desk_lamp_arm_01", { collider: false, scale: 0.9 }), OFFICE_DESK.x + 0.65, 0.63, OFFICE_DESK.z - 0.15, -0.6));
   g.add(place(model("drawer_cabinet", { collider: "cabinet", scale: 0.85 }), -1.75, 0, OFFICE.z0 + 0.25, 0));
-  g.add(place(model("potted_plant_01", { collider: "plant" }), 1.95, 0, OFFICE.z0 + 0.4, 0.4));
+  g.add(place(model("potted_plant_01", { collider: "plant" }), 1.95, 0, OFFICE.z0 + 0.6, 0.4));
   g.add(place(model("wall_clock", { collider: false, scale: 1.1 }), -0.9, 2.2, OFFICE.z0 + 0.03, 0));
   const mirror = model("ornate_mirror_01", { collider: false, scale: 1.7 });
   mirror.position.copy(MIRROR); mirror.rotation.y = -Math.PI / 2;
@@ -95,6 +95,8 @@ export const office = () => {
   g.add(plane(0.9, 0.6, litTex("map", () => canvasTex(512, 340, (c) => { c.fillStyle = "#9ac0d8"; c.fillRect(0, 0, 512, 340); c.fillStyle = "#d8c89a"; for (const [x, y, r] of [[120, 120, 60], [300, 160, 90], [420, 90, 40], [200, 260, 50]]) { c.beginPath(); c.ellipse(x, y, r, r * 0.6, 0.4, 0, 7); c.fill(); } c.strokeStyle = "#5a4a3a"; c.lineWidth = 10; c.strokeRect(5, 5, 502, 330); })), V(1.2, 1.7, OFFICE.z0 + 0.02)));
   const door = new Group();
   door.name = "officeDoor";
+  door.userData.door = 2.05;
+  door.userData.opens = true;
   door.position.set(OFFICE_DOOR.x + 0.02, 0, OFFICE_DOOR.z + 0.45);
   const leaf = box(0.05, 2.05, 0.9, MATS.darkWood(), V(0, 1.025, -0.45));
   door.add(leaf);
@@ -137,11 +139,11 @@ export const hideout = (t: "night" | "dawn") => {
   g.add(place(model("caged_hanging_light", { collider: false, glow: ["glass", "#ffc070", 5] }), LAMP.x, HIDE.h - 0.75, LAMP.z, 0));
   g.add(place(new Mesh(new CylinderGeometry(0.008, 0.008, 0.4, 6), colMat("#2a2a2a")), LAMP.x, HIDE.h - 0.2, LAMP.z));
   g.add(place(model("dining_table", { collider: "table", scale: 0.65 }), TABLE.x, 0, TABLE.z, 0));
-  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x - 0.85, 0, TABLE.z - 0.1, Math.PI / 2));
-  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 0.9, 0, TABLE.z + 0.15, -Math.PI / 2));
+  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x - 1.05, 0, TABLE.z - 0.1, Math.PI / 2));
+  g.add(place(model("dining_chair_02", { collider: "chair" }), TABLE.x + 1.1, 0, TABLE.z + 0.15, -Math.PI / 2));
   g.add(place(model("metal_stool_01", { collider: "stool" }), 1.9, 0, 1.4, 0.4));
   g.add(place(model("cardboard_box_01", { collider: "box" }), 2.15, 0, -1.7, 0.3));
-  g.add(place(model("cardboard_box_01", { collider: "box 2" }), 2.1, 0.342, -1.75, 1.1));
+  g.add(place(model("cardboard_box_01", { collider: false }), 2.1, 0.342, -1.75, 1.1));
   // the crew board: cork, four name cards, a floor plan of the vault, red string between pins, the mission page
   const k = new Kit();
   k.box(MATS.cork(), 2.4, 1.3, 0.04, BOARD.x, BOARD.y, BOARD.z + 0.02);

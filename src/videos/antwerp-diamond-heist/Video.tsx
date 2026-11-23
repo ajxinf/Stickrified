@@ -26,7 +26,6 @@ const MOTES: Record<Lit, [string, number]> = { vaultNight: ["#bfe0ff", 0.7], vau
 const NOZZLE = SENSOR.clone().add(V(-0.39, -0.12, 0.42)), LENS = SENSOR.clone().add(V(-0.09, -0.02, 0));
 const sprayAt = (i: number, F: number) => {
   if (F >= B.sandwich - 30 && F < L(29, 0)) return null;
-  if (F >= L(29, 0)) return null;
   const t = ((F * 0.07 + i / 30) % 1);
   return NOZZLE.clone().lerp(LENS, t).add(V((rnd(i) - 0.5) * 0.12 * t, (rnd(i + 1) - 0.5) * 0.1 * t, (rnd(i + 2) - 0.5) * 0.12 * t));
 };
