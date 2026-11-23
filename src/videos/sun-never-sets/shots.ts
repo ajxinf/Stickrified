@@ -3,12 +3,12 @@ import { CamPose, impact } from "../../../kit/toon/camera";
 import { DOF, Dof } from "../../../kit/toon/Composer";
 import type { MovingProp, Plan, Shot } from "../../../kit/toon/guard";
 import { V, boardTex, plane, unlit } from "./common";
-import { MAT_SIZE, tarString, cashFan, cerealBox, keys, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
-import { BOX, COUNTER_BOX, EYE, HOME_SUN, LIVING, SILL, TOASTER, dotAt, moonDayDir } from "./rooms";
+import { MAT_SIZE, tarString, cashFan, cerealBox, keys, marker, mattress, mower, pencil, phone, pillow, roller, setThermo, thermometer, toastFaceMat, toaster, wallet } from "./props";
+import { BOX, EYE, HOME_SUN, LIVING, SILL, TOASTER, dotAt, moonDayDir } from "./rooms";
 import type { Place } from "./scene";
 import { DAY, FUN_SUN, HEAT_SUN, IN_SUN, KITCHEN_SUN, SKYWIDE_SUN, SUN } from "./scene";
 import {
-  B, CLIMBERS, FRAMES, words, DRAG_A, DRAG_B, DRAG_END, L, MATTRESS_C, QUEUERS, Role, SHOPPERS, SLEEPERS, TOASTER_MAT, YOU_FENCE, YOU_GUM, YOU_K12, YOU_MAT,
+  B, CLIMBERS, FRAMES, words, DRAG_A, DRAG_B, DRAG_END, L, MATTRESS_C, QUEUERS, Role, SHOPPERS, SLEEPERS, TOASTER_MAT, YOU_FENCE, YOU_GUM, YOU_K11, YOU_K12, YOU_MAT, waterer,
   brother, closetMan, dad, dragAt, face, fridgeMan, handAt, held, kidA, kidB, kyleFence, kyleStair, lerpV, mom, mowerAt, sleepersCinema, span, tvDad, tvMom,
   worldAt, youDrag, youFence, youGum, youK1, youK11, youK12, youMat,
 } from "./story";
@@ -33,9 +33,12 @@ const shot = (id: string, to: number, lit: Lit, roles: Role[], cam: (F: number) 
   const from = cursor;
   cursor = to;
   const { dof, props, allow, ...rest } = o;
+  const lead = roles[0]?.name;
+  // street life: the neighbour watering his lawn is in every day street shot (dimmed away by the eclipse)
+  if ((lit === "fun" || lit === "day" || lit === "heat") && from < L(24, 0) && !roles.includes(waterer)) roles = [...roles, waterer];
   const s: S = {
     id: `snc/${id}`, from, frames: to - from, w: PLACE[lit], lit, scene: lit, light: QA_LIGHT[lit], sun: SUNS[lit],
-    pose: (f) => cam(f + from), cast: castIn(from, roles), dof: (f) => dof(f + from), subject: roles[0]?.name,
+    pose: (f) => cam(f + from), cast: castIn(from, roles), dof: (f) => dof(f + from), subject: lead,
     moving: props, allow: { ...(roles.some((r) => r.sit) ? SEATED : {}), ...allow }, ...rest,
   };
   SHOTS.push(s);
@@ -64,7 +67,9 @@ const toasterAt = (where: (F: number) => Vector3, ry = 0) => free("toaster", toa
   o.position.copy(where(F));
   o.rotation.y = ry;
   (o.getObjectByName("face") as unknown as { material: unknown }).material = toastFaceMat(w.toast);
-  o.getObjectByName("toast")!.position.y = 0.2 + 0.16 * Math.sin(Math.PI * Math.min(w.toastUp, 1) * 0.5) - (w.toastUp >= 1 ? 0 : 0);
+  const toast = o.getObjectByName("toast")!;
+  toast.position.y = 0.2 + 0.09 * Math.sin(Math.PI * Math.min(w.toastUp, 1) * 0.5); // popped: half out of the slots
+  toast.visible = F < L(2, 0); // (eaten: the street toaster is empty)
 }, ["kitchen", "mattress"]);
 const kitchenToaster = toasterAt(() => TOASTER.clone());
 /** The mattress: dragged behind you (its far end trailing), then lying in the road. */
@@ -119,7 +124,7 @@ export const INSERTS: [number, number][] = [[L(4, 0), L(5, 0)]];
 const E1 = P(V(21.7, 1.42, -10.6), V(20.9, 1.3, -7.1), 50);
 shot("E1-faces-glass", B.darkness + 6, "day", SHOPPERS, (F) => creep(E1, F, L(5, 0), B.darkness + 6, 0.1), { subject: undefined, wide: true, dof: mid(2.2), props: STREET_PROPS(L(5, 0)), allow: { "Card penetration": "faces pressed against the shop glass" } });
 // does: between two heads, close on the box: the tag DARKNESS $10,000 under its spotlight
-const E2 = P(V(21.45, 1.3, -6.45), DISPLAY.clone().add(V(0.3, 0.02, 0.08)), 36);
+const E2 = P(V(21.1, 1.2, -6.45), DISPLAY.clone().add(V(0.02, -0.34, 0.25)), 36);
 // the SOLD OUT! sticker slaps onto the tag on "Earth"
 const soldOut = free("sold out sticker", () => { const g = new Object3D(); g.add(plane(0.3, 0.12, unlit("soldout", () => boardTex(["SOLD OUT!"], "#e8342c", "#fff8ec", 512, 200)), V(0, 0, 0))); return g; }, (o, F) => { const t = Math.min(1, Math.max(0, (F - B.earth + 3) / 4)); o.position.copy(DISPLAY).add(V(0.36, -0.06, 0.16)); o.rotation.set(0, -0.2, 0.22); o.scale.setScalar(1.6 - 0.6 * t); return F >= B.earth - 3; }, ["mart"]);
 shot("E2-price-tag", L(6, 0), "day", [], (F) => creep(E2, F, B.darkness + 6, L(6, 0), 0.12), { subject: undefined, dof: close(1.6), props: [soldOut], allow: { "Subject covered": "foreground heads frame the box by design", "Cast overlap": "foreground heads frame the box", "Card penetration": "faces pressed against the shop glass" } });
@@ -167,11 +172,12 @@ shot("J2-scheme", L(11, 0), "day", [youFence], (F) => creep(J2, F, L(10, 4), L(1
 
 // ================================================================== line 11: a hole in a cereal box
 // does: macro: a pencil pushes through the side of a SUNNY O's box on the worktop
-const HOLE = COUNTER_BOX.clone().add(V(0.03, 0.24, 0.037));
-const counterBox = free("cereal box", () => cerealBox(), (o, F) => { if (F >= L(11, 6)) return false; o.position.copy(COUNTER_BOX); }, ["kitchen"]);
-const pencilIn = free("pencil", pencil, (o, F) => { const t = span(F, L(11, 0), B.hole); o.position.copy(HOLE).add(V(0.05 * (1 - t), 0.03 * (1 - t), 0.2 - 0.215 * t)); o.lookAt(HOLE.clone().add(V(0, 0, -1))); }, ["kitchen", "cereal box"]);
-const K1 = P(HOLE.clone().add(V(0.32, 0.12, 0.52)), HOLE.clone().add(V(0, -0.04, 0)), 36);
-shot("K1-pencil", L(11, 6), "kitchen", [], (F) => creep(K1, F, L(11, 0), L(11, 6), 0.18), { subject: undefined, dof: close(0.5), props: [counterBox, pencilIn, kitchenToaster] });
+// does: you hold the SUNNY O's box out in one hand and jab a pencil through its side with the other on "hole"
+const K1 = P(YOU_K11.clone().add(V(0.35, 1.15, 2.2)), YOU_K11.clone().add(V(0.05, 1.0, 0)), 44);
+const K1c = (F: number) => creep(K1, F, L(11, 0), L(11, 6), 0.12);
+const boxLeft = held("cereal box (left)", () => cerealBox(), youK11, "left", K1c, { fwd: 0.06, up: -0.14, when: (F) => F < L(11, 6) });
+const pencilRight = held("pencil", pencil, youK11, "right", K1c, { fwd: 0.08, orient: (ob) => { ob.rotation.y -= Math.PI / 2; } });
+shot("K1-pencil", L(11, 6), "kitchen", [youK11], K1c, { dof: close(1.4), props: [boxLeft, pencilRight, kitchenToaster], allow: { "Props through props": "the pencil pokes through the box: the gag" } });
 // does: you hold the box up to one eye and peer in, grinning
 const K2 = P(V(-1.1, 1.5, 0.35), V(-1.8, 1.25, -1.25), 44);
 const K2c = (F: number) => creep(K2, F, L(11, 6), L(12, 0), 0.1);
@@ -179,14 +185,14 @@ shot("K2-peer", L(12, 0), "kitchen", [youK11], K2c, { dof: close(1.1), props: [k
 
 // ================================================================== line 12: a dot every morning
 // does: your phone on the sill says 7:00 AM under the same blazing sun; marker dots trail across the glass
-const L1 = P(V(0.38, 1.25, -1.45), V(0.36, 1.4, -2.2), 44);
+const L1 = P(V(0.3, 1.2, -1.52), V(0.34, 1.33, -2.2), 40);
 const sillPhone = free("phone 7am", () => phone("7:00", "MORNING?"), (o, F) => { o.position.copy(SILL); o.rotation.set(-0.25, -0.3, 0); o.getObjectByName("screen")!.visible = F >= L(12, 1) - 2; }, ["kitchen"]);
 shot("L1-7am", L(12, 8), "kitchen", [], (F) => creep(L1, F, L(12, 0), L(12, 8), 0.12), { subject: undefined, dof: close(0.75), props: [sillPhone, kitchenToaster, fxOn("the phone lights up", L(12, 1) - 2), fxOn("the phone buzzes 7:00", L(12, 6))] });
 // does: from outside the window: you lean in with a marker and today's dot lands on the glass on "dot"
 const L2tip = dotAt(2);
 const L2 = P(L2tip.clone().add(V(0.12, 0.05, -1.7)), YOU_K12.clone().add(V(0, 1.2, 0)), 32);
 const L2c = (F: number) => creep(L2, F, L(12, 8), L(13, 0), 0.08);
-shot("L2-the-dot", L(13, 0), "kitchen", [youK12], L2c, { dof: close(1.7), props: [fxOn("today's dot lands", B.dot)] });
+shot("L2-the-dot", L(13, 0), "kitchen", [youK12], L2c, { dof: close(1.7), props: [fxOn("today's dot lands", B.dot), held("marker", marker, youK12, "right", L2c, { fwd: 0.12, orient: (ob) => ob.rotation.set(-0.5, ob.rotation.y, 0.75) })] });
 
 // ================================================================== line 13: the mattress into the street
 // does: side-on track: you haul your mattress down the drive and into the road, leaning into it, the toaster riding on top
@@ -296,8 +302,8 @@ shot("Y2-corona", L(26, 0), "night", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5),
 const Z1a = P(V(-1.9, 1.0, 2.4), V(-2.3, 0.8, 0.4), 44), Z1b = P(V(-1.85, 1.28, 2.6), V(-2.5, 3.8, -5.0), 52);
 shot("Z1-stars", B.stars + 6, "night", [youMat], (F) => glideCam(Z1a, Z1b, F, L(26, 0), B.stars + 6), { subject: "you", subjectFrom: 0, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(26, 0)), allow: { ...SKY_TEXT, ...SEAT_OK, "Subject in frame": "the crane leaves you for the stars", "Caption vs face": "the crane tilts up off your face to the stars" } });
 // does: an owl on the power line hoots like it has waited a month, fireflies blinking below
-const OWL = V(-1.0, wireY(-1.0) + 0.16, OWL_AT.z);
-const Z2 = P(OWL.clone().add(V(-0.35, -0.6, -1.4)), OWL.clone().add(V(0, -0.35, 0)), 48);
+export const OWL = V(-1.0, wireY(-1.0) + 0.27, OWL_AT.z - 0.4); // on the front wire (the one nearest the lens), feet on it
+const Z2 = P(OWL.clone().add(V(-0.25, -0.3, -1.55)), OWL.clone().add(V(0, -0.2, 0)), 44);
 shot("Z2-owl", L(27, 0), "night", [], (F) => creep(Z2, F, B.stars + 6, L(27, 0), 0.12), { subject: undefined, dof: NONE, fx: ["owl", "fireflies"], allow: { ...SKY_TEXT, "Camera clearance": "the lens floats below the wire" } });
 
 // ================================================================== line 27: Kyle's basement empties

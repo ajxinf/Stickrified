@@ -160,13 +160,19 @@ export const youFence = role("you", youLook, YOU_FENCE, (F) => {
 // Kitchen, line 11: a pencil through the box, then the box up to your eye.
 export const YOU_K11 = V(-1.8, 0, -1.25);
 export const youK11 = role("you", youLook, YOU_K11, (F) => {
-  const p = pose([[0, { ...REST, arms: arms([0.3, 0.55], [0.35, 0.5]) }], [B.box - 10, { ...REST, arms: arms([0.25, 0.6], [-0.05, -0.12], { gr: "mitt", front: true }), tilt: -6, look: 0.4 }]], F);
-  return st(alive(p, F, 3, [0.3, 0]), F, 3, [[0, "determined"], [B.hole, "scheming"], [B.box, "grin"]], { heading: 0.35 });
+  const BOX_L: Pose["arms"][0] = { at: [0.3, 0.1], grip: "mitt" };
+  const p = pose([
+    [0, { ...REST, arms: [BOX_L, { at: [0.55, 0.05], grip: "fist" }], tilt: 4 }],
+    [B.hole - 8, { ...REST, arms: [BOX_L, { at: [-0.4, 0.1], grip: "fist", layer: "front" }], tilt: 6, look: -0.3 }],
+    [L(11, 6), { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [-0.05, -0.12], grip: "mitt", layer: "front" }], tilt: -6, look: 0.4 }],
+  ], F);
+  return st(alive(p, F, 3, [0.3, 0]), F, 3, [[0, "determined"], [B.hole - 8, "scheming"], [B.hole, "excited"], [B.box, "grin"]], { heading: 0.35 });
 });
 // Kitchen, line 12: you lean over the sink and draw today's dot on the glass.
-export const YOU_K12 = V(0.05, 0, -1.3);
+export const YOU_K12 = V(0.05, 0, -1.86); // right at the glass (no counter under the window)
 export const youK12 = role("you", youLook, YOU_K12, (F) => {
-  const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.3, 0.35]), lean: 0.3 }], [B.dot - 6, { ...REST, arms: arms([0.25, 0.6], [0.25, -0.15], { gr: "fist" }), lean: 0.45, tilt: -5 }]], F);
+  // the marker up at the glass, then a little tap on "dot"
+  const p = pose([[0, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.3, -0.45], grip: "fist", layer: "front" }], lean: 0.2 }], [B.dot - 8, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.05, -0.5], grip: "fist", layer: "front" }], lean: 0.35, tilt: -5 }], [B.dot + 4, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.1, -0.45], grip: "fist", layer: "front" }], lean: 0.3, tilt: -3 }]], F);
   return st(p, F, 3, [[0, "tired"], [L(12, 3), "deadpan"], [B.dot, "determined"], [B.window, "proud"]], { heading: Math.PI });
 });
 // Line 13: drag the mattress down the drive into the road (leaning into it), the toaster riding on it.
@@ -256,7 +262,7 @@ export const mom = role("mom", momLook, MOM_KEYS, (F) => {
 });
 const MOW_A = MOWER_START.clone(), MOW_B = MOWER_START.clone().add(V(1.9, 0, 0.3));
 export const mowerAt = (F: number) => (F < L(29, 0) ? lerpV(MOW_A, MOW_B, span(F, B.dad - 10, L(4, 0) + 20)) : MOW_B.clone().add(V(-1.0, 0, 0.6)));
-export const DAD_ON_MOWER = V(-0.25, 0.06, 0.0); // feet on the footboard // the card in the mower's frame (seat at x -0.25)
+export const DAD_ON_MOWER = V(-0.25, 0.0, 0.56); // his card in front of the mower body (a card inside it clipped through the hood) // the card in the mower's frame (seat at x -0.25)
 export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F) => {
   if (F < L(29, 0)) {
     const p = pose([[0, { ...SIT, arms: arms([0.6, 0.25], [0.6, 0.25]) }], [B.eleven - 6, { ...SIT, arms: arms([0.6, 0.25], [0.6, -0.6], { gr: "open" }) }]], F);
@@ -317,6 +323,13 @@ export const CLIMBERS = [0, 1, 2].map(climber);
 export const sleeper = (i: number) => role(`z${i}`, QUEUE_LOOKS[(i * 3 + 2) % QUEUE_LOOKS.length], SLEEP_CHAIRS[i].clone().add(V(0, 0, i < 3 ? 0.42 : -0.42)), (F) =>
   asleep(st({ ...SIT, arms: arms([0.35, 0.45], [0.4, 0.42]) }, F, 61 + i, [[0, "tired"]], { heading: i < 3 ? 0 : Math.PI }), F, i), { sit: true });
 export const SLEEPERS = SLEEP_CHAIRS.map((_, i) => sleeper(i));
+
+// ================================================================== street life: a neighbour watering his lawn all day
+export const WATERER = V(-12.9, 0, 7.4);
+export const waterer = role("waterer", QUEUE_LOOKS[5], WATERER, (F) => {
+  const p = alive({ ...REST, arms: [{ at: [0.25, 0.62], grip: "fist" }, { at: [0.55, 0.05], grip: "fist" }], sway: 2 }, F, 111, [0.5, -0.2, 0.3]);
+  return st(p, F, 111, [[0, "relieved"], [L(15, 0), "tired"]], { heading: 1.2, fx: F >= L(15, 0) ? { sweat: (F % 40) / 40 } : {} }, 0.5);
+});
 
 // ================================================================== the small rooms
 // he pulls a coat sleeve over himself like a blanket on "night"

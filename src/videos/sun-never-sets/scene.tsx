@@ -42,7 +42,7 @@ const KITCHEN_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.7, 1.64, 1.54], sh
 export const KITCHEN = KITCHEN_SKY.preset, KITCHEN_SUN = KITCHEN_SKY.key;
 export const CLOSET_L: LightPreset = { ...LIGHTS.interior, lit: [0.5, 0.42, 0.34], shade: [0.12, 0.1, 0.14], lift: [0.01, 0.01, 0.02], litTint: "#ffd8a8", lamp: ["#ffc27a", 3.2], sat: 1.14, grade: "night" };
 export const CINEMA_L: LightPreset = { ...LIGHTS.interior, lit: [0.72, 0.76, 1.0], shade: [0.2, 0.18, 0.28], lift: [0.025, 0.02, 0.045], litTint: "#b8c8ff", lamp: ["#a8c8ff", 3.4], sat: 1.16, char: { tint: [0.86, 0.9, 1.0], shade: 0.86 }, charInk: "#141a2c", grade: "night" };
-export const OHIO_L: LightPreset = { ...LIGHTS.interior, lit: [1.02, 1.06, 1.1], shade: [0.4, 0.44, 0.52], litTint: "#eef6ff", lamp: ["#f4fbff", 2.2], sat: 1.12 };
+export const OHIO_L: LightPreset = { ...LIGHTS.interior, lit: [0.86, 0.9, 0.96], shade: [0.36, 0.38, 0.46], litTint: "#eef6ff", lamp: ["#f4fbff", 1.4], sat: 1.16 };
 export const TV_L: LightPreset = { ...LIGHTS.interior, lit: [0.62, 0.5, 0.42], shade: [0.16, 0.13, 0.18], lift: [0.012, 0.01, 0.02], litTint: "#ffd0a0", lamp: ["#ffb060", 2.8], sat: 1.18, grade: "night" };
 export const BOX_L: LightPreset = { ...LIGHTS.interior, lit: [0.5, 0.4, 0.3], shade: [0.16, 0.12, 0.1], lift: [0.02, 0.015, 0.01], litTint: "#ffe0b0", lamp: ["#fff2d0", 2.0], sat: 1.1, grade: "night" };
 export const IN_SUN = V(0.35, 0.85, 0.4).normalize();
@@ -63,7 +63,7 @@ const practicals = (w: Place, s: WorldState, night: boolean): P[] => {
   if (w === "home") return [{ pos: V(0, 1.7, -1.2), kind: "window", color: ["#eaf2ff", 1.3], noGlow: true }, { pos: V(-0.4, 1.6, 1.2), kind: "lamp", color: ["#dce8ff", 0.6], noGlow: true }];
   if (w === "closet") return [{ pos: V(0, CLOSET.h - 0.3, -0.2), kind: "lamp", color: ["#ffc27a", 1.6], glowAt: V(0, CLOSET.h - 0.12, -CLOSET.d / 2) }];
   if (w === "cinema") return [{ pos: CINEMA_SCREEN.clone().add(V(0, -0.6, 3.5)), kind: "screen", color: ["#a8c8ff", 6.5], noGlow: true }, { pos: V(0, 0.6, 1.0), kind: "lamp", color: ["#ff3a3a", 0.35], noGlow: true }];
-  if (w === "ohio") return [{ pos: V(FRIDGE.x, 1.4, FRIDGE.z + 0.6), kind: "lamp", color: ["#f4fbff", s.fridgeLamp ? 1.6 : 0], noGlow: true }, { pos: V(1.5, 2.2, 1.5), kind: "window", color: ["#eef6ff", 0.8], noGlow: true }];
+  if (w === "ohio") return [{ pos: V(FRIDGE.x, 1.4, FRIDGE.z + 0.6), kind: "lamp", color: ["#e0ecff", s.fridgeLamp ? 0.7 : 0], noGlow: true }, { pos: V(1.5, 2.2, 1.5), kind: "window", color: ["#eef6ff", 0.8], noGlow: true }];
   if (w === "tv") return [{ pos: LIVING.tv.clone().add(V(-0.3, 0.3, -0.7)), kind: "screen", color: ["#8fb8ff", 2.4 * tvShade(s.tvBlock)], noGlow: true }, { pos: V(-2.2, 1.5, -1.0), kind: "lamp", color: ["#ffb060", 0.9], glowAt: V(-2.4, 1.5, -1.2) }];
   return [{ pos: V(0, BOX.h / 2, -BOX.l + 0.12), kind: "lamp", color: ["#fff2d0", 0.25], noGlow: true }];
 };
@@ -147,11 +147,13 @@ const owlHoot = () => canvasTex(128, 128, (g) => {
 const fly = () => canvasTex(64, 64, (g) => { const r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, "rgba(240,255,150,1)"); r.addColorStop(0.25, "rgba(220,255,110,0.8)"); r.addColorStop(1, "rgba(200,255,80,0)"); g.fillStyle = r; g.fillRect(0, 0, 64, 64); });
 const heat = () => canvasTex(64, 64, (g) => { const r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, "rgba(255,250,235,0.35)"); r.addColorStop(1, "rgba(255,250,235,0)"); g.fillStyle = r; g.fillRect(0, 0, 64, 64); });
 const bill = () => canvasTex(64, 40, (g) => { g.fillStyle = "#8ac87a"; g.fillRect(2, 2, 60, 36); g.strokeStyle = "#2a5a2a"; g.lineWidth = 3; g.strokeRect(4, 4, 56, 32); g.fillStyle = "#2a5a2a"; g.beginPath(); g.ellipse(32, 20, 8, 10, 0, 0, 7); g.fill(); });
-const TEX = { moth, owl, owlHoot, fly, heat, bill };
+const bird = () => canvasTex(64, 32, (g) => { g.strokeStyle = "#2a2a34"; g.lineWidth = 4; g.lineCap = "round"; g.beginPath(); g.moveTo(4, 10); g.quadraticCurveTo(18, 2, 32, 18); g.quadraticCurveTo(46, 2, 60, 10); g.stroke(); });
+const drop = () => canvasTex(32, 32, (g) => { const r = g.createRadialGradient(16, 16, 0, 16, 16, 16); r.addColorStop(0, "rgba(230,245,255,0.95)"); r.addColorStop(0.5, "rgba(170,215,250,0.6)"); r.addColorStop(1, "rgba(170,215,250,0)"); g.fillStyle = r; g.fillRect(0, 0, 32, 32); });
+const TEX = { moth, owl, owlHoot, fly, heat, bill, bird, drop };
 const pts = (n: number, kind: keyof typeof TEX, size: number) => {
   const g = new BufferGeometry();
   g.setAttribute("position", new BufferAttribute(new Float32Array(n * 3), 3));
-  const glow = kind === "fly" || kind === "heat";
+  const glow = kind === "fly" || kind === "heat" || kind === "drop";
   const m = new PointsMaterial({ size, map: TEX[kind](), transparent: true, depthWrite: false, alphaTest: glow ? 0 : 0.2, blending: NormalBlending, toneMapped: !glow });
   const p = new Points(g, m);
   p.layers.set(SKY);

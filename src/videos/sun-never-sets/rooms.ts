@@ -25,7 +25,7 @@ import { FONT, MATS, V, boardTex, canvasTex, colMat, glassMat, glowMat, litTex, 
 export const HOME = { x0: -2.6, x1: 2.6, z0: -2.2, z1: 2.4, h: 2.6 };
 export const WIN = { x0: -0.8, x1: 0.8, y0: 1.05, y1: 2.2 };
 export const TOP = 0.92; // worktop height
-export const TOASTER = V(-0.95, TOP, -1.9);
+export const TOASTER = V(-1.12, TOP, -1.9);
 export const MICRO = V(-1.62, TOP, -1.93);
 export const MICRO_CLOCK = V(-1.45, TOP + 0.17, -1.72);
 export const SILL = V(0.35, WIN.y0 + 0.04, HOME.z0 + 0.12);
@@ -81,20 +81,18 @@ export const home = () => {
   k.box(T, WIN.x1 - WIN.x0 + 0.2, 0.06, 0.26, 0, WIN.y0 - 0.03, z0 + 0.06);
   for (const x of [WIN.x0 - 0.035, WIN.x1 + 0.035]) k.box(T, 0.07, WIN.y1 - WIN.y0, 0.16, x, (WIN.y0 + WIN.y1) / 2, z0);
   // the counter run along the back wall, upper cabinets on the left, a fridge on the right
-  k.box(MATS.cabinet(), 3.5, 0.86, 0.6, -0.85, 0.43, z0 + 0.3);
-  for (let i = 0; i < 5; i++) k.box(MAT.color("#c8962e"), 0.02, 0.7, 0.02, -2.35 + i * 0.68, 0.45, z0 + 0.61); // door gaps
-  for (let i = 0; i < 5; i++) k.box(MAT.metal(), 0.14, 0.02, 0.03, -2.2 + i * 0.68, 0.78, z0 + 0.62); // handles
-  k.box(MATS.worktop(), 3.55, 0.06, 0.66, -0.85, TOP - 0.03, z0 + 0.33);
+  k.box(MATS.cabinet(), 1.75, 0.86, 0.6, -1.725, 0.43, z0 + 0.3);
+  for (let i = 0; i < 3; i++) k.box(MAT.color("#c8962e"), 0.02, 0.7, 0.02, -2.35 + i * 0.6, 0.45, z0 + 0.61); // door gaps
+  for (let i = 0; i < 3; i++) k.box(MAT.metal(), 0.14, 0.02, 0.03, -2.2 + i * 0.6, 0.78, z0 + 0.62); // handles
+  k.box(MAT.color("#e8e4dc"), 1.3, 0.5, 0.07, 0, 0.42, z0 + 0.05); // a radiator under the window (you stand at the glass)
+  for (let i = 0; i < 9; i++) k.box(MAT.color("#d0ccc2"), 0.04, 0.46, 0.08, -0.56 + i * 0.14, 0.42, z0 + 0.06);
+  k.box(MATS.worktop(), 1.8, 0.06, 0.66, -1.7, TOP - 0.03, z0 + 0.33);
   k.box(MATS.tiles(), WIN.x0 - x0, 0.58, 0.02, (x0 + WIN.x0) / 2, TOP + 0.29, z0 + 0.01);
   k.box(MATS.tiles(), 1.6, 0.58, 0.02, WIN.x1 + 0.4, TOP + 0.29, z0 + 0.01);
   k.box(MATS.cabinet(), 1.75, 0.68, 0.34, -1.72, 1.92, z0 + 0.17);
   for (let i = 0; i < 3; i++) k.box(MAT.color("#c8962e"), 0.02, 0.62, 0.02, -2.3 + i * 0.58, 1.92, z0 + 0.35);
   k.box(MAT.color("#eef0ec"), 0.8, 1.9, 0.7, 2.15, 0.95, z0 + 0.35); // fridge
   k.box(MAT.color("#c8ccd2"), 0.03, 0.55, 0.04, 1.82, 1.25, z0 + 0.72);
-  // sink under the window
-  k.box(MAT.metal(), 0.7, 0.03, 0.42, 0, TOP + 0.005, z0 + 0.3);
-  k.add(MAT.metal(), new CylinderGeometry(0.02, 0.025, 0.3, 10), 0, TOP + 0.15, z0 + 0.1);
-  k.add(MAT.metal(), new CylinderGeometry(0.016, 0.016, 0.2, 10).rotateX(Math.PI / 2), 0, TOP + 0.29, z0 + 0.19);
   const walls = k.build();
   walls.userData.collider = "kitchen";
   g.add(walls);
@@ -221,7 +219,7 @@ export const cinema = () => {
   g.add(b);
   g.add(plane(6.4, 3.2, unlit("sheep", sheepTex), V(0, 2.6, zf - 0.99)));
   g.add(plane(3.2, 0.9, unlit("hotel", () => boardTex(["HOTEL"], "#f2c23a", "#2a1018", 1024, 288)), V(0, 3.6, zb + 0.99), Math.PI));
-  g.add(plane(2.4, 0.55, unlit("hotel2", () => boardTex(["$300 A SEAT"], "#2a1018", "#f2c23a", 1024, 236)), V(0, 2.95, zb + 0.99), Math.PI));
+  g.add(plane(2.4, 0.55, unlit("hotel2", () => boardTex(["$300 A SEAT"], "#2a1018", "#f2c23a", 1024, 236)), V(0, 2.82, zb + 0.97), Math.PI)); // under the HOTEL board, not overlapping it
   return g;
 };
 export const CINEMA_SCREEN = V(0, 2.6, -CINEMA.d / 2 + 0.6);
@@ -237,11 +235,12 @@ export const ohio = () => {
   for (const s of [-1, 1]) k.box(MATS.cabinet(), 1.8, 0.88, 0.6, x + s * 1.45, 0.44, z - 0.05);
   for (const s of [-1, 1]) k.box(MATS.worktop(), 1.84, 0.05, 0.64, x + s * 1.45, 0.905, z - 0.05);
   // the fridge shell (open front), shelves, crisper, a milk carton and leftovers
-  const F = MAT.color("#f4f6f4");
-  k.box(F, w, h, 0.05, x, h / 2, z - d / 2 + 0.025);
-  for (const s of [-1, 1]) k.box(F, 0.05, h, d, x + (s * (w - 0.05)) / 2, h / 2, z);
+  const F = MAT.color("#f4f6f4"), IN = MAT.color("#9fb4c0"); // the inside a cool grey-blue (it read as a white glare)
+  k.box(IN, w, h, 0.05, x, h / 2, z - d / 2 + 0.025);
+  for (const s of [-1, 1]) k.box(IN, 0.05, h, d, x + (s * (w - 0.05)) / 2, h / 2, z);
   k.box(F, w, 0.05, d, x, h - 0.025, z);
   k.box(F, w, 0.16, d, x, 0.08, z);
+  for (const s of [-1, 1]) k.box(F, 0.03, h, 0.04, x + (s * (w - 0.03)) / 2, h / 2, z + d / 2 - 0.02); // white front lip
   k.box(MAT.color("#dfe8ee"), w - 0.1, 0.22, d - 0.08, x, 0.27, z); // crisper drawer (his seat)
   for (const y of [1.15, 1.5]) k.box(MAT.color("#cfe0ea"), w - 0.1, 0.02, d - 0.1, x, y, z);
   k.box(MAT.color("#f8f8f2"), 0.1, 0.22, 0.1, x - 0.26, 1.27, z + 0.05); k.box(MAT.color("#3a7ad8"), 0.1, 0.05, 0.1, x - 0.26, 1.33, z + 0.05);
@@ -250,7 +249,7 @@ export const ohio = () => {
   b.userData.collider = "ohio kitchen";
   g.add(b);
   // the inside light (a glowing panel, Video.tsx turns it off) + the door on its right-hand hinge
-  const lamp = new Mesh(new PlaneGeometry(w - 0.14, 0.05), glowMat("#f4fbff", 4));
+  const lamp = new Mesh(new PlaneGeometry(w - 0.3, 0.04), glowMat("#e8f2ff", 1.6));
   lamp.rotation.x = Math.PI / 2;
   lamp.position.set(x, h - 0.06, z);
   lamp.name = "fridgeLamp";

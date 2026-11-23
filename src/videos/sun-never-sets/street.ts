@@ -1,4 +1,4 @@
-import { BoxGeometry, CylinderGeometry, Group, Material, Mesh, MeshBasicMaterial, Object3D, Vector3 } from "three";
+import { BoxGeometry, CylinderGeometry, Group, Material, Mesh, MeshBasicMaterial, Object3D, SphereGeometry, TorusGeometry, Vector3 } from "three";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { grassTufts } from "../../../kit/toon/build/ground";
@@ -33,6 +33,7 @@ export const THERMO = PORCH_POST.clone().add(V(0, 1.45, 0.09)); // the dial on t
 export const SUNDIAL = V(-11.2, 0, -7.2);
 export const MART = { x: 21, front: -7.6, w: 7, h: 4.4 };
 export const DISPLAY = V(MART.x, 1.05, MART.front - 0.6); // the darkness box on its velvet stand behind the glass
+export const TAG_AT = DISPLAY.clone().add(V(0, -0.26, 0.36));
 export const MOWER_START = V(-4.6, 0, -8.6);
 export const MATTRESS_AT = V(-3.6, 0, 0.6); // in the middle of the road in front of your house (long side along x)
 export const BEDTIME = V(-1.5, 0, 8.4); // the kicked-over sign on the south lawn
@@ -285,7 +286,7 @@ const mart = () => {
   glass.position.set(x - 0.2, 1.65, fz - 0.12);
   out.add(glass);
   out.add(plane(4.2, 0.8, unlit("mart", martTex), V(x - 0.2, 3.3, fz + 0.01)));
-  out.add(plane(0.36, 0.18, unlit("tag", tagTex), DISPLAY.clone().add(V(0.36, -0.1, 0.12)), -0.2, 0, 0.12));
+  out.add(plane(0.36, 0.18, unlit("tag", tagTex), TAG_AT, 0, -0.18, 0.05)); // leaning on the stand's front, clear of it
   // the spotlight cone on the box (a soft painted pool on the stand + the box's rim)
   out.add(lightPatch(V(DISPLAY.x, DISPLAY.y + 0.005, DISPLAY.z), V(0, 1, 0), 0.7, 0.7, "#fff2d0", 0.7, [1, 1], 0));
   return out;
@@ -330,6 +331,84 @@ const lampHeads = () => {
 };
 
 /** The whole street. */
+// ------------------------------------------------------------------ depth + life (user 2026-11-23: "empty background", "does not feel alive")
+/** Mailbox on a post at the end of a front path. */
+const mailbox = (x: number, z: number, col: string, ry = 0) => {
+  const k = new Kit();
+  k.box(MATS.darkWood(), 0.08, 1.05, 0.08, 0, 0.52, 0);
+  k.add(colMat(col, { spec: 0.5, gloss: 0.4, rough: 0.35 }), new CylinderGeometry(0.12, 0.12, 0.42, 12, 1, false, 0, Math.PI).rotateZ(Math.PI / 2).rotateY(Math.PI / 2), 0, 1.1, 0);
+  k.box(colMat(col), 0.24, 0.12, 0.42, 0, 1.06, 0);
+  k.box(colMat("#d8342c"), 0.02, 0.16, 0.04, 0.13, 1.2, 0.1); // the flag
+  const g = k.build();
+  g.userData.collider = "mailbox";
+  g.position.set(x, 0, z);
+  g.rotation.y = ry;
+  return g;
+};
+/** Basketball hoop on Kyle's drive. */
+const hoop = (x: number, z: number) => {
+  const k = new Kit();
+  k.add(MAT.metal(), new CylinderGeometry(0.05, 0.06, 3.0, 8), x, 1.5, z);
+  k.box(colMat("#f6f2ea"), 1.1, 0.7, 0.04, x, 3.05, z + 0.25);
+  k.box(colMat("#d8342c"), 0.45, 0.3, 0.045, x, 2.95, z + 0.25);
+  k.add(colMat("#f28a2a"), new TorusGeometry(0.22, 0.015, 6, 20).rotateX(Math.PI / 2), x, 2.78, z + 0.5);
+  const g = k.build();
+  g.userData.collider = "hoop";
+  return g;
+};
+/** A blue paddling pool with an inflatable ring on the south lawn. */
+export const POOL = V(9.2, 0, 7.6);
+const paddlingPool = () => {
+  const k = new Kit();
+  k.add(colMat("#3aa8e8", { spec: 0.5, gloss: 0.4 }), new TorusGeometry(0.95, 0.16, 10, 28).rotateX(Math.PI / 2), POOL.x, 0.16, POOL.z);
+  k.add(colMat("#7ad0f2", { gloss: 0.9, rough: 0.05, spec: 0.9 }), new CylinderGeometry(0.95, 0.95, 0.04, 28), POOL.x, 0.2, POOL.z);
+  k.add(colMat("#ff8ac8"), new TorusGeometry(0.22, 0.08, 8, 16).rotateX(Math.PI / 2), POOL.x + 0.3, 0.25, POOL.z - 0.2);
+  const g = k.build();
+  g.userData.collider = "paddling pool";
+  return g;
+};
+/** Rows of houses behind both street rows, a treeline and low hills: the town goes on past the street. */
+const backdrop = (g: Group) => {
+  const cols = ["#f2d58a", "#9ad0c0", "#e8a87c", "#c8a0d8", "#a8c8f0", "#f2ece2", "#f28a8a", "#b8d8a0"];
+  for (let i = 0; i < 11; i++) {
+    const x = -44 + i * 8.6 + (rnd(i) - 0.5) * 1.5, c = cols[i % cols.length];
+    g.add(house({ x, front: -21 - rnd(i + 3) * 1.5, w: 6.2, d: 6, h: 4.2 + rnd(i + 5) * 1.2, wall: i % 2 ? MATS.stucco(c) : MATS.siding(c), roof: i % 3 ? MATS.roofRed() : MATS.roofGrey(), door: "#3a6ab8", seed: 40 + i }));
+    const h = house({ x: 0, front: 0, w: 6.2, d: 6, h: 4.2 + rnd(i + 9) * 1.2, wall: i % 2 ? MATS.siding(cols[(i + 3) % 8]) : MATS.stucco(cols[(i + 3) % 8]), roof: i % 3 ? MATS.roofGrey() : MATS.roofRed(), door: "#c8582c", seed: 60 + i });
+    h.rotation.y = Math.PI;
+    h.position.set(-40 + i * 8.6 + (rnd(i + 7) - 0.5) * 1.5, 0, 22.5 + rnd(i + 11) * 1.5);
+    g.add(h);
+  }
+  for (let i = 0; i < 22; i++) {
+    const x = -50 + i * 4.8 + rnd(i + 20) * 2;
+    g.add(place(model(i % 3 ? "island_tree_01" : "island_tree_02", { collider: false, scale: 1.2 + rnd(i + 30) * 0.6 }), x, 0, -31 - rnd(i + 40) * 4, rnd(i) * 6));
+    g.add(place(model(i % 3 ? "island_tree_02" : "island_tree_01", { collider: false, scale: 1.2 + rnd(i + 50) * 0.6 }), x + 2, 0, 33 + rnd(i + 60) * 4, rnd(i + 1) * 6));
+  }
+  for (const [x, z, sx, sy] of [[-60, -110, 70, 16], [30, -120, 90, 22], [-40, 115, 80, 18], [50, 125, 90, 24]]) {
+    const hill = new Mesh(new SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), MATS.lawn());
+    hill.scale.set(sx, sy, 30);
+    hill.position.set(x, -1, z);
+    g.add(hill);
+  }
+};
+const dressing = (g: Group) => {
+  g.add(mailbox(YOU_HOUSE.door + 1.0, WALK_N - 0.35, "#3a6ab8"), mailbox(KYLE_HOUSE.door - 1.1, WALK_N - 0.35, "#2a2a30"), mailbox(-21, WALK_N - 0.35, "#f2c23a"));
+  for (const x of [-15, -4.5, 6.5, 17.5, 29]) g.add(mailbox(x + 1.6, WALK_S + 0.35, ["#d8342c", "#3a8a4a", "#f2ece2", "#3a6ab8", "#c8582c"][Math.abs(Math.round(x)) % 5], Math.PI));
+  g.add(hoop(14.6, -9.6));
+  g.add(paddlingPool());
+  // parked cars under covers in driveways, flower beds along the fronts, hedges
+  g.add(place(model("covered_car", { collider: "car" }), 13.2, 0, -8.2, 0));
+  g.add(place(model("covered_car", { collider: "car", tint: "#c8d8f0" }), -10.8, 0, 8.4, 0.05));
+  g.add(place(model("covered_car", { collider: "car", tint: "#f0d8c8" }), 21.2, 0, 8.6, -0.04));
+  const flowers = ["flower_gazania", "flower_ursinia"];
+  for (let i = 0; i < 26; i++) {
+    const side = i % 2, x = -24 + (i >> 1) * 4.1 + rnd(i) * 1.2, z = side ? 11.0 - 0.4 : -10.75;
+    if (Math.abs(x - YOU_HOUSE.door) < 1.2 || Math.abs(x - KYLE_HOUSE.door) < 1.2 || (x > STAIR.x0 - 0.8 && x < STAIR.x1 + 0.8 && !side) || (x > 17 && x < 25 && !side)) continue;
+    g.add(place(model(flowers[i % 2], { collider: false, scale: 0.6 + rnd(i + 3) * 0.3 }), x, 0, z, rnd(i) * 6));
+  }
+  for (const [x, z] of [[-14, 10.4], [-2.6, 10.4], [8.4, 10.4], [19.6, 10.4], [-17, -10.6], [4.6, -10.4]] as const) g.add(place(model("shrub_01", { collider: false, scale: 0.8 }), x, 0, z, rnd(x) * 6));
+  g.add(place(model("garden_hose_wall_mounted_01", { collider: false }), YOU_HOUSE.x - YOU_HOUSE.w / 2 + 0.6, 0.9, YOU_HOUSE.front + 0.02, 0));
+};
+
 export const street = () => {
   const g = new Group();
   g.add(ground());
@@ -359,6 +438,8 @@ export const street = () => {
   for (const p of LAMPS) g.add(place(model("street_lamp_01", { collider: "street lamp" }), p.x, 0, p.z, p.z > 0 ? 0 : Math.PI));
   g.add(lampHeads());
   SLEEP_CHAIRS.forEach((p, i) => g.add(place(model("plastic_monobloc_chair_01", { collider: "lawn chair" }), p.x, 0, p.z, i < 3 ? 0 : Math.PI)));
+  backdrop(g);
+  dressing(g);
   // the porch thermometer's backing plate (the dial is a story prop: props.ts)
   g.add(place(new Mesh(new BoxGeometry(0.3, 0.3, 0.02), MATS.trim()), THERMO.x, THERMO.y, THERMO.z - 0.07));
   g.add(...grassTufts(900, (_t, r) => {
