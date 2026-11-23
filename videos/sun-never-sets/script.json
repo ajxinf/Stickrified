@@ -67,12 +67,21 @@
       "gag": "A box of 'darkness' displayed like a diamond"
     },
     {
-      "narration": "A closet rents for $900 a night. Movie theaters turn into hotels. And a guy in Ohio sleeps in his *fridge*.",
-      "spoken": "A closet rents for nine hundred dollars a night. Movie theaters turn into hotels. And a guy in Ohio sleeps in his FRIDGE.",
+      "narration": "A closet rents for $900 a night. Movie theaters turn into *hotels*.",
+      "spoken": "A closet rents for nine hundred dollars a night. Movie theaters turn into hotels.",
       "audioTag": "amused",
-      "scene": "Three beats: a closet door with a 'FOR RENT $900' sign and a man curled up inside among coats; a cinema with rows of people asleep in the seats, a 'HOTEL' banner over the marquee; a man folded inside his fridge next to the milk, the door closing and the light clicking off.",
-      "camera": "Hard cuts, one per beat, the fridge door swings shut on 'fridge'",
+      "scene": "Two beats: a closet door with a 'FOR RENT $900' sign and a man curled up inside among the coats; a cinema with rows of people asleep in the seats under a 'HOTEL' banner over the marquee.",
+      "camera": "Hard cut per beat, the HOTEL banner on 'hotels'",
       "onScreenText": "Signs: FOR RENT $900 / HOTEL",
+      "gag": "A man curled up asleep among the coats in a rented closet"
+    },
+    {
+      "narration": "And a guy in Ohio sleeps in his *fridge*.",
+      "spoken": "And a guy in Ohio sleeps in his FRIDGE.",
+      "audioTag": "amused",
+      "scene": "A man folded inside his fridge next to the milk, hugging a pillow; the door swings shut and the light clicks off.",
+      "camera": "MS on the open fridge, the door shuts on 'fridge'",
+      "onScreenText": "",
       "gag": "The fridge light clicks off and he smiles"
     },
     {
