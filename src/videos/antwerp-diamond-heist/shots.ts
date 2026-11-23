@@ -29,7 +29,7 @@ const SUN: Record<Lit, Vector3> = { vaultNight: IN_SUN, vaultGold: IN_SUN, vault
 const P = (pos: Vector3, look: Vector3, fov: number, roll = 0): CamPose => ({ pos, look, fov, roll });
 const castIn = (from: number, roles: Role[]) => roles.map((r) => ({ name: r.name, look: r.look, at: (f: number) => r.at(f + from), state: (f: number) => r.state(f + from), sit: r.sit }));
 const SEATED = { "Moving props": "seated: the chair holds the seated card" };
-const ON_LADDER = {};
+const ON_LADDER = { "Feet on the ground": "you stand on the top crate of the stack (1.05 m)" };
 const SIGN = { "Text in frame": "the KLUIS sign over the door is set dressing, cut by design" };
 let cursor = 0;
 export const SHOTS: S[] = [];
@@ -69,10 +69,9 @@ const torch = free("flashlight pool", () => { const g = new Object3D(); const m 
 // ================================================================== line 1-3: the cold open
 // does: macro: a pink hairspray can hisses a glittery cloud onto the vault's heat sensor
 // the empty can left lying on the top crate (line 29): it rolls a little toward the edge and stops
-const canResting = free("hairspray", hairspray, (o, F) => { const t = span(F, L(29, 0), L(29, 4)); o.position.set(LADDER.x - 0.05 - 0.25 * t, CRATE_TOP + 0.033, LADDER.z - 0.12); o.rotation.set(Math.PI / 2, 0.3, t * 6); }, ["crate 2"]);
-const A1H = handAt(youLadder, 10, V(0.2, 1.75, 3.35), "right");
-const A1 = P(A1H.clone().lerp(SENSOR, 0.5).add(V(-1.05, -0.25, 0.85)), A1H.clone().lerp(SENSOR, 0.5), 40);
-shot("A1-hairspray", B.hundred, "vaultNight", [youLadder], (F) => creep(A1, F, 0, B.hundred, 0.12), { subject: undefined, dof: close(1.4), fx: ["spray"], props: [held("hairspray", hairspray, youLadder, "right", (F) => creep(A1, F, 0, B.hundred, 0.12))], allow: { "Subject size": "macro on the can in your hand and the sensor" } });
+const canResting = free("hairspray", hairspray, (o, F) => { const t = span(F, L(29, 0), L(29, 4)); o.position.set(LADDER.x + 0.05 - 0.4 * t, CRATE_TOP + 0.033, LADDER.z - 0.12); o.rotation.set(Math.PI / 2, 0.3, t * 8); }, ["crates"]);
+const A1 = P(SENSOR.clone().add(V(-1.25, -0.05, 1.3)), SENSOR.clone().add(V(-0.32, -0.1, 0.2)), 40);
+shot("A1-hairspray", B.hundred, "vaultNight", [youLadder], (F) => creep(A1, F, 0, B.hundred, 0.12), { subject: undefined, dof: close(1.4), fx: ["spray"], props: [held("hairspray", hairspray, youLadder, "right", (F) => creep(A1, F, 0, B.hundred, 0.12))], allow: { ...ON_LADDER, "Subject size": "macro on the can in your hand and the sensor" } });
 // does: hard cut to the threat: the giant round vault door, its red alarm LED blinking, you on a ladder by the sensor
 const A2a = P(V(-1.0, 0.55, 6.4), V(-0.35, 1.45, 0.4), 56), A2b = P(V(-0.85, 0.6, 5.8), V(-0.3, 1.5, 0.4), 56);
 shot("A2-the-vault", L(1, 5), "vaultNight", [youLadder], (F) => glideCam(A2a, A2b, F, B.hundred, L(1, 5)), { wide: true, subject: undefined, dof: NONE, fx: ["spray"], allow: ON_LADDER });
@@ -138,7 +137,7 @@ const KEY_B = V(0.3, 0.8, 7.75); // the desk's front edge
 const keyProp = free("vault key", vaultKey, (o, F) => { o.position.copy(lerpV(KEY_A, KEY_B, span(F, L(8, 9) + 4, B.vaultKey - 4))); o.rotation.set(-Math.PI / 2, 0, 0); }, ["desk"]);
 shot("H2-vault-key", L(9, 0), "vaultDay", [youCounter, guard], (F) => creep(P(V(-0.3, 1.12, 8.3), V(0.35, 0.8, 7.75), 36), F, L(8, 9), L(9, 0), 0.15), { subject: undefined, dof: close(1.0), props: [keyProp], allow: { ...SEATED, "Subject size": "insert on the key sliding across the desk" } });
 // does: one locked framing, three visits: day one the guard stares you down; day ten he nods; day five hundred he waves you through from behind his newspaper (the calendar flips each time)
-const I = P(V(-0.25, 1.35, 3.7), V(0.7, 1.2, 7.6), 56);
+const I = P(V(-0.25, 1.35, 3.7), V(0.75, 1.2, 7.6), 60);
 const Ic = (a: number, b: number) => (F: number) => creep(I, F, a, b, 0.1, 0, 0.04);
 const paperHeld = (headline: string, when: (F: number) => boolean) => held("newspaper", () => newspaper(headline), guard, "left", () => I, { fwd: 0.08, when });
 shot("I1-day-one", L(9, 8) - 3, "vaultDay", [youVisits, guard], Ic(L(9, 0), L(9, 8) - 3), { subject: "guard", wide: true, dof: NONE });
@@ -246,7 +245,7 @@ shot("U2-hates-litter", L(24, 16), "forest", [oldMan], (F) => creep(U2, F, L(24,
 shot("U3-calls-police", L(25, 0), "forest", [oldMan], (F) => creep(on(oldMan, V(3.2, 0, 3.6), V(-1.4, 0, -1.7), "ms", { fov: 44 }), F, L(24, 16), L(25, 0), 0.1), { dof: mid(2.2), fx: ["forestMist"] });
 // does: three inserts in a gloved hand among the leaves: an envelope from the vault, a CAM 2 videotape, a receipt with a name circled in red
 const evidence = (name: string, make: () => Object3D, a: number, b: number, cam: CamPose) => held(name, make, copForest, "right", () => cam, { when: (F) => F >= a && F < b, fwd: 0.05 });
-const handCam = (F: number) => { const h = handAt(copForest, F, COP_F.clone().add(V(0.3, 1.2, 1.4)), "right"); return P(h.clone().add(V(0.2, 0.16, 0.58)), h.clone().add(V(0.02, 0.02, 0)), 36); };
+const handCam = (F: number) => { const h = handAt(copForest, F, COP_F.clone().add(V(0.3, 1.2, 1.4)), "right"); return P(h.clone().add(V(0.2, 0.02, 0.6)), h.clone().add(V(0.02, 0.06, 0)), 36); };
 const V1 = handCam(B.envelopes), V2 = handCam(L(25, 8)), V3 = handCam(B.name);
 shot("V1-envelope", L(25, 7), "forest", [copForest], (F) => creep(V1, F, L(25, 0), L(25, 7), 0.12), { subject: undefined, dof: close(0.6), props: [evidence("envelope", envelope, 0, L(25, 7) + 1, V1)], allow: { "Subject size": "insert on the evidence in his hand" } });
 shot("V2-videotape", L(25, 10), "forest", [copForest], (F) => creep(V2, F, L(25, 7), L(25, 10), 0.12), { subject: undefined, dof: close(0.6), props: [evidence("videotape", videotape, L(25, 7), L(25, 10) + 1, V2)], allow: { "Subject size": "insert on the evidence in his hand" } });

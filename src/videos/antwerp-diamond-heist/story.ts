@@ -149,7 +149,7 @@ export const youDesk = role("you", youSuit, YOU_DESK, (F) => st(alive(pose([[0, 
 export const YOU_COUNTER = V(-0.2, 0, 7.75);
 export const youCounter = role("you", youSuit, YOU_COUNTER, (F) => st({ ...REST, arms: [REST.arms[0], { at: [0.55, 0.2], grip: "open" }] }, F, 3, [[0, "smug"], [B.vaultKey, "grin"]], { heading: Math.PI / 2 }));
 // line 9: three visits on one framing, each a walk from the stairs toward the vault
-const VISIT = (a: number, b: number) => walker(V(-0.2, 0, 8.8), V(-0.15, 0, 5.5), a, b);
+const VISIT = (a: number, b: number) => walker(V(-0.2, 0, 8.8), V(-0.15, 0, 6.6), a, b);
 const V1 = VISIT(L(9, 3) - 12, L(9, 8) - 2), V2 = VISIT(L(9, 8) - 6, L(9, 12) - 4), V3 = VISIT(L(9, 12) - 8, L(10, 0) - 6);
 const visit = (F: number) => (F < L(9, 8) - 6 ? V1 : F < L(9, 12) - 8 ? V2 : V3);
 export const youVisits = role("you", youSuit, (F) => visit(F).at(F), (F) => { const v = visit(F); return st(v.pose(F), F, 3, [[0, "nervous"], [B.day10, "smug"], [B.day500, "grin"]], { heading: v.heading }); });

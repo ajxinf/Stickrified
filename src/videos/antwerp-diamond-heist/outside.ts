@@ -131,7 +131,7 @@ export const car = () => {
   const bodyGeo = new ExtrudeGeometry(profile(), { depth: BODY_W, bevelEnabled: true, bevelSize: 0.07, bevelThickness: 0.07, bevelSegments: 4, curveSegments: 16 });
   bodyGeo.translate(0, 0, -BODY_W / 2);
   const body = new Mesh(bodyGeo, paint);
-  body.userData.collider = "car";
+  g.userData.collider = "car"; // the whole car, wheels on the ground
   g.add(body);
   // side windows (both sides), windscreen and the dark trunk inside the opening
   const win = new Shape();

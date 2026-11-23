@@ -24,7 +24,7 @@ export const SENSOR = V(1.98, 2.32, 1.7); // heat / motion sensor on the right w
 export const LIGHT_S = V(-2.17, 1.12, 2.8); // light sensor on the left wall (faces +x)
 export const RADAR = V(0, 2.76, 3.4);
 export const MAG = V(1.4, 1.95, 0.04); // magnet block on the wall beside the door's free edge
-export const LADDER = V(1.72, 0, 1.75); // the crate stack you stand on (name kept: lines 1-5 and 29)
+export const LADDER = V(1.58, 0, 1.75); // the crate stack you stand on (name kept: lines 1-5 and 29)
 export const CRATE_TOP = 3 * 0.35;
 export const DESK = V(0.65, 0, 7.6); // guard desk, long side along z, front toward -x
 export const GUARD_SEAT = V(1.6, 0, 7.55); // where the guard stands behind his desk
@@ -292,7 +292,12 @@ export const vault = (withLadder = false) => {
   cam.position.set(-2.05, 2.45, 1.2); cam.rotation.y = 2.4;
   g.add(cam);
   // three crates stacked under the sensor (you stand on the top one, the can rests on it at the end)
-  if (withLadder) for (let i = 0; i < 3; i++) g.add(place(model("wooden_crate_01", { collider: `crate ${i}` }), LADDER.x + (i % 2 ? 0.03 : -0.02), i * 0.35, LADDER.z + (i === 1 ? 0.04 : 0), Math.PI / 2 + (i - 1) * 0.06));
+  if (withLadder) {
+    const stack = new Group();
+    for (let i = 0; i < 3; i++) stack.add(place(model("wooden_crate_01", { collider: false }), LADDER.x + (i % 2 ? 0.03 : -0.02), i * 0.35, LADDER.z + (i === 1 ? 0.04 : 0), Math.PI / 2 + (i - 1) * 0.06));
+    stack.userData.collider = "crates"; // one stack standing on the floor (QA sees a single support)
+    g.add(stack);
+  }
   g.add(plane(0.5, 0.36, unlit("sign-auth", () => boardTex(["ALLEEN BEVOEGD", "STAFF ONLY"], "#f2c23a", "#1c1c22", 720, 520)), V(-2.15, 1.75, 5.2), Math.PI / 2));
   g.add(plane(0.4, 0.4, unlit("sign-level", () => boardTex(["-2"], "#1e3a5a", "#ffffff", 400, 400)), V(-2.15, 1.9, 8.8), Math.PI / 2));
   g.add(place(new Mesh(new BoxGeometry(0.5, 0.6, 0.18), colMat("#c8342c", { rough: 0.5 })), -2.1, 1.25, 6.6, Math.PI / 2));
