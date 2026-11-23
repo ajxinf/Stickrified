@@ -33,7 +33,7 @@ export const HIDE_DAWN: LightPreset = { ...LIGHTS.interior, lit: [0.8, 0.7, 0.8]
 export const INTERVIEW_L: LightPreset = { ...LIGHTS.interior, lit: [0.62, 0.74, 0.68], shade: [0.16, 0.2, 0.2], lift: [0.01, 0.015, 0.015], litTint: "#e8fff4", lamp: ["#f4f8ff", 3.0], sat: 1.04, grade: "night" };
 const STREET_SKY = photoSky({ ...LIGHTS.night, lit: [0.42, 0.5, 0.8], shade: [0.12, 0.14, 0.28], lamp: ["#ffa850", 4.4], sat: 1.14 }, "kloppenheim_07_puresky", { exposure: 0.3, tint: "#bccbe8", yaw: 30 });
 export const STREET_L = STREET_SKY.preset, STREET_SUN = STREET_SKY.key;
-const FOREST_SKY = photoSky({ ...LIGHTS.day, lit: [1.08, 1.06, 1.0], shade: [0.36, 0.42, 0.48], lift: [0.03, 0.04, 0.05], litTint: "#eef4f0", sat: 1.0, haze: { color: "#c8d0d0", start: 11, amount: 0.3 }, char: { tint: [0.96, 0.98, 1.0], shade: 0.9 } }, "kloofendal_misty_morning_puresky", { exposure: 0.82, yaw: 150 });
+const FOREST_SKY = photoSky({ ...LIGHTS.day, lit: [1.08, 1.06, 1.0], shade: [0.36, 0.42, 0.48], lift: [0.03, 0.04, 0.05], litTint: "#eef4f0", sat: 1.0, haze: { color: "#c8d0d0", start: 14, amount: 0.2 }, char: { tint: [0.96, 0.98, 1.0], shade: 0.9 } }, "kloofendal_misty_morning_puresky", { exposure: 0.82, yaw: 150 });
 export const FOREST_L = FOREST_SKY.preset, FOREST_SUN = FOREST_SKY.key;
 export const IN_SUN = V(0.35, 0.85, 0.4).normalize();
 

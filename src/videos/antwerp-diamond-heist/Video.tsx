@@ -82,7 +82,7 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       {/* never lifeless: motes drifting in the light of every set */}
       <Dust center={look.clone().setY(Math.max(look.y, 1.0))} size={V(3, 2.2, 3)} count={s.w === "forest" ? 260 : 180} color={mc} strength={ms} />
       {fx.includes("gold") && <Dust center={look.clone()} size={V(2.4, 2, 2.4)} count={160} color="#ffe2a0" strength={1.4} />}
-      {fx.includes("forestMist") && <Dust center={V(look.x, 1.2, look.z)} size={V(8, 2.4, 8)} count={120} color="#ffffff" strength={0.5} />}
+      {fx.includes("forestMist") && <Dust center={V(look.x, 1.2, look.z)} size={V(8, 2.4, 8)} count={60} color="#ffffff" strength={0.35} />}
       {fx.includes("spray") && <Sprites n={30} F={F} at={sprayAt} kind="mist" size={0.1} />}
       {fx.includes("digits") && (["d0", "d1", "d4", "d7", "d9"] as const).map((k, j) => <Sprites key={k} n={30} F={F} at={digitAt(j)} kind={k} size={0.11} />)}
       {fx.includes("pigeon") && <Sprites n={1} F={F} at={pigeonAt} kind="pigeon" size={0.32} />}

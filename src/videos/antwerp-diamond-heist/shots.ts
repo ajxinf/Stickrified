@@ -46,7 +46,8 @@ const shot = (id: string, to: number, lit: Lit, roles: Role[], cam: (F: number) 
   SHOTS.push(s);
   return s;
 };
-const close = (d: number) => () => DOF.closeup(d), mid = (d: number) => () => DOF.medium(d);
+// close-ups keep a 4 px background blur (richness: the 5 px preset read soft across ~40 close shots)
+const close = (d: number) => () => ({ ...DOF.closeup(d), maxPx: 4 }), mid = (d: number) => () => ({ ...DOF.medium(d), maxPx: 3.5 });
 const NONE = () => DOF.none;
 /** A framing that creeps (push ~10 % + a little side drift). */
 const creep = (f0: { pos: Vector3; look: Vector3; fov: number }, F: number, a: number, b: number, push = 0.1, rise = 0, drift = 0.2) => {
