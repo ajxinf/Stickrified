@@ -1,4 +1,21 @@
 {
+ "kloofendal_43d_clear_puresky": {
+  "bright": [
+   35.5,
+   43.2
+  ],
+  "crop": 0.55556,
+  "horizon": [
+   0.7001,
+   0.734,
+   0.7768
+  ],
+  "zenith": [
+   0.3898,
+   0.4834,
+   0.6287
+  ]
+ },
  "kloofendal_48d_partly_cloudy_puresky": {
   "bright": [
    34.1,
@@ -82,6 +99,23 @@
    0.1905,
    0.3154,
    0.4524
+  ]
+ },
+ "qwantani_noon_puresky": {
+  "bright": [
+   35.5,
+   50.3
+  ],
+  "crop": 0.55556,
+  "horizon": [
+   0.7388,
+   0.7687,
+   0.8025
+  ],
+  "zenith": [
+   0.4075,
+   0.5308,
+   0.6941
   ]
  }
 }
