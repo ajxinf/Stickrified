@@ -232,7 +232,7 @@ shot("T3-flings", B.flings + 10, "forest", [speedyForest, youForest], (F) => cre
 // does: wide: paper and bags rain over the clearing like confetti
 shot("T4-confetti", L(23, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(2.6, 1.6, 3.6), V(-0.8, 1.5, -1.5), 52), F, B.flings + 10, L(23, 0), 0.06), { wide: true, subject: "speedy", dof: NONE, fx: ["forestMist", "trashRain"] });
 // does: Speedy yanks you back to the car by the sleeve; you look back at the mess
-shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-2.95, 1.25, -3.25), 48), F, L(23, 0), L(24, 0), 0.08), { dof: mid(2.2) });
+shot("T5-just-drive", L(24, 0), "forest", [speedyForest, youForest], (F) => creep(P(V(-1.4, 1.4, -1.15), V(-2.95, 1.25, -3.25), 48), F, L(23, 0), L(24, 0), 0.08), { dof: NONE });
 
 // ================================================================== line 24-26: the man who hates litter
 // does: the next morning an old man with a stick walks into the clearing and stops dead at the trash
