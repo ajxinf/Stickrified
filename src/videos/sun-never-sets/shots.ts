@@ -261,7 +261,7 @@ shot("T2-the-bite", L(21, 0), "box", [], (F) => creep(P(V(0, BOX.h / 2 + 0.03, -
 // ================================================================== line 21: the Moon didn't stop
 // does: telephoto on the sun: the Moon's disc slides further in, the bite growing on "didn't"
 const sunCam = (pos: Vector3, fov: number) => P(pos, pos.clone().addScaledVector(SUN, 100), fov);
-shot("U1-moon-slides", L(22, 0), "day", [], (F) => { const a = sunCam(V(-2.6, 1.3, -2.5), 17), b = sunCam(V(-2.6, 1.3, -2.5), 13); const c = glideCam(a, b, F, L(21, 0), L(22, 0)); c.look.add(V(0.0, 3.0, 4.5).multiplyScalar(span(F, L(21, 0), L(22, 0)) - 0.5)); return c; }, { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT, props: [fxOn("the bite grows", L(21, 3)), fxOn("the Moon slides in", B.didnt - 2)] });
+shot("U1-moon-slides", L(22, 0), "day", [], (F) => { const a = sunCam(V(-2.6, 1.3, -2.5), 17), b = sunCam(V(-2.6, 1.3, -2.5), 13); const c = glideCam(a, b, F, L(21, 0), L(22, 0)); c.look.add(V(0.0, 3.0, 4.5).multiplyScalar(span(F, L(21, 0), L(22, 0)) - 0.5)); return c; }, { wide: true, subject: undefined, dof: NONE, allow: { ...SKY_TEXT, "Camera curve": "telephoto on the bare sky: no set in frame to measure creep against; the Moon is the motion" }, props: [fxOn("the bite grows", L(21, 3)), fxOn("the Moon slides in", B.didnt - 2)] });
 
 // ================================================================== line 22: the dots were the Moon
 // does: back in the kitchen, from where you drew them: the dot trail on the glass runs straight to the Moon on the sun
@@ -292,8 +292,8 @@ shot("Y2-corona", L(26, 0), "night", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5),
 
 // ================================================================== line 26: the stars come out
 // does: from your amazed face on the mattress the lens cranes up into a sky full of stars
-const Z1a = P(V(-1.9, 1.0, 2.4), V(-2.3, 0.8, 0.4), 44), Z1b = P(V(-1.85, 1.3, 2.62), V(-2.5, 4.1, -5.0), 52);
-shot("Z1-stars", B.stars + 6, "night", [youMat], (F) => glideCam(Z1a, Z1b, F, L(26, 0), B.stars + 6), { subject: "you", subjectFrom: 0, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(26, 0)), allow: { ...SKY_TEXT, ...SEAT_OK, "Subject in frame": "the crane leaves you for the stars" } });
+const Z1a = P(V(-1.9, 1.0, 2.4), V(-2.3, 0.8, 0.4), 44), Z1b = P(V(-1.85, 1.28, 2.6), V(-2.5, 3.8, -5.0), 52);
+shot("Z1-stars", B.stars + 6, "night", [youMat], (F) => glideCam(Z1a, Z1b, F, L(26, 0), B.stars + 6), { subject: "you", subjectFrom: 0, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(26, 0)), allow: { ...SKY_TEXT, ...SEAT_OK, "Subject in frame": "the crane leaves you for the stars", "Caption vs face": "the crane tilts up off your face to the stars" } });
 // does: an owl on the power line hoots like it has waited a month, fireflies blinking below
 const OWL = V(-1.0, wireY(-1.0) + 0.16, OWL_AT.z);
 const Z2 = P(OWL.clone().add(V(-0.35, -0.6, -1.4)), OWL.clone().add(V(0, -0.35, 0)), 48);
@@ -322,7 +322,7 @@ shot("AC2-dad-asleep", L(30, 0), "night", [dad, ...SLEEPERS.slice(0, 2)], (F) =>
 const AD1 = P(V(-1.7, 1.0, 2.9), V(-2.3, 0.9, 0.3), 44);
 shot("AD1-three-minutes", L(30, 4), "night", [youMat], (F) => creep(AD1, F, L(30, 0), L(30, 4), 0.1), { dof: mid(2.4), fx: ["fireflies"], props: STREET_PROPS(L(30, 0)), allow: SEAT_OK });
 // does: mirror of the cold open: you and the toaster close; your eyes close into a smile, the toaster smiles too
-const AD2 = P(V(-2.15, 1.0, 1.95), V(-2.2, 0.9, 0.35), 44);
+const AD2 = P(V(-2.22, 1.0, 2.15), V(-2.3, 0.9, 0.35), 44);
 shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, 0.14), { dof: close(1.25), fx: ["fireflies"], props: [...STREET_PROPS(L(30, 4)), fxOn("your eyes close", B.toaster30 - 30), fxOn("the toaster smiles", B.toaster30 - 2)], allow: SEAT_OK });
 
 export const PLAN: Plan = { slug: "sun-never-sets", shots: SHOTS, words, inserts: INSERTS };
