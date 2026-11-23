@@ -25,7 +25,7 @@ export const LIGHT_S = V(-2.17, 1.12, 2.8); // light sensor on the left wall (fa
 export const RADAR = V(0, 2.76, 3.4);
 export const MAG = V(1.4, 1.95, 0.04); // magnet block on the wall beside the door's free edge
 export const LADDER = V(1.58, 0, 1.75); // the crate stack you stand on (name kept: lines 1-5 and 29)
-export const CRATE_TOP = 3 * 0.35;
+export const CRATE_TOP = 2 * 0.35;
 export const DESK = V(0.65, 0, 7.6); // guard desk, long side along z, front toward -x
 export const GUARD_SEAT = V(1.6, 0, 7.55); // where the guard stands behind his desk
 export const CALENDAR = V(2.17, 1.62, 6.55);
@@ -294,7 +294,7 @@ export const vault = (withLadder = false) => {
   // three crates stacked under the sensor (you stand on the top one, the can rests on it at the end)
   if (withLadder) {
     const stack = new Group();
-    for (let i = 0; i < 3; i++) stack.add(place(model("wooden_crate_01", { collider: false }), LADDER.x + (i % 2 ? 0.03 : -0.02), i * 0.35, LADDER.z + (i === 1 ? 0.04 : 0), Math.PI / 2 + (i - 1) * 0.06));
+    for (let i = 0; i < 2; i++) stack.add(place(model("wooden_crate_01", { collider: false }), LADDER.x + (i % 2 ? 0.03 : -0.02), i * 0.35, LADDER.z + (i === 1 ? 0.04 : 0), Math.PI / 2 + (i - 1) * 0.06));
     stack.userData.collider = "crates"; // one stack standing on the floor (QA sees a single support)
     g.add(stack);
   }

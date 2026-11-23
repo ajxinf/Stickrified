@@ -79,7 +79,7 @@ export const worldAt = (F: number): WorldState => ({
   plate: F >= B.plate - 1 && F < L(28, 0),
   tape: F >= B.tape - 1 && F < L(28, 0),
   fogLens: F >= B.spray && F < L(6, 0) || F >= L(14, 0),
-  heatLed: !(F >= L(14, 0) && F < L(28, 0)),
+  heatLed: !(F >= L(14, 0) && F < L(29, 6)),
   lightLed: !(F >= B.tape - 1 && F < L(28, 0)),
   boxes: F < B.boxes ? 0 : (F - B.boxes) * 1.6,
   loot: F >= B.sunrise - 30 && F < L(20, 0),
