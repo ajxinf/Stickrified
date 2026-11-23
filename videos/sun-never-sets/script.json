@@ -1,0 +1,263 @@
+{
+  "slug": "sun-never-sets",
+  "title": "What if the sun never set again?",
+  "pillar": "Scenario",
+  "formula": "Strange act (3 AM, blazing sun, you dig a hole) -> why (the sun stopped 40 days ago) -> rival's perfect version (Kyle's pool party that never ends) + mocker ('Who needs night?') -> first fallout (no dark = no sleep: mom's six breakfasts, owls on strike) -> the real threat (no night = no cooling: the stove never turns off; soft roads, egg on the car) -> weird prep, mystery kept (tinfoil baked-potato house, mattress dragged out, thermometer on a string into the hole) -> mocker laughs off his flamingo (plants the flamingo) -> setback (day 40: every AC at once, the grid pops, 120 on the porch, the pool turns to soup) -> tension stretch (five feet, ten, fifteen) -> payoff (dark, quiet, sixty degrees) + 'You see' picnic-cooler analogy -> hidden plan (you checked that string every day: sixty, every time) -> reversal (the lid doesn't fit, a sliver of sun) -> doubter flips ('Mole man... got room?') -> his own toy saves you (the flamingo plugs the gap) -> loop: 'It's 3 AM. And finally... it feels like it.'",
+  "loop": "Line 1: 'It's 3 AM, the sun is blazing, and you're digging a hole.' Last: 'It's 3 AM. And finally... it feels like it.' (the phone clock reads 3:00 AM in both, blazing sun first, darkness last).",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "voices": {
+    "kyle": "TX3LPaxmHKxFdv7VOQHJ"
+  },
+  "voiceNotes": {
+    "kyle": "Liam (ElevenLabs premade): energetic young man, a loud party-bro neighbour who later begs"
+  },
+  "facts": [
+    "Scenario premise: the sun just stops in the sky (never explained; a real stop of Earth's spin would be far worse, so the script does not claim a cause).",
+    "Melatonin, the hormone that makes you sleepy, is released by the pineal gland in darkness; light suppresses it (NIH / Sleep Foundation).",
+    "At night Earth's surface loses heat by radiating infrared to space; without nights the daily cooling disappears and heat keeps building (basic radiative balance; why deserts cool fast at night).",
+    "A few feet underground the soil barely feels daily swings; about 10-20 ft down it sits near the local yearly average, roughly 50-60 F over much of the US (the basis of geothermal heat pumps and root cellars). Heat takes weeks to months to soak down.",
+    "Heat waves send air-conditioning demand past what grids can supply, causing blackouts (e.g. California rolling blackouts, August 2020).",
+    "Asphalt softens in extreme heat; people in midnight-sun places (Alaska, northern Norway) cover windows with tinfoil or blackout blinds to sleep.",
+    "Comic exaggeration: 120 F on the porch after 40 days, owls on strike, the pool turning to soup, six breakfasts a day, the egg on the car, the flamingo plug."
+  ],
+  "lines": [
+    {
+      "narration": "It's 3 AM, the sun is *blazing*, and you're digging a hole in your backyard.",
+      "spoken": "It's three A.M., the sun is BLAZING, and you're digging a hole in your backyard.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open, a suburban backyard under a hard white noon sun: you, sweaty, in the rust hoodie, shovel deep in a hole, dirt flying; your phone propped on the fence post glows 3:00 AM. Cut on 'blazing' to the sun itself, huge and glaring over the rooftops, heat shimmer.",
+      "camera": "MCU on you digging, the phone sharp in the foreground; hard cut up to the sun on 'blazing', back down to the hole",
+      "onScreenText": "Phone lock screen: 3:00 AM",
+      "gag": "The phone says 3:00 AM while the sun blasts like noon"
+    },
+    {
+      "narration": "Because 40 days ago, the sun stopped in the sky... and never *set* again.",
+      "spoken": "Because forty days ago, the sun stopped in the sky... and never set again.",
+      "audioTag": "dramatic",
+      "scene": "The sun sliding down toward the horizon over the town, then halting dead with a jolt, a little bounce; below it the street's shadows freeze. Insert: a kitchen calendar with 40 days crossed out in red marker.",
+      "camera": "Wide on the sky, the sun's slide, a snap shake on the stop; hard cut to the calendar push-in",
+      "onScreenText": "Calendar: 40 days crossed out",
+      "gag": "The sun brakes like a car, and bounces"
+    },
+    {
+      "narration": "At first, everybody *loves* it.",
+      "audioTag": "excited",
+      "scene": "Your street in full sun: kids on bikes, a sprinkler, an ice cream truck, a grandpa in a deck chair with his shirt off.",
+      "camera": "Fast tracking move along the street",
+      "onScreenText": "",
+      "gag": "Grandpa sunbathing in a deck chair, shirt off, arms up"
+    },
+    {
+      "narration": "Your neighbor Kyle starts a pool party that *never ends*.",
+      "audioTag": "playful",
+      "scene": "Over the fence: Kyle's backyard pool, Kyle in shades and a tank top lounging on a giant pink inflatable flamingo, a banner over the pool 'ENDLESS SUMMER', speaker booming, a dozen guests.",
+      "camera": "Crane up over the fence to reveal the party",
+      "onScreenText": "Banner: ENDLESS SUMMER",
+      "gag": "Kyle on a flamingo the size of a car"
+    },
+    {
+      "narration": "\"Hey, mole man! Who needs *night*?\"",
+      "speaker": "kyle",
+      "audioTag": "mocking, loud",
+      "scene": "Kyle on his flamingo, pointing at you over the fence with his drink, laughing; the guests laugh too.",
+      "camera": "Telephoto MCU of Kyle, guests laughing behind",
+      "onScreenText": "",
+      "gag": "The whole party laughs at you in sync"
+    },
+    {
+      "narration": "But your brain only makes its sleepy chemical in the *dark*.",
+      "audioTag": "quick",
+      "scene": "Full-frame x-ray insert of your head: a little tap inside your brain dripping blue sleepy drops; a beam of sunlight hits it and the tap screws shut.",
+      "camera": "Hard cut to the insert, push-in on the tap",
+      "onScreenText": "Tap label: MELATONIN",
+      "gag": "Sunlight slams the brain's sleep tap shut"
+    },
+    {
+      "narration": "So nobody *sleeps*. Your mom eats breakfast six times a day. And the owls go on *strike*.",
+      "spoken": "So nobody sleeps. Your mom eats breakfast SIX times a day. And the owls go on strike.",
+      "audioTag": "amused",
+      "scene": "Three beats: you in bed, wide awake, eyes red, tinfoil not yet up, sun blasting through the blinds; your mom at the kitchen table with a stack of six cereal bowls; three owls on the fence holding a little picket sign 'WE WORK NIGHTS'.",
+      "camera": "Hard cuts, one per beat, the owls get a slow push-in",
+      "onScreenText": "Owl sign: WE WORK NIGHTS",
+      "gag": "Owls on a picket line"
+    },
+    {
+      "narration": "Then it gets *hot*.",
+      "audioTag": "urgent, building",
+      "scene": "The porch thermometer, needle creeping up; the lawn going yellow.",
+      "camera": "Macro on the thermometer, the needle moves on 'hot'",
+      "onScreenText": "Thermometer reads 98",
+      "gag": "The thermometer needle twitches up"
+    },
+    {
+      "narration": "Every night, Earth used to cool off, like a pan pulled off the *stove*.",
+      "audioTag": "quick",
+      "scene": "Mini-set: a kitchen stove, a hot frying pan lifted off the glowing burner, steam fading as it cools; the pan's bottom is a little painted Earth.",
+      "camera": "Insert, the pan lifts off on 'stove'",
+      "onScreenText": "",
+      "gag": "The pan is a tiny Earth"
+    },
+    {
+      "narration": "Now the stove never turns *off*.",
+      "spoken": "Now the stove NEVER turns off.",
+      "audioTag": "dramatic",
+      "scene": "The same burner glowing brighter, the knob snaps to MAX by itself and breaks off in a hand; match cut to the sun over your street.",
+      "camera": "Macro on the knob, match cut to the sun",
+      "onScreenText": "Knob: OFF / MAX",
+      "gag": "The knob breaks off in your hand"
+    },
+    {
+      "narration": "The road goes soft like *gum*. Kyle fries an egg on his *car*.",
+      "audioTag": "amused",
+      "scene": "A sneaker peeling up from the asphalt with a long sticky string; Kyle cracking an egg on the hood of his car, it sizzles instantly.",
+      "camera": "Low macro on the sneaker, then MCU on the egg hitting the hood",
+      "onScreenText": "",
+      "gag": "The road stretches like gum under a shoe"
+    },
+    {
+      "narration": "So you get weird. You cover every window in tinfoil, until your house looks like a giant baked *potato*.",
+      "audioTag": "mischievous",
+      "scene": "You on a ladder taping tinfoil over the last window; pull back to the whole house wrapped in shining foil, glaring in the sun.",
+      "camera": "MS on you taping, fast pull-out to the whole foil house on 'potato'",
+      "onScreenText": "",
+      "gag": "Your house is a baked potato"
+    },
+    {
+      "narration": "You drag your mattress across the yard, and lower a thermometer into the hole on a *string*.",
+      "audioTag": "playful",
+      "scene": "You hauling your mattress across the lawn, leaning into it; then crouched at the hole, lowering a little thermometer on a string into the dark.",
+      "camera": "Tracking side-on with the mattress drag, then top-down down the hole as the thermometer sinks",
+      "onScreenText": "",
+      "gag": "The thermometer disappears into the dark"
+    },
+    {
+      "narration": "Kyle laughs so hard, he falls off his *flamingo*.",
+      "audioTag": "amused",
+      "scene": "Kyle cracking up at you, rocking, sliding off the flamingo into the pool, splash.",
+      "camera": "MS of Kyle, the splash on 'flamingo'",
+      "onScreenText": "",
+      "gag": "Kyle slides off the flamingo into the pool"
+    },
+    {
+      "narration": "Then, on day 40, every air conditioner in town turns on at *once*.",
+      "spoken": "Then, on day forty, every air conditioner in town turns on at ONCE.",
+      "audioTag": "dramatic, alarmed",
+      "scene": "A row of AC units on every house roaring on together, fans spinning, power lines humming and sagging.",
+      "camera": "Fast whip along the row of AC units",
+      "onScreenText": "",
+      "gag": "Every AC on the street starts in the same frame"
+    },
+    {
+      "narration": "And the power grid goes *pop*.",
+      "audioTag": "urgent",
+      "scene": "The transformer on the pole sparks and bangs; every AC whines down and dies, the ice cream truck's music slows to a stop.",
+      "camera": "MCU on the transformer, a kick on 'pop'",
+      "onScreenText": "",
+      "gag": "The ice cream truck's tune dies mid-note"
+    },
+    {
+      "narration": "The porch thermometer hits 120. Kyle's pool turns into a hot *tub*. Then into *soup*.",
+      "spoken": "The porch thermometer hits one hundred and twenty. Kyle's pool turns into a hot tub. Then into soup.",
+      "audioTag": "urgent, building",
+      "scene": "The thermometer needle slamming to 120; Kyle's pool steaming, the party guests climbing out red as lobsters; then a floating lettuce leaf and a carrot in the steaming pool, the flamingo deflating sadly.",
+      "camera": "Macro on the needle, then a wide over the steaming pool, push-in on the carrot",
+      "onScreenText": "Thermometer reads 120",
+      "gag": "Vegetables floating in Kyle's pool, the flamingo sagging"
+    },
+    {
+      "narration": "So you climb down. Five feet. Ten feet. *Fifteen*.",
+      "spoken": "So you climb down. Five feet. Ten feet. FIFTEEN.",
+      "audioTag": "dramatic, building",
+      "scene": "You climbing down a wooden ladder into the hole, the bright square of sky shrinking above you, the dirt walls getting darker and cooler blue.",
+      "camera": "POV looking up at the shrinking sky, then a top-down shot of you going down",
+      "onScreenText": "",
+      "gag": "The sky shrinks to a stamp"
+    },
+    {
+      "narration": "And at the bottom, it's dark, it's quiet, and your thermometer says *sixty*.",
+      "spoken": "And at the bottom, it's dark, it's quiet, and your thermometer says... sixty.",
+      "audioTag": "amazed",
+      "scene": "The bottom of the hole is a little room: your mattress, a rug, the thermometer on its string reading 60; you breathe out, the sweat on your face drying.",
+      "camera": "Macro on the thermometer, rack to your relieved face",
+      "onScreenText": "Thermometer reads 60",
+      "gag": "Your sweat drop shrinks away"
+    },
+    {
+      "narration": "You see, the ground is like a picnic *cooler*.",
+      "audioTag": "playful",
+      "scene": "Mini-set: a picnic cooler in blazing sun on the grass, the lid sizzling; cross-section shows ice still solid at the bottom.",
+      "camera": "Dissolve to the cooler, slow push-in",
+      "onScreenText": "",
+      "gag": "An egg fries on the cooler lid while the ice inside sits frozen"
+    },
+    {
+      "narration": "The sun can bake the lid, but the heat takes *months* to reach the bottom.",
+      "audioTag": "quick",
+      "scene": "Cross-section of your backyard: hot red ground at the top fading to cool blue at the bottom where you sit, a slow red wave crawling down only a little way.",
+      "camera": "Cross-section cut-away, tilt down from the lawn to you",
+      "onScreenText": "",
+      "gag": "The heat wave crawls down like it is stuck in syrup"
+    },
+    {
+      "narration": "For 40 days, Kyle partied, and you checked that string. Sixty. Every single *time*.",
+      "spoken": "For forty days, Kyle partied, and you checked that string. Sixty. Every single time.",
+      "audioTag": "proud",
+      "scene": "Quick flash of you every 'day' at the hole, pulling up the string, nodding at the thermometer, while Kyle parties over the fence in the same sun.",
+      "camera": "Match cuts on the same framing, the shadows never moving",
+      "onScreenText": "",
+      "gag": "Same framing, same sun, same 60, a little taller pile of dirt each time"
+    },
+    {
+      "narration": "But your lid doesn't fit. A *sliver* of sun stabs right into your eyes.",
+      "audioTag": "panicked",
+      "scene": "You pulling a tinfoil-covered lid over the hole from below; it is a little too small, a blade of white sun cuts through the gap straight across your face.",
+      "camera": "Low angle up at the lid, the beam hits your eyes on 'sliver'",
+      "onScreenText": "",
+      "gag": "A laser-thin beam of sun right across your eyes"
+    },
+    {
+      "narration": "Then a *face* fills the gap.",
+      "audioTag": "dramatic",
+      "scene": "Kyle's sunburnt face pressed into the gap in the lid, blocking the beam, eyes huge and bloodshot.",
+      "camera": "POV up at the gap",
+      "onScreenText": "",
+      "gag": "Kyle's face plugs the light"
+    },
+    {
+      "narration": "\"Mole man... got *room*?\"",
+      "speaker": "kyle",
+      "audioTag": "pleading, desperate",
+      "scene": "Kyle in the gap, sweaty and lobster-red, holding his half-deflated flamingo.",
+      "camera": "Hold on Kyle's face, slow push-in",
+      "onScreenText": "",
+      "gag": "The mocker begs"
+    },
+    {
+      "narration": "So Kyle does the smartest thing he's done in 40 days. He jams his giant *flamingo* into the gap.",
+      "spoken": "So Kyle does the smartest thing he's done in forty days. He jams his giant flamingo into the gap.",
+      "audioTag": "excited",
+      "scene": "Kyle squeezing down the ladder, then stuffing the pink flamingo into the gap in the lid: its head and neck squash in, the light shrinks to nothing.",
+      "camera": "Low angle up, the flamingo's squashed face fills the gap on 'flamingo'",
+      "onScreenText": "",
+      "gag": "The flamingo's squashed face becomes your door"
+    },
+    {
+      "narration": "*Darkness*.",
+      "audioTag": "amazed",
+      "scene": "Black, then the faint glow of your phone screen lighting two faces on the mattress.",
+      "camera": "Hard cut to near-black, the phone glow fades up",
+      "onScreenText": "",
+      "gag": "Real dark for the first time in 40 days"
+    },
+    {
+      "narration": "It's 3 AM. And finally... it *feels* like it.",
+      "spoken": "It's three A.M. [sighs] And finally... it feels like it.",
+      "audioTag": "relieved",
+      "scene": "Close-up in the phone glow: the phone reads 3:00 AM; your eyes drooping into a happy sleepy smile, Kyle already snoring on your shoulder.",
+      "camera": "Mirror of the cold open: the phone sharp in the foreground, your face behind; the phone dims on the last word",
+      "onScreenText": "Phone lock screen: 3:00 AM",
+      "gag": "Kyle snores on your shoulder"
+    }
+  ]
+}
