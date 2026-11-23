@@ -169,7 +169,7 @@ export const youK11 = role("you", youLook, YOU_K11, (F) => {
   return st(alive(p, F, 3, [0.3, 0]), F, 3, [[0, "determined"], [B.hole - 8, "scheming"], [B.hole, "excited"], [B.box, "grin"]], { heading: 0.35 });
 });
 // Kitchen, line 12: you lean over the sink and draw today's dot on the glass.
-export const YOU_K12 = V(0.05, 0, -1.86); // right at the glass (no counter under the window)
+export const YOU_K12 = V(0.05, 0, -1.8); // right at the glass (no counter under the window)
 export const youK12 = role("you", youLook, YOU_K12, (F) => {
   // the marker up at the glass, then a little tap on "dot"
   const p = pose([[0, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.3, -0.45], grip: "fist", layer: "front" }], lean: 0.2 }], [B.dot - 8, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.05, -0.5], grip: "fist", layer: "front" }], lean: 0.35, tilt: -5 }], [B.dot + 4, { ...REST, arms: [{ at: [0.25, 0.6], grip: "fist" }, { at: [0.1, -0.45], grip: "fist", layer: "front" }], lean: 0.3, tilt: -3 }]], F);
@@ -272,7 +272,7 @@ export const dad = role("dad", dadLook, (F) => mowerAt(F).add(DAD_ON_MOWER), (F)
   return asleep(st(pose([[0, { ...SIT, arms: arms([0.6, 0.25], [0.6, 0.25]) }], [L(29, 8), { ...SIT, arms: arms([0.6, 0.25], [0.3, 0.75]), sway: -6 }]], F), F, 17, [[0, "tired"]], { heading: 0.4 }), F, 17);
 }, { sit: true });
 export const DAD_SEAT_H = MOWER_SEAT;
-const KID_A = [V(-8, 0, 6.6), V(1.2, 0, 5.9)] as const, KID_B = [V(-9.2, 0, 7.3), V(0.2, 0, 6.8)] as const;
+const KID_A = [V(-8, 0, 7.4), V(1.2, 0, 6.7)] as const, KID_B = [V(-9.2, 0, 8.1), V(0.2, 0, 7.6)] as const;
 const runner = (name: string, look: Look, [a, b]: readonly [Vector3, Vector3], seed: number, off: number) => role(name, look, (F) => lerpV(a, b, clamp01((F - L(3, 0) - off) / 70)), (F) => {
   const t = clamp01((F - L(3, 0) - off) / 70);
   const r = t > 0 && t < 1 ? runPose(a.distanceTo(b) * t * 0.9) : REST;

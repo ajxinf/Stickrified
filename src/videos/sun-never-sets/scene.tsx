@@ -99,7 +99,7 @@ export const World: React.FC<{ w: Place; preset: LightPreset; s: WorldState; F: 
     lamps?.children.forEach((m, i) => (m.visible = i < STREET_LAMP_HEADS.length ? s.lamps > i * 3 : s.lamps > 4 + (i - STREET_LAMP_HEADS.length) * 3));
   }
   if (w === "home") (named(g, "dots") as Mesh).material = dotsMat(s.dots);
-  if (w === "ohio") { named(g, "fridgeDoor")!.rotation.y = 1.9 * s.fridgeDoor; named(g, "fridgeLamp")!.visible = s.fridgeLamp; }
+  if (w === "ohio") { named(g, "fridgeLid")!.rotation.y = 1.9 * s.fridgeDoor; named(g, "fridgeLamp")!.visible = s.fridgeLamp; }
   if (w === "box") { const p = named(g, "projection") as Mesh<BufferGeometry, MeshBasicMaterial>; const t = projection(s.moon); if (t && p.material.map !== t) { p.material.map = t; p.material.needsUpdate = true; } }
   const list = practicals(w, s, night);
   const key = list.map((p) => p.color.join()).join("|");

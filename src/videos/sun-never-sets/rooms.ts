@@ -261,10 +261,7 @@ export const ohio = () => {
   door.add(plane(0.2, 0.1, unlit("ohio", ohioTex), V(-w / 2, 1.5, 0.065)));
   door.add(plane(0.16, 0.2, litTex("ohioArt", fridgeArt), V(-w / 2 + 0.15, 1.2, 0.065), 0, 0, -0.08));
   door.position.set(x + w / 2, 0, zf);
-  door.name = "fridgeDoor";
-  door.userData.door = h;
-  door.userData.opens = true;
-  door.userData.out = new Vector3(0, 0, 1);
+  door.name = "fridgeLid"; // (not "door": the room door check would read the fridge as a doorway)
   g.add(door);
   g.add(place(model("potted_plant_01", { collider: false, scale: 0.5 }), 1.6, 0.93, z - 0.1, 0.4));
   return g;

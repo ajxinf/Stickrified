@@ -109,7 +109,7 @@ shot("B2-sundial", L(3, 0), "day", [], (F) => creep(B2, F, B.sky + 4, L(3, 0), 0
 // does: two kids sprint along the south lawn past the kicked-over BEDTIME? sign, the lens tracking with them
 // a fixed lens (a tracking lens smears the kids with the camera's motion blur): they sprint at it, growing
 const C1 = P(V(3.4, 1.0, 4.0), V(-2.6, 0.9, 6.9), 46);
-shot("C1-kids", L(3, 7), "fun", [kidA, kidB], (F) => creep(C1, F, L(3, 0), L(3, 7), 0.16), { subject: undefined, wide: true, dof: NONE, allow: { "Text in frame": "the kicked-over BEDTIME? sign slides past the frame edge as the kids run" }, props: STREET_PROPS(L(3, 0)) });
+shot("C1-kids", L(3, 7), "fun", [kidA, kidB], (F) => creep(C1, F, L(3, 0), L(3, 7), 0.16), { subject: undefined, wide: true, dof: NONE, allow: { "Text in frame": "the kicked-over BEDTIME? sign slides past the frame edge as the kids run", "Cast overlap": "the kids run past the neighbour watering his lawn" }, props: STREET_PROPS(L(3, 0)) });
 // does: Dad rides his mower across a lawn mown to dirt, then waves at the chalk tally: 11 MOWS
 // the lens pans with the mower; the MOWS chalkboard slides into frame behind him
 const C2 = (F: number) => { const x = mowerAt(F).x; return P(V(x + 0.3, 1.3, -4.7), V(x + 0.05, 0.85, -9.4), 50); };
@@ -175,7 +175,7 @@ shot("J2-scheme", L(11, 0), "day", [youFence], (F) => creep(J2, F, L(10, 4), L(1
 // does: you hold the SUNNY O's box out in one hand and jab a pencil through its side with the other on "hole"
 const K1 = P(YOU_K11.clone().add(V(0.35, 1.15, 2.2)), YOU_K11.clone().add(V(0.05, 1.0, 0)), 44);
 const K1c = (F: number) => creep(K1, F, L(11, 0), L(11, 6), 0.12);
-const boxLeft = held("cereal box (left)", () => cerealBox(), youK11, "left", K1c, { fwd: 0.06, up: -0.14, when: (F) => F < L(11, 6) });
+const boxLeft = held("cereal box (left)", () => cerealBox(), youK11, "left", K1c, { fwd: 0.06, up: -0.09, when: (F) => F < L(11, 6) });
 const pencilRight = held("pencil", pencil, youK11, "right", K1c, { fwd: 0.08, orient: (ob) => { ob.rotation.y -= Math.PI / 2; } });
 shot("K1-pencil", L(11, 6), "kitchen", [youK11], K1c, { dof: close(1.4), props: [boxLeft, pencilRight, kitchenToaster], allow: { "Props through props": "the pencil pokes through the box: the gag" } });
 // does: you hold the box up to one eye and peer in, grinning
@@ -190,7 +190,7 @@ const sillPhone = free("phone 7am", () => phone("7:00", "MORNING?"), (o, F) => {
 shot("L1-7am", L(12, 8), "kitchen", [], (F) => creep(L1, F, L(12, 0), L(12, 8), 0.12), { subject: undefined, dof: close(0.75), props: [sillPhone, kitchenToaster, fxOn("the phone lights up", L(12, 1) - 2), fxOn("the phone buzzes 7:00", L(12, 6))] });
 // does: from outside the window: you lean in with a marker and today's dot lands on the glass on "dot"
 const L2tip = dotAt(2);
-const L2 = P(L2tip.clone().add(V(0.12, 0.05, -1.7)), YOU_K12.clone().add(V(0, 1.2, 0)), 32);
+const L2 = P(L2tip.clone().add(V(0.12, 0.05, -2.15)), YOU_K12.clone().add(V(0, 1.2, 0)), 32);
 const L2c = (F: number) => creep(L2, F, L(12, 8), L(13, 0), 0.08);
 shot("L2-the-dot", L(13, 0), "kitchen", [youK12], L2c, { dof: close(1.7), props: [fxOn("today's dot lands", B.dot), held("marker", marker, youK12, "right", L2c, { fwd: 0.12, orient: (ob) => ob.rotation.set(-0.5, ob.rotation.y, 0.75) })] });
 

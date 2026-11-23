@@ -392,7 +392,7 @@ const backdrop = (g: Group) => {
 };
 const dressing = (g: Group) => {
   g.add(mailbox(YOU_HOUSE.door + 1.0, WALK_N - 0.35, "#3a6ab8"), mailbox(KYLE_HOUSE.door - 1.1, WALK_N - 0.35, "#2a2a30"), mailbox(-21, WALK_N - 0.35, "#f2c23a"));
-  for (const x of [-15, -4.5, 6.5, 17.5, 29]) g.add(mailbox(x + 1.6, WALK_S + 0.35, ["#d8342c", "#3a8a4a", "#f2ece2", "#3a6ab8", "#c8582c"][Math.abs(Math.round(x)) % 5], Math.PI));
+  for (const x of [-15, -4.5, 6.5, 17.5, 29]) g.add(mailbox(x + 2.2, WALK_S + 0.35, ["#d8342c", "#3a8a4a", "#f2ece2", "#3a6ab8", "#c8582c"][Math.abs(Math.round(x)) % 5], Math.PI));
   g.add(hoop(14.6, -9.6));
   g.add(paddlingPool());
   // parked cars under covers in driveways, flower beds along the fronts, hedges
@@ -425,7 +425,7 @@ export const street = () => {
     g.add(h);
   });
   // trees, shrubs, a gnome, bins, a hydrant
-  for (const [x, z, s] of [[-14.5, -8, 0.9], [15.5, -8.5, 0.85], [-10, 8.6, 0.9], [1.5, 8.8, 0.8], [12.5, 8.5, 0.95], [24, 8.6, 0.85]] as const) g.add(tree(x, z, s, x));
+  for (const [x, z, s] of [[-14.5, -8, 0.9], [15.5, -8.5, 0.85], [-14.6, 9.8, 0.9], [1.5, 8.8, 0.8], [12.5, 8.5, 0.95], [24, 8.6, 0.85]] as const) g.add(tree(x, z, s, x));
   for (const [x, z] of [[-10.2, -10.6], [-5.5, -10.6], [4.2, -10.6], [10.6, -10.6]] as const) g.add(place(model("shrub_01", { collider: false, scale: 0.9 }), x, 0, z, 0));
   g.add(place(model("shrub_03", { collider: false }), -12.5, 0, -10.4, 0.2));
   g.add(place(model("garden_gnome", { collider: "gnome", height: 0.42 }), -10.4, 0, -7.9, 0.5));
