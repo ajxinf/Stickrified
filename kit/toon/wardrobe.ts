@@ -124,9 +124,13 @@ export const nameTag = (text: string, col = WHITE, dx = 0.45): Layer => (p, t) =
   p.poly(rect(x - 14 * u, y, 28 * u, 11 * u), col, 1.2 * u);
   p.g.save();
   p.g.fillStyle = INK;
-  p.g.font = `900 ${8 * u}px sans-serif`;
+  // fit the text inside the tag (ep 6: SECURITY / POLITIE ran past both ends at 8u)
+  let fs = 8 * u;
+  p.g.font = `900 ${fs}px sans-serif`;
+  const w = p.g.measureText(text).width;
+  if (w > 24 * u) { fs *= (24 * u) / w; p.g.font = `900 ${fs}px sans-serif`; }
   p.g.textAlign = "center";
-  p.g.fillText(text, x, y + 8.6 * u);
+  p.g.fillText(text, x, y + 5.5 * u + fs * 0.4);
   p.g.restore();
 };
 

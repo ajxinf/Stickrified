@@ -3,7 +3,7 @@ import { BoxGeometry, CylinderGeometry, ExtrudeGeometry, Group, Mesh, MeshBasicM
 import { M } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { toonMaterial } from "../../../kit/toon/shade";
-import { MATS, V, boardTex, box, canvasTex, colMat, litTex, place, plane } from "./common";
+import { MATS, V, boardTex, box, canvasTex, colMat, glowMat, litTex, place, plane } from "./common";
 
 /** antwerp-diamond-heist story props. Origins are the grip point (held props) or the base (lying props). */
 const pinkCan = () => M("adh-can", () => toonMaterial({ map: canvasTex(256, 256, (c) => {
@@ -178,11 +178,15 @@ export const cuffs = () => {
   g.add(box(0.04, 0.008, 0.008, steel, V(0, 0, 0)));
   return g;
 };
-/** A jeweller's loupe (line 7) at the eye: a short black barrel, origin at its rim. */
+/** A jeweller's loupe (line 7) held up to the eye: a bright brass barrel with a glinting lens, big enough to read at
+ * phone size (user: the first one read as part of the arm). Origin at its rim. */
 export const loupe = () => {
   const g = new Group();
-  g.add(place(new Mesh(new CylinderGeometry(0.03, 0.035, 0.04, 16).rotateX(Math.PI / 2), colMat("#1c1c22", { spec: 0.6 })), 0, 0, 0.02));
-  g.add(place(new Mesh(new CylinderGeometry(0.026, 0.026, 0.004, 16).rotateX(Math.PI / 2), M("adh-lens", () => new MeshBasicMaterial({ color: "#cfe8ff", transparent: true, opacity: 0.45 }))), 0, 0, 0.041));
+  const brass = colMat("#e2b84a", { spec: 1, gloss: 0.7, rough: 0.15 });
+  g.add(place(new Mesh(new CylinderGeometry(0.05, 0.058, 0.07, 24).rotateX(Math.PI / 2), brass), 0, 0, 0.035));
+  g.add(place(new Mesh(new TorusGeometry(0.052, 0.009, 8, 24), colMat("#1c1c22", { spec: 0.6 })), 0, 0, 0.072));
+  g.add(place(new Mesh(new CylinderGeometry(0.046, 0.046, 0.004, 24).rotateX(Math.PI / 2), M("adh-lens2", () => new MeshBasicMaterial({ color: "#d8f0ff", transparent: true, opacity: 0.6 }))), 0, 0, 0.073));
+  g.add(place(new Mesh(new SphereGeometry(0.012, 8, 6), glowMat("#ffffff", 3)), 0.02, 0.02, 0.076)); // the glint
   return g;
 };
 /** A lock pick (the Monster, line 10): tiny in his giant fingers. */

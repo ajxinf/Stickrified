@@ -123,7 +123,7 @@ shot("F2-cup-tower", L(7, 0), "hideNight", [youCups], (F) => creep(P(V(0.15, 1.2
 // ================================================================== line 7-9: mission one
 // does: mirror POV: you in a sharp new suit check yourself, the loupe goes up to your eye on "magnifying glass"
 const G1 = P(V(2.05, 1.45, 0.6), V(0.25, 1.2, 0.6), 48);
-const loupeHeld = (cam: (F: number) => CamPose) => held("loupe", loupe, youMirror, "right", cam, { when: (F) => F >= B.glass - 4 });
+const loupeHeld = (cam: (F: number) => CamPose) => held("loupe", loupe, youMirror, "right", cam, { when: (F) => F >= B.glass - 4, fwd: 0.12 });
 shot("G1-the-suit", L(7, 9), "office", [youMirror], (F) => creep(G1, F, L(7, 0), L(7, 9), 0.1), { dof: mid(2.0), props: [loupeHeld((F) => creep(G1, F, L(7, 0), L(7, 9), 0.1))] });
 // does: close: the most serious face in Belgium cracks into a grin
 const G2 = on(youMirror, YOU_MIRROR, V(1.45, 0, 0.12), "cu", { fov: 46 });
