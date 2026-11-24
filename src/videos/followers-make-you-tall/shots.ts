@@ -87,7 +87,7 @@ shot("C1-dance", B.now, "day", [kaylaDance], kdCam, { dof: mid(2.4), props: [hel
 // does: the bus pulls through the street with giant Kayla sitting on its roof, sipping a bubble tea the size of a bin
 const C2 = P(V(-10.2, 1.0, 6.2), V(-4.5, 4.6, -2), 62);
 const busProp = free("bus", bus, (o, F) => { o.position.set(busX(F), 0, BUS_Z); }, ["ground", "road"]);
-shot("C2-bus-roof", L(4, 0), "day", [kaylaBus], (F) => { const c = creep(C2, F, B.now, L(4, 0), 0.1, 0.4, 0.6); c.look.x = busX(F) + 1.6; c.look.y += 1.2; return c; }, { wide: true, subjectFrom: 352 - 281, dof: NONE, props: [busProp, held("bubble tea", bubbleTea, kaylaBus, "right", () => C2, { fwd: 0.04 })], allow: { "Feet on the ground": "her legs hang down the bus side to the road", "Moving props": "the bus drives through", "Card penetration": "she sits on the moving bus", "Camera curve": "the lens pans with the bus", "Subject covered": "she rides in from behind the street tree (off-screen start)", "Text in frame": "shop signs behind the bus", Shadows: "she sits on the bus roof: her blob is on the roof" } });
+shot("C2-bus-roof", L(4, 0), "day", [kaylaBus], (F) => { const c = creep(C2, F, B.now, L(4, 0), 0.1, 0.4, 0.6); c.look.x = busX(F) + 1.6; c.look.y += 1.2; return c; }, { wide: true, subjectFrom: 355 - 281, dof: NONE, props: [busProp, held("bubble tea", bubbleTea, kaylaBus, "right", () => C2, { fwd: 0.04 })], allow: { "Feet on the ground": "her legs hang down the bus side to the road", "Moving props": "the bus drives through", "Card penetration": "she sits on the moving bus", "Camera curve": "the lens pans with the bus", "Subject covered": "she rides in from behind the street tree (off-screen start)", "Text in frame": "shop signs behind the bus", Shadows: "she sits on the bus roof: her blob is on the roof" } });
 
 // ================================================================== line 4: Grandpa rides the cat to bingo
 const catCam = (F: number) => { const c = catAt(F); return P(c.clone().add(V(-0.55, 0.16, 0.7)), c.clone().add(V(0.05, 0.14, 0)), 40); };
@@ -120,7 +120,7 @@ shot("F2-lid-shut", L(7, 0), "morning", [inBox, mia], F2, { subject: "you", dof:
 // does: Zoe at her duck-sticker locker turns round on "prom"
 shot("G1-zoe-locker", B.prom, "school", [zoe], (F) => creep(on(zoe, L(7, 0), V(0.55, 0, 1), 2.3, 42, { down: 0.3 }), F, L(7, 0), B.prom, 0.12), { dof: mid(2.3), props: [fxOn("she glances down the hall (a view turn the guard cannot see)", B.friday), fxOn("she reaches into her locker", B.zoe - 4)] });
 // does: from the floor: 4-inch you at her sneaker holding up a flower three times your size; she hugs her duck notebook
-const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.42, -0.3)), 62), F, B.prom, L(8, 0), 0.25, 0.03, 0.3);
+const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.37, -0.3)), 62), F, B.prom, L(8, 0), 0.15, 0.0, 0.3);
 shot("G2-your-flower", L(8, 0), "school", [youHall, zoe], G2, { subject: "you", dof: close(0.4), props: [held("flower", flower, youHall, "right", G2, { fwd: 0.01, orient: (ob) => { ob.scale.setScalar(0.5); } })], allow: { ...TINY_OK, "Subject size": "you are 4 inches tall at her feet: the story", Shadows: "the 4-inch card's blob probe catches Zoe's shoe hull beside it" } });
 
 // ================================================================== lines 8-9: Tyler, 800 feet tall (day)
