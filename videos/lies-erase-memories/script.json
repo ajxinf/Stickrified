@@ -147,9 +147,18 @@
       "gag": "Waffles hides from the music"
     },
     {
-      "narration": "\"Loved it?\" You say: \"That was... definitely a *song*.\"",
+      "narration": "\"Loved it?\"",
+      "speaker": "derek",
+      "audioTag": "smug",
+      "scene": "Derek lowers the recorder, eyebrows up, leaning into your face.",
+      "camera": "MCU on Derek",
+      "onScreenText": "",
+      "gag": "Derek leans in, waiting"
+    },
+    {
+      "narration": "You say: \"That was... definitely a *song*.\"",
       "speaker": "you",
-      "spoken": "\"Loved it?\" You say: \"That was... DEFINITELY a song.\"",
+      "spoken": "You say: \"That was... DEFINITELY a song.\"",
       "audioTag": "nervous",
       "scene": "You sweating, smile frozen, picking every word; Derek leans in, waiting for a bubble to pop. None does.",
       "camera": "Two-shot, Derek leaning into your face",
@@ -175,14 +184,22 @@
       "gag": "Derek's smile drops"
     },
     {
-      "narration": "Then at 6:40, Maya calls. \"Doing anything special *tonight*?\"",
-      "speaker": "maya",
-      "spoken": "Then at six-forty, Maya calls. \"Doing anything special tonight?\"",
+      "narration": "Then at 6:40, Maya *calls*.",
+      "spoken": "Then at six-forty, Maya calls.",
       "audioTag": "urgent",
       "scene": "Your phone buzzing on the counter, the screen shows MAYA and a heart; the oven clock reads 6:40. You answer; her voice on the line.",
       "camera": "Insert on the phone and the oven clock, then MCU on you with the phone",
       "onScreenText": "Phone: MAYA / oven clock 6:40",
       "gag": "The phone buzzes across the counter"
+    },
+    {
+      "narration": "\"Doing anything special *tonight*?\"",
+      "speaker": "maya",
+      "audioTag": "curious, cheerful",
+      "scene": "Maya on the phone in her bright kitchen, twirling the cord of her earbuds, smiling.",
+      "camera": "MCU on Maya",
+      "onScreenText": "",
+      "gag": "Maya twirls her earbud cord"
     },
     {
       "narration": "Say yes, and the surprise is ruined. So you say: \"Nope. *Nothing*.\"",
