@@ -213,7 +213,10 @@ export const youMat = role("you", youLook, YOU_MAT, (F) => {
     [0, "tired"], [L(14, 0), "smug"], [B.snapped, "deadpan"], [L(17, 0), "nervous"], [B.rings, "excited"], [L(18, 0), "determined"], [B.nothing, "nervous"], [B.ten, "worried"], [B.still, "scared"],
     [L(19, 0), "sad"], [L(20, 0), "suspicious"], [B.bite, "excited"], [B.didnt, "proud"], [B.dim, "relieved"], [B.stars, "excited"], [L(27, 0), "relieved"], [L(30, 0), "tired"],
   ], { heading: 0, fx: { ...sweat, ...(F >= snap(B.bite) && F < B.bite + 24 ? { bang: F - snap(B.bite) } : {}) } });
-  return F >= B.toaster30 - 30 ? asleep(s, F, 3) : s;
+  if (F < B.toaster30 - 30) return s;
+  const z = asleep(s, F, 3);
+  // the tail: a content blush rises as you sink into your first real sleep (the shot keeps acting after the last word)
+  return F >= LAST + 4 ? { ...z, fx: { ...z.fx, blush: Math.min(1, (F - LAST - 4) / 12) * 0.7 } } : z;
 }, { sit: true });
 
 // ================================================================== Kyle
