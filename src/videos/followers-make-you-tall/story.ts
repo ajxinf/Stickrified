@@ -268,16 +268,18 @@ export const youClass = role("you", youLook, YOU_CLASS, (F) => st(pose([[0, POSE
 
 // ================================================================== lines 11-12: the duck follows you (morning)
 export const WALK_Z = WALK_N + 1.3;
-export const walkX = (F: number) => -12 + 0.022 * (F - L(11, 0));
+/** You walk, then stop dead to glance back at the duck (it catches up and stops too). */
+const WALK_STOP = () => B.duck11 + 4;
+export const walkX = (F: number) => -12 + 0.022 * (Math.min(F, WALK_STOP()) - L(11, 0));
 export const youWalk = role("you", youLook, (F) => V(walkX(F), 0.12, WALK_Z), (F) => {
-  const d = 0.022 * (F - L(11, 0)) / TINY;
-  const w = walkPose(d, 1);
+  const d = 0.022 * (Math.min(F, WALK_STOP()) - L(11, 0)) / TINY;
+  const w = walkPose(d, clamp01((WALK_STOP() + 10 - F) / 12));
   const glanceBack = F > B.duck11 - 4 && F < B.duck11 + 30;
   return st(w, F, 3, [[0, "tired"], [B.notice, "suspicious"], [B.duck11, "confused"], [B.stop, "suspicious"]], { heading: glanceBack ? -Math.PI / 2 + 0.6 : Math.PI / 2 });
 }, { scale: TINY });
 export const DUCK_SIZE = 0.3;
 export const duckWalkAt = (F: number) => V(walkX(F - 10) - 0.42, 0.12, WALK_Z + 0.06);
-export const duckWalk = (F: number): CritterState => ({ phase: (F / 9) % 1, facing: 1, expr: F > B.duck11 && F < B.duck11 + 30 ? "happy" : "neutral" });
+export const duckWalk = (F: number): CritterState => ({ phase: F < WALK_STOP() + 10 ? (F / 9) % 1 : 0.25, facing: 1, expr: F > B.duck11 && F < B.duck11 + 30 ? "happy" : "neutral" });
 
 // ================================================================== line 13: the bread mountain at Fresh Mart
 export const PILE_TOP = BELT.y + 0.42;
