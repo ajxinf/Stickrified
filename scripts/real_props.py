@@ -6,11 +6,12 @@ Usage: python scripts/real_props.py <slug>
 Scans src/videos/<slug>/ for primitive geometry (three.js Box/Cylinder/Sphere/... geometries, kit box()/cyl() helpers).
 Floors, walls, ceilings, terrain and roads may be primitives with a photo material: mark that line `// surface`.
 Effects (bubbles, glows, smoke, speed lines) are not props: mark them `// effect`.
+A story prop no CC0 library has (a bus, a phone), built from realistic parts with photo materials: `// modelled`.
 """
 import os, re, sys
 
 PRIM = re.compile(r"new (Box|Cylinder|Sphere|Cone|Torus|Capsule|Lathe|Extrude|Dodecahedron|Icosahedron)Geometry|\b(box|cyl|sphere|cone)\(")
-OK = re.compile(r"//.*\b(surface|effect)\b")
+OK = re.compile(r"//.*\b(surface|effect|modelled)\b")
 
 
 def scan(root):

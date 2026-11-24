@@ -25,15 +25,15 @@ export const asSeen = (s: CharState, at: Vector3, cam: Vector3): CharState =>
  * lens): "left"/"right" as seen on screen, "both" = between the hands. `fwd` m toward the lens so a held prop sits in
  * front of the card. Every held story prop is placed here (the QA guard checks `MovingProp.hand`).
  */
-export const handWorld = (look: Look, pose: Pose, at: Vector3, cam: Vector3, hand: Hand, fwd = 0.06, heading?: number) => {
+export const handWorld = (look: Look, pose: Pose, at: Vector3, cam: Vector3, hand: Hand, fwd = 0.06, heading?: number, scale = 1) => {
   const [l, r] = handsOf(look, heading === undefined ? pose : { ...pose, yaw: viewYaw(heading, at, cam) });
   const px = hand === "left" ? l : hand === "right" ? r : ([(l[0] + r[0]) / 2, (l[1] + r[1]) / 2] as const);
   const toCam = cam.clone().sub(at).setY(0).normalize();
   const right = new Vector3(toCam.z, 0, -toCam.x);
   return at.clone()
-    .addScaledVector(right, (px[0] - DESIGN.W / 2) / DESIGN.PX_PER_M)
-    .addScaledVector(toCam, fwd)
-    .setY(at.y + (DESIGN.SOLE - px[1]) / DESIGN.PX_PER_M);
+    .addScaledVector(right, ((px[0] - DESIGN.W / 2) / DESIGN.PX_PER_M) * scale)
+    .addScaledVector(toCam, fwd * scale)
+    .setY(at.y + ((DESIGN.SOLE - px[1]) / DESIGN.PX_PER_M) * scale);
 };
 
 /** Blinks every 0.5-2.3 s, 4 frames long (seeded so every render tab agrees). */
@@ -66,7 +66,8 @@ export const exprAt = <E extends string>(keys: [number, E][], F: number, seed = 
  * contact blob offset away from the sun, a real cast shadow (an invisible sun-facing copy of the card, alpha-tested
  * into the shadow map) and a lamp-thrown decal shadow. Redraws only when the drawn state or light direction changes.
  */
-export const Character: React.FC<{ position: Vector3; state: CharState; look?: Look }> = ({ position, state, look = youLook }) => {
+/** `scale` sizes the whole card (a 4-inch you is 0.075, a giant 100+); 1 = the kit's real size. */
+export const Character: React.FC<{ position: Vector3; state: CharState; look?: Look; scale?: number }> = ({ position, state, look = youLook, scale = 1 }) => {
   const camera = useThree((s) => s.camera) as PerspectiveCamera;
   const p = useMemo(() => {
     const cv = makeCanvas();
@@ -117,6 +118,7 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
 
   useFrame(() => {
     p.group.position.copy(position);
+    p.group.scale.setScalar(scale);
     const yaw = Math.atan2(camera.position.x - position.x, camera.position.z - position.z);
     p.card.rotation.y = p.contact.rotation.y = yaw;
     const sun = shared.uSunDir.value;
@@ -143,8 +145,8 @@ export const Character: React.FC<{ position: Vector3; state: CharState; look?: L
     const ang = Math.round(Math.atan2(-sun.y, lx) / (Math.PI / 12)) * (Math.PI / 12);
     const cu = (p.card.material as ShaderMaterial).uniforms;
     // Street-shadow probes (chest and knees, nudged toward the sun past the card's own caster).
-    cu.uProbeA.value.copy(position).setY(position.y + p.headUp * 0.75).addScaledVector(sun, 0.6);
-    cu.uProbeB.value.copy(position).setY(position.y + 0.35).addScaledVector(sun, 0.6);
+    cu.uProbeA.value.copy(position).setY(position.y + p.headUp * 0.75 * scale).addScaledVector(sun, 0.6 * scale);
+    cu.uProbeB.value.copy(position).setY(position.y + 0.35 * scale).addScaledVector(sun, 0.6 * scale);
     const seen = asSeen(state, position, camera.position); // turnaround: the view from this lens
     const key = JSON.stringify(seen) + ang;
     if (key !== p.key) {

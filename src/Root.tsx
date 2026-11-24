@@ -27,6 +27,7 @@ import { PROMISE_FRAMES, PromiseFlowers } from "./videos/promise-flowers/Video";
 import { PromiseTurnSheet } from "./videos/promise-flowers/TurnSheet";
 import { AntwerpHeist, HEIST_FRAMES } from "./videos/antwerp-diamond-heist/Video";
 import { SUN_FRAMES, SunNeverSets } from "./videos/sun-never-sets/Video";
+import { FollowersLookTest } from "./videos/followers-make-you-tall/LookTest";
 import { withQAFrames } from "../kit/toon/QAFrames";
 // episodes take `qaFrames` (stills.mjs --batch: all review stills in one render pass)
 const PromiseFlowersQA = withQAFrames(PromiseFlowers);
@@ -66,6 +67,7 @@ export const RemotionRoot: React.FC = () => (
       <Composition id="MoonLookTest" component={MoonLookTest} fps={30} durationInFrames={LOOK_FRAMES} width={1080} height={1920} />
       <Composition id="TrappedInThisWorld" component={TrappedInThisWorld} fps={30} durationInFrames={TRAPPED_FRAMES} width={1080} height={1920} />
       <Composition id="SunNeverSets" component={SunNeverSetsQA} fps={30} durationInFrames={SUN_FRAMES} width={1080} height={1920} />
+      <Composition id="FollowersLookTest" component={FollowersLookTest} fps={30} durationInFrames={4} width={1080} height={1920} />
       <Composition id="AntwerpHeist" component={AntwerpHeistQA} fps={30} durationInFrames={HEIST_FRAMES} width={1080} height={1920} />
       <Composition id="PromiseFlowers" component={PromiseFlowersQA} fps={30} durationInFrames={PROMISE_FRAMES} width={1080} height={1920} />
       <Composition id="PromiseTurnSheet" component={PromiseTurnSheet} fps={30} durationInFrames={1} width={1960} height={2240} />

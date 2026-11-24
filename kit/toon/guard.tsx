@@ -45,7 +45,7 @@ export type Check = (typeof CHECKS)[number];
 export type Span = [number, number];
 
 /** A character in a shot. `at` and `state` take the shot-local frame (the same functions draw the card). */
-export type CastSpec = { name: string; look?: Look; at: (f: number) => Vector3; state: (f: number) => CharState; sit?: boolean };
+export type CastSpec = { name: string; look?: Look; at: (f: number) => Vector3; state: (f: number) => CharState; sit?: boolean; scale?: number };
 /** One shot of the plan. Frames are shot-local (0 = first frame of the shot) except `from`, the composition frame. */
 export type Shot = {
   id: string;
@@ -204,9 +204,10 @@ const yawMat = (yaw: number) => new Matrix3().setFromMatrix4(new Matrix4().makeR
 /** Card measurements in metres for a frame: drawn figure width, head-top height, head rectangle (in the card plane). */
 const card = (c: CastSpec, f: number) => {
   const look = c.look ?? youLook, L = layout(look, c.state(f).pose), sq = (c.state(f).pose.squash ?? 0) * 0.08;
-  const w = (L.W * Math.max(1, look.build.tw, 0.76)) / PX;
-  const top = ((DESIGN.SOLE - (L.hc - L.H.b)) / PX) * (1 - sq);
-  const head = { x: ((L.hx - DESIGN.W / 2) / PX) * (1 + sq), y: ((DESIGN.SOLE - L.hc) / PX) * (1 - sq), a: ((L.H.a * 1.1) / PX) * (1 + sq), b: ((L.H.b * 1.1) / PX) * (1 - sq) };
+  const k = c.scale ?? 1; // a scaled card (tiny you, a giant): every measure scales with it
+  const w = ((L.W * Math.max(1, look.build.tw, 0.76)) / PX) * k;
+  const top = ((DESIGN.SOLE - (L.hc - L.H.b)) / PX) * (1 - sq) * k;
+  const head = { x: ((L.hx - DESIGN.W / 2) / PX) * (1 + sq) * k, y: ((DESIGN.SOLE - L.hc) / PX) * (1 - sq) * k, a: ((L.H.a * 1.1) / PX) * (1 + sq) * k, b: ((L.H.b * 1.1) / PX) * (1 - sq) * k };
   return { w, top, head };
 };
 /** Head rectangle of a card (card plane, 0.3 m deep), facing the lens. */
@@ -441,9 +442,9 @@ const sceneChecks = (shot: Shot, scene: Object3D, aspect: number) => {
         const holder = m.heldBy ? cast.find((c) => c.name === m.heldBy) : undefined;
         if (m.heldBy && !m.hand) r.add("Moving props", shot, f, m.name, `held by "${m.heldBy}" but no \`hand\` declared (left/right/both, or "none" if it only touches the body)`);
         else if (holder && m.hand && m.hand !== "none") {
-          const hs = holder.state(f), h = handWorld(holder.look ?? youLook, hs.pose, holder.at(f), cams[f].position, m.hand, 0.06, hs.heading);
+          const hs = holder.state(f), h = handWorld(holder.look ?? youLook, hs.pose, holder.at(f), cams[f].position, m.hand, 0.06, hs.heading, holder.scale);
           const grip = new Vector3().setFromMatrixPosition(obj.matrixWorld), d = grip.distanceTo(h);
-          if (d > HAND_TOL) r.add("Moving props", shot, f, `${m.name} vs "${holder.name}" ${m.hand} hand`, `floats ${(d * 100).toFixed(0)} cm from the hand (max ${HAND_TOL * 100}): place it with handWorld()`);
+          if (d > HAND_TOL * Math.max(1, holder.scale ?? 1)) r.add("Moving props", shot, f, `${m.name} vs "${holder.name}" ${m.hand} hand`, `floats ${(d * 100).toFixed(0)} cm from the hand (max ${HAND_TOL * 100}): place it with handWorld()`);
         }
         // A held prop never covers someone else's face (a megaphone hiding the hero waving below). Only held props: set
         // pieces in front of a face are staging (a shutter rising on a reveal), and their bounding box overstates them.
