@@ -121,7 +121,7 @@ shot("F2-lid-shut", L(7, 0), "morning", [inBox, mia], F2, { subject: "you", dof:
 shot("G1-zoe-locker", B.prom, "school", [zoe], (F) => creep(on(zoe, L(7, 0), V(0.55, 0, 1), 2.3, 42, { down: 0.3 }), F, L(7, 0), B.prom, 0.12), { dof: mid(2.3), props: [fxOn("she glances down the hall (a view turn the guard cannot see)", B.friday), fxOn("she reaches into her locker", B.zoe - 4)] });
 // does: from the floor: 4-inch you at her sneaker holding up a flower three times your size; she hugs her duck notebook
 /** A slow sideways arc round you (a push sank you into the caption band or off the frame foot). */
-const G2 = (F: number) => { const t = span(F, B.prom, L(8, 0)); return P(youHall.at(0).add(V(0.14 - 0.16 * t, 0.05, 0.42 - 0.03 * t)), youHall.at(0).add(V(-0.22 - 0.06 * t, 0.43, -0.3)), 62); };
+const G2 = (F: number) => { const t = span(F, B.prom, L(8, 0)); return P(youHall.at(0).add(V(0.14 + 0.12 * t, 0.05, 0.42 - 0.03 * t)), youHall.at(0).add(V(-0.22 + 0.1 * t, 0.43, -0.3)), 62); };
 shot("G2-your-flower", L(8, 0), "school", [youHall, zoe], G2, { subject: "you", dof: close(0.4), props: [held("flower", flower, youHall, "right", G2, { fwd: 0.01, orient: (ob) => { ob.scale.setScalar(0.5); } })], allow: { ...TINY_OK, "Subject size": "you are 4 inches tall at her feet: the story", Shadows: "the 4-inch card's blob probe catches Zoe's shoe hull beside it" } });
 
 // ================================================================== lines 8-9: Tyler, 800 feet tall (day)
