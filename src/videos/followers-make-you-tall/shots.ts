@@ -120,7 +120,7 @@ shot("F2-lid-shut", L(7, 0), "morning", [inBox, mia], F2, { subject: "you", dof:
 // does: Zoe at her duck-sticker locker turns round on "prom"
 shot("G1-zoe-locker", B.prom, "school", [zoe], (F) => creep(on(zoe, L(7, 0), V(0.55, 0, 1), 2.3, 42, { down: 0.3 }), F, L(7, 0), B.prom, 0.12), { dof: mid(2.3), props: [fxOn("she glances down the hall (a view turn the guard cannot see)", B.friday), fxOn("she reaches into her locker", B.zoe - 4)] });
 // does: from the floor: 4-inch you at her sneaker holding up a flower three times your size; she hugs her duck notebook
-const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.37, -0.3)), 62), F, B.prom, L(8, 0), 0.15, 0.0, 0.3);
+const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.43, -0.3)), 62), F, B.prom, L(8, 0), 0.15, 0.0, 0.3);
 shot("G2-your-flower", L(8, 0), "school", [youHall, zoe], G2, { subject: "you", dof: close(0.4), props: [held("flower", flower, youHall, "right", G2, { fwd: 0.01, orient: (ob) => { ob.scale.setScalar(0.5); } })], allow: { ...TINY_OK, "Subject size": "you are 4 inches tall at her feet: the story", Shadows: "the 4-inch card's blob probe catches Zoe's shoe hull beside it" } });
 
 // ================================================================== lines 8-9: Tyler, 800 feet tall (day)
@@ -262,7 +262,7 @@ shot("X1-need-a-ladder", L(27, 0), "night", [youLot, tylerNight], (F) => { const
 
 // ================================================================== lines 27-28: you kneel to Zoe; she says yes
 // does: wide over the lot: you kneel down, giant, on one knee before the gym, a sea of ducks round your feet
-shot("Y1-kneel", L(28, 0), "night", [youLot, zoeNight], (F) => creep(P(V(150, 30, 190), V(33, 62, 20), 56), F, L(27, 0), L(28, 0), 0.08, 3, 6), { subject: "you", wide: true, dof: NONE, fx: ["flood"], allow: { ...GIANT_OK, ...CROWD_OK, "Subject size": "Zoe small against the giant you kneeling" } });
+shot("Y1-kneel", L(28, 0), "night", [youLot, zoeNight], (F) => creep(P(V(150, 30, 190), V(33, 62, 20), 56), F, L(27, 0), L(28, 0), 0.08, 3, 6), { subject: "you", wide: true, dof: NONE, fx: ["flood"], allow: { ...CROWD_OK, ...GIANT_OK, "Subject size": "Zoe small against the giant you kneeling" } });
 // does: Zoe jumps for joy with her arms up, crying and laughing, blushing
 shot("Y2-yes", L(29, 0), "night", [zoeNight], (F) => creep(on(zoeNight, L(28, 0), V(-0.4, 0, -1), 1.8, 42, { up: -0.15 }), F, L(28, 0), L(29, 0), 0.1), { dof: close(1.8), fx: ["flood"] });
 
