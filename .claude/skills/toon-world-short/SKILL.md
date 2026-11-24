@@ -154,8 +154,10 @@ character in every video gets it; do not override it per video. Review sheets: `
 
 ### Character v3 + fluid motion (R28, user 2026-11-21: "revamp the characters ... much more fluid body movements")
 Kit-wide, so every new episode gets it; `CharTest` (`src/videos/_char-test`) is the worked example.
-- **Build**: chunkier bean on slightly shorter legs, same 1.6 m height (BUILD adult a 124 / torso 1.22 / legs 1.36 /
-  tw .92); outline 3u (refs ~2 % of the head width; was 5u), limbs 2.6u. Heads carry a soft ball highlight and core
+- **Build (R29, user 2026-11-24: "kinda tall and more lean compared to references")**: a bean as wide as the head on
+  short legs, ~3.05 HH like ref8/9 (BUILD adult a 124 / torso 1.1 / legs 1.0 / tw 1.0; extras 3.0-3.25 HH, kids 2.6;
+  `figure.test.mjs` enforces it). Same head size, so adults stand ~1.4 m: frame on `headHeight()`, never a typed
+  height. Comparison: `docs/style/r29_proportions.jpg`. (R28 was a 124 / 1.22 / 1.36 / .92, 3.58 HH.) outline 3u (refs ~2 % of the head width; was 5u), limbs 2.6u. Heads carry a soft ball highlight and core
   shadow, the chest takes the head's soft shadow. Card ink stays near-black in any light; practicals warm a face by
   at most +60 % (it blew out to orange-white by the fire).
 - **Every role's state ends in `flow(raw, F)`** (kit acting.ts): the head and hands trail the body (an exponential lag

@@ -6,15 +6,15 @@ import type { Build, P2 } from "./toon";
 
 /**
  * Cast generator: extras from a build, an outfit and ONE strong accessory, so crowds don't look cloned. All heads
- * cream (identity); darks are coloured (aubergine, plum, navy, oxblood), never black. Builds stay 3.4-3.6 HH
- * (kids 2.85).
+ * cream (identity); darks are coloured (aubergine, plum, navy, oxblood), never black. Builds stay 3.0-3.25 HH
+ * (kids 2.6; R29, user 2026-11-24: the R28 cast read tall and lean next to the refs).
  */
 export const BUILDS = {
-  tallThin: { a: 124, torso: 1.1, legs: 1.48, tw: 0.7 },
-  shortRound: { a: 128, torso: 1.15, legs: 1.32, tw: 1.0, egg: 0.06 },
-  old: { a: 126, torso: 1.1, legs: 1.42, tw: 0.82, stoop: 1 },
+  tallThin: { a: 124, torso: 1.05, legs: 1.15, tw: 0.82 },
+  shortRound: { a: 128, torso: 1.08, legs: 0.9, tw: 1.12, egg: 0.06 },
+  old: { a: 126, torso: 1.08, legs: 1.05, tw: 0.94, stoop: 1 },
   child: BUILD.kid,
-  pear: { a: 126, torso: 1.12, legs: 1.38, tw: 0.84, egg: 0.3 },
+  pear: { a: 126, torso: 1.08, legs: 0.98, tw: 0.96, egg: 0.3 },
   stocky: BUILD.stout,
 } satisfies Record<string, Build>;
 

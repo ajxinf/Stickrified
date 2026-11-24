@@ -348,9 +348,11 @@ export type Build = { a: number; torso: number; legs: number; tw: number; egg?: 
 export const BUILD = {
   // R28 (user 2026-11-21 "revamp the characters"; visual-ref8/9/11 bodies): a chunkier bean on shorter legs and a
   // slightly smaller head (was adult 128 / 1.1 / 1.4 / .8: a slim pill on long sticks).
-  adult: { a: 124, torso: 1.22, legs: 1.36, tw: 0.92 }, // same height as before (1.60 m), more body
-  stout: { a: 124, torso: 1.26, legs: 1.28, tw: 1.04, ink: 1.12 },
-  kid: { a: 114, torso: 0.92, legs: 0.98, tw: 0.82, ink: 0.86 },
+  // R29 (user 2026-11-24: "kinda tall and more lean compared to references"): refs total ~3.0-3.1 HH (torso .9-1.1,
+  // legs 1.0-1.1, torso about as wide as the head); R28 was 3.58 HH. Same head, so cards are ~1.45 m, not 1.65.
+  adult: { a: 124, torso: 1.1, legs: 1.0, tw: 1.0 },
+  stout: { a: 124, torso: 1.14, legs: 0.92, tw: 1.12, ink: 1.12 },
+  kid: { a: 114, torso: 0.85, legs: 0.75, tw: 0.88, ink: 0.86 },
 } satisfies Record<string, Build>;
 /** Outline weight of a character: its build's (heavier for stout, lighter for kids) x a seeded +-8 %. */
 export const inkWeight = (b: Build, seed: number) => (b.ink ?? 1) * (0.92 + 0.16 * rnd(seed, 31));
