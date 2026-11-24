@@ -280,7 +280,7 @@ export const youWalk = role("you", youLook, (F) => V(walkX(F), 0.12, WALK_Z), (F
 }, { scale: TINY });
 export const DUCK_SIZE = 0.3;
 export const duckWalkAt = (F: number) => V(walkX(F - 6) - 0.24, 0.12, WALK_Z + 0.06);
-export const duckWalk = (F: number): CritterState => ({ phase: F < WALK_STOP() + 10 ? (F / 9) % 1 : 0.25, facing: 1, expr: F > B.duck11 && F < B.duck11 + 30 ? "happy" : "neutral" });
+export const duckWalk = (F: number): CritterState => ({ phase: F < WALK_STOP() + 10 ? (F / 9) % 1 : 0.25, facing: 1, expr: F >= B.stop - 4 && F < B.stop + 12 ? "quack" : F > B.duck11 && F < B.duck11 + 30 ? "happy" : "neutral" });
 
 // ================================================================== line 13: the bread mountain at Fresh Mart
 export const PILE_TOP = BELT.y + 0.42;

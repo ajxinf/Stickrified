@@ -316,6 +316,13 @@
    "sfx": "duck_one",
    "gain_db": -2,
    "note": "your number one follower quacks"
+  },
+  {
+   "word": "stop.",
+   "lead": 3,
+   "sfx": "duck_one",
+   "gain_db": -4,
+   "note": "the duck quacks at you when you stop"
   }
  ]
 }
