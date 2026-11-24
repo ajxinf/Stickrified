@@ -691,5 +691,96 @@
   "prompt": "A crowd of people outdoors going 'ooooh' softly in delighted amazement. No music.",
   "dur": 1.6,
   "max_s": 1.5
+ },
+ "amb_town_day": {
+  "prompt": "Ambience of a lively small-city shopping street on a sunny morning: light traffic passing, distant friendly chatter, footsteps on pavement, a few pigeons and sparrows. No music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_town_morning": {
+  "prompt": "Ambience of a quiet city street early on a misty morning: soft birdsong, one distant car, a far-off bus pulling away. No voices, no music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_school_hall": {
+  "prompt": "Ambience of a school hallway between classes: distant student chatter, a locker door closing far away, sneakers squeaking on tiles, fluorescent hum. No music.",
+  "dur": 20,
+  "loop": true
+ },
+ "amb_prom_night": {
+  "prompt": "Ambience of a school parking lot at night during a dance: crickets, warm night air, muffled distant crowd chatter and laughter from a gym, a car door far away. No music.",
+  "dur": 20,
+  "loop": true
+ },
+ "phone_ding": {
+  "prompt": "A single bright smartphone notification ding, clean and cheerful.",
+  "dur": 0.5
+ },
+ "grow_stretch": {
+  "prompt": "Cartoon growing sound: a fast rising stretchy rubbery whoomp, comedic.",
+  "dur": 0.8
+ },
+ "giant_sneeze": {
+  "prompt": "An enormous giant sneezing: a huge booming ACHOO with a rushing gust of wind, comedic.",
+  "dur": 1.6,
+  "max_s": 1.4
+ },
+ "rain_burst": {
+  "prompt": "A sudden short downpour starting: heavy rain hitting pavement and metal bins all at once.",
+  "dur": 2.5
+ },
+ "bus_pass": {
+  "prompt": "A city bus driving past close by: diesel engine rumble, air brakes hiss at the end.",
+  "dur": 3.0
+ },
+ "cat_purr": {
+  "prompt": "A house cat trotting on pavement and purring loudly, one short meow.",
+  "dur": 1.5
+ },
+ "lunchbox_snap": {
+  "prompt": "A small tin lunchbox lid slamming shut with a metallic clack and latch click.",
+  "dur": 0.5
+ },
+ "jet_roar": {
+  "prompt": "A fighter jet roaring across the night sky overhead, a long powerful flyby whoosh.",
+  "dur": 3.0,
+  "max_s": 2.4
+ },
+ "giant_laugh": {
+  "prompt": "An enormous giant laughing from the sky: deep booming mocking laughter echoing over a town.",
+  "dur": 2.0,
+  "max_s": 1.6
+ },
+ "bag_burst": {
+  "prompt": "A paper bag ripping open in a gust of wind, bread rolls tumbling out onto asphalt.",
+  "dur": 1.0
+ },
+ "bread_flutter": {
+  "prompt": "Dozens of slices of bread fluttering and flapping through the wind, a gusty whoosh.",
+  "dur": 2.0
+ },
+ "duck_flock": {
+  "prompt": "A huge flock of real ducks quacking and waddling together on pavement, hundreds of webbed feet slapping. No music.",
+  "dur": 4.0
+ },
+ "duck_one": {
+  "prompt": "One real mallard duck quacking twice loudly, close up, at night by a pond with a small splash.",
+  "dur": 1.0
+ },
+ "kids_run_laugh": {
+  "prompt": "A group of children running on pavement and laughing excitedly outdoors at night.",
+  "dur": 2.5
+ },
+ "van_engine": {
+  "prompt": "A news van driving slowly, engine idling and rolling, outdoors at night.",
+  "dur": 2.5
+ },
+ "grow_huge": {
+  "prompt": "A giant growing enormous: a deep rising cartoon whoomp swelling into a huge boom with a rush of wind.",
+  "dur": 1.5
+ },
+ "crowd_ooh_night": {
+  "prompt": "A large crowd outdoors at night going oooh in amazement, then a few whistles.",
+  "dur": 2.0
  }
 }

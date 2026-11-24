@@ -153,7 +153,7 @@ export const mom = role("mom", momLook, MOM_AT, (F) => {
 // ================================================================== line 3: Kayla's dance video, then the bus roof
 export const KAYLA_DANCE = V(-6.5, 0.12, WALK_S - 1.4);
 export const kaylaDance = role("kayla", kaylaLook, KAYLA_DANCE, (F) => {
-  const beat = Math.floor((F - B.kayla) / 8) % 4;
+  const beat = (((Math.floor((F - B.kayla) / 8)) % 4) + 4) % 4;
   const moves: Pose[] = [
     { ...REST, arms: arms([0.7, -0.6], [-0.1, -0.35], { gl: "open", gr: "fist", front: true }), sway: 9, bob: 6, lift: [0, 18] },
     { ...REST, arms: arms([0.6, 0.0], [-0.1, -0.3], { gl: "open", front: true }), sway: -6, bob: -4 },
@@ -261,7 +261,7 @@ export const tylerWin = role("tyler", tylerLook, (F) => TYLER_WIN.clone().setY(1
   const p = { ...REST, arms: arms([0.25, 0.6], [0.25, 0.6]), lean: 0.4, tilt: -6 + 4 * Math.sin(F / 9) } as Pose;
   return st(p, F, 101, [[0, "grin"], [B.ladder10 - 6, "laughing"]], { heading: -Math.PI / 2, fx: { talk: talk(F, 10) ?? laughFlap(F, LEND(10), 20) } });
 }, { scale: TYLER_WIN_K });
-export const YOU_CLASS = V(CLASS.x0 + 2.4 + 2 * 1.9 + 0.05, 0.765, -0.3);
+export const YOU_CLASS = V(CLASS.x1 - 0.16, 0.925, 0.55); // on the window sill, nose to nose with the eye
 export const youClass = role("you", youLook, YOU_CLASS, (F) => st(pose([[0, POSES.crossed], [B.hey - 4, { ...REST, arms: arms([0.6, 0.2], [0.6, 0.2], { gl: "open", gr: "open" }), bob: -6, shrug: 12 }]], F), F, 3, [[0, "deadpan"], [B.hey, "shocked"], [B.ladder10, "angry"]], { heading: Math.PI / 2 }), { scale: TINY });
 
 // ================================================================== lines 11-12: the duck follows you (morning)
@@ -284,7 +284,7 @@ export const youPile = role("you", youLook, YOU_PILE, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.55, -0.1], [0.55, -0.12], { gl: "open", gr: "open" }) }], [B.bread13 - 6, { ...POSES.hips, tilt: -6 }]], F);
   return st(p, F, 3, [[0, "scheming"], [B.loaves, "proud"], [B.bread13, "smug"]], { heading: 0.4 });
 }, { scale: TINY });
-export const CASHIER = V(0.55, 0, -0.78);
+export const CASHIER = V(0.95, 0, -0.72);
 export const cashier = role("cashier", cashierLook, CASHIER, (F) => st(alive({ ...REST, arms: arms([0.3, 0.45], [0.3, 0.42]) }, F, 111, [0.5, 0.3]), F, 111, [[0, "neutral"], [B.loaves, "confused"], [B.bread13, "deadpan"]], { heading: 0.2 }));
 
 // ================================================================== night: prom (lines 17-29)
@@ -346,7 +346,7 @@ export const youLot = role("you", youLook, YOU_LOT, (F) => {
   return st(p, F, 3, [[0, "nervous"], [B.zoe27, "pleading"], [B.yes, "laughing"], [B.duck29, "proud"]], { heading: 0.0, blink: wink || undefined } as Partial<CharState>);
 }, { scale: youScale });
 /** The neighbour's duck: beside you in the lot, then at your giant sneaker. */
-export const DUCK_LOT = YOU_LOT.clone().add(V(0.34, 0, 0.12));
+export const DUCK_LOT = YOU_LOT.clone().add(V(0.2, 0, -0.1));
 export const duckLot = (F: number): CritterState => ({ phase: F > B.ducks22 ? (F / 9) % 1 : 0.0, facing: -1, expr: F > B.sneezes && F < B.quack ? "shocked" : F >= B.follower - 2 ? "proud" : F > B.quack ? "quack" : "neutral", look: F >= B.duck29 ? -0.5 : 0, bob: F >= B.still - 2 && F < B.still + 12 ? 10 : 0 });
 /** Line 21: the pond duck surfaces with a quack. */
 export const POND_DUCK = V(POND.x + 1.4, 0.04, POND.z - 0.8);

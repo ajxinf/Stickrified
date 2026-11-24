@@ -93,8 +93,8 @@ export const home = () => {
   g.add(place(model("potted_plant_01", { collider: "plant" }), x1 - 0.5, 0, z0 + 0.5, 0.3));
   // outside the window: the street's facades across the road (a photo of morning brick), sun streaming in
   g.add(wall(8, 6, MATS.brick("#c89a7a"), V((WIN.x0 + WIN.x1) / 2, -1, z0 - 7))); // surface: the block across the street
-  g.add(lightPatch(V(DESK.x, DESK_TOP + 0.003, z0 + 0.45), V(0, 1, 0), 1.2, 0.5, "#fff2d8", 0.5, [2, 1]));
-  g.add(lightPatch(V(DESK.x - 0.3, 0.012, z0 + 1.9), V(0, 1, 0), 1.4, 1.2, "#fff0d0", 0.45, [2, 2]));
+  g.add(lightPatch(V(DESK.x, DESK_TOP + 0.003, z0 + 0.45), V(0, 1, 0), 1.2, 0.5, "#fff2d8", 0.22, [2, 1]));
+  g.add(lightPatch(V(DESK.x - 0.3, 0.012, z0 + 1.9), V(0, 1, 0), 1.4, 1.2, "#fff0d0", 0.25, [2, 2]));
   g.add(lightShafts(V((WIN.x0 + WIN.x1) / 2, 1.9, z0 + 0.1), V(-0.15, -0.45, 0.88), { length: 3, width: 1.2, color: "#fff2dc", strength: 0.12, count: 5 }));
   return g;
 };

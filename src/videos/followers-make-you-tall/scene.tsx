@@ -24,11 +24,11 @@ import { GYM_DOOR, LAMPS, LOT_LAMPS, lampHead, promNight, town } from "./town";
  */
 const DAY_SKY = photoSky({ ...LIGHTS.day, lit: [1.56, 1.5, 1.36], shade: [0.32, 0.35, 0.52], lift: [0.03, 0.035, 0.07], litTint: "#fff4e4", sat: 1.26, haze: { color: "#cfe0f5", start: 60, amount: 0.14 }, char: { tint: [1.0, 0.98, 0.95], shade: 0.93 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.0, yaw: 150 });
 export const DAY = DAY_SKY.preset, DAY_SUN = DAY_SKY.key;
-const MORNING_SKY = photoSky({ ...LIGHTS.golden, lit: [1.5, 1.28, 1.02], shade: [0.3, 0.32, 0.48], lift: [0.03, 0.03, 0.06], litTint: "#ffe2b8", sat: 1.16, haze: { color: "#e8d8c8", start: 25, amount: 0.24 }, char: { tint: [1.0, 0.96, 0.9], shade: 0.92 } }, "kloofendal_misty_morning_puresky", { exposure: 1.0, yaw: 200 });
+const MORNING_SKY = photoSky({ ...LIGHTS.golden, lit: [1.32, 1.14, 0.92], shade: [0.3, 0.32, 0.48], lift: [0.03, 0.03, 0.06], litTint: "#ffe2b8", sat: 1.16, haze: { color: "#e8d8c8", start: 25, amount: 0.24 }, char: { tint: [1.0, 0.96, 0.9], shade: 0.92 } }, "kloofendal_misty_morning_puresky", { exposure: 1.0, yaw: 200 });
 export const MORNING = MORNING_SKY.preset, MORNING_SUN = MORNING_SKY.key;
 const NIGHT_SKY = photoSky({ ...LIGHTS.night, lit: [0.5, 0.58, 0.92], shade: [0.14, 0.16, 0.3], lift: [0.015, 0.018, 0.04], lamp: ["#ffa850", 5.2], sat: 1.18, fogNear: 60, fogFar: 600 }, "kloppenheim_07_puresky", { exposure: 0.4, tint: "#bccbe8", yaw: 20 });
 export const NIGHT = NIGHT_SKY.preset, NIGHT_SUN = NIGHT_SKY.key;
-const HOME_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.62, 1.5, 1.32], shade: [0.46, 0.5, 0.62], lift: [0.05, 0.06, 0.08], litTint: "#fff2dc", lamp: ["#ffc27a", 1.4], sat: 1.18, char: { tint: [1.0, 0.97, 0.93], shade: 0.9 } }, "qwantani_late_afternoon_puresky", { exposure: 0.85, yaw: 0 });
+const HOME_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.3, 1.2, 1.06], shade: [0.46, 0.5, 0.62], lift: [0.05, 0.06, 0.08], litTint: "#fff2dc", lamp: ["#ffc27a", 1.4], sat: 1.18, char: { tint: [1.0, 0.97, 0.93], shade: 0.9 } }, "qwantani_late_afternoon_puresky", { exposure: 0.85, yaw: 0 });
 export const HOME_L = HOME_SKY.preset;
 export const SCHOOL_L: LightPreset = { ...LIGHTS.interior, lit: [1.18, 1.26, 1.34], shade: [0.42, 0.46, 0.56], lift: [0.04, 0.05, 0.07], litTint: "#eef6ff", lamp: ["#eef6ff", 2.0], sat: 1.16, char: { tint: [0.98, 1.0, 1.02], shade: 0.9 } };
 export const MART_L: LightPreset = { ...LIGHTS.interior, lit: [1.3, 1.3, 1.26], shade: [0.5, 0.52, 0.56], lift: [0.05, 0.05, 0.06], litTint: "#f8fbff", lamp: ["#f4f8ff", 2.2], sat: 1.24, char: { tint: [1.0, 1.0, 1.0], shade: 0.92 } };

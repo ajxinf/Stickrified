@@ -1,0 +1,321 @@
+{
+ "fps": 30,
+ "frames": "auto",
+ "music": {
+  "track": "in_this_world(default).mp3",
+  "frames": "auto",
+  "button": {
+   "word": "follower.",
+   "n": 0
+  },
+  "button_db": -26
+ },
+ "ambience": {
+  "day": "amb_town_day",
+  "morning": "amb_town_morning",
+  "home": "amb_kitchen_day",
+  "school": "amb_school_hall",
+  "mart": "amb_store_day",
+  "night": "amb_prom_night"
+ },
+ "space": {
+  "day": 0.45,
+  "morning": 0.45,
+  "home": 0.5,
+  "school": 0.9,
+  "mart": 0.8,
+  "night": 0.5
+ },
+ "events": [
+  {
+   "f": 4,
+   "sfx": "phone_ding",
+   "pan": -0.2,
+   "note": "the girl's phone dings (cold open)"
+  },
+  {
+   "f": 9,
+   "sfx": "grow_stretch",
+   "note": "she shoots up two storeys"
+  },
+  {
+   "f": 12,
+   "sfx": "pigeon_flap",
+   "pan": -0.3,
+   "note": "pigeons scatter off the ledge"
+  },
+  {
+   "word": "taller",
+   "n": 0,
+   "lead": 2,
+   "sfx": "grow_stretch",
+   "pan": 0.2,
+   "note": "a man pops up a storey on 'taller'"
+  },
+  {
+   "word": "normal",
+   "lead": 10,
+   "sfx": "cups_clink",
+   "gain_db": -4,
+   "note": "Mom sips from her mug"
+  },
+  {
+   "word": "posted",
+   "lead": 2,
+   "sfx": "phone_send",
+   "pan": 0.2,
+   "note": "Kayla films her dance"
+  },
+  {
+   "word": "Now",
+   "lead": 0,
+   "sfx": "bus_pass",
+   "pan": -0.4,
+   "note": "the bus rolls in with Kayla on the roof"
+  },
+  {
+   "word": "roof.",
+   "lead": 2,
+   "sfx": "phone_slurp",
+   "note": "her giant bubble tea slurp"
+  },
+  {
+   "word": "Grandpa",
+   "n": 0,
+   "lead": 2,
+   "sfx": "cat_purr",
+   "pan": -0.1,
+   "note": "the cat trots by with Grandpa"
+  },
+  {
+   "word": "bingo.",
+   "lead": 2,
+   "sfx": "reveal_pop",
+   "note": "Grandpa raises his dauber"
+  },
+  {
+   "word": "followers:",
+   "lead": 2,
+   "sfx": "phone_ding",
+   "note": "FOLLOWERS 3 glows on your phone"
+  },
+  {
+   "word": "HotSingles4U.",
+   "lead": 2,
+   "sfx": "head_bonk",
+   "gain_db": -4,
+   "note": "your facepalm"
+  },
+  {
+   "word": "lunchbox.",
+   "lead": 4,
+   "sfx": "lunchbox_snap",
+   "note": "the lid slams shut on you"
+  },
+  {
+   "word": "ducks.",
+   "n": 0,
+   "lead": 2,
+   "sfx": "duck_quack",
+   "gain_db": -6,
+   "note": "Zoe's duck sticker squeaks"
+  },
+  {
+   "word": "He's",
+   "n": 1,
+   "lead": 2,
+   "sfx": "whoosh_big",
+   "note": "the lens tilts up Tyler's body"
+  },
+  {
+   "word": "sneezes,",
+   "lead": 2,
+   "sfx": "giant_sneeze",
+   "note": "Tyler sneezes in the sky"
+  },
+  {
+   "word": "rains.",
+   "lead": 3,
+   "sfx": "rain_burst",
+   "note": "the sneeze lands as rain"
+  },
+  {
+   "word": "ladder?\"",
+   "n": 0,
+   "lead": 2,
+   "sfx": "giant_laugh",
+   "gain_db": -4,
+   "note": "Tyler laughs at the classroom window"
+  },
+  {
+   "word": "duck",
+   "n": 0,
+   "lead": 2,
+   "sfx": "duck_one",
+   "gain_db": -6,
+   "note": "the duck waddles behind you"
+  },
+  {
+   "word": "taller.",
+   "n": 0,
+   "lead": 2,
+   "sfx": "marker_squeak",
+   "note": "today's pencil mark"
+  },
+  {
+   "word": "weird.",
+   "n": 0,
+   "lead": 2,
+   "sfx": "cartoon_boing",
+   "note": "the scheme face"
+  },
+  {
+   "word": "bread.",
+   "n": 0,
+   "lead": 2,
+   "sfx": "bag_rustle",
+   "gain_db": -4,
+   "note": "the bread mountain at the till"
+  },
+  {
+   "word": "pond",
+   "lead": 2,
+   "sfx": "marker_circle",
+   "note": "you circle the last pond"
+  },
+  {
+   "word": "\"Pass",
+   "lead": 2,
+   "sfx": "cushion_land",
+   "gain_db": -4,
+   "note": "the bun shield goes up"
+  },
+  {
+   "word": "writes",
+   "lead": 0,
+   "sfx": "jet_roar",
+   "note": "Tyler writes PROM? with the jet"
+  },
+  {
+   "word": "laughs,",
+   "lead": 2,
+   "sfx": "giant_laugh",
+   "note": "Tyler laughs at you"
+  },
+  {
+   "word": "sneezes.",
+   "lead": 2,
+   "sfx": "giant_sneeze",
+   "note": "the sneeze"
+  },
+  {
+   "word": "blasts",
+   "lead": 2,
+   "sfx": "bread_flutter",
+   "note": "the bread storm over the town"
+  },
+  {
+   "word": "Quack.",
+   "lead": 2,
+   "sfx": "duck_one",
+   "note": "the pond duck surfaces"
+  },
+  {
+   "word": "ducks",
+   "n": 1,
+   "lead": 2,
+   "sfx": "duck_flock",
+   "max_s": 3.5,
+   "note": "the duck flood"
+  },
+  {
+   "word": "kids",
+   "n": 0,
+   "lead": 2,
+   "sfx": "kids_run_laugh",
+   "note": "the kids run after the ducks"
+  },
+  {
+   "word": "parents",
+   "n": 0,
+   "lead": 2,
+   "sfx": "running_steps",
+   "note": "the parents run after the kids"
+  },
+  {
+   "word": "van",
+   "lead": 2,
+   "sfx": "van_engine",
+   "note": "the news van crawls along"
+  },
+  {
+   "word": "all",
+   "n": 0,
+   "lead": 2,
+   "sfx": "crowd_ooh_night",
+   "note": "everyone pours into the lot behind you"
+  },
+  {
+   "word": "Ten",
+   "lead": 1,
+   "sfx": "grow_stretch",
+   "note": "ten feet"
+  },
+  {
+   "word": "Fifty.",
+   "lead": 1,
+   "sfx": "grow_stretch",
+   "note": "fifty"
+  },
+  {
+   "word": "Three",
+   "lead": 1,
+   "sfx": "grow_huge",
+   "note": "three hundred"
+  },
+  {
+   "word": "Nine",
+   "lead": 1,
+   "sfx": "grow_huge",
+   "note": "nine hundred"
+  },
+  {
+   "word": "up.",
+   "lead": 2,
+   "sfx": "shock_sting",
+   "gain_db": -4,
+   "note": "Tyler looks up"
+  },
+  {
+   "word": "ladder?\"",
+   "n": 1,
+   "lead": 2,
+   "sfx": "crowd_ooh_night",
+   "gain_db": -4,
+   "note": "the crowd below oohs as Tyler goes red"
+  },
+  {
+   "word": "ducks",
+   "n": 3,
+   "lead": 2,
+   "sfx": "duck_flock",
+   "max_s": 2.5,
+   "gain_db": -4,
+   "note": "4,000 ducks behind you"
+  },
+  {
+   "word": "yes.",
+   "n": 1,
+   "lead": 2,
+   "sfx": "crowd_cheer",
+   "note": "Zoe says yes, the crowd cheers"
+  },
+  {
+   "word": "follower.",
+   "lead": 2,
+   "sfx": "duck_one",
+   "gain_db": -2,
+   "note": "your number one follower quacks"
+  }
+ ]
+}

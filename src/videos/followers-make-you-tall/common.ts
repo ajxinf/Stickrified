@@ -100,7 +100,7 @@ export const MATS = {
   plaster: (c: string) => PM("painted_plaster_wall", 2.4, c, { rough: 0.85 })(),
   carpet: (c: string) => PM("dirty_carpet", 1.6, c, { rough: 0.95 })(),
   cloth: (c: string) => PM("hessian_230", 0.5, c, { rough: 0.95 })(),
-  paint: (c: string, o: Parameters<typeof toonMaterial>[0] = {}) => PM("painted_concrete", 1.2, c, { rough: 0.45, spec: 0.5, gloss: 0.35, mottle: 0.06, ...o })(),
+  paint: (c: string, o: Parameters<typeof toonMaterial>[0] = {}) => PM("painted_plaster_wall", 2, c, { rough: 0.45, spec: 0.5, gloss: 0.35, mottle: 0.04, ...o })(),
 };
 export const glassMat = () => M("fmt-glass", () => toonMaterial({ color: "#3a4a62", spec: 0.7, gloss: 0.8, rough: 0.1 }));
 export const glowMat = (c: string, k: number) => M(`fmt-glow-${c}-${k}`, () => toonMaterial({ color: c, emissive: [c, k] }));

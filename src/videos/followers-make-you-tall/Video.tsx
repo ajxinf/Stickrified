@@ -33,7 +33,7 @@ const rainAt = (c: Vector3) => (i: number, F: number) => {
   const y = 9 - ((F * 0.55 + rnd(i) * 9) % 9);
   return V(c.x + (rnd(i + 1) - 0.5) * 16, y, c.z + (rnd(i + 2) - 0.5) * 12);
 };
-const cloudAt = (c: Vector3, r: number) => (i: number, F: number) => V(c.x + (rnd(i) - 0.5) * r * 2 + F * 0.02 * r * 0.05, c.y + (rnd(i + 1) - 0.5) * r * 0.5, c.z + (rnd(i + 2) - 0.5) * r * 2);
+const cloudAt = (c: Vector3, r: number) => (i: number, F: number) => V(c.x + (rnd(i) - 0.5) * r * 2.4 + F * 0.001 * r, c.y - r * (0.35 + rnd(i + 1) * 0.5), c.z + (rnd(i + 2) - 0.5) * r * 2.4); // a cloud deck below the look point
 /** The skywriting: the jet's (Tyler's right hand's) path, seen from the lot. */
 const LOT_LENS = V(33, 1.4, 9.5);
 const smokeAt = (i: number, F: number) => {
@@ -62,14 +62,14 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <Dust center={look.clone().setY(Math.max(look.y, 0.4))} size={V(3 * k, 2.2 * k, 3 * k)} count={160} color={mc} strength={ms} />
       {fx.includes("pigeons") && <Sprites n={9} F={F} at={pigeonAt(look)} kind="pigeon" size={0.4} />}
       {fx.includes("rain") && <Sprites n={700} F={F} at={rainAt(look)} kind="drop" size={0.12} />}
-      {fx.includes("clouds") && <Sprites n={40} F={F} at={cloudAt(look, Math.max(20, cam.pos.distanceTo(look) * 0.6))} kind="cloud" size={Math.max(30, cam.pos.distanceTo(look) * 0.4)} />}
+      {fx.includes("clouds") && <Sprites n={22} F={F} at={cloudAt(look, Math.max(20, cam.pos.distanceTo(look) * 0.6))} kind="cloud" size={Math.max(30, cam.pos.distanceTo(look) * 0.4)} />}
       {fx.includes("smoke") && <Sprites n={120} F={F} at={smokeAt} kind="smoke" size={14} />}
       {fx.includes("sparks") && <Sprites n={50} F={F} at={sparkAt} kind="spark" size={Math.max(0.3, headOf(youLot, F).y * 0.05)} />}
       {fx.includes("flood") && <>
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2, G) : null)} kind="duckA" size={0.3} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2, G))} kind="duckB" size={0.3} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2 + 1, G) : null)} kind="duckA" size={0.3} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2 + 1, G))} kind="duckB" size={0.3} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2, G) : null)} kind="duckA" size={0.4} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2, G))} kind="duckB" size={0.4} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2 + 1, G) : null)} kind="duckA" size={0.4} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2 + 1, G))} kind="duckB" size={0.4} />
       </>}
       {(s.moving ?? []).map((p) => <Moving key={p.name} prop={p} f={F} />)}
       {(s.critters ?? []).map((c, i) => <Critter key={i} kind={c.kind} position={c.at(F)} state={c.state(F)} size={c.size} />)}
