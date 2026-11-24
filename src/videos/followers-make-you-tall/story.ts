@@ -275,10 +275,11 @@ export const youWalk = role("you", youLook, (F) => V(walkX(F), 0.12, WALK_Z), (F
   const d = 0.022 * (Math.min(F, WALK_STOP()) - L(11, 0)) / TINY;
   const w = walkPose(d, clamp01((WALK_STOP() + 10 - F) / 12));
   const glanceBack = F > B.duck11 - 4 && F < B.duck11 + 30;
-  return st(w, F, 3, [[0, "tired"], [B.notice, "suspicious"], [B.duck11, "confused"], [B.stop, "suspicious"]], { heading: glanceBack ? -Math.PI / 2 + 0.6 : Math.PI / 2 });
+  const p = F < B.stop - 8 ? w : pose([[0, w], [B.stop - 8, { ...REST, arms: arms([0.62, 0.05], [0.62, 0.05], { gl: "open", gr: "open" }), shrug: 16, tilt: 8 }]], F);
+  return st(p, F, 3, [[0, "tired"], [B.notice, "suspicious"], [B.duck11, "confused"], [B.stop, "suspicious"]], { heading: glanceBack ? -Math.PI / 2 + 0.6 : Math.PI / 2 });
 }, { scale: TINY });
 export const DUCK_SIZE = 0.3;
-export const duckWalkAt = (F: number) => V(walkX(F - 10) - 0.42, 0.12, WALK_Z + 0.06);
+export const duckWalkAt = (F: number) => V(walkX(F - 6) - 0.24, 0.12, WALK_Z + 0.06);
 export const duckWalk = (F: number): CritterState => ({ phase: F < WALK_STOP() + 10 ? (F / 9) % 1 : 0.25, facing: 1, expr: F > B.duck11 && F < B.duck11 + 30 ? "happy" : "neutral" });
 
 // ================================================================== line 13: the bread mountain at Fresh Mart
@@ -347,10 +348,10 @@ export const youLot = role("you", youLook, YOU_LOT, (F) => {
   }
   const p = pose([[0, POSES.crouch], [B.yes, { ...POSES.crouch, arms: arms([0.7, -0.4], [0.12, 0.9], { gl: "open", gr: "mitt" }) }]], F);
   const wink = F >= B.follower - 2 && F < B.follower + 14;
-  return st(p, F, 3, [[0, "nervous"], [B.zoe27, "pleading"], [B.yes, "laughing"], [B.duck29, "proud"]], { heading: 0.0, blink: wink || undefined } as Partial<CharState>);
+  return st(p, F, 3, [[0, "nervous"], [B.zoe27, "pleading"], [B.yes, "laughing"], [B.duck29, "proud"]], { heading: F >= L(29, 0) ? Math.PI : 0.0, blink: wink || undefined } as Partial<CharState>); // the last line: you turn to look down the street at the duck
 }, { scale: youScale });
 /** The neighbour's duck: beside you in the lot, then at your giant sneaker. */
-export const DUCK_LOT = YOU_LOT.clone().add(V(0.2, 0, -0.1));
+export const DUCK_LOT = YOU_LOT.clone().add(V(0.15, 0, -0.06));
 export const duckLot = (F: number): CritterState => ({ phase: F > B.ducks22 ? (F / 9) % 1 : 0.0, facing: -1, expr: F > B.sneezes && F < B.quack ? "shocked" : F >= B.follower - 2 ? "proud" : F > B.quack ? "quack" : "neutral", look: F >= B.duck29 ? -0.5 : 0, bob: F >= B.still - 2 && F < B.still + 12 ? 10 : 0 });
 /** Line 21: the pond duck surfaces with a quack. */
 export const POND_DUCK = V(POND.x + 1.4, 0.04, POND.z - 0.8);
@@ -359,9 +360,9 @@ export const pondDuckY = (F: number) => -0.24 + 0.24 * span(F, B.quack - 26, B.q
 
 // ------------------------------------------------------------------ the parade: kids follow the ducks, parents follow the kids
 const RUN_Z = [0.8, -0.9, 1.9, -1.8, 0.1, 2.6];
-export const PARADE_V = 0.11; // m per frame (a jog)
-export const kidAt = (i: number) => (F: number) => V(-30 + PARADE_V * (F - B.ducks22) - 1.6 * i - 6, 0, RUN_Z[i]);
-export const parentAt = (i: number) => (F: number) => V(-30 + PARADE_V * (F - B.ducks22) - 1.5 * i - 16, 0, RUN_Z[(i + 3) % 6] * 1.1);
+export const PARADE_V = 0.22; // m per frame (a cartoon sprint: the parade reaches the lot on "following you")
+export const kidAt = (i: number) => (F: number) => V(-20 + PARADE_V * (F - B.ducks22) - 1.6 * i, 0, RUN_Z[i]);
+export const parentAt = (i: number) => (F: number) => V(-20 + PARADE_V * (F - B.ducks22) - 1.5 * i - 9, 0, RUN_Z[(i + 3) % 6] * 1.1);
 export const KIDS = KID_LOOKS.map((look, i) => role(`kid${i}`, look, kidAt(i), (F) => {
   const r = runPose(PARADE_V * (F - B.ducks22) * 2 + i);
   return st({ ...r, arms: arms([0.72, -0.5], [0.7, -0.55], { gl: "open", gr: "open" }) }, F, 121 + i, [[0, "excited"], [B.kids + i, "laughing"]], { heading: Math.PI / 2 }, 0.6);
@@ -372,8 +373,8 @@ export const PARENTS = PARENT_LOOKS.map((look, i) => role(`parent${i}`, look, pa
 }, { crowd: true }));
 /** The duck flood: 260 sprite ducks pouring east along the road (then into the lot behind you). */
 export const duckFlood = (i: number, F: number) => {
-  const t0 = B.ducks22 - 30, x0 = -34 - (i % 26) * 0.9 - Math.floor(i / 26) * 0.35, z0 = ((i * 37) % 70) / 10 - 3.5;
-  const x = x0 + 0.13 * (F - t0);
+  const t0 = B.ducks22 - 30, x0 = -30 - (i % 26) * 0.9 - Math.floor(i / 26) * 0.35, z0 = ((i * 37) % 70) / 10 - 3.5;
+  const x = x0 + 0.24 * (F - t0);
   if (F < t0 - 40) return null;
   if (x < LOT.x0) return V(x, 0.15 + 0.02 * Math.abs(Math.sin(F / 4 + i)), z0);
   // turn into the lot and fan out round you
@@ -381,7 +382,7 @@ export const duckFlood = (i: number, F: number) => {
   return V(LOT.x0 + (YOU_LOT.x - LOT.x0) * k + Math.cos(ang) * r * k, 0.15, z0 * (1 - k) + (YOU_LOT.z + Math.sin(ang) * r * 0.8) * k);
 };
 /** The news van crawls behind the parents. */
-export const vanAt = (F: number) => V(Math.min(-30 + PARADE_V * (F - B.ducks22) - 30, LOT.x0 - 6), 0, 1.6);
+export const vanAt = (F: number) => V(Math.min(-20 + PARADE_V * (F - B.ducks22) - 22, LOT.x0 - 6), 0, 1.6);
 
 // ================================================================== held props
 export const held = (name: string, make: () => Object3D, r: Role, hand: Hand, cam: (F: number) => CamPose, o: { fwd?: number; up?: number; orient?: (ob: Object3D, F: number) => void; when?: (F: number) => boolean; touches?: string[] } = {}): MovingProp => ({

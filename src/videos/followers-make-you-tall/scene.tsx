@@ -22,7 +22,7 @@ import { GYM_DOOR, LAMPS, LOT_LAMPS, lampHead, promNight, town } from "./town";
  *   mart     flat bright supermarket white, saturated packaging (13)
  *   night    prom night: navy sky, sodium lamp pools, the gym's warm doorway, a cool moon rim (17-29)
  */
-const DAY_SKY = photoSky({ ...LIGHTS.day, lit: [1.56, 1.5, 1.36], shade: [0.32, 0.35, 0.52], lift: [0.03, 0.035, 0.07], litTint: "#fff4e4", sat: 1.26, haze: { color: "#cfe0f5", start: 60, amount: 0.14 }, char: { tint: [1.0, 0.98, 0.95], shade: 0.93 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.0, yaw: 150 });
+const DAY_SKY = photoSky({ ...LIGHTS.day, lit: [1.56, 1.5, 1.36], shade: [0.32, 0.35, 0.52], lift: [0.03, 0.035, 0.07], litTint: "#fff4e4", sat: 1.26, haze: { color: "#cfe0f5", start: 320, amount: 0.1 }, fogNear: 240, fogFar: 1400, char: { tint: [1.0, 0.98, 0.95], shade: 0.93 } }, "kloofendal_48d_partly_cloudy_puresky", { exposure: 1.0, yaw: 150 });
 export const DAY = DAY_SKY.preset, DAY_SUN = DAY_SKY.key;
 const MORNING_SKY = photoSky({ ...LIGHTS.golden, lit: [1.32, 1.14, 0.92], shade: [0.3, 0.32, 0.48], lift: [0.03, 0.03, 0.06], litTint: "#ffe2b8", sat: 1.16, haze: { color: "#e8d8c8", start: 25, amount: 0.24 }, char: { tint: [1.0, 0.96, 0.9], shade: 0.92 } }, "kloofendal_misty_morning_puresky", { exposure: 1.0, yaw: 200 });
 export const MORNING = MORNING_SKY.preset, MORNING_SUN = MORNING_SKY.key;

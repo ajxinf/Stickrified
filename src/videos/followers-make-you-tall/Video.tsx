@@ -61,15 +61,15 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       <World w={s.w} preset={preset} F={F} night={night} />
       <Dust center={look.clone().setY(Math.max(look.y, 0.4))} size={V(3 * k, 2.2 * k, 3 * k)} count={160} color={mc} strength={ms} />
       {fx.includes("pigeons") && <Sprites n={9} F={F} at={pigeonAt(look)} kind="pigeon" size={0.4} />}
-      {fx.includes("rain") && <Sprites n={700} F={F} at={rainAt(look)} kind="drop" size={0.12} />}
+      {fx.includes("rain") && <Sprites n={1100} F={F} at={rainAt(look)} kind="drop" size={0.26} />}
       {fx.includes("clouds") && <Sprites n={22} F={F} at={cloudAt(look, Math.max(20, cam.pos.distanceTo(look) * 0.6))} kind="cloud" size={Math.max(30, cam.pos.distanceTo(look) * 0.4)} />}
-      {fx.includes("smoke") && <Sprites n={120} F={F} at={smokeAt} kind="smoke" size={14} />}
+      {fx.includes("smoke") && <Sprites n={60} F={F} at={(i, G) => smokeAt(i * 2, G)} kind="smoke" size={24} />}
       {fx.includes("sparks") && <Sprites n={50} F={F} at={sparkAt} kind="spark" size={Math.max(0.3, headOf(youLot, F).y * 0.05)} />}
       {fx.includes("flood") && <>
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2, G) : null)} kind="duckA" size={0.4} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2, G))} kind="duckB" size={0.4} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2 + 1, G) : null)} kind="duckA" size={0.4} />
-        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2 + 1, G))} kind="duckB" size={0.4} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2, G) : null)} kind="duckA" size={0.5} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2, G))} kind="duckB" size={0.5} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? duckFlood(i * 2 + 1, G) : null)} kind="duckA" size={0.5} />
+        <Sprites n={130} F={F} at={(i, G) => ((Math.floor(G / 5) + i) % 2 ? null : duckFlood(i * 2 + 1, G))} kind="duckB" size={0.5} />
       </>}
       {(s.moving ?? []).map((p) => <Moving key={p.name} prop={p} f={F} />)}
       {(s.critters ?? []).map((c, i) => <Critter key={i} kind={c.kind} position={c.at(F)} state={c.state(F)} size={c.size} />)}

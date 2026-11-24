@@ -6,6 +6,7 @@ import { V, clamp01, litTex, canvasTex, rnd } from "./common";
 import type { CritterKind, CritterState } from "./critters";
 import { BAG, breadBag, breadSlice, bubbleTea, bun, bus, flower, jet, lunchbox, mug, newsVan, phone, phoneHeld, setLid, townMap } from "./props";
 import { DESK, DESK_TOP, HOME } from "./rooms";
+import { model } from "../../../kit/toon/build/models";
 import type { Place } from "./scene";
 import { DAY_SUN, IN_SUN, MORNING_SUN, NIGHT_SUN } from "./scene";
 import {
@@ -90,7 +91,7 @@ const busProp = free("bus", bus, (o, F) => { o.position.set(busX(F), 0, BUS_Z); 
 shot("C2-bus-roof", L(4, 0), "day", [kaylaBus], (F) => { const c = creep(C2, F, B.now, L(4, 0), 0.1, 0.4, 0.6); c.look.x = busX(F) + 1.6; c.look.y += 1.2; return c; }, { wide: true, subjectFrom: 355 - 281, dof: NONE, props: [busProp, held("bubble tea", bubbleTea, kaylaBus, "right", () => C2, { fwd: 0.04 })], allow: { "Feet on the ground": "her legs hang down the bus side to the road", "Moving props": "the bus drives through", "Card penetration": "she sits on the moving bus", "Camera curve": "the lens pans with the bus", "Subject covered": "she rides in from behind the street tree (off-screen start)", "Text in frame": "shop signs behind the bus", Shadows: "she sits on the bus roof: her blob is on the roof" } });
 
 // ================================================================== line 4: Grandpa rides the cat to bingo
-const catCam = (F: number) => { const c = catAt(F); return P(c.clone().add(V(-0.55, 0.16, 0.7)), c.clone().add(V(0.05, 0.14, 0)), 40); };
+const catCam = (F: number) => { const c = catAt(F); return P(c.clone().add(V(-0.36, 0.18, 0.5)), c.clone().add(V(0.0, 0.16, 0)), 40); };
 const CAT = (at: (F: number) => Vector3): CritterSpec => ({ kind: "cat", at, state: catState, size: CAT_SIZE });
 // does: ground-level track: the family cat trots along the sidewalk with 2-inch Grandpa riding on its back
 shot("D1-cat-ride", L(4, 13), "day", [grandpa], catCam, { dof: close(0.9), crit: [CAT(catAt)], allow: { ...TINY_OK, "Subject size": "Grandpa is 2 inches tall on the cat (the cat is the frame)", "Camera curve": "a tracking shot riding with the cat (the cat holds still in frame)" } });
@@ -143,7 +144,7 @@ shot("J1-eye-window", L(11, 0), "school", [tylerWin, youClass], (F) => creep(J1,
 
 // ================================================================== lines 11-12: the duck follows you (morning)
 const DUCK = (at: (F: number) => Vector3, st: (F: number) => CritterState): CritterSpec => ({ kind: "duck", at, state: st, size: DUCK_SIZE });
-const walkCam = (F: number) => { const x = Math.max(...[F].map((f) => youWalk.at(f).x)); return P(V(x - 0.2, 0.3, -5.7 + 1.55), V(x - 0.24, 0.14, -5.7), 44); };
+const walkCam = (F: number) => { const x = Math.max(...[F].map((f) => youWalk.at(f).x)); return P(V(x - 0.18, 0.25, -5.7 + 1.25), V(x - 0.2, 0.14, -5.7), 44); };
 // does: ground-level track: you trudge along the sidewalk; the neighbour's white duck waddles right behind you
 shot("K1-duck-follows", B.duck11 + 8, "morning", [youWalk], walkCam, { wide: true, dof: close(1.5), crit: [DUCK(duckWalkAt, duckWalk)], allow: { ...TINY_OK, "Camera curve": "a tracking two-shot walking with you and the duck" } });
 // does: you glance back over your shoulder; the duck stops and smiles
@@ -195,8 +196,8 @@ shot("O1b-prom", L(18, 0), "night", [tylerNight], O1b, { wide: true, dof: NONE, 
 // does: on the gym steps Zoe gazes up at the sky, both hands over her mouth
 shot("O2-zoe-melts", B.standing - 6, "night", [zoeNight], (F) => creep(on(zoeNight, L(18, 0), V(-0.2, 0, -1), 2.1, 42, { up: -0.3, down: 0.25 }), F, L(18, 0), B.standing, 0.1), { dof: close(1.7), fx: ["smoke"] });
 // does: down in the empty lot: 4-inch you beside one paper bag of bread, the duck at your side, Tyler's grin glowing far above
-const bagProp = free("bread bag", breadBag, (o, F) => { o.position.copy(YOU_LOT).add(V(-0.16, 0, 0.05)); o.visible = F < B.sneezes + 2; return o.visible; }, ["ground", "lot"]);
-const P1 = P(YOU_LOT.clone().add(V(0.12, 0.13, 0.55)), YOU_LOT.clone().add(V(0.02, 0.1, 0)), 44);
+const bagProp = free("bread bag", breadBag, (o, F) => { o.position.copy(YOU_LOT).add(V(-0.13, 0, -0.06)); o.visible = F < B.sneezes + 2; return o.visible; }, ["ground", "lot"]);
+const P1 = P(YOU_LOT.clone().add(V(0.02, 0.15, 0.95)), YOU_LOT.clone().add(V(0.02, 0.11, 0)), 44);
 shot("P1-one-bag", L(19, 0), "night", [youLot], (F) => creep(P1, F, B.standing - 6, L(19, 0), 0.12), { dof: close(0.6), props: [bagProp], crit: [DUCK(() => DUCK_LOT.clone(), duckLot)], allow: { ...TINY_OK, "Text in frame": "the BREAD label on the bag beside you, cropped" } });
 
 // ================================================================== line 19: he laughs, he sneezes
@@ -207,15 +208,15 @@ shot("Q1-laughs", B.sneezes - 2, "night", [tylerNight], tyFace, { wide: true, do
 const burst = free("bun burst", () => { const g = new Group(); for (let i = 0; i < 3; i++) g.add(bun(i + 1)); for (let i = 0; i < 6; i++) g.add(breadSlice()); return g; }, (o, F) => {
   const t = (F - B.sneezes - 2) / 30;
   if (t < 0) return false;
-  o.position.copy(YOU_LOT).add(V(-0.16, 0, 0.05));
+  o.position.copy(YOU_LOT).add(V(-0.13, 0, -0.06));
   o.children.forEach((c, i) => { const a = i * 2.1, v = 1.4 + (i % 4) * 0.5; c.position.set(Math.cos(a) * v * t * 1.8 - 2 * t, BAG.h * 0.8 + v * 2.2 * t - 2.2 * t * t, Math.sin(a) * v * t); c.rotation.set(t * 8 + i, t * 5, t * 6 + i); });
 });
 shot("Q2-burst", L(20, 0), "night", [youLot], impact((F) => creep(P(YOU_LOT.clone().add(V(0.3, 0.2, 0.95)), YOU_LOT.clone().add(V(-0.1, 0.16, 0)), 52), F, B.sneezes - 2, L(20, 0), 0.04), B.sneezes + 2, 0.03, 8), { dof: close(0.7), props: [bagProp, burst], wide: true, kicks: [[B.sneezes + 2 - (B.sneezes - 2), B.sneezes + 10 - (B.sneezes - 2)]], crit: [DUCK(() => DUCK_LOT.clone(), duckLot)], allow: { ...TINY_OK, "Moving props": "the bread blows out of the bag" } });
 
 // ================================================================== line 20: the bread storm over town
-const STORM = 60;
-const stormAt = (i: number, F: number) => { const t = (F - B.blasts + 8 - (i % 12)) / 70; if (t < 0) return null; const a = -2.2 + (i % 10) * 0.42 + rnd(i) * 0.3, r = 10 + 110 * t * (0.6 + rnd(i + 1) * 0.6); return V(YOU_LOT.x + Math.cos(a) * r - 20 * t, 4 + 60 * t - 30 * t * t + rnd(i + 2) * 10, YOU_LOT.z + Math.sin(a) * r * 0.6 - 30 * t); };
-const storm = free("bread storm", () => { const g = new Group(); for (let i = 0; i < STORM; i++) { const s = breadSlice(); s.scale.setScalar(16); g.add(s); } return g; }, (o, F) => { o.children.forEach((c, i) => { const p = stormAt(i, F); c.visible = !!p; if (p) { c.position.copy(p); c.rotation.set(F / 5 + i, F / 7, i); } }); });
+const STORM = 90;
+const stormAt = (i: number, F: number) => { const t = (F - B.blasts + 4 - (i % 16)) / 64; if (t < 0 || t > 1.2) return null; const end = V(-30 + rnd(i) * 60, 4 + rnd(i + 1) * 10, -30 + rnd(i + 2) * 50), a = YOU_LOT.clone().setY(1.5); return a.lerp(end, t).add(V(0, 26 * Math.sin(Math.PI * Math.min(t, 1)) * (0.6 + rnd(i + 3) * 0.6), 0)); };
+const storm = free("bread storm", () => { const g = new Group(); for (let i = 0; i < STORM; i++) { const s = breadSlice(); s.scale.setScalar(12); g.add(s); } return g; }, (o, F) => { o.children.forEach((c, i) => { const p = stormAt(i, F); c.visible = !!p; if (p) { c.position.copy(p); c.rotation.set(F / 5 + i, F / 7, i); } }); });
 // does: high over the town: slices of bread cartwheel out over the rooftops toward the park and every street
 shot("R1-bread-storm", L(21, 0), "night", [], (F) => creep(P(V(48, 34, 34), V(2, 8, -6), 58), F, L(20, 0), L(21, 0), 0.06, 0, 0.4), { wide: true, subject: undefined, dof: NONE, props: [storm, fxOn("slices launch", B.blasts), fxOn("over the roofs", B.blasts + 30)], allow: { "Text in frame": "shop signs far below, at the frame edge" } });
 
@@ -226,7 +227,7 @@ shot("S1-quack", L(22, 0), "night", [], (F) => creep(S1, F, L(21, 0), L(22, 0), 
 
 // ================================================================== line 22: ducks follow the bread, kids the ducks, parents the kids
 // does: low on the road: a flood of ducks waddles straight at the lens, filling the street kerb to kerb
-shot("T1-duck-flood", B.kids - 2, "night", [], (F) => creep(P(V(-23, 0.3, 0.8), V(-29, 0.3, 0), 50), F, L(22, 0), B.kids, 0.04), { wide: true, subject: undefined, dof: NONE, fx: ["flood"], props: [fxOn("the flood arrives", L(22, 0))] });
+shot("T1-duck-flood", B.kids - 2, "night", [], (F) => creep(P(V(-9, 4.2, 5.5), V(-17, 0.2, 0), 50), F, L(22, 0), B.kids, 0.06), { wide: true, subject: undefined, dof: NONE, fx: ["flood"], props: [fxOn("the flood arrives", L(22, 0))] });
 // does: tracking with the kids running after the ducks, laughing
 const kidsCam = (F: number) => { const k = KIDS[0].at(F); return P(V(k.x + 2.6, 1.1, -3.0), k.clone().add(V(0.6, 0.8, 0)), 46); };
 shot("T2-kids", B.parents - 2, "night", KIDS, kidsCam, { subject: "kid0", wide: true, dof: NONE, fx: ["flood"], allow: CROWD_OK });
@@ -263,15 +264,20 @@ shot("X1-need-a-ladder", L(27, 0), "night", [youLot, tylerNight], (F) => { const
 
 // ================================================================== lines 27-28: you kneel to Zoe; she says yes
 // does: wide over the lot: you kneel down, giant, on one knee before the gym, a sea of ducks round your feet
-shot("Y1-kneel", L(28, 0), "night", [youLot, zoeNight], (F) => creep(P(V(150, 30, 190), V(33, 62, 20), 56), F, L(27, 0), L(28, 0), 0.08, 3, 6), { subject: "you", wide: true, dof: NONE, fx: ["flood"], allow: { ...CROWD_OK, ...GIANT_OK, "Subject size": "Zoe small against the giant you kneeling" } });
+shot("Y1-kneel", L(28, 0), "night", [youLot, zoeNight], (F) => creep(P(V(170, 40, 230), V(33, 105, 20), 58), F, L(27, 0), L(28, 0), 0.08, 3, 6), { subject: "you", wide: true, dof: NONE, fx: ["flood"], allow: { ...CROWD_OK, ...GIANT_OK, "Subject size": "Zoe small against the giant you kneeling" } });
 // does: Zoe jumps for joy with her arms up, crying and laughing, blushing
 shot("Y2-yes", L(29, 0), "night", [zoeNight], (F) => creep(on(zoeNight, L(28, 0), V(-0.4, 0, -1), 1.8, 42, { up: -0.15 }), F, L(28, 0), L(29, 0), 0.1), { dof: close(1.8), fx: ["flood"] });
 
 // ================================================================== line 29: the duck, your number one follower
 // does: ground level: the duck at the toe of your giant sneaker looks up and puffs its chest; far above you wink
-const duckEnd = YOU_LOT.clone().add(V(5, 0, 7.5));
-const Z1 = P(duckEnd.clone().add(V(0.7, 0.15, 1.4)), duckEnd.clone().add(V(-3, 5.5, -6)), 60);
-shot("Z1-number-one", FRAMES, "night", [youLot], (F) => creep(Z1, F, L(29, 0), FRAMES, -0.15, 0.06, 0.25), { subject: undefined, dof: close(1.2), fx: ["flood"], crit: [DUCK(() => duckEnd.clone(), duckLot)], props: [fxOn("the duck puffs up", B.still - 2), fxOn("you wink", B.follower - 2), fxOn("the duck waddles a step", B.follower + 18), fxOn("the ducks settle", B.follower + 40)], allow: { ...GIANT_OK } });
+/** The ending: 90 m down the block from giant you, the duck perches on a fire hydrant in the foreground and looks up;
+ * you (crouched, turned to face this way) fill the sky behind it. (A lens at your 24 m sneaker cannot see it: cards
+ * always turn to the lens, so a foot 21 m off the card's centre is never in front of a nearby lens.) */
+const HYDRANT = V(23.12, 0, -74.1);
+const duckEnd = HYDRANT.clone().setY(0.8);
+const Z1 = P(V(23.0, 0.58, -75.35), YOU_LOT.clone().add(V(0, 88, 0)), 64);
+const hydrant = free("hydrant perch", () => model("fire_hydrant", { part: "fire_hydrant_aged", collider: "hydrant perch" }), (o) => { o.position.copy(HYDRANT); o.rotation.y = 0.5; }, ["ground"]);
+shot("Z1-number-one", FRAMES, "night", [youLot], (F) => creep(Z1, F, L(29, 0), FRAMES, 0, 0.02, 0.12), { subject: undefined, wide: true, dof: mid(1.0), crit: [DUCK(() => duckEnd.clone(), duckLot)], props: [hydrant, fxOn("the duck puffs up", B.still - 2), fxOn("you wink", B.follower - 2), fxOn("the duck waddles a step", B.follower + 18), fxOn("the ducks settle", B.follower + 40)], allow: { ...GIANT_OK } });
 
 export const PLAN: Plan = { slug: "followers-make-you-tall", shots: SHOTS, words };
 export { TYLER_N, PILE_TOP, YOU_PILE, clamp01 };

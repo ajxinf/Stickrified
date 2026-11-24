@@ -139,6 +139,7 @@ const ground = () => {
   g.add(slab(-120, 120, -80, WALK_N - 13, 0, MATS.lot()));
   g.add(slab(-120, LOT.x0, WALK_S + 13, 80, 0, MATS.lot()));
   g.add(slab(LOT.x1, 120, WALK_S + 13, 80, 0, MATS.lot()));
+  g.add(slab(LOT.x1, 120, WALK_S, WALK_S + 13, 0.005, MATS.lot())); // the yard east of the lot (open ground)
   g.add(slab(LOT.x0, LOT.x1, GYM.front + 14, 80, 0, MATS.lawn()));
   // the park (south-west): lawn, cobbled path, the pond with a sandy rim
   g.add(slab(-50, -22, WALK_S, WALK_S + 13, 0.02, MATS.lawn()));
@@ -195,11 +196,11 @@ export const town = () => {
   pole.position.set(BUS_STOP.x + 1.6, 1.42, BUS_STOP.z - 0.1);
   g.add(pole);
   g.add(plane(0.5, 1.0, unlit("bussign", busSignTex, true), V(BUS_STOP.x + 1.6, 2.2, BUS_STOP.z - 0.06)));
-  for (const [x, z, ry] of [[-14, WALK_N + 0.5, 0], [12.6, WALK_N + 0.5, 0.2], [-2, WALK_S - 0.5, Math.PI], [28, WALK_N + 0.5, 0]] as const) g.add(place(model("metal_trash_can", { part: "metal_trash_can", collider: "bin" }), x, 0.12, z, ry));
-  for (const [x, z] of [[-24, WALK_N + 0.5], [19, WALK_S - 0.5], [40, WALK_N + 0.5]] as const) g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), x, 0.12, z, 0.4));
+  for (const [x, z, ry] of [[-14, WALK_N + 0.5, 0], [12.6, WALK_N + 0.5, 0.2], [-2, WALK_S - 0.5, Math.PI], [28, WALK_N + 0.5, 0]] as const) g.add(place(model("metal_trash_can", { part: "metal_trash_can_rust", collider: "bin" }), x, 0.12, z, ry));
+  for (const [x, z] of [[-24, WALK_N + 0.5], [19, WALK_S - 0.5], [40, WALK_N + 0.5]] as const) g.add(place(model("fire_hydrant", { part: "fire_hydrant_aged", collider: "hydrant" }), x, 0.12, z, 0.4));
   for (const [x, z] of [[-26, WALK_N + 1.2], [-1, WALK_N + 1.2], [24, WALK_N + 1.2], [-14, WALK_S - 1.2], [12, WALK_S - 1.2]] as const) g.add(tree(rnd(x) > 0.5 ? "island_tree_01" : "tree_small_02", x, 0.12, z, { height: 5.5 }));
   for (const [x, z, ry, t] of [[-46, -2.6, 0, "#c8d8f0"], [24.2, 17.4, Math.PI / 2, "#d8f0d0"], [44, 11, -Math.PI / 2, "#f0e8c8"]] as const) g.add(place(model("covered_car", { collider: "car", tint: t }), x, 0.0, z, ry + Math.PI / 2));
-  for (const [x, z] of [[-40, WALK_N - 0.3], [9, WALK_N - 0.3], [38, WALK_N - 0.3]] as const) g.add(place(model("exterior_aircon_unit", { part: "exterior_aircon_unit", collider: false }), x, 3.6, z + 0.25, 0));
+  for (const [x, z] of [[-40, WALK_N - 0.3], [9, WALK_N - 0.3], [38, WALK_N - 0.3]] as const) g.add(place(model("exterior_aircon_unit", { part: "exterior_aircon_unit_rusted", collider: false }), x, 3.6, z + 0.25, 0));
   for (const [x, z] of [[-17, WALK_N + 0.4], [-11.4, WALK_N + 0.45], [22, WALK_N + 0.4]] as const) g.add(place(model("potted_plant_02", { collider: "planter" }), x, 0.12, z, rnd(x)));
   g.add(place(model("utility_box_01", { collider: "utility box" }), 20.5, 0.12, WALK_N + 0.4, 0));
   g.add(place(model("water_manhole_cover", { collider: false }), 0, 0.005, 1.6, 0));
