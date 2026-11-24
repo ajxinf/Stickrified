@@ -49,6 +49,27 @@ def check(slug):
     return bad
 
 
+def clean(slug, dst):
+    """After delivery: drop the episode's renders/QA media (the final lives in Episodes/) and Remotion's leftover
+    bundles (~2 GB per render, user 2026-11-23). The small reports (*.md, *.json) stay in out/<slug>/ as the record."""
+    assert os.path.getsize(dst) == os.path.getsize(f"out/{slug}/final.mp4"), "copy incomplete: nothing cleaned"
+    freed = 0
+    for d in (f"out/{slug}", os.environ.get("REMOTION_TMP", r"C:\remotion-tmp")):
+        if not os.path.isdir(d):
+            continue
+        keep = d == f"out/{slug}"
+        for e in os.scandir(d):
+            if keep and e.is_file() and e.name.endswith((".md", ".json")):
+                continue
+            if e.is_dir():
+                freed += sum(os.path.getsize(os.path.join(r, f)) for r, _, fs in os.walk(e.path) for f in fs)
+                shutil.rmtree(e.path, ignore_errors=True)
+            else:
+                freed += e.stat().st_size
+                os.remove(e.path)
+    print(f"CLEANED out/{slug} media + remotion-tmp: {freed / 1e9:.1f} GB freed")
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
     approved = a.pop(a.index("--user-approved") + 1) if "--user-approved" in a else None
@@ -67,3 +88,5 @@ if __name__ == "__main__":
     with open(f"videos/{slug}/DELIVERY.md", "a", encoding="utf-8") as f:
         f.write(f"\n## {datetime.date.today()} -> {dst}\n" + ("all gates passed\n" if not bad else f"user approved: {approved}\n" + "".join(f"- {b}\n" for b in bad)))
     print("DELIVERED", dst)
+    clean(slug, dst)
+
