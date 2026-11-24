@@ -171,8 +171,8 @@ shot("N1-map", L(15, 0), "home", [youMap], (F) => creep(N1, F, L(14, 0), L(15, 0
 // ================================================================== line 15: Grandpa doubts you
 // does: Grandpa rides the cat onto your map and pokes it with his dauber: "a million followers by Friday"
 const N2 = P(V(0.98, 0.86, -1.52), V(1.24, 0.74, -2.06), 40);
-const N2c = (F: number) => { const h = headOf(grandpaDesk, B.million); return creep(P(h.clone().add(V(-0.1, 0.01, 0.17)), h.clone().add(V(0.0, -0.02, 0)), 36), F, B.million - 2, L(16, 0), 0.1); };
-shot("N2-grandpa-doubts", B.million - 2, "home", [grandpaDesk], (F) => creep(N2, F, L(15, 0), B.million, 0.16), { wide: true, dof: close(0.4), props: [mapProp], crit: [{ kind: "cat", at: () => DESK_CAT.clone(), state: (F) => ({ ...catState(F), phase: 0.25, facing: 1, expr: F > B.friday15 ? "happy" : "neutral" }), size: CAT_SIZE }], allow: TINY_OK });
+const N2c = (F: number) => { const h = headOf(grandpaDesk, L(15, 4)); return creep(P(h.clone().add(V(-0.1, 0.01, 0.17)), h.clone().add(V(0.0, -0.02, 0)), 36), F, L(15, 4) - 2, L(16, 0), 0.1); };
+shot("N2-grandpa-doubts", L(15, 4) - 2, "home", [grandpaDesk], (F) => creep(N2, F, L(15, 0), L(15, 4), 0.16), { wide: true, dof: close(0.4), props: [mapProp], crit: [{ kind: "cat", at: () => DESK_CAT.clone(), state: (F) => ({ ...catState(F), phase: 0.25, facing: 1, expr: F > B.friday15 ? "happy" : "neutral" }), size: CAT_SIZE }], allow: TINY_OK });
 // does: close on Grandpa jabbing his dauber at you on every word
 shot("N2b-grandpa-close", L(16, 0), "home", [grandpaDesk], N2c, { dof: close(0.2), props: [mapProp], crit: [{ kind: "cat", at: () => DESK_CAT.clone(), state: (F) => ({ ...catState(F), phase: 0.25, facing: 1, expr: F > B.friday15 ? "happy" : "neutral" }), size: CAT_SIZE }], allow: TINY_OK });
 
