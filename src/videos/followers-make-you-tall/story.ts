@@ -242,7 +242,7 @@ export const youLunch = (grip: (F: number) => Vector3) => role("you", youLook, (
 export const ZOE_AT = ZOE_LOCKER.clone().add(V(0.35, 0, 0.82));
 export const zoe = role("zoe", zoeLook, ZOE_AT, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.55, -0.15], { gr: "open" }) }], [B.zoe - 4, { ...REST, arms: arms([0.25, 0.6], [0.7, -0.4], { gr: "open" }), tilt: 6 }], [B.prom - 6, { ...REST, arms: arms([0.25, 0.6], [-0.2, 0.25], { gr: "fist", front: true }) }], [B.loves - 6, { ...REST, arms: arms([-0.25, 0.25], [-0.2, 0.25], { gl: "mitt", gr: "mitt", front: true }), tilt: 8 }]], F);
-  return st(alive(p, F, 91, [0.3, -0.4]), F, 91, [[0, "relieved"], [B.prom, "neutral"], [B.loves, "excited"], [B.ducks, "proud"]], { heading: F < B.prom ? Math.PI : 0.2 });
+  return st(alive(p, F, 91, [0.3, -0.4]), F, 91, [[0, "relieved"], [B.prom, "neutral"], [B.loves, "excited"], [B.ducks, "proud"]], { heading: F < B.prom ? Math.PI - 0.75 * span(F, B.friday - 4, B.friday + 10) : 0.2 });
 });
 export const YOU_HALL = ZOE_AT.clone().add(V(0.4, 0, 0.42));
 export const youHall = role("you", youLook, YOU_HALL, (F) => {

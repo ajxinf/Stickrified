@@ -70,7 +70,7 @@ const CROWD_OK = { "Cast overlap": "the parade: runners overlap in depth", "Card
 const A1a = P(V(-2.2, 1.35, -1.6), V(-3.2, 1.2, -5.5), 50);
 const A1c = (F: number) => { const h = headOf(kaylaA, F); const c = glideCam(A1a, P(V(-1.4, 1.9, 0.9), V(-3.2, 4.0, -5.5), 58), F, B.ding + 2, B.ding + 18); c.look.y = Math.max(c.look.y, h.y - 0.8 * scaleOf(kaylaA, F) * 0.5); return c; };
 shot("A1-ding-grow", B.more, "day", [kaylaA], A1c,
-  { dof: NONE, fx: ["pigeons"], whips: [[B.ding, B.ding + 20]], props: [held("phone", () => phoneHeld("ding"), kaylaA, "right", A1c, { fwd: 0.05 })], allow: { "Subject in frame": "she shoots up out of the frame top for a beat, the tilt catches her", "Subject size": "she grows from a medium to a giant", "Reaction timing": "she reacts to the phone ding (a sound cue before the line's word)", "Caption vs face": "two frames as she shoots up through the caption band", "Text in frame": "the PHONE FIX sign behind her, cut by the frame edge", "Camera curve": "the lens whips up after her as she grows" } });
+  { dof: NONE, fx: ["pigeons"], whips: [[B.ding, B.ding + 20]], props: [held("phone", () => phoneHeld("ding"), kaylaA, "right", A1c, { fwd: 0.05 })], allow: { "Subject in frame": "she shoots up out of the frame top for a beat, the tilt catches her", "Subject size": "she grows from a medium to a giant", "Reaction timing": "she reacts to the phone ding (a sound cue before the line's word)", "Caption vs face": "two frames as she shoots up through the caption band", "Text in frame": "the PHONE FIX sign behind her, cut by the frame edge", "Camera curve": "the lens whips up after her as she grows", "Moving props": "she grows to 4.6x: the guard measures her hand at her start size (the phone rides her drawn hand)" } });
 // does: a street of people at their follower heights; on "taller" a man's phone dings and he pops up a storey
 const A2 = P(V(17.3, 1.4, 6.4), V(17.3, 4.4, -5.6), 60);
 shot("A2-street-heights", L(2, 0), "day", STREET_A, (F) => creep(A2, F, B.more, L(2, 0), 0.06, 0.2), { wide: true, subject: "p4", dof: NONE, fx: ["pigeons"], props: [fxOn("he grows", B.taller - 2)], allow: { ...CROWD_OK, Scale: "people at their follower heights: the story" } });
@@ -87,7 +87,7 @@ shot("C1-dance", B.now, "day", [kaylaDance], kdCam, { dof: mid(2.4), props: [hel
 // does: the bus pulls through the street with giant Kayla sitting on its roof, sipping a bubble tea the size of a bin
 const C2 = P(V(-10.2, 1.0, 6.2), V(-4.5, 4.6, -2), 62);
 const busProp = free("bus", bus, (o, F) => { o.position.set(busX(F), 0, BUS_Z); }, ["ground", "road"]);
-shot("C2-bus-roof", L(4, 0), "day", [kaylaBus], (F) => creep(C2, F, B.now, L(4, 0), 0.1, 0.4, 0.6), { wide: true, subjectFrom: 342 - 281, dof: NONE, props: [busProp, held("bubble tea", bubbleTea, kaylaBus, "right", () => C2, { fwd: 0.04 })], allow: { "Feet on the ground": "her legs hang down the bus side to the road", "Moving props": "the bus drives through", "Card penetration": "she sits on the moving bus", "Subject covered": "she rides in from behind the street tree (off-screen start)", "Text in frame": "shop signs behind the bus", Shadows: "she sits on the bus roof: her blob is on the roof" } });
+shot("C2-bus-roof", L(4, 0), "day", [kaylaBus], (F) => { const c = creep(C2, F, B.now, L(4, 0), 0.1, 0.4, 0.6); c.look.x = (c.look.x + busX(F) + 1.6) / 2; c.look.y += 1.2; return c; }, { wide: true, subjectFrom: 352 - 281, dof: NONE, props: [busProp, held("bubble tea", bubbleTea, kaylaBus, "right", () => C2, { fwd: 0.04 })], allow: { "Feet on the ground": "her legs hang down the bus side to the road", "Moving props": "the bus drives through", "Card penetration": "she sits on the moving bus", "Subject covered": "she rides in from behind the street tree (off-screen start)", "Text in frame": "shop signs behind the bus", Shadows: "she sits on the bus roof: her blob is on the roof" } });
 
 // ================================================================== line 4: Grandpa rides the cat to bingo
 const catCam = (F: number) => { const c = catAt(F); return P(c.clone().add(V(-0.55, 0.16, 0.7)), c.clone().add(V(0.05, 0.14, 0)), 40); };
@@ -120,8 +120,8 @@ shot("F2-lid-shut", L(7, 0), "morning", [inBox, mia], F2, { subject: "you", dof:
 // does: Zoe at her duck-sticker locker turns round on "prom"
 shot("G1-zoe-locker", B.prom, "school", [zoe], (F) => creep(on(zoe, L(7, 0), V(0.55, 0, 1), 2.3, 42, { down: 0.3 }), F, L(7, 0), B.prom, 0.12), { dof: mid(2.3) });
 // does: from the floor: 4-inch you at her sneaker holding up a flower three times your size; she hugs her duck notebook
-const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.32, -0.3)), 62), F, B.prom, L(8, 0), 0.06, 0.02);
-shot("G2-your-flower", L(8, 0), "school", [youHall, zoe], G2, { subject: "you", dof: close(0.4), props: [held("flower", flower, youHall, "right", G2, { fwd: 0.01, orient: (ob) => { ob.scale.setScalar(0.5); } })], allow: { ...TINY_OK, "Subject size": "you are 4 inches tall at her feet: the story" } });
+const G2 = (F: number) => creep(P(youHall.at(0).add(V(0.14, 0.05, 0.42)), youHall.at(0).add(V(-0.22, 0.42, -0.3)), 62), F, B.prom, L(8, 0), 0.06, 0.02);
+shot("G2-your-flower", L(8, 0), "school", [youHall, zoe], G2, { subject: "you", dof: close(0.4), props: [held("flower", flower, youHall, "right", G2, { fwd: 0.01, orient: (ob) => { ob.scale.setScalar(0.5); } })], allow: { ...TINY_OK, "Subject size": "you are 4 inches tall at her feet: the story", Shadows: "the 4-inch card's blob probe catches Zoe's shoe hull beside it" } });
 
 // ================================================================== lines 8-9: Tyler, 800 feet tall (day)
 // does: over the rooftops: Tyler's legs and body tower behind the blocks, phone up for a selfie with the sun
@@ -146,7 +146,7 @@ const walkCam = (F: number) => { const x = Math.max(...[F].map((f) => youWalk.at
 // does: ground-level track: you trudge along the sidewalk; the neighbour's white duck waddles right behind you
 shot("K1-duck-follows", B.duck11 + 8, "morning", [youWalk], walkCam, { wide: true, dof: close(1.5), crit: [DUCK(duckWalkAt, duckWalk)], allow: { ...TINY_OK, "Camera curve": "a tracking two-shot walking with you and the duck" } });
 // does: you glance back over your shoulder; the duck stops and smiles
-shot("K2-glance", L(12, 0), "morning", [youWalk], (F) => { const h = headOf(youWalk, B.duck11 + 30); return creep(P(h.clone().add(V(0.1, 0.01, 0.42)), h.clone().add(V(-0.04, -0.04, 0)), 40), F, B.duck11 + 8, L(12, 0), 0.08); }, { dof: close(0.5), crit: [DUCK(duckWalkAt, duckWalk)], allow: TINY_OK });
+shot("K2-glance", L(12, 0), "morning", [youWalk], (F) => { const x = youWalk.at(F).x; return P(V(x + 0.1, 0.23, -5.7 + 0.42), V(x - 0.02, 0.2, -5.7), 40); }, { dof: close(0.5), crit: [DUCK(duckWalkAt, duckWalk)], allow: TINY_OK });
 // does: at the door frame: your back to the casing, the old pencil marks below you, today's mark lands a hair higher
 const markProp = free("today's mark", () => { const g = new Group(); const m = new Mesh(new PlaneGeometry(0.03, 0.03), litTex("mark", () => canvasTex(64, 64, (c) => { c.strokeStyle = "#2a2a34"; c.lineWidth = 4; c.beginPath(); c.moveTo(4, 32); c.lineTo(60, 32); c.stroke(); }), { rough: 0.8 })); m.rotation.y = Math.PI / 2; g.add(m); return g; }, (o, F) => { o.position.set(HOME.x0 + 0.052, 0.106, 1.29); return F >= B.taller12 - 2; });
 const L1 = P(V(HOME.x0 + 0.42, 0.1, 1.42), V(HOME.x0 + 0.05, 0.08, 1.3), 34);
@@ -159,7 +159,7 @@ shot("M1-scheme", B.buy, "home", [youScheme], (F) => { const h = headOf(youSchem
 const PILE: Vector3[] = [];
 for (let layer = 0; layer < 7; layer++) { const n = 7 - layer; for (let i = 0; i < n; i++) for (let j = 0; j < Math.max(1, 3 - Math.floor(layer / 2)); j++) PILE.push(V(-0.15 + (i - (n - 1) / 2) * 0.115 + (layer % 2) * 0.03, 0.86 + layer * 0.06, (j - 1) * 0.1)); }
 const pile = free("bread mountain", () => { const g = new Group(); PILE.forEach((p, i) => { const b = bun((i % 3) + 1); b.position.copy(p); b.rotation.y = rnd(i) * 3; g.add(b); }); return g; }, () => {}, ["counter", "till"]);
-const M2 = P(V(-0.95, 1.52, 0.95), V(0.06, 1.17, -0.32), 50);
+const M2 = P(V(-0.95, 1.52, 0.95), V(0.16, 1.17, -0.32), 50);
 shot("M2-bread-mountain", L(14, 0), "mart", [youPile, cashier], (F) => creep(M2, F, B.buy, L(14, 0), 0.1), { subject: "cashier", dof: mid(2.0), props: [pile], allow: { ...TINY_OK, "Props through props": "the buns pile on each other" } });
 
 // ================================================================== line 14: a map of every pond
@@ -187,9 +187,10 @@ const tyN = (F: number) => headOf(tylerNight, F);
 const jetProp = held("jet", jet, tylerNight, "right", () => P(V(33, 1.4, 9.5), V(0, 0, 0), 60), { fwd: 0.02, when: (F) => F < L(19, 0), orient: (ob, F) => { ob.scale.setScalar(1.4); ob.rotation.set(0, Math.PI / 2, 0.4 * Math.sin(F / 6)); } });
 const O1 = P(V(33.5, 1.4, 9.5), V(36, 92, 110), 64);
 // does: from the lot: past the glowing gym, Tyler towers over the school, writing PROM? across the night sky in jet smoke
-shot("O1-skywriting", B.promQ + 20, "night", [tylerNight], (F) => creep(O1, F, L(17, 0), B.promQ + 20, 0.03, 1.5, 0.8), { wide: true, dof: NONE, fx: ["smoke"], props: [jetProp], allow: { ...GIANT_OK, ...SKY_OK } });
+shot("O1-skywriting", B.promQ + 20, "night", [tylerNight], (F) => creep(O1, F, L(17, 0), B.promQ + 20, 0.03, 1.5, 0.8), { wide: true, dof: NONE, fx: ["smoke"], props: [jetProp], allow: { ...GIANT_OK, ...SKY_OK, "Text in frame": "the WESTBROOK HIGH sign at the frame foot (92 % in)" } });
 // does: closer on the sky: the jet finishes the question mark, Tyler grins down past it
-shot("O1b-prom", L(18, 0), "night", [tylerNight], (F) => { const h = tyN(B.jet); return creep(P(h.clone().add(V(40, -60, -150)), h.clone().add(V(0, 10, 0)), 52), F, B.promQ + 20, L(18, 0), 0.08); }, { wide: true, dof: NONE, fx: ["smoke"], props: [jetProp], allow: { ...GIANT_OK, ...SKY_OK } });
+const O1b = (F: number) => { const h = tyN(B.jet); return creep(P(h.clone().add(V(40, -60, -150)), h.clone().add(V(0, 10, 0)), 52), F, B.promQ + 20, L(18, 0), 0.08); };
+shot("O1b-prom", L(18, 0), "night", [tylerNight], O1b, { wide: true, dof: NONE, fx: ["smoke"], props: [held("jet", jet, tylerNight, "right", O1b, { fwd: 0.02, orient: (ob, F) => { ob.scale.setScalar(1.4); ob.rotation.set(0, Math.PI / 2, 0.4 * Math.sin(F / 6)); } })], allow: { ...GIANT_OK, ...SKY_OK } });
 // does: on the gym steps Zoe gazes up at the sky, both hands over her mouth
 shot("O2-zoe-melts", B.standing - 6, "night", [zoeNight], (F) => creep(on(zoeNight, L(18, 0), V(-0.2, 0, -1), 2.1, 42, { up: -0.3, down: 0.25 }), F, L(18, 0), B.standing, 0.1), { dof: close(1.7), fx: ["smoke"] });
 // does: down in the empty lot: 4-inch you beside one paper bag of bread, the duck at your side, Tyler's grin glowing far above
@@ -237,7 +238,7 @@ const vanProp = free("news van", newsVan, (o, F) => { o.position.copy(vanAt(F));
 // does: the CH 7 NEWS van crawls after the parents, its dish up
 shot("U1-news-van", B.all - 2, "night", [], (F) => { const v = vanAt(F); return P(v.clone().add(V(7.5, 1.4, 5.2)), v.clone().add(V(0, 1.6, 0)), 46); }, { wide: true, subject: undefined, dof: NONE, props: [vanProp] });
 // does: behind tiny you in the lot: the ducks fan out round you, the kids, parents and the van pour in after them
-const U2 = P(V(33.0, 0.42, 19.4), V(29.0, 0.7, 15.6), 56);
+const U2 = P(V(33.0, 0.42, 19.4), V(30.4, 0.5, 16.0), 56);
 shot("U2-following-you", L(24, 0), "night", [youLot, ...KIDS.slice(0, 3), ...PARENTS.slice(0, 2)], (F) => creep(U2, F, B.all - 2, L(24, 0), 0.06), { subject: "you", wide: true, dof: NONE, fx: ["flood"], props: [vanProp], allow: { ...TINY_OK, ...CROWD_OK } });
 
 // ================================================================== line 24: ten feet, fifty, three hundred, nine hundred

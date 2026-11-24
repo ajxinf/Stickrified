@@ -198,7 +198,7 @@ export const town = () => {
   for (const [x, z, ry] of [[-14, WALK_N + 0.5, 0], [12.6, WALK_N + 0.5, 0.2], [-2, WALK_S - 0.5, Math.PI], [28, WALK_N + 0.5, 0]] as const) g.add(place(model("metal_trash_can", { part: "metal_trash_can", collider: "bin" }), x, 0.12, z, ry));
   for (const [x, z] of [[-24, WALK_N + 0.5], [19, WALK_S - 0.5], [40, WALK_N + 0.5]] as const) g.add(place(model("fire_hydrant", { part: "fire_hydrant", collider: "hydrant" }), x, 0.12, z, 0.4));
   for (const [x, z] of [[-26, WALK_N + 1.2], [-1, WALK_N + 1.2], [24, WALK_N + 1.2], [-14, WALK_S - 1.2], [12, WALK_S - 1.2]] as const) g.add(tree(rnd(x) > 0.5 ? "island_tree_01" : "tree_small_02", x, 0.12, z, { height: 5.5 }));
-  for (const [x, z, ry, t] of [[-30, -2.6, 0, "#c8d8f0"], [24.2, 17.4, Math.PI / 2, "#d8f0d0"], [44, 11, -Math.PI / 2, "#f0e8c8"]] as const) g.add(place(model("covered_car", { collider: "car", tint: t }), x, 0.0, z, ry + Math.PI / 2));
+  for (const [x, z, ry, t] of [[-46, -2.6, 0, "#c8d8f0"], [24.2, 17.4, Math.PI / 2, "#d8f0d0"], [44, 11, -Math.PI / 2, "#f0e8c8"]] as const) g.add(place(model("covered_car", { collider: "car", tint: t }), x, 0.0, z, ry + Math.PI / 2));
   for (const [x, z] of [[-40, WALK_N - 0.3], [9, WALK_N - 0.3], [38, WALK_N - 0.3]] as const) g.add(place(model("exterior_aircon_unit", { part: "exterior_aircon_unit", collider: false }), x, 3.6, z + 0.25, 0));
   for (const [x, z] of [[-17, WALK_N + 0.4], [-11.4, WALK_N + 0.45], [22, WALK_N + 0.4]] as const) g.add(place(model("potted_plant_02", { collider: "planter" }), x, 0.12, z, rnd(x)));
   g.add(place(model("utility_box_01", { collider: "utility box" }), 20.5, 0.12, WALK_N + 0.4, 0));
