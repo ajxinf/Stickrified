@@ -33,3 +33,7 @@ assets/models/fir_tree_01/fir_tree_01.bin
 assets/models/jacaranda_tree/jacaranda_tree.bin
 assets/models/tree_small_02/tree_small_02.bin
 assets/models/island_tree_03/island_tree_03.bin
+
+# models live on disk only (user 2026-11-25: no need to push the models to GitHub)
+assets/models/
+public/models/*/
