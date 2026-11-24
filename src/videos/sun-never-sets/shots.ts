@@ -94,7 +94,7 @@ const A2p = V(-6, 1.5, -1.6), A2 = P(A2p, A2p.clone().addScaledVector(V(0, 0, 0)
 shot("A2-the-sun", L(1, 6), "day", [], (F) => creep(A2, F, B.n29, L(1, 6), 0.02, 0.15, 0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT, fx: ["heat"] });
 // does: you and the toaster side by side (user 2026-11-24: the old tight close was "messy for the eyes"): the whole
 // toaster on the left, its face says "relax", the toast pops up, you jump ring-eyed on the right; no shake
-const A3 = P(V(0.05, 1.3, 1.6), V(-0.69, 1.0, -1.6), 40);
+const A3 = P(V(0.05, 1.3, 1.6), V(-0.58, 1.0, -1.6), 40);
 shot("A3-relax", L(2, 0), "kitchen", [youK1], (F) => creep(A3, F, L(1, 6), L(2, 0), 0.1, 0, 0.12), { dof: mid(3.2), props: [kitchenToaster, fxOn("toaster talks", L(1, 10) - 2)] });
 
 // ================================================================== line 2: the sun stops
@@ -332,7 +332,7 @@ const AD1 = P(V(-1.7, 1.0, 2.9), V(-2.3, 0.9, 0.3), 44);
 shot("AD1-three-minutes", L(30, 4), "night", [youMat], (F) => creep(AD1, F, L(30, 0), L(30, 4), 0.1), { dof: mid(2.4), fx: ["fireflies"], props: STREET_PROPS(L(30, 0)), allow: SEAT_OK });
 // does: mirror of the cold open: you and the toaster close; your eyes close into a smile, the toaster smiles too
 const AD2 = P(V(-2.22, 1.0, 2.15), V(-2.3, 0.9, 0.35), 44);
-shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, 0.07), { dof: close(1.25), fx: ["fireflies"], props: [...STREET_PROPS(L(30, 4)), fxOn("your eyes close", B.toaster30 - 30), fxOn("the toaster smiles", B.toaster30 - 2)], allow: SEAT_OK });
+shot("AD2-listen", FRAMES, "night", [youMat], (F) => creep(AD2, F, L(30, 4), FRAMES, -0.2, 0.05, 0.35), { dof: close(1.25), fx: ["fireflies"], props: [...STREET_PROPS(L(30, 4)), fxOn("your eyes close", B.toaster30 - 30), fxOn("the toaster smiles", B.toaster30 - 2)], allow: SEAT_OK });
 
 export const PLAN: Plan = { slug: "sun-never-sets", shots: SHOTS, words, inserts: INSERTS };
 function skyDirDeg(az: number, el: number) { const a = (az * Math.PI) / 180, e = (el * Math.PI) / 180; return new Vector3(Math.cos(e) * Math.sin(a), Math.sin(e), -Math.cos(e) * Math.cos(a)); }
