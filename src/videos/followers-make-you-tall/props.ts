@@ -141,7 +141,7 @@ export const mug = () => {
   const g = new Group();
   add(g, new Mesh(new CylinderGeometry(0.042, 0.04, 0.1, 20), ceramic("#f6f2ea")), 0, 0.05, 0); // modelled: ceramic mug
   add(g, new Mesh(new TorusGeometry(0.028, 0.007, 8, 14, Math.PI), ceramic("#f6f2ea")), -0.045, 0.05, 0).rotation.z = Math.PI / 2; // modelled: handle
-  const label = new Mesh(new CylinderGeometry(0.0425, 0.0405, 0.07, 20, 1, true, -0.9, 1.8), litTex("mug", mugTex, { spec: 0.6, gloss: 0.6, rough: 0.2 }));
+  const label = new Mesh(new CylinderGeometry(0.0425, 0.0405, 0.07, 20, 1, true, -0.9, 1.8), litTex("mug", mugTex, { spec: 0.6, gloss: 0.6, rough: 0.2 })); // modelled: the mug label wrap
   label.position.y = 0.05;
   g.add(label);
   const coffee = new Mesh(new CylinderGeometry(0.038, 0.038, 0.002, 18), M("fmt-coffee", () => toonMaterial({ color: "#3a2214", gloss: 0.6, rough: 0.2 }))); // modelled: coffee

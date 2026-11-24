@@ -233,7 +233,7 @@ export const mia = role("mia", miaLook, MIA_AT, (F) => {
   return st(alive(p, F, 81, [0.4, -0.2]), F, 81, [[0, "excited"], [B.school, "grin"], [B.lunchbox, "smug"]], { heading: 0.3 });
 });
 /** You ride in the lunchbox: standing on a bun inside, your head over the rim (the lid snaps shut on "lunchbox"). */
-export const youLunch = (box: (F: number) => Vector3) => role("you", youLook, (F) => box(F).add(V(0.03, LUNCH_FLOOR + 0.062, 0.0)), (F) => {
+export const youLunch = (grip: (F: number) => Vector3) => role("you", youLook, (F) => grip(F).add(V(0.03, LUNCH_FLOOR + 0.062, 0.0)), (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.62, 0.15], [0.62, 0.12], { gl: "open", gr: "open" }) }], [B.lunchbox - 8, { ...REST, arms: arms([0.72, -0.5], [0.72, -0.5], { gl: "open", gr: "open" }), bob: -4 }]], F);
   return st(p, F, 3, [[0, "tired"], [B.four, "deadpan"], [B.school, "sad"], [B.lunchbox - 4, "shocked"]], { heading: 0.2 });
 }, { scale: TINY });
