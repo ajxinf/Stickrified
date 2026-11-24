@@ -1,0 +1,309 @@
+{
+  "slug": "lies-erase-memories",
+  "title": "In this world, every lie you tell erases a memory forever",
+  "pillar": "In this world...",
+  "formula": "Strange act (you wake with a sticky note on your face: DON'T LIE TODAY. 7 PM.) -> the rule (every lie erases a memory, you never pick which) -> world tour (Linda and the meatloaf, the boss and the doors, you: 212 lies, an apartment of sticky notes) -> wound + stake (lost Ohio and whistling, but never the day you met Maya; tonight at 7 you propose) -> rival with the perfect version (her brother Derek: zero lies, remembers everything) + mocker line -> obstacles (Derek's recorder song, Derek's pond soup: you dodge with literal truths) -> setback (Maya calls at 6:40, you lie to save the surprise, pop: you forget where the ring is) -> tension stretch (couch, freezer, shoe) -> hidden plan (past you wrote on the back of the morning note: ring's in Waffles' collar) -> peak (7 PM, the laundromat, Waffles brings the ring, Maya fakes surprise: 'I had NO idea!') -> reversal from the rival's own strength (Derek can't lie, so he told her at lunch; her lie costs her one memory: Derek) -> she introduces herself to him (Linda callback) -> she still says yes -> loop: a sticky note on Derek's face.",
+  "loop": "Line 1: you wake up with a sticky note on your face. Last: you stick a sticky note on Derek's face (it says BROTHER).",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "voices": {
+    "derek": "cjVigY5qzO86Huf0OWal",
+    "maya": "FGY2WhTYpPnrIDTdsKH5"
+  },
+  "voiceNotes": {
+    "derek": "Eric (ElevenLabs premade): smooth, smug adult man, the brother who has never told a lie and never lets you forget it",
+    "maya": "Laura (ElevenLabs premade): bright young woman, warm and a little over the top when she fakes surprise"
+  },
+  "facts": [
+    "Fiction: one changed rule, every spoken lie erases one random memory forever. Never explained.",
+    "Comic exaggeration: Linda forgetting her husband over 30 years of meatloaf, the boss forgetting how doors work, losing the state of Ohio, the pond soup, the recorder song, Maya forgetting her own brother."
+  ],
+  "lines": [
+    {
+      "narration": "You wake up with a sticky note on your face that says: *DON'T LIE TODAY*.",
+      "spoken": "You wake up with a sticky note on your face that says: DON'T lie today.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open, your bedroom at morning: you sit up in bed, a yellow sticky note stuck to your forehead, 'DON'T LIE TODAY. 7 PM.' in marker. Hard cut on 'LIE' to the nightstand: a framed photo where one smiling person flickers and fades out to empty background.",
+      "camera": "MCU on you, the note readable; hard cut to the photo insert on 'LIE', back to your cross-eyed look up at the note",
+      "onScreenText": "Sticky note: DON'T LIE TODAY. 7 PM.",
+      "gag": "You go cross-eyed reading the note on your own forehead"
+    },
+    {
+      "narration": "Because in this world, every lie you tell erases a memory *forever*.",
+      "audioTag": "dramatic",
+      "scene": "Street outside: a man at a bus stop says something to a woman with a big grin; a little glowing bubble with a picture in it (a birthday cake) rises out of his head and pops like a soap bubble.",
+      "camera": "MS two-shot, tilt up with the bubble, hold on the pop",
+      "onScreenText": "",
+      "gag": "A memory bubble pops out of a liar's head"
+    },
+    {
+      "narration": "And you never get to *pick* which one.",
+      "audioTag": "playful",
+      "scene": "The same man blinks, looks down at the bus ticket in his hand like he has never seen one, and tries to eat it.",
+      "camera": "CU on the man's blank face and the ticket",
+      "onScreenText": "",
+      "gag": "He tries to eat his bus ticket"
+    },
+    {
+      "narration": "You see, your neighbour Linda told her husband she loved his meatloaf. For *30 years*.",
+      "spoken": "You see, your neighbour Linda told her husband she loved his meatloaf. For THIRTY years.",
+      "audioTag": "amused",
+      "scene": "Linda's kitchen: Linda, curlers and a flowered apron, beaming at a huge grey meatloaf; behind her a wall of 30 framed photos of the same meatloaf, one per year.",
+      "camera": "MS on Linda and the meatloaf, pull back to reveal the photo wall on '30 years'",
+      "onScreenText": "",
+      "gag": "A wall of 30 framed meatloaf photos"
+    },
+    {
+      "narration": "Now she introduces herself to him every *morning*.",
+      "audioTag": "deadpan",
+      "scene": "Linda at the breakfast table shaking her husband's hand politely, both in bathrobes; he wears a name tag 'HUSBAND'.",
+      "camera": "MCU two-shot across the table",
+      "onScreenText": "Name tag: HUSBAND",
+      "gag": "Linda shakes her own husband's hand"
+    },
+    {
+      "narration": "Your boss said \"great idea\" in so many meetings, he forgot how *doors* work.",
+      "spoken": "Your boss said \"great idea\" in so many meetings, he forgot how DOORS work.",
+      "audioTag": "excited",
+      "scene": "Office glass door marked PULL: your boss, tie and coffee mug, pushing it over and over, his face squashed on the glass.",
+      "camera": "MCU through the glass from the other side, his face pressed against it on 'doors'",
+      "onScreenText": "Door sign: PULL",
+      "gag": "The boss's face squashed against a PULL door"
+    },
+    {
+      "narration": "And you? You've told 212 lies in your life. That's why your apartment looks like *this*.",
+      "spoken": "And you? You've told two hundred and twelve lies in your life. That's why your apartment looks like this.",
+      "audioTag": "building excitement",
+      "scene": "Your apartment reveal: every surface covered in yellow sticky notes: the fridge 'FRIDGE', a fork 'THIS IS A FORK', the mirror 'YOU HATE CILANTRO', your dog on the rug with a note on his back 'WAFFLES. YOUR DOG.'",
+      "camera": "Fast pull-out from a note on your fridge to the whole room on 'this'",
+      "onScreenText": "Notes: FRIDGE / THIS IS A FORK / YOU HATE CILANTRO / WAFFLES. YOUR DOG.",
+      "gag": "A whole apartment labelled with sticky notes, even the dog"
+    },
+    {
+      "narration": "You've lost some stuff: how to whistle, your fourth birthday, the entire state of *Ohio*.",
+      "audioTag": "playful",
+      "scene": "You at the kitchen table with a map of the USA: Ohio is a blank hole with a sticky note on it, '???'. You try to whistle and only air comes out.",
+      "camera": "Insert on the map with the blank Ohio, then CU on you failing to whistle",
+      "onScreenText": "Note on the map: ???",
+      "gag": "Ohio is missing from your map"
+    },
+    {
+      "narration": "But one memory you'd never trade: the day you met *Maya*.",
+      "audioTag": "warm",
+      "scene": "A framed photo on your fridge, the only thing with no note on it: you and Maya at a laundromat, her laughing so hard soda comes out of her nose. The photo glows softly as you touch it.",
+      "camera": "Slow push-in on the photo, rack focus to your face",
+      "onScreenText": "",
+      "gag": "Maya snorting soda in the photo"
+    },
+    {
+      "narration": "And tonight at 7, you're asking her to *marry* you.",
+      "spoken": "And tonight at seven, you're asking her to marry you.",
+      "audioTag": "excited",
+      "scene": "You open a small velvet ring box: a ring sparkles. You hold it up next to the 7 PM note from this morning.",
+      "camera": "Insert on the box opening, the note beside it",
+      "onScreenText": "Note: 7 PM",
+      "gag": "The ring sparkles"
+    },
+    {
+      "narration": "The plan is simple: no lies until 7. There's just one problem. Her brother, *Derek*.",
+      "spoken": "The plan is simple: no lies until seven. There's just one problem. Her brother, Derek.",
+      "audioTag": "urgent",
+      "scene": "Your doorbell; you open the door and Derek fills it: tall, slick side-parted hair, a perfect sweater vest, arms crossed. A frame on his collar pin reads '0 LIES'.",
+      "camera": "Low-angle MS of Derek in the doorway",
+      "onScreenText": "Pin: 0 LIES",
+      "gag": "Derek's '0 LIES' pin"
+    },
+    {
+      "narration": "Derek has never told a lie, so he remembers *everything*.",
+      "audioTag": "exasperated",
+      "scene": "Derek walks in, tapping each sticky note as he passes, smug; behind him a fat binder labelled 'EVERY BIRTHDAY SINCE 1998' under his arm.",
+      "camera": "Track with Derek through the noted apartment",
+      "onScreenText": "Binder: EVERY BIRTHDAY SINCE 1998",
+      "gag": "Derek's birthday binder"
+    },
+    {
+      "narration": "\"She can't marry a guy who forgets his own *dog*.\"",
+      "speaker": "derek",
+      "audioTag": "smug, mocking",
+      "scene": "Derek points at Waffles' 'YOUR DOG' note, laughing; Waffles looks up at you.",
+      "camera": "MCU on Derek, Waffles in the corner of frame",
+      "onScreenText": "",
+      "gag": "Derek points at the dog's label"
+    },
+    {
+      "narration": "So all day, Derek tries to make you *lie*.",
+      "audioTag": "mischievous",
+      "scene": "Derek sits down on your couch and pulls out a recorder, grinning.",
+      "camera": "MS on Derek settling in",
+      "onScreenText": "",
+      "gag": "Derek pulls out a recorder"
+    },
+    {
+      "narration": "He plays you a song on his recorder. It sounds like a goose falling down the *stairs*.",
+      "audioTag": "amused",
+      "scene": "Derek playing with his cheeks puffed, eyes closed in passion; the window behind you rattles, Waffles hides under the table.",
+      "camera": "MCU on Derek, cut to Waffles hiding on 'stairs'",
+      "onScreenText": "",
+      "gag": "Waffles hides from the music"
+    },
+    {
+      "narration": "\"Loved it?\" You say: \"That was... definitely a *song*.\"",
+      "speaker": "you",
+      "spoken": "\"Loved it?\" You say: \"That was... DEFINITELY a song.\"",
+      "audioTag": "nervous",
+      "scene": "You sweating, smile frozen, picking every word; Derek leans in, waiting for a bubble to pop. None does.",
+      "camera": "Two-shot, Derek leaning into your face",
+      "onScreenText": "",
+      "gag": "A sweat drop; no bubble"
+    },
+    {
+      "narration": "Then he makes you his famous soup. It tastes like a *pond*.",
+      "audioTag": "playful",
+      "scene": "Your kitchen: Derek ladles a grey-green soup with a lily pad floating on it into your bowl. You take a spoonful.",
+      "camera": "Insert on the bowl and the lily pad, CU on your face going green",
+      "onScreenText": "",
+      "gag": "A lily pad in the soup, your face turns green"
+    },
+    {
+      "narration": "You say: \"Wow. It's so... *wet*.\"",
+      "speaker": "you",
+      "spoken": "You say: \"Wow. It's so... wet.\"",
+      "audioTag": "deadpan",
+      "scene": "You with the spoon still in your mouth, thumbs up; Derek's smile drops.",
+      "camera": "Two-shot, hold on Derek's face falling",
+      "onScreenText": "",
+      "gag": "Derek's smile drops"
+    },
+    {
+      "narration": "Then at 6:40, Maya calls. \"Doing anything special *tonight*?\"",
+      "speaker": "maya",
+      "spoken": "Then at six-forty, Maya calls. \"Doing anything special tonight?\"",
+      "audioTag": "urgent",
+      "scene": "Your phone buzzing on the counter, the screen shows MAYA and a heart; the oven clock reads 6:40. You answer; her voice on the line.",
+      "camera": "Insert on the phone and the oven clock, then MCU on you with the phone",
+      "onScreenText": "Phone: MAYA / oven clock 6:40",
+      "gag": "The phone buzzes across the counter"
+    },
+    {
+      "narration": "Say yes, and the surprise is ruined. So you say: \"Nope. *Nothing*.\"",
+      "speaker": "you",
+      "spoken": "Say yes, and the surprise is ruined. So you say: \"Nope. Nothing.\"",
+      "audioTag": "panicked",
+      "scene": "You glance at the ring box on the counter, wince, and say it.",
+      "camera": "CU on you, the ring box blurred behind",
+      "onScreenText": "",
+      "gag": "You wince as you say it"
+    },
+    {
+      "narration": "*Pop*.",
+      "audioTag": "dramatic",
+      "scene": "A memory bubble rises out of your head: inside it, your own hand hiding the ring somewhere you can't quite see. It pops.",
+      "camera": "Tilt up with the bubble, hold on the pop",
+      "onScreenText": "",
+      "gag": "Your bubble pops"
+    },
+    {
+      "narration": "You check the box. It's *empty*. And you have no idea where you hid the ring.",
+      "audioTag": "panicked",
+      "scene": "You flip open the velvet box: empty. Your face goes ring-eyed. Derek, behind you, slowly smiles.",
+      "camera": "Insert on the empty box, hard cut to your ring-eyed face",
+      "onScreenText": "",
+      "gag": "The empty ring box"
+    },
+    {
+      "narration": "The couch. Nothing. The freezer. Nothing. Your shoe. Just a note that says *shoe*.",
+      "spoken": "The couch. Nothing. The freezer. Nothing. Your shoe. Just a note that says... shoe.",
+      "audioTag": "urgent, building",
+      "scene": "Fast search: you flip the couch cushions; you dig through the freezer, frost puffing out; you shake a sneaker and a sticky note flutters out: 'SHOE'.",
+      "camera": "Three hard cuts, the last an insert on the note",
+      "onScreenText": "Note: SHOE",
+      "gag": "The note inside your shoe says SHOE"
+    },
+    {
+      "narration": "6:58. Then you notice the note from this morning. There's writing on the *back*.",
+      "spoken": "Six fifty-eight. Then you notice the note from this morning. There's writing on the back.",
+      "audioTag": "dramatic, alarmed",
+      "scene": "The oven clock 6:58. The DON'T LIE TODAY note lies on the floor, curled up, showing marker on its back.",
+      "camera": "Insert on the clock, then push in on the curled note",
+      "onScreenText": "Oven clock 6:58",
+      "gag": "The note curls to show its back"
+    },
+    {
+      "narration": "Past you knew you'd crack. It says: \"Ring's in Waffles' *collar*.\"",
+      "spoken": "Past you knew you'd crack. It says: \"Ring's in Waffles' COLLAR.\"",
+      "audioTag": "relieved, excited",
+      "scene": "The back of the note: 'YOU LIED, DIDN'T YOU. RING'S IN WAFFLES' COLLAR.' Cut to Waffles, the ring glinting on his collar tag.",
+      "camera": "Insert on the note, whip to Waffles' collar",
+      "onScreenText": "Note back: YOU LIED, DIDN'T YOU. RING'S IN WAFFLES' COLLAR.",
+      "gag": "The ring glints on the dog's collar"
+    },
+    {
+      "narration": "7 PM, the laundromat where you met. You kneel, Waffles trots in with the ring, and Maya *gasps*.",
+      "spoken": "Seven PM, the laundromat where you met. You kneel, Waffles trots in with the ring, and Maya gasps.",
+      "audioTag": "building excitement",
+      "scene": "Warm laundromat at night, dryers tumbling, the wall clock at 7:00. You on one knee, Waffles trotting up with the ring on his collar; Maya's hands fly to her mouth. Derek leans on a washer at the back, arms crossed.",
+      "camera": "Wide on the laundromat, push into Maya's face on 'gasps'",
+      "onScreenText": "Wall clock 7:00",
+      "gag": "Waffles delivers the ring"
+    },
+    {
+      "narration": "\"Oh my gosh, I had NO *idea*!\"",
+      "speaker": "maya",
+      "audioTag": "overjoyed, over the top",
+      "scene": "Maya, hands on her cheeks, eyes huge, a bit too dramatic.",
+      "camera": "CU on Maya",
+      "onScreenText": "",
+      "gag": "Maya overacts"
+    },
+    {
+      "narration": "*Pop*.",
+      "audioTag": "dramatic",
+      "scene": "A memory bubble floats out of Maya's head: inside it, Derek's face. It pops.",
+      "camera": "Tilt up with the bubble from Maya to the ceiling lights",
+      "onScreenText": "",
+      "gag": "Maya's bubble holds Derek's face"
+    },
+    {
+      "narration": "Because at lunch, she asked Derek what you were planning... and Derek can't *lie*.",
+      "audioTag": "mischievous",
+      "scene": "Flash to lunch, a diner booth: Maya asks, Derek opens his mouth, sweats, and blurts it all out, drawing a ring in the air.",
+      "camera": "MS of the booth, push in on Derek blurting",
+      "onScreenText": "",
+      "gag": "Derek mimes the ring and the knee"
+    },
+    {
+      "narration": "Maya blinks, turns to Derek, and introduces *herself*.",
+      "audioTag": "amused",
+      "scene": "Back in the laundromat: Maya steps over and politely shakes Derek's hand, smiling like he is a stranger; Derek frozen mid-shake.",
+      "camera": "Two-shot of Maya and Derek shaking hands, you and Waffles in the foreground",
+      "onScreenText": "",
+      "gag": "Maya shakes her own brother's hand"
+    },
+    {
+      "narration": "\"I'm your *BROTHER*!\"",
+      "speaker": "derek",
+      "spoken": "\"I'm your BROTHER!\"",
+      "audioTag": "outraged, yelling",
+      "scene": "Derek, face going red, binder of birthdays clutched to his chest.",
+      "camera": "CU on Derek, a little shake",
+      "onScreenText": "",
+      "gag": "Derek's face fills red"
+    },
+    {
+      "narration": "She still says *yes*.",
+      "audioTag": "relieved",
+      "scene": "Maya throws her arms round you; the ring on her finger; Waffles wags, dryers tumbling behind.",
+      "camera": "MCU hug, push in",
+      "onScreenText": "",
+      "gag": "The hug, the ring on her finger"
+    },
+    {
+      "narration": "So you peel off one more sticky note... and stick it on Derek's *face*.",
+      "audioTag": "mischievous",
+      "scene": "You slap a yellow sticky note on Derek's forehead: 'BROTHER'. He goes cross-eyed reading it, the same framing as your cold open.",
+      "camera": "MCU on Derek, mirroring the opening shot of you",
+      "onScreenText": "Sticky note: BROTHER",
+      "gag": "Derek cross-eyed under a note that says BROTHER"
+    }
+  ]
+}
