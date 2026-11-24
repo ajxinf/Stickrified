@@ -1,0 +1,266 @@
+{
+  "slug": "followers-make-you-tall",
+  "title": "In this world, the more followers you have, the taller you get",
+  "pillar": "In this world...",
+  "formula": "'In this world' rule (followers = height) -> world tour (Mom 400 = normal, Kayla 90 ft rides the bus roof, Grandpa 2 inches rides the cat) -> you: 3 followers incl. a bot, 4 inches, lunchbox commute -> goal (ask Zoe to prom; she loves ducks) -> rival with the perfect version (Tyler, 2 million, 800 ft, sneezes rain) + mocker ('Need a ladder?') -> planted oddity (the duck follows you, you grow a hair) -> weird prep, mystery kept (400 loaves, a map of every pond) + doubter (Grandpa) -> rival's big move (PROM? in the sky with a jet) -> setback (one bag of bread) -> the rival's own strength backfires (his sneeze blasts your bread over every pond in town) -> chain reaction (ducks, kids, parents, the news van follow you) -> peak (you grow to 900 ft, Tyler looks up) -> mocker line turned back ('Need a ladder?') -> Zoe on your palm says yes -> loop: the duck is still your number one follower.",
+  "loop": "Line 1: the more followers you have, the taller you get. Last: the duck, your first real follower, is still your number one follower.",
+  "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
+  "model": "eleven_v4",
+  "voices": {
+    "tyler": "TX3LPaxmHKxFdv7VOQHJ",
+    "grandpa": "nPczCjzI2devNBz1zQrb"
+  },
+  "voiceNotes": {
+    "tyler": "Liam (ElevenLabs premade): loud young influencer, cocky and booming",
+    "grandpa": "Brian (ElevenLabs premade): deep grumpy older man, 2 inches tall on a cat"
+  },
+  "facts": [
+    "Fiction: one changed rule, your height grows with how many followers you have. 'Followers' turns out to mean anyone (or any duck) physically following you, which the duck plants early. Never explained.",
+    "Comic exaggeration: everything (Kayla on the bus roof, Grandpa on the cat, Tyler's sneeze weather, the jet skywriting, 400 loaves, 4,000 ducks, 900 ft)."
+  ],
+  "lines": [
+    {
+      "narration": "In this world, the more followers you have, the taller you *get*.",
+      "audioTag": "fast-paced, energetic storyteller",
+      "scene": "Cold open on the first word, a city street: a girl looks at her phone, it dings, and she shoots up two storeys tall, her head popping out above a shop awning; pigeons scatter.",
+      "camera": "MS on her phone, tilt up fast with her growth to her surprised face",
+      "onScreenText": "",
+      "gag": "A girl shoots up two storeys on a ding"
+    },
+    {
+      "narration": "Your mom has 400. She's a perfectly normal *5 foot 6*.",
+      "audioTag": "playful",
+      "scene": "Your mom in the kitchen, normal size, holding a coffee mug that says WORLD'S OKAYEST MOM.",
+      "camera": "MCU on Mom",
+      "onScreenText": "Mug: WORLD'S OKAYEST MOM",
+      "gag": "Mom's normal-size life",
+      "spoken": "Your mom has four hundred. She's a perfectly normal five foot six."
+    },
+    {
+      "narration": "Kayla posted one dance video. Now she's 90 feet tall and rides the bus on the *roof*.",
+      "audioTag": "excited",
+      "scene": "A city bus pulling away with a giant Kayla sitting on its roof, knees up, sipping a bubble tea the size of a trash can.",
+      "camera": "Wide on the bus, Kayla's head above the street lamps",
+      "onScreenText": "",
+      "gag": "Kayla rides on the bus roof",
+      "spoken": "Kayla posted one dance video. Now she's ninety feet tall and rides the bus on the roof."
+    },
+    {
+      "narration": "And Grandpa doesn't own a phone. He's 2 inches tall, and rides the cat to *bingo*.",
+      "audioTag": "amused",
+      "scene": "The front lawn: tiny Grandpa in a cardigan, sitting on the family cat like a horse, a bingo dauber under his arm, the cat trotting down the path.",
+      "camera": "Low ground-level MS, the cat huge in frame",
+      "onScreenText": "",
+      "gag": "Grandpa rides the cat",
+      "spoken": "And Grandpa doesn't own a phone. He's two inches tall, and rides the cat to bingo."
+    },
+    {
+      "narration": "You have 3 followers: your mom, your grandma, and a bot called *HotSingles4U*.",
+      "audioTag": "deadpan",
+      "scene": "Your phone screen, huge next to you: FOLLOWERS 3, the list showing Mom, Grandma and HotSingles4U with a sparkly profile pic.",
+      "camera": "Insert on the phone, you standing beside it",
+      "onScreenText": "Phone: FOLLOWERS 3 / Mom / Grandma / HotSingles4U",
+      "gag": "The bot in your follower list",
+      "spoken": "You have three followers: your mom, your grandma, and a bot called... Hot Singles For You."
+    },
+    {
+      "narration": "So you're 4 inches tall, and you get to school in your sister's *lunchbox*.",
+      "audioTag": "playful",
+      "scene": "School bus stop: your sister snaps her lunchbox shut with you inside; the little window shows your face pressed to it.",
+      "camera": "MCU on the lunchbox, your face in its window",
+      "onScreenText": "",
+      "gag": "You ride to school in a lunchbox",
+      "spoken": "So you're four inches tall, and you get to school in your sister's lunchbox."
+    },
+    {
+      "narration": "And on Friday, you want to ask Zoe to prom. She's 6 foot, and she loves *ducks*.",
+      "audioTag": "building excitement",
+      "scene": "School hallway: Zoe at her locker, covered in duck stickers, a duck keyring; you, tiny, at her shoe, holding a flower bigger than you.",
+      "camera": "Low angle from the floor, Zoe towering, you at her sneaker",
+      "onScreenText": "",
+      "gag": "Zoe's duck-covered locker",
+      "spoken": "And on Friday, you want to ask Zoe to prom. She's six foot, and she loves ducks."
+    },
+    {
+      "narration": "But so does Tyler. Tyler has 2 million followers. He's 800 feet *tall*.",
+      "audioTag": "dramatic",
+      "scene": "Out the school window: Tyler towers over the town, his head above the clouds, his phone held up for a selfie with the sun.",
+      "camera": "Wide out the window, tilt up his whole body",
+      "onScreenText": "",
+      "gag": "Tyler's head in the clouds",
+      "spoken": "But so does Tyler. Tyler has two million followers. He's eight hundred feet tall."
+    },
+    {
+      "narration": "When he sneezes, it *rains*.",
+      "audioTag": "amused",
+      "scene": "Tyler sneezes; a gust blows the trees flat and a shower of drizzle falls on the school yard; kids open umbrellas.",
+      "camera": "Wide on the yard, kids' umbrellas pop open",
+      "onScreenText": "",
+      "gag": "Tyler's sneeze is weather"
+    },
+    {
+      "narration": "\"Hey, Pocket! Need a *ladder*?\"",
+      "audioTag": "booming, mocking",
+      "scene": "Tyler bends down over the school, one huge eye at the window, grinning; the glass rattles.",
+      "camera": "MCU on Tyler's face filling the window",
+      "onScreenText": "",
+      "gag": "His eye fills the window",
+      "speaker": "tyler"
+    },
+    {
+      "narration": "Then you notice something weird. Every morning, the neighbour's duck follows you to the bus *stop*.",
+      "audioTag": "curious, quick",
+      "scene": "Your street at morning: a white duck waddling a step behind you down the pavement.",
+      "camera": "Ground-level track with you and the duck",
+      "onScreenText": "",
+      "gag": "The duck follows you"
+    },
+    {
+      "narration": "And every morning, you're a tiny bit *taller*.",
+      "audioTag": "realizing, excited",
+      "scene": "Your bedroom door frame with pencil marks for your height; a new mark, a hair above the last, with today's date.",
+      "camera": "Insert on the door frame marks",
+      "onScreenText": "Door frame: pencil height marks",
+      "gag": "Your height mark creeps up"
+    },
+    {
+      "narration": "So you get weird. You buy 400 loaves of *bread*.",
+      "audioTag": "mischievous",
+      "scene": "Supermarket checkout: a towering mountain of bread on the belt; the cashier stares at tiny you on top of it.",
+      "camera": "Pull out from you to reveal the bread mountain",
+      "onScreenText": "",
+      "gag": "A mountain of bread",
+      "spoken": "So you get weird. You buy four hundred loaves of bread."
+    },
+    {
+      "narration": "You draw a map of every pond in *town*.",
+      "audioTag": "mischievous",
+      "scene": "Your desk: a big paper map of the town with every pond circled in red marker, a dotted line joining them to the school.",
+      "camera": "Insert on the map, push in on the dotted line",
+      "onScreenText": "Map: ponds circled, line to the school",
+      "gag": "Every pond circled"
+    },
+    {
+      "narration": "\"Kid, you need a million followers by *Friday*.\"",
+      "audioTag": "grumpy, old",
+      "scene": "Grandpa on the cat, on your desk, poking the map with his bingo dauber.",
+      "camera": "MCU on Grandpa and the cat",
+      "onScreenText": "",
+      "gag": "Grandpa pokes the map",
+      "speaker": "grandpa"
+    },
+    {
+      "narration": "You just say: \"Pass the *bread*.\"",
+      "audioTag": "playful",
+      "scene": "You, tiny, holding a single slice like a shield.",
+      "camera": "CU on you with the slice",
+      "onScreenText": "",
+      "gag": "You hold a bread slice"
+    },
+    {
+      "narration": "Friday night, Tyler writes PROM? across the sky with a *jet*.",
+      "audioTag": "dramatic",
+      "scene": "Night sky over the school gym: Tyler holding a jet plane like a pen, writing PROM? in white smoke; Zoe on the gym steps, hands over her mouth.",
+      "camera": "Wide from the gym steps up to the sky",
+      "onScreenText": "Sky: PROM?",
+      "gag": "A jet used as a pen"
+    },
+    {
+      "narration": "Zoe's about to say yes. And you're standing in the parking lot with one bag of *bread*.",
+      "audioTag": "urgent",
+      "scene": "Parking lot: you, tiny, next to a single bread bag, the duck beside you; above, Tyler's huge grin.",
+      "camera": "Low wide, you small in a sea of asphalt",
+      "onScreenText": "",
+      "gag": "One bag of bread"
+    },
+    {
+      "narration": "Tyler sees it, laughs, and *sneezes*.",
+      "audioTag": "dramatic, alarmed",
+      "scene": "Tyler's face scrunching; ACHOO; the gust rips the bag open.",
+      "camera": "MCU on Tyler, cut to the bag bursting",
+      "onScreenText": "",
+      "gag": "The sneeze"
+    },
+    {
+      "narration": "Your bread blasts across the whole *town*.",
+      "audioTag": "panicked",
+      "scene": "Four hundred loaves of slices fly over the rooftops like confetti, landing in every yard, pond and street.",
+      "camera": "Wide aerial following the bread over the roofs",
+      "onScreenText": "",
+      "gag": "A bread storm over the town"
+    },
+    {
+      "narration": "Then you hear it. *Quack*.",
+      "audioTag": "building excitement",
+      "scene": "Silence, then every pond in town ripples; a duck pops its head up.",
+      "camera": "Insert on a pond, a duck surfacing",
+      "onScreenText": "",
+      "gag": "The first quack"
+    },
+    {
+      "narration": "The ducks follow the bread. The kids follow the ducks. The parents follow the *kids*.",
+      "audioTag": "building excitement",
+      "scene": "A river of ducks waddling up the street toward you, kids running after them, parents running after the kids.",
+      "camera": "Track backward ahead of the crowd as it fills the street",
+      "onScreenText": "",
+      "gag": "A street full of ducks, kids and parents"
+    },
+    {
+      "narration": "The news van follows the parents. And they're all following *you*.",
+      "audioTag": "excited, building",
+      "scene": "A news van with a satellite dish crawling behind the crowd; the whole parade turns into the parking lot behind you.",
+      "camera": "Wide over the parade, settling behind you",
+      "onScreenText": "",
+      "gag": "The news van joins the parade"
+    },
+    {
+      "narration": "Ten feet. Fifty. Three hundred. *Nine hundred*.",
+      "audioTag": "dramatic, booming",
+      "scene": "You growing in leaps past the lamp posts, the gym roof, the water tower, the clouds, with the crowd still pouring in at your feet.",
+      "camera": "Locked low angle, tilting up faster each beat",
+      "onScreenText": "",
+      "gag": "You grow past the water tower"
+    },
+    {
+      "narration": "You're eye to eye with Tyler. Actually, he's looking *up*.",
+      "audioTag": "triumphant",
+      "scene": "Over the rooftops: you and Tyler face to face in the clouds, Tyler craning his neck up at you, mouth open.",
+      "camera": "Wide profile two-shot in the clouds",
+      "onScreenText": "",
+      "gag": "Tyler looks up at you"
+    },
+    {
+      "narration": "You lean down: \"Hey, Tyler. Need a *ladder*?\"",
+      "audioTag": "smug, playful",
+      "scene": "You bending down over Tyler, grinning; his face goes red.",
+      "camera": "MCU over your shoulder onto Tyler's red face",
+      "onScreenText": "",
+      "gag": "His face goes red"
+    },
+    {
+      "narration": "Then you kneel down to Zoe, with 4,000 *ducks* behind you.",
+      "audioTag": "warm, excited",
+      "scene": "You on one knee in the parking lot, your hand flat on the ground; Zoe climbs onto your palm, surrounded by a sea of ducks.",
+      "camera": "Wide low angle, Zoe tiny on your palm",
+      "onScreenText": "",
+      "gag": "Zoe climbs onto your palm",
+      "spoken": "Then you kneel down to Zoe, with four thousand ducks behind you."
+    },
+    {
+      "narration": "She says *yes*.",
+      "audioTag": "relieved, overjoyed",
+      "scene": "Zoe on your palm, jumping up and down, hugging your thumb.",
+      "camera": "CU on Zoe on your palm",
+      "onScreenText": "",
+      "gag": "She hugs your thumb"
+    },
+    {
+      "narration": "And the duck? Still your number one *follower*.",
+      "audioTag": "amused",
+      "scene": "Close on the neighbour's duck at your giant sneaker, looking up at you, proud; you look down at it and wink.",
+      "camera": "Ground-level CU on the duck, you huge behind it",
+      "onScreenText": "",
+      "gag": "The duck salutes you"
+    }
+  ]
+}
