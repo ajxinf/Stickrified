@@ -383,7 +383,25 @@ const backdrop = (g: Group) => {
     g.add(place(model(i % 3 ? "island_tree_01" : "island_tree_02", { collider: false, scale: 1.2 + rnd(i + 30) * 0.6 }), x, 0, -31 - rnd(i + 40) * 4, rnd(i) * 6));
     g.add(place(model(i % 3 ? "island_tree_02" : "island_tree_01", { collider: false, scale: 1.2 + rnd(i + 50) * 0.6 }), x + 2, 0, 33 + rnd(i + 60) * 4, rnd(i + 1) * 6));
   }
-  for (const [x, z, sx, sy] of [[-60, -110, 70, 16], [30, -120, 90, 22], [-40, 115, 80, 18], [50, 125, 90, 24]]) {
+  // the town goes on down the road both ways (user 2026-11-24: "the town background still looks empty, a void"):
+  // more houses on both rows, trees in the gaps, a row of taller buildings closing each end of the road
+  const far = ["#e8c8a0", "#a8c8f0", "#f2d58a", "#c8a0d8", "#9ad0c0", "#f28a8a", "#f2ece2"];
+  for (let i = 0; i < 6; i++) for (const side of [-1, 1]) {
+    const x = side * (41 + i * 8.5) + (rnd(i + 70) - 0.5), c = far[(i * 2 + (side > 0 ? 0 : 3)) % far.length];
+    g.add(house({ x, front: -11, w: 6.4, d: 7, h: 4.2 + rnd(i + 80 + side) * 1.0, wall: i % 2 ? MATS.siding(c) : MATS.stucco(c), roof: (i + side) % 3 ? MATS.roofRed() : MATS.roofGrey(), door: "#3a6ab8", seed: 80 + i * 2 + (side > 0 ? 0 : 1) }));
+    const h = house({ x: 0, front: 0, w: 6.4, d: 7, h: 4.4 + rnd(i + 90 - side) * 0.9, wall: i % 2 ? MATS.stucco(far[(i + 4) % 7]) : MATS.siding(far[(i + 4) % 7]), roof: i % 2 ? MATS.roofGrey() : MATS.roofRed(), door: "#c8582c", seed: 100 + i * 2 + (side > 0 ? 0 : 1) });
+    h.rotation.y = Math.PI;
+    h.position.set(side * (40 + i * 8.5) + (rnd(i + 75) - 0.5), 0, 11.5);
+    g.add(h);
+    if (i % 2 === 0) for (const z of [-8.6, 8.8]) g.add(place(model(i % 4 ? "island_tree_02" : "island_tree_01", { collider: false, scale: 1.0 + rnd(i + z) * 0.4 }), side * (45.2 + i * 8.5), 0, z, rnd(i + z) * 6));
+  }
+  for (const side of [-1, 1]) for (let j = 0; j < 5; j++) {
+    const b = house({ x: 0, front: 0, w: 9, d: 8, h: 7 + rnd(j + 120 + side) * 3, wall: j % 2 ? MATS.stucco(far[(j + 2) % 7]) : MATS.siding(far[(j + 5) % 7]), roof: j % 2 ? MATS.roofGrey() : MATS.roofRed(), door: "#2a2a30", seed: 130 + j * 2 + (side > 0 ? 0 : 1) });
+    b.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2; // facing back up the road
+    b.position.set(side * 89, 0, -22 + j * 10.5);
+    g.add(b);
+  }
+  for (const [x, z, sx, sy] of [[-60, -110, 70, 16], [30, -120, 90, 22], [-40, 115, 80, 18], [50, 125, 90, 24], [150, 0, 30, 20], [-150, 0, 30, 20]]) {
     const hill = new Mesh(new SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), MATS.lawn());
     hill.scale.set(sx, sy, 30);
     hill.position.set(x, -1, z);

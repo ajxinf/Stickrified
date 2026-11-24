@@ -68,7 +68,7 @@ const toasterAt = (where: (F: number) => Vector3, ry = 0) => free("toaster", toa
   o.rotation.y = ry;
   (o.getObjectByName("face") as unknown as { material: unknown }).material = toastFaceMat(w.toast);
   const toast = o.getObjectByName("toast")!;
-  toast.position.y = 0.2 + 0.09 * Math.sin(Math.PI * Math.min(w.toastUp, 1) * 0.5); // popped: half out of the slots
+  toast.position.y = 0.16 + 0.07 * Math.sin(Math.PI * Math.min(w.toastUp, 1) * 0.5); // popped: half out of the slots, the bottom still inside
   toast.visible = F < L(2, 0); // (eaten: the street toaster is empty)
 }, ["kitchen", "mattress"]);
 const kitchenToaster = toasterAt(() => TOASTER.clone());
@@ -92,9 +92,10 @@ shot("A1-3am", B.n29, "kitchen", [youK1], (F) => creep(A1, F, 0, B.n29, 0.06), {
 // does: hard cut up to the sun itself, huge and glaring over the south rooftops (heat shimmer of motes)
 const A2p = V(-6, 1.5, -1.6), A2 = P(A2p, A2p.clone().addScaledVector(V(0, 0, 0).add(skyDirDeg(150, 26)), 20), 52);
 shot("A2-the-sun", L(1, 6), "day", [], (F) => creep(A2, F, B.n29, L(1, 6), 0.02, 0.15, 0), { wide: true, subject: undefined, dof: NONE, allow: SKY_TEXT, fx: ["heat"] });
-// does: close on you and the toaster: its slot mouth says "relax", the toast pops up, you jump ring-eyed
-const A3 = P(V(0.05, 1.32, 0.6), V(-0.5, 1.06, -1.6), 44);
-shot("A3-relax", L(2, 0), "kitchen", [youK1], impact((F) => creep(A3, F, L(1, 6), L(2, 0), 0.1), B.relax, 0.012, 6), { dof: close(1.4), kicks: [[B.relax - L(1, 6), B.relax - L(1, 6) + 6]], props: [kitchenToaster, fxOn("toaster talks", L(1, 10) - 2)] });
+// does: you and the toaster side by side (user 2026-11-24: the old tight close was "messy for the eyes"): the whole
+// toaster on the left, its face says "relax", the toast pops up, you jump ring-eyed on the right; no shake
+const A3 = P(V(0.05, 1.3, 1.6), V(-0.69, 1.0, -1.6), 40);
+shot("A3-relax", L(2, 0), "kitchen", [youK1], (F) => creep(A3, F, L(1, 6), L(2, 0), 0.1, 0, 0.12), { dof: mid(3.2), props: [kitchenToaster, fxOn("toaster talks", L(1, 10) - 2)] });
 
 // ================================================================== line 2: the sun stops
 // does: the sun slides down toward the roofs, then brakes dead with a bounce on "stopped" (the lens shakes)
@@ -208,7 +209,8 @@ shot("M2-alarm-set", L(14, 0), "day", [youDrag], M2c, { subject: undefined, dof:
 const N1 = P(V(-1.4, 1.45, -1.4), V(0.25, 1.4, -7.3), 24);
 shot("N1-kyle-laughs", B.snapped + 20, "day", [kyleFence], (F) => creep(N1, F, L(14, 0), B.snapped + 20, 0.05), { dof: close(5.8), props: STREET_PROPS(L(14, 0)) });
 // does: close on the toaster on your mattress: its eyes roll up on "toaster", you blurred behind
-const N2 = P(TOASTER_MAT.clone().add(V(0.12, 0.3, 0.75)), TOASTER_MAT.clone().add(V(0, 0.12, 0)), 36);
+// the whole toaster at three-quarters: chrome body, slots, lever, its face rolling its eyes
+const N2 = P(TOASTER_MAT.clone().add(V(0.42, 0.36, 0.78)), TOASTER_MAT.clone().add(V(0.01, 0.11, 0)), 42);
 shot("N2-toaster-rolls", L(15, 0), "day", [youMat], (F) => creep(N2, F, B.snapped + 20, L(15, 0), 0.14), { subject: undefined, dof: close(0.75), props: [...STREET_PROPS(L(14, 0)), fxOn("the toaster rolls its eyes", B.toaster14 - 3)], allow: { "Subject size": "insert on the toaster", ...SEAT_OK } });
 
 // ================================================================== line 15: the town cooks
@@ -302,8 +304,8 @@ shot("Y2-corona", L(26, 0), "night", [], (F) => creep(sunCam(V(-2.6, 1.3, -2.5),
 const Z1a = P(V(-1.9, 1.0, 2.4), V(-2.3, 0.8, 0.4), 44), Z1b = P(V(-1.85, 1.28, 2.6), V(-2.5, 3.8, -5.0), 52);
 shot("Z1-stars", B.stars + 6, "night", [youMat], (F) => glideCam(Z1a, Z1b, F, L(26, 0), B.stars + 6), { subject: "you", subjectFrom: 0, dof: NONE, fx: ["fireflies"], props: STREET_PROPS(L(26, 0)), allow: { ...SKY_TEXT, ...SEAT_OK, "Subject in frame": "the crane leaves you for the stars", "Caption vs face": "the crane tilts up off your face to the stars" } });
 // does: an owl on the power line hoots like it has waited a month, fireflies blinking below
-export const OWL = V(-1.0, wireY(-1.0) + 0.27, OWL_AT.z - 0.4); // on the front wire (the one nearest the lens), feet on it
-const Z2 = P(OWL.clone().add(V(-0.25, -0.3, -1.55)), OWL.clone().add(V(0, -0.2, 0)), 44);
+export const OWL = V(-1.0, wireY(-1.0) + 0.08, OWL_AT.z - 0.4); // on the front wire (the one nearest the lens), feet on it: sprite size 0.42 at fov 44 = a 17 cm owl, feet 0.47 of it below the centre
+const Z2 = P(OWL.clone().add(V(-0.3, -0.4, -1.95)), OWL.clone().add(V(0, -0.15, 0)), 44); // a real-size owl (user 2026-11-24: way too big)
 shot("Z2-owl", L(27, 0), "night", [], (F) => creep(Z2, F, B.stars + 6, L(27, 0), 0.12), { subject: undefined, dof: NONE, fx: ["owl", "fireflies"], allow: { ...SKY_TEXT, "Camera clearance": "the lens floats below the wire" } });
 
 // ================================================================== line 27: Kyle's basement empties

@@ -88,8 +88,8 @@ const ShotView: React.FC<{ s: S }> = ({ s }) => {
       </>}
       {fx.includes("heat") && <Sprites n={60} F={F} at={heatAt(look.clone().setY(1))} kind="heat" size={0.5} />}
       {fx.includes("moth") && <Sprites n={1} F={F} at={mothAt} kind="moth" size={0.09} />}
-      {fx.includes("owl") && <Sprites n={1} F={F} at={() => (hooting(F) ? null : OWL)} kind="owl" size={0.62} />}
-      {fx.includes("owl") && <Sprites n={1} F={F} at={() => (hooting(F) ? OWL : null)} kind="owlHoot" size={0.62} />}
+      {fx.includes("owl") && <Sprites n={1} F={F} at={() => (hooting(F) ? null : OWL)} kind="owl" size={0.42} />}
+      {fx.includes("owl") && <Sprites n={1} F={F} at={() => (hooting(F) ? OWL : null)} kind="owlHoot" size={0.42} />}
       {fx.includes("fireflies") && <Sprites n={70} F={F} at={flyAt(look.clone().setY(0))} kind="fly" size={0.16} />}
       {fx.includes("cash") && <Sprites n={40} F={F} at={cashAt} kind="bill" size={0.12} />}
       {(s.moving ?? []).map((p) => <Moving key={p.name} prop={p} f={F} />)}

@@ -42,7 +42,7 @@ const LE = (n: number, k: number) => Math.round(words[LINE_START[n - 1] + k].end
 const lastWord = (n: number) => (n < LINE_START.length ? LINE_START[n] - 1 : words.length - 1) - LINE_START[n - 1];
 export const LEND = (n: number) => LE(n, lastWord(n));
 export const LAST = Math.round(words[words.length - 1].end * FPS);
-export const FRAMES = LAST + 8;
+export const FRAMES = LAST + 40; // ~1.3 s of the last shot still moving after the last word (user 2026-11-24)
 export const span = (F: number, a: number, b: number) => glide((F - a) / Math.max(b - a, 1));
 export const lerpV = (a: Vector3, b: Vector3, t: number) => a.clone().lerp(b, t);
 const WORD_F = words.map((x) => Math.round(x.start * FPS));

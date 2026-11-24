@@ -1,9 +1,9 @@
 {
  "fps": 30,
- "frames": 3627,
+ "frames": 3659,
  "music": {
   "track": "in_this_world(default).mp3",
-  "frames": 3627,
+  "frames": 3659,
   "button": {
    "word": "toaster",
    "n": 2

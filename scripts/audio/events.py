@@ -5,7 +5,7 @@ it instead of leaving hand-typed frames behind:
   {"word": "laughs", "n": 0, "lead": 2, "sfx": "pop"}     -> start frame of the 1st caption word "laughs",
                                                              2 frames early (reactions land 0-3 f before the word)
   "music": {"button": {"word": "laughing"}, "stop": [{"word": "His", "lead": 4}, {"word": "His", "lead": -10}]}
-"frames" may be "auto": the last word's end + 6 frames (the composition length rule in story.ts).
+"frames" may be "auto": the last word's end + 40 frames (the composition length rule in story.ts: ~1.3 s tail, user 2026-11-24).
 Words match exactly (case, "*" and punctuation ignored): "you" never matches "your".
 """
 import json, os, re
@@ -23,7 +23,7 @@ def load(d):
         if len(hits) <= x.get("n", 0): raise SystemExit(f"events.json: word {x['word']!r} #{x.get('n', 0)} not in words.json")
         return round(hits[x.get("n", 0)]["start"] * fps) - x.get("lead", 0)
 
-    if cfg.get("frames") == "auto": cfg["frames"] = round(words[-1]["end"] * fps) + 6
+    if cfg.get("frames") == "auto": cfg["frames"] = round(words[-1]["end"] * fps) + 40
     for e in cfg["events"]:
         if "f" not in e: e["f"] = frame(e)
     m = cfg.get("music")

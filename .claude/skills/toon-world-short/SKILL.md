@@ -76,8 +76,10 @@ stories, characters, jokes or shots, never name their channels. Once our pilot i
     `audio/loudness.json`. Never fix a failed gap by raising the music; lower it.
   - Master to -14 LUFS integrated, true peak -1 dBTP (the louder references measure -14.2 LUFS / -0.8 dBTP): gain
     into a look-ahead true-peak limiter (ceiling -1.3 dBTP). Loudnorm alone falls back to dynamic mode.
-  - End the mix on the last word. A musical button may land on the last word and must decay before the last frame;
-    no outro sting after it, no end card.
+  - **The tail** (user 2026-11-24): the video runs ~1.3 s past the last word (`FRAMES = LAST + 40` in story.ts,
+    `"frames": "auto"` = last word + 40 in events.json), never a hard stop on the line. The last shot keeps moving
+    through it (camera creep, idle acting, particles; never a frozen frame) and `mix.py` fades music + bed to silence
+    over it. A musical button may land on the last word; no outro sting after it, no end card.
 - **Final export is 1080x1920** (user 2026-11-23: 1080p is the default final output; it replaced the 2K 1440x2560
   master of 2026-11-21). `render.mjs` scale 1 (its default). Keep the 2K photo textures (`polyhaven.py tex <id> --res
   2k`: diffuse + normal 2K, ARM 1K) and the Composer's contrast-adaptive sharpen (`POST.sharpen`); every pixel-sized post
@@ -203,7 +205,7 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
      "Visual storytelling").
    - At least one POV "you" shot per video. POV only until a back-view card exists (cards always face the
      camera, so an over-the-shoulder shot shows your face); the back view is in `videos/BACKLOG.md`.
-   - Captions change 2.2-3 times per second; end on the last word, no outro.
+   - Captions change 2.2-3 times per second; the last caption ends on the last word; the picture runs on ~1.3 s (see "The tail"), no outro card.
 3. **Voice.** `node scripts/tts.ts videos/<slug>` (Node 22.6+ runs TypeScript directly; `--new` regenerates,
    otherwise the saved `voice/tts_response.json` is reused so credits are not spent twice) -> `voice/voice.wav` + `voice/words.json` (character
    alignment converted to word times). Hand-check the word times; everything is timed to `words.json`.
@@ -288,7 +290,7 @@ Redesigned 2026-11-13 (`kit/toon/protagonist.ts`):
     QA: the **video-qa** layers 2, 2b and 3 on the final (`video_qa.py`, `short_qa.py`, `measure.py`, `richness.py`,
     `frames.py` sheets, `line_sheet.py`), written to `out/<slug>/QA.md`. Fix, re-render only the changed part, re-QA
     with `--prev` (changed shots only).
-11. **Deliver**: `python scripts/deliver.py <slug> <N> "<Title>"` (never copy by hand: it refuses unless layer 1,
+11. **Deliver**: `python scripts/deliver.py <slug> <N> "<Title>"` (after the copy it cleans `out/<slug>/` media + `C:\remotion-tmp`; never copy by hand: it refuses unless layer 1,
     QA.md `Verdict: PASS` and richness are on disk and passing; episode 3 skipped QA and shipped glare, a door onto a
     wall and cut text). The user reviews the delivered video by eye. SendUserFile it; 3 title options; description with "Narration: AI voice" (+ sources for
     history); add minutes per step to `videos/TIMELOG.md`; mark the topic done in `BACKLOG.md`; commit and push.

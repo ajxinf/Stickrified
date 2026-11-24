@@ -1,4 +1,5 @@
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Points, PointsMaterial, BoxGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from "three";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { Kit, M, MAT } from "../../../kit/toon/build/kit";
 import { model } from "../../../kit/toon/build/models";
 import { SKY } from "../../../kit/toon/ink";
@@ -30,25 +31,35 @@ export const toastFaceMat = (k: ToastFace) => {
   if (!m) { m = new MeshBasicMaterial({ map: faceTex(k), transparent: true, depthWrite: false, toneMapped: false }); FACE_MATS.set(k, m); }
   return m;
 };
-/** 0.3 w x 0.2 h x 0.17 d, base centre at the origin, face toward +z. Children: "face" (material swapped), "toast". */
+/** 0.3 w x 0.2 h x 0.18 d, base centre at the origin, face toward +z. Children: "face" (material swapped), "toast".
+ * A rounded chrome body on a black base, two slots sunk in its flat top, the lever and dial on the +x side (user
+ * 2026-11-24: the old box + half-cylinder lid left its slots floating and read as a white box). */
 export const toaster = () => {
   const g = new Group(), k = new Kit();
-  const chrome = M("snc-chrome", () => toonMaterial({ map: undefined, color: "#d8dde4", spec: 0.95, gloss: 0.85, rough: 0.12 }));
-  k.box(chrome, 0.3, 0.19, 0.17, 0, 0.105, 0);
-  k.add(chrome, new CylinderGeometry(0.085, 0.085, 0.3, 16, 1, false, 0, Math.PI).rotateZ(Math.PI / 2).rotateX(-Math.PI / 2), 0, 0.2, 0);
-  for (const x of [-0.065, 0.065]) k.box(MAT.color("#1c1c20"), 0.04, 0.02, 0.13, x, 0.285, 0);
-  k.box(MAT.color("#2a2a30"), 0.32, 0.015, 0.19, 0, 0.008, 0);
-  k.box(MAT.color("#c8342c"), 0.02, 0.05, 0.04, 0.16, 0.14, 0.03); // lever
+  // a retro painted-metal body (the old chrome blew out to a white box in daylight), chrome trim
+  const body = M("snc-toaster", () => toonMaterial({ map: undefined, color: "#7cc4b4", spec: 0.55, gloss: 0.6, rough: 0.3 }));
+  const chrome = M("snc-chrome", () => toonMaterial({ map: undefined, color: "#b4bcc6", spec: 0.95, gloss: 0.85, rough: 0.12 }));
+  const black = MAT.color("#1c1c20");
+  k.add(black, new RoundedBoxGeometry(0.3, 0.026, 0.18, 2, 0.008), 0, 0.013, 0); // base
+  k.add(body, new RoundedBoxGeometry(0.28, 0.18, 0.16, 6, 0.04), 0, 0.112, 0); // body, flat top at 0.202
+  for (const z of [-0.03, 0.03]) {
+    k.box(chrome, 0.18, 0.006, 0.042, 0, 0.2, z, false); // slot rim
+    k.box(MAT.color("#0c0c0e"), 0.17, 0.006, 0.028, 0, 0.2008, z, false); // the dark slot
+  }
+  k.box(black, 0.004, 0.11, 0.014, 0.1405, 0.12, 0.035); // lever track
+  k.box(MAT.color("#c8342c"), 0.03, 0.018, 0.03, 0.152, 0.16, 0.035); // lever knob
+  k.add(black, new CylinderGeometry(0.016, 0.016, 0.012, 16).rotateZ(Math.PI / 2), 0.146, 0.08, -0.035); // browning dial
+  k.box(MAT.color("#f2ece2"), 0.003, 0.016, 0.003, 0.153, 0.088, -0.035); // its pointer
   const b = k.build();
   g.add(b);
-  const face = new Mesh(new PlaneGeometry(0.22, 0.14), toastFaceMat("neutral"));
-  face.position.set(0, 0.12, 0.087);
+  const face = new Mesh(new PlaneGeometry(0.2, 0.125), toastFaceMat("neutral"));
+  face.position.set(0, 0.125, 0.0815);
   face.name = "face";
   g.add(face);
   const toast = new Group(), tk = new Kit(), crust = colMat("#b8743a"), bread = colMat("#f2d49a");
-  for (const x of [-0.065, 0.065]) { tk.box(crust, 0.034, 0.12, 0.115, x, 0.0, 0); tk.box(bread, 0.036, 0.1, 0.095, x, 0.005, 0); }
+  for (const z of [-0.03, 0.03]) { tk.box(crust, 0.15, 0.11, 0.022, 0, 0.0, z); tk.box(bread, 0.13, 0.09, 0.024, 0, 0.005, z); }
   toast.add(tk.build());
-  toast.position.y = 0.22;
+  toast.position.y = 0.16;
   toast.name = "toast";
   g.add(toast);
   g.userData.collider = "toaster";

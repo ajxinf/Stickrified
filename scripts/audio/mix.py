@@ -125,6 +125,11 @@ def main(d):
     ambm = amb_ceiling(voice, ambm, words, k)
     ride = word_ride(voice, (mus + ambm).mean(1), json.load(open(f"{d}/voice/words.json")))
     mus, ambm = mus * ride[:, None], ambm * ride[:, None]
+    # The tail (user 2026-11-24: ~1.3 s after the last line, never a hard stop): music and bed fade out to the last frame.
+    t0 = min(int(words[-1]["end"] * SR), n - 1)
+    tail = np.ones(n)
+    tail[t0:] = np.cos(np.linspace(0, np.pi / 2, n - t0)) ** 2
+    mus, ambm = mus * tail[:, None], ambm * tail[:, None]
     sfxm = sfx_ceiling(voice, db(SFX_DB) * sfx * db(-SFX_DUCK_DB * k)[:, None], words)
     mix = np.stack([voice, voice], 1) + mus + ambm + sfxm
     # Master tone (R13 band study): more low end and air, a little less boxy low-mid.
