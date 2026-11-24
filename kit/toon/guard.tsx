@@ -853,6 +853,7 @@ const planChecks = (plan: Plan, fps: number, aspect: number) => {
             if (a.expr === b.expr && !fx.length) continue;
             const what = [a.expr !== b.expr ? `expression ${a.expr} -> ${b.expr}` : "", ...fx.map((k) => `fx ${k}`)].filter(Boolean).join(", ");
             const lead = starts.map((s) => s - (from + f)).filter((d) => d >= 0).sort((x, y) => x - y)[0];
+            if (lead === undefined && from + f > Math.round(plan.words[plan.words.length - 1].end * fps)) continue; // the tail after the last line (user 2026-11-24) acts on no word
             if (lead === undefined || lead > 3) r.add("Reaction timing", shot, f, `"${c.name}"`, `${what} lands ${lead === undefined ? "after the last word" : `${lead} frames before the next word`} (needs 0-3)`);
           }
       }
