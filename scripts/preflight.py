@@ -86,6 +86,9 @@ def main():
         flags = framing_flags(json.load(open(f"out/{slug}/shots.json", encoding="utf-8"))["shots"], pre)
         print("\n".join(flags) or "preflight: no framing flags")
         return
+    # everything except the characters is a realistic model (user 2026-11-24)
+    if subprocess.run([sys.executable, "scripts/real_props.py", slug]).returncode:
+        sys.exit("preflight: primitive props found (scripts/real_props.py)")
     os.makedirs(pre, exist_ok=True)
     for old in os.scandir(pre):  # a re-run must not mix old frames into the sheets
         os.remove(old.path)

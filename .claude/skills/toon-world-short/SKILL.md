@@ -25,6 +25,16 @@ this file, LOOK_SPEC and REFERENCE_NOTES):**
 - **World**: section "R27" below: photo skies (`photoSky`, never the painted gradient), moving rippled water
   (`water`/`shoreFoam`), a different photo material with normal/ARM maps on every surface, CC0 models at three depths,
   motivated light pools, fire life (`fire.tsx`). Worked example: `src/videos/_look-test-r27` (LookTestR27).
+- **Everything except the characters is a realistic model** (user 2026-11-24): every prop, piece of furniture,
+  vehicle, plant, tree, food, device, building and set piece is a realistic CC0 3D model (Poly Haven first via
+  `scripts/polyhaven.py model <id>`, then other CC0 libraries such as ambientCG or Quaternius only when they look
+  realistic, never low-poly or toy-styled kits), lit and shaded like the world. Primitives are allowed only for
+  architecture surfaces (floors, walls, ceilings, terrain, road), and only with a photo PBR material. No primitive
+  props (`Kit` boxes, cylinders, spheres), no hand-drawn or flat 2D props, no cartoon-styled kit models (Kenney nature
+  kit etc.). Effects (bubbles, smoke, speed lines, glows) are not props. A story prop no library has gets modelled from
+  realistic parts with photo materials, and the shot plan says so. The 2D cartoon cards are only the characters
+  (people and acting animals). `scripts/real_props.py <slug>` (run by preflight) fails any primitive prop line; mark
+  floor/wall lines `// surface` and effects `// effect`.
 - **Characters and motion**: "Character v3 + fluid motion (R28)" below: v3 build and ink, `flow` follow-through,
   `turnTo` turns, `posesAt`/`poseAt` 10-frame moves, striding walks, tracked walkers. Worked example:
   `src/videos/_char-test` (CharTest). No chest pocket on anyone (user).
@@ -554,7 +564,8 @@ painted sky colours below apply only when no photo sky fits, and then only as th
       boxes read as blocks): `python scripts/polyhaven.py model <id>`, then `model("<id>", { part, height, tint, glow,
       collider })` (kit build/models.ts). Check the Poly Haven catalogue first (api.polyhaven.com/assets?t=models; the
       beach set has crates, barrels, buckets, lanterns, a lifebuoy, floodlights, a picnic table, shells). Collections
-      (`flood_lights`, `wooden_barrels_01`) take a `part` name prefix. Build from primitives only what no library has.
+      (`flood_lights`, `wooden_barrels_01`) take a `part` name prefix. No primitive props (user 2026-11-24, "Current
+      style" at the top): what no library has is built from realistic parts with photo materials.
     - **Sky**: a vertical frame sees the dome from the horizon to ~25 deg, so `skyMid` is the sky colour; a blue dusk
       over a warm horizon needs `horizonBand` ~.14 (a wide band averages blue and peach to mauve) and the `sunset`
       grade (the `golden` grade's x2.08 exposure washes a dusk milky).
