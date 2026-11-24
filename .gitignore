@@ -27,3 +27,9 @@ assets/sky/
 # Poly Haven tree meshes over GitHub's 100 MB limit (re-download: python scripts/polyhaven.py model fir_tree_01 pine_tree_01)
 public/models/fir_tree_01/fir_tree_01.bin
 public/models/pine_tree_01/pine_tree_01.bin
+public/models/jacaranda_tree/jacaranda_tree.bin
+assets/models/pine_tree_01/pine_tree_01.bin
+assets/models/fir_tree_01/fir_tree_01.bin
+assets/models/jacaranda_tree/jacaranda_tree.bin
+assets/models/tree_small_02/tree_small_02.bin
+assets/models/island_tree_03/island_tree_03.bin
