@@ -77,7 +77,7 @@ export const home = () => {
   g.add(place(model("painted_wooden_cabinet", { collider: "kitchen cabinet", tint: "#f2e8d8" }), -2.45, 0, z0 + 0.32, 0));
   g.add(place(model("electric_stove", { collider: "stove" }), -1.55, 0, z0 + 0.33, 0));
   g.add(place(model("modern_wooden_cabinet", { collider: "counter", scale: 0.55 }), -0.62, 0, z0 + 0.15, 0));
-  g.add(place(model("vintage_microwave", { collider: "microwave", scale: 0.5 }), -2.45, 1.18, z0 + 0.3, 0));
+  g.add(place(model("vintage_microwave", { collider: "microwave", scale: 0.5 }), -2.45, 1.186, z0 + 0.3, 0));
   g.add(plane(1.9, 0.6, MATS.tiles(), V(-1.65, 1.5, z0 + 0.01))); // surface: splash-back
   g.add(place(model("jug_01", { collider: false }), -0.5, 0.375, z0 + 0.2, 0.4));
   g.add(place(model("potted_plant_02", { collider: false, scale: 0.4 }), -0.85, 0.375, z0 + 0.2, 0.6));
@@ -88,9 +88,9 @@ export const home = () => {
   g.add(place(model("alarm_clock_01", { part: "alarm_clock_01", collider: false }), DESK.x - 0.65, DESK_TOP, z0 + 0.18, 0.3));
   g.add(place(model("stationery_supplies", { collider: false }), DESK.x - 0.4, DESK_TOP, z0 + 0.14, 0));
   g.add(place(model("binder_notebook", { part: "binder_notebook_closed", collider: false }), DESK.x + 0.3, DESK_TOP, z0 + 0.16, 0.1));
-  g.add(place(model("painted_wooden_chair_01", { collider: "desk chair" }), DESK.x + 0.1, 0, z0 + 1.15, Math.PI + 0.3));
+  g.add(place(model("painted_wooden_chair_01", { collider: "desk chair" }), DESK.x + 0.45, 0, z0 + 1.45, Math.PI + 0.3));
   g.add(place(model("wooden_bookshelf_worn", { collider: "bookshelf", scale: 0.9 }), x1 - 0.32, 0, 0.6, -Math.PI / 2));
-  g.add(place(model("potted_plant_01", { collider: "plant" }), x1 - 0.5, 0, z0 + 0.5, 0.3));
+  g.add(place(model("potted_plant_01", { collider: "plant" }), x1 - 0.42, 0, z0 + 1.3, 0.3));
   // outside the window: the street's facades across the road (a photo of morning brick), sun streaming in
   g.add(wall(8, 6, MATS.brick("#c89a7a"), V((WIN.x0 + WIN.x1) / 2, -1, z0 - 7))); // surface: the block across the street
   g.add(lightPatch(V(DESK.x, DESK_TOP + 0.003, z0 + 0.45), V(0, 1, 0), 1.2, 0.5, "#fff2d8", 0.22, [2, 1]));

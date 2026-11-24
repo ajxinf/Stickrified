@@ -167,7 +167,7 @@ export const kaylaDance = role("kayla", kaylaLook, KAYLA_DANCE, (F) => {
 export const BUS_Z = -2.0;
 export const busX = (F: number) => -34 + 0.42 * (F - L(3, 5));
 export const KAYLA_K = 8; // her size on the bus (an eight-times girl: the bus is up to her knees)
-export const kaylaBus = role("kaylaBus", kaylaLook, (F) => V(busX(F) + 1.6, BUS.h - SEAT_M * KAYLA_K, BUS_Z + BUS.w / 2 + 0.08), (F) => {
+export const kaylaBus = role("kaylaBus", kaylaLook, (F) => V(busX(F) + 1.6, BUS.h - SEAT_M * KAYLA_K + 0.08, BUS_Z + BUS.w / 2 + 0.08), (F) => {
   const sip = Math.floor((F - B.rides) / 20) % 2 === 0;
   const p = { ...SIT, arms: arms([0.4, 0.5], sip ? [-0.12, -0.32] : [0.2, 0.3], { gr: "fist", front: true }), tilt: sip ? -8 : 4, sway: 2 * Math.sin(F / 6) } as Pose;
   return st(p, F, 45, [[0, "smug"], [B.rides, "relieved"], [B.roof, "grin"]], { heading: 0.1 });
@@ -239,12 +239,12 @@ export const youLunch = (grip: (F: number) => Vector3) => role("you", youLook, (
 }, { scale: TINY });
 
 // ================================================================== line 7: the school hallway
-export const ZOE_AT = ZOE_LOCKER.clone().add(V(0.35, 0, 0.62));
+export const ZOE_AT = ZOE_LOCKER.clone().add(V(0.35, 0, 0.82));
 export const zoe = role("zoe", zoeLook, ZOE_AT, (F) => {
-  const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.55, -0.15], { gr: "open" }) }], [B.prom - 6, { ...REST, arms: arms([0.25, 0.6], [-0.2, 0.25], { gr: "fist", front: true }) }], [B.loves - 6, { ...REST, arms: arms([-0.25, 0.25], [-0.2, 0.25], { gl: "mitt", gr: "mitt", front: true }), tilt: 8 }]], F);
+  const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.55, -0.15], { gr: "open" }) }], [B.zoe - 4, { ...REST, arms: arms([0.25, 0.6], [0.7, -0.4], { gr: "open" }), tilt: 6 }], [B.prom - 6, { ...REST, arms: arms([0.25, 0.6], [-0.2, 0.25], { gr: "fist", front: true }) }], [B.loves - 6, { ...REST, arms: arms([-0.25, 0.25], [-0.2, 0.25], { gl: "mitt", gr: "mitt", front: true }), tilt: 8 }]], F);
   return st(alive(p, F, 91, [0.3, -0.4]), F, 91, [[0, "relieved"], [B.prom, "neutral"], [B.loves, "excited"], [B.ducks, "proud"]], { heading: F < B.prom ? Math.PI : 0.2 });
 });
-export const YOU_HALL = ZOE_AT.clone().add(V(0.3, 0, 0.32));
+export const YOU_HALL = ZOE_AT.clone().add(V(0.4, 0, 0.42));
 export const youHall = role("you", youLook, YOU_HALL, (F) => {
   const p = { ...REST, arms: arms([0.25, 0.6], [-0.15, 0.1], { gr: "fist", front: true }), tilt: -12 } as Pose;
   return st(alive(p, F, 3, [-0.4]), F, 3, [[0, "nervous"], [B.loves, "pleading"], [B.ducks, "excited"]], { heading: -0.4, fx: { sweat: (F % 40) / 40 } });
@@ -253,7 +253,7 @@ export const youHall = role("you", youLook, YOU_HALL, (F) => {
 // ================================================================== lines 8-10: Tyler (giant, north of town; then at the classroom window)
 export const TYLER_DAY = V(14, 0, -150), TYLER_K = 170;
 export const tylerDay = role("tyler", tylerLook, TYLER_DAY, (F) => {
-  const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.75, -0.75], { gr: "fist" }), tilt: -6 }], [B.sneezes9 - 10, { ...REST, arms: arms([-0.1, -0.2], [0.75, -0.6], { gl: "open", gr: "fist", front: true }), tilt: -14, bob: -10 }], [B.sneezes9 + 4, { ...REST, arms: arms([0.6, 0.2], [0.75, -0.6], { gl: "open" }), tilt: 12, bob: 14, squash: 1 }], [B.rains, { ...REST, arms: arms([0.25, 0.6], [0.75, -0.75]), tilt: -4 }]], F);
+  const p = pose([[0, { ...REST, arms: arms([0.25, 0.6], [0.75, -0.75], { gr: "fist" }), tilt: -6 }], [B.tyler + 8, { ...REST, arms: arms([0.7, -0.5], [0.75, -0.8], { gl: "open", gr: "fist" }), tilt: 8, sway: 5 }], [B.million, { ...REST, arms: arms([0.25, 0.6], [0.75, -0.75], { gr: "fist" }), tilt: -6 }], [B.sneezes9 - 10, { ...REST, arms: arms([-0.1, -0.2], [0.75, -0.6], { gl: "open", gr: "fist", front: true }), tilt: -14, bob: -10 }], [B.sneezes9 + 4, { ...REST, arms: arms([0.6, 0.2], [0.75, -0.6], { gl: "open" }), tilt: 12, bob: 14, squash: 1 }], [B.rains, { ...REST, arms: arms([0.25, 0.6], [0.75, -0.75]), tilt: -4 }]], F);
   return st(p, F, 101, [[0, "smug"], [B.million, "proud"], [B.sneezes9 - 10, "nervous"], [B.sneezes9, "shocked"], [B.rains, "grin"]], { heading: 0 });
 }, { scale: TYLER_K });
 /** Line 10: he crouches outside the classroom so his face fills the east windows. */
@@ -321,7 +321,7 @@ export const tylerNight = role("tyler", tylerLook, TYLER_N, (F) => {
   const p = pose([[0, POSES.crossed], [B.nine, { ...REST, arms: arms([0.6, 0.1], [0.6, 0.1], { gl: "open", gr: "open" }), tilt: -20, bob: -6 }], [B.ladder, { ...REST, arms: arms([0.3, 0.5], [0.3, 0.5]), tilt: -24, shrug: 16 }]], F);
   return st(p, F, 101, [[0, "worried"], [B.three00, "shocked"], [B.actually, "scared"], [B.ladder, "sad"]], { heading: Math.PI + 0.5, fx: F >= B.ladder - 2 ? { fill: { color: "#e8342c", t: clamp01((F - B.ladder + 2) / 8) } } : {} });
 }, { scale: TYLER_NK });
-export const ZOE_N = V(37.2, 0.12, GYM.front - 4.2);
+export const ZOE_N = V(37.2, 0.01, GYM.front - 4.2);
 export const zoeNight = role("zoe", zoeLook, ZOE_N, (F) => {
   if (F < L(27, 0)) {
     const p = pose([[0, { ...REST, arms: arms([-0.1, -0.12], [-0.08, -0.1], { gl: "open", gr: "open", front: true }), tilt: -14 }], [B.yes18 + 10, { ...REST, arms: arms([0.25, 0.4], [-0.08, -0.12], { gr: "open", front: true }), tilt: -16 }], [B.you23, { ...REST, arms: arms([0.6, 0.2], [0.6, 0.2], { gl: "open", gr: "open" }), tilt: -20, bob: 6 }]], F);
