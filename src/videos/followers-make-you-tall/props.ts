@@ -97,15 +97,15 @@ export const phoneScreen = (kind: "followers" | "ding") => {
   let m = PHONE_MATS.get(kind);
   if (!m) {
     m = new MeshBasicMaterial({ toneMapped: false, map: canvasTex(384, 768, (c) => {
-      c.fillStyle = "#f6f6f8"; c.fillRect(0, 0, 384, 768);
+      c.fillStyle = "#16161e"; c.fillRect(0, 0, 384, 768);
       if (kind === "ding") {
         c.fillStyle = "#ff3a7a"; c.beginPath(); c.roundRect(30, 300, 324, 160, 30); c.fill();
         c.fillStyle = "#fff"; c.textAlign = "center"; c.font = `900 56px ${FONT}`; c.fillText("+10,000", 192, 370); c.font = `800 34px ${FONT}`; c.fillText("NEW FOLLOWERS", 192, 420);
         return;
       }
-      c.fillStyle = "#1c1c22"; c.textAlign = "center"; c.font = `900 44px ${FONT}`; c.fillText("FOLLOWERS", 192, 90);
+      c.fillStyle = "#f6f6f8"; c.textAlign = "center"; c.font = `900 44px ${FONT}`; c.fillText("FOLLOWERS", 192, 90);
       c.fillStyle = "#ff3a7a"; c.font = `900 120px ${FONT}`; c.fillText("3", 192, 220);
-      const row = (y: number, name: string, col: string) => { c.fillStyle = col; c.beginPath(); c.arc(70, y, 34, 0, 7); c.fill(); c.fillStyle = "#1c1c22"; c.textAlign = "left"; c.font = `800 ${name.length > 10 ? 30 : 40}px ${FONT}`; c.fillText(name, 120, y + 13); };
+      const row = (y: number, name: string, col: string) => { c.fillStyle = col; c.beginPath(); c.arc(70, y, 34, 0, 7); c.fill(); c.fillStyle = "#f6f6f8"; c.textAlign = "left"; c.font = `800 ${name.length > 10 ? 30 : 40}px ${FONT}`; c.fillText(name, 120, y + 13); };
       row(330, "Mom", "#e88ab8"); row(440, "Grandma", "#a8c8e8"); row(550, "HotSingles4U", "#ff3a3a");
       c.fillStyle = "#ffd23f"; for (let i = 0; i < 6; i++) { c.beginPath(); c.arc(60 + i * 16, 520 + (i % 2) * 12, 5, 0, 7); c.fill(); }
     }) });

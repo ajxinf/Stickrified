@@ -175,12 +175,14 @@ export const kaylaBus = role("kaylaBus", kaylaLook, (F) => V(busX(F) + 1.6, BUS.
 
 // ================================================================== line 4: Grandpa rides the cat to bingo
 export const CAT_Z = WALK_N + 1.0;
-export const catX = (F: number) => -16 + 0.045 * (F - L(4, 0));
+/** The cat trots (0.02 m/f: slow enough for a tracking lens), then pulls up at bingo so the close can hold still. */
+const CAT_STOP = () => B.bingo - 34 - L(4, 0);
+export const catX = (F: number) => { const t = F - L(4, 0), s = CAT_STOP(); return -15 + 0.02 * (t < s ? t : s + 10 * (1 - Math.exp(-(t - s) / 10))); };
 export const catAt = (F: number) => V(catX(F), 0.12, CAT_Z);
 export const CAT_SIZE = 0.34;
-export const catState = (F: number): CritterState => ({ phase: (F / 11) % 1, facing: 1, expr: F > B.bingo - 6 ? "happy" : "neutral", look: 0.3 * Math.sin(F / 20) });
+export const catState = (F: number): CritterState => ({ phase: F - L(4, 0) < CAT_STOP() + 12 ? (F / 11) % 1 : 0.25, facing: 1, expr: F > B.bingo - 6 ? "happy" : "neutral", look: 0.3 * Math.sin(F / 20) });
 /** Grandpa's seat on the cat's back (the drawn body top, toward the lens). */
-const CAT_BACK = (CAT_SIZE * (500 - 150 - 64)) / 512;
+const CAT_BACK = (CAT_SIZE * (500 - (500 - 150 - 72))) / 512; // canvas y 278 = the top of the drawn back
 export const grandpa = role("grandpa", grandpaLook, (F) => catAt(F).add(V(-0.02, CAT_BACK - SEAT_M * GRAMPS + 0.004 * Math.abs(Math.sin((F / 11) * Math.PI * 2)), 0.03)), (F) => {
   const p = pose([[0, { ...SIT, arms: arms([0.62, 0.15], [0.55, -0.45], { gr: "fist" }), tilt: -4 }], [B.bingo - 8, { ...SIT, arms: arms([0.62, 0.15], [0.7, -0.75], { gr: "open" }), tilt: -10, bob: 4 }]], F);
   return st(p, F, 71, [[0, "determined"], [B.inches4, "smug"], [B.bingo, "excited"]], { heading: Math.PI / 2 });
@@ -220,7 +222,7 @@ export const grandpaDesk = role("grandpa", grandpaLook, () => DESK_CAT.clone().a
 }, { sit: true, scale: GRAMPS });
 export const YOU_BUN = DESK.clone().add(V(-0.05, 0, 0.14));
 export const youBun = role("you", youLook, YOU_BUN, (F) => {
-  const p = pose([[0, POSES.crossed], [B.pass - 8, { ...REST, arms: arms([-0.25, 0.1], [-0.2, 0.05], { gl: "mitt", gr: "mitt", front: true }), tilt: 6 }]], F);
+  const p = pose([[0, POSES.crossed], [B.pass - 8, { ...REST, arms: arms([0.25, 0.6], [1.0, 0.05], { gr: "mitt" }), tilt: 6, sway: -6 }]], F);
   return st(p, F, 3, [[0, "deadpan"], [B.pass, "smug"]], { heading: -0.5 });
 }, { scale: TINY });
 
@@ -284,7 +286,7 @@ export const youPile = role("you", youLook, YOU_PILE, (F) => {
   const p = pose([[0, { ...REST, arms: arms([0.55, -0.1], [0.55, -0.12], { gl: "open", gr: "open" }) }], [B.bread13 - 6, { ...POSES.hips, tilt: -6 }]], F);
   return st(p, F, 3, [[0, "scheming"], [B.loaves, "proud"], [B.bread13, "smug"]], { heading: 0.4 });
 }, { scale: TINY });
-export const CASHIER = V(0.95, 0, -0.72);
+export const CASHIER = V(0.6, 0, -0.62);
 export const cashier = role("cashier", cashierLook, CASHIER, (F) => st(alive({ ...REST, arms: arms([0.3, 0.45], [0.3, 0.42]) }, F, 111, [0.5, 0.3]), F, 111, [[0, "neutral"], [B.loaves, "confused"], [B.bread13, "deadpan"]], { heading: 0.2 }));
 
 // ================================================================== night: prom (lines 17-29)

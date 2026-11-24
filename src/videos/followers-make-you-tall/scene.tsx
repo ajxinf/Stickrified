@@ -26,7 +26,7 @@ const DAY_SKY = photoSky({ ...LIGHTS.day, lit: [1.56, 1.5, 1.36], shade: [0.32, 
 export const DAY = DAY_SKY.preset, DAY_SUN = DAY_SKY.key;
 const MORNING_SKY = photoSky({ ...LIGHTS.golden, lit: [1.32, 1.14, 0.92], shade: [0.3, 0.32, 0.48], lift: [0.03, 0.03, 0.06], litTint: "#ffe2b8", sat: 1.16, haze: { color: "#e8d8c8", start: 25, amount: 0.24 }, char: { tint: [1.0, 0.96, 0.9], shade: 0.92 } }, "kloofendal_misty_morning_puresky", { exposure: 1.0, yaw: 200 });
 export const MORNING = MORNING_SKY.preset, MORNING_SUN = MORNING_SKY.key;
-const NIGHT_SKY = photoSky({ ...LIGHTS.night, lit: [0.5, 0.58, 0.92], shade: [0.14, 0.16, 0.3], lift: [0.015, 0.018, 0.04], lamp: ["#ffa850", 5.2], sat: 1.18, fogNear: 60, fogFar: 600 }, "kloppenheim_07_puresky", { exposure: 0.4, tint: "#bccbe8", yaw: 20 });
+const NIGHT_SKY = photoSky({ ...LIGHTS.night, lit: [0.5, 0.58, 0.92], shade: [0.14, 0.16, 0.3], lift: [0.015, 0.018, 0.04], lamp: ["#ffa850", 5.2], sat: 1.18, fogNear: 120, fogFar: 1600 }, "kloppenheim_07_puresky", { exposure: 0.4, tint: "#bccbe8", yaw: 20 });
 export const NIGHT = NIGHT_SKY.preset, NIGHT_SUN = NIGHT_SKY.key;
 const HOME_SKY = photoSky({ ...LIGHTS.sunInterior, lit: [1.3, 1.2, 1.06], shade: [0.46, 0.5, 0.62], lift: [0.05, 0.06, 0.08], litTint: "#fff2dc", lamp: ["#ffc27a", 1.4], sat: 1.18, char: { tint: [1.0, 0.97, 0.93], shade: 0.9 } }, "qwantani_late_afternoon_puresky", { exposure: 0.85, yaw: 0 });
 export const HOME_L = HOME_SKY.preset;

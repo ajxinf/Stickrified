@@ -78,7 +78,7 @@ const PM = (name: string, tile: number, color: string, o: Parameters<typeof toon
 /** One photo texture per surface (each set lists its own at the top of its file). */
 export const MATS = {
   road: PM("asphalt_02", 4, "#8c8a90", { rough: 0.85 }),
-  walk: PM("concrete_pavement", 2.5, "#d6d0c6", { rough: 0.8 }),
+  walk: PM("concrete_pavement", 2.5, "#b4aea4", { rough: 0.8 }),
   lot: PM("asphalt_02", 4, "#9a989c", { rough: 0.85 }),
   plaza: PM("herringbone_pavement", 2, "#c8b8a8", { rough: 0.8 }),
   cobble: PM("cobblestone_floor_04", 2, "#b8b0a4", { rough: 0.85 }),

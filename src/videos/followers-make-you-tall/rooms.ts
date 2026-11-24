@@ -83,7 +83,7 @@ export const home = () => {
   g.add(place(model("potted_plant_02", { collider: false, scale: 0.4 }), -0.85, 0.375, z0 + 0.2, 0.6));
   g.add(place(model("wall_clock", { collider: false }), -1.4, 2.15, z0 + 0.03, 0));
   // your desk under the window: lamp, laptop, alarm clock, pens, a binder
-  g.add(place(model("metal_office_desk", { collider: "desk", scale: 0.85 }), DESK.x, 0, z0 + 0.42, 0));
+  g.add(place(model("metal_office_desk", { collider: "desk", scale: 0.85, tint: "#9a968e" }), DESK.x, 0, z0 + 0.42, 0));
   g.add(place(model("desk_lamp_arm_01", { collider: false }), DESK.x + 0.62, DESK_TOP, z0 + 0.2, -0.6));
   g.add(place(model("alarm_clock_01", { part: "alarm_clock_01", collider: false }), DESK.x - 0.65, DESK_TOP, z0 + 0.18, 0.3));
   g.add(place(model("stationery_supplies", { collider: false }), DESK.x - 0.4, DESK_TOP, z0 + 0.14, 0));
