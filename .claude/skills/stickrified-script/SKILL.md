@@ -123,10 +123,11 @@ Each formula is the story engine dressed for its pillar.
   Yours says 4,000."): Strange act ("You haven't said a word in 3 weeks.") -> why (the one changed rule, plus your
   goal) -> your plan to beat the rule, with the rule taken literally against you -> the big test -> the turn (the
   rule's own logic saves or dooms you) -> twist ending that loops into the rule.
+  - **Line 1 always starts with the words "In this world"** (user 2026-11-24: "every in this world video should start
+    with 'In this world'"): "In this world, <the rule>." The strange act comes in the next lines, and the first
+    frame still shows the rule's strangest image on the first word. `check_script.py` fails an "In this world..."
+    script that opens any other way.
   - One changed rule; everything else normal and played straight; never explain the rule scientifically.
-  - The rule can open the video instead of an act when it is itself the strangest image. Rotate openers: a strange
-    act, "In this world...", "Everyone gets <X> at 18. You get <worse X>.", "You wake up and...". Not the same
-    opener 3 videos in a row.
   - Our own worlds only: never adapt a book, film, show, game or another channel's story.
 
 ### "In this world..." craft (R21 study of script_ref1-3, evidence in `docs/scripts/IN_THIS_WORLD_STUDY.md`)

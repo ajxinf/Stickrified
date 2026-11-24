@@ -95,6 +95,8 @@ def main():
     pillar = d.get("pillar", "").lower()
     if "history" in pillar and not os.path.exists(os.path.join(os.path.dirname(a.path), "sources.md")):
         errors.append("history script without sources.md")
+    if "in this world" in pillar and d["lines"] and not d["lines"][0]["narration"].lstrip('"*').lower().startswith("in this world"):
+        errors.append("'In this world...' script: line 1 must start with \"In this world\" (user 2026-11-24)")
 
     print(f"{d.get('slug', '?')}: {total} words, ~{t:.0f} s at {a.wps} w/s, {len(gags)} gags, longest gap {max(gaps) if gaps else 0:.1f} s")
     for e in errors: print("ERROR ", e)

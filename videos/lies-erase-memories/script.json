@@ -2,8 +2,8 @@
   "slug": "lies-erase-memories",
   "title": "In this world, every lie you tell erases a memory forever",
   "pillar": "In this world...",
-  "formula": "Strange act (you wake with a sticky note on your face: DON'T LIE TODAY. 7 PM.) -> the rule (every lie erases a memory, you never pick which) -> world tour (Linda and the meatloaf, the boss and the doors, you: 212 lies, an apartment of sticky notes) -> wound + stake (lost Ohio and whistling, but never the day you met Maya; tonight at 7 you propose) -> rival with the perfect version (her brother Derek: zero lies, remembers everything) + mocker line -> obstacles (Derek's recorder song, Derek's pond soup: you dodge with literal truths) -> setback (Maya calls at 6:40, you lie to save the surprise, pop: you forget where the ring is) -> tension stretch (couch, freezer, shoe) -> hidden plan (past you wrote on the back of the morning note: ring's in Waffles' collar) -> peak (7 PM, the laundromat, Waffles brings the ring, Maya fakes surprise: 'I had NO idea!') -> reversal from the rival's own strength (Derek can't lie, so he told her at lunch; her lie costs her one memory: Derek) -> she introduces herself to him (Linda callback) -> she still says yes -> loop: a sticky note on Derek's face.",
-  "loop": "Line 1: you wake up with a sticky note on your face. Last: you stick a sticky note on Derek's face (it says BROTHER).",
+  "formula": "'In this world' opener: the rule (every lie erases a memory, you never pick which) ->  -> world tour (Linda and the meatloaf, the boss and the doors, you: 212 lies, an apartment of sticky notes) -> strange act (this morning a note on your face: DON'T LIE TODAY. 7 PM.) -> wound + stake (lost Ohio and whistling, but never the day you met Maya; tonight at 7 you propose) -> rival with the perfect version (her brother Derek: zero lies, remembers everything) + mocker line -> obstacles (Derek's recorder song, Derek's pond soup: you dodge with literal truths) -> setback (Maya calls at 6:40, you lie to save the surprise, pop: you forget where the ring is) -> tension stretch (couch, freezer, shoe) -> hidden plan (past you wrote on the back of the morning note: ring's in Waffles' collar) -> peak (7 PM, the laundromat, Waffles brings the ring, Maya fakes surprise: 'I had NO idea!') -> reversal from the rival's own strength (Derek can't lie, so he told her at lunch; her lie costs her one memory: Derek) -> she introduces herself to him (Linda callback) -> she still says yes -> loop: a sticky note on Derek's face.",
+  "loop": "Line 1: every lie erases a memory (a liar's bubble pops). Last: Maya's one lie erased her brother, and you stick a sticky note on Derek's face, mirroring the note on your own face that morning.",
   "voiceId": "zfc8CJQpe8Kqyl0vvCzo",
   "model": "eleven_v4",
   "voices": {
@@ -20,18 +20,9 @@
   ],
   "lines": [
     {
-      "narration": "You wake up with a sticky note on your face that says: *DON'T LIE TODAY*.",
-      "spoken": "You wake up with a sticky note on your face that says: DON'T lie today.",
+      "narration": "In this world, every lie you tell erases a memory *forever*.",
       "audioTag": "fast-paced, energetic storyteller",
-      "scene": "Cold open, your bedroom at morning: you sit up in bed, a yellow sticky note stuck to your forehead, 'DON'T LIE TODAY. 7 PM.' in marker. Hard cut on 'LIE' to the nightstand: a framed photo where one smiling person flickers and fades out to empty background.",
-      "camera": "MCU on you, the note readable; hard cut to the photo insert on 'LIE', back to your cross-eyed look up at the note",
-      "onScreenText": "Sticky note: DON'T LIE TODAY. 7 PM.",
-      "gag": "You go cross-eyed reading the note on your own forehead"
-    },
-    {
-      "narration": "Because in this world, every lie you tell erases a memory *forever*.",
-      "audioTag": "dramatic",
-      "scene": "Street outside: a man at a bus stop says something to a woman with a big grin; a little glowing bubble with a picture in it (a birthday cake) rises out of his head and pops like a soap bubble.",
+      "scene": "Cold open on the first word, a bus stop on a sunny street: a man in a suit grins and tells the woman beside him something; a glowing memory bubble (his birthday cake inside it) rises out of his head and pops on 'forever'.",
       "camera": "MS two-shot, tilt up with the bubble, hold on the pop",
       "onScreenText": "",
       "gag": "A memory bubble pops out of a liar's head"
@@ -105,8 +96,17 @@
       "gag": "The ring sparkles"
     },
     {
-      "narration": "The plan is simple: no lies until 7. There's just one problem. Her brother, *Derek*.",
-      "spoken": "The plan is simple: no lies until seven. There's just one problem. Her brother, Derek.",
+      "narration": "So last night, past you stuck a note on your face: *DON'T LIE TODAY*.",
+      "spoken": "So last night, past you stuck a note on your face: DON'T lie today.",
+      "audioTag": "dramatic",
+      "scene": "Your bedroom, morning: you sit up in bed, a yellow sticky note stuck to your forehead, 'DON'T LIE TODAY. 7 PM.' in marker. Hard cut on 'LIE' to the nightstand: a framed photo where one smiling person flickers and fades out to empty background.",
+      "camera": "MCU on you, the note readable; hard cut to the photo insert on 'LIE', back to your cross-eyed look up at the note",
+      "onScreenText": "Sticky note: DON'T LIE TODAY. 7 PM.",
+      "gag": "You go cross-eyed reading the note on your own forehead"
+    },
+    {
+      "narration": "The plan: no lies until 7. There's just one problem. Her brother, *Derek*.",
+      "spoken": "The plan: no lies until seven. There's just one problem. Her brother, Derek.",
       "audioTag": "urgent",
       "scene": "Your doorbell; you open the door and Derek fills it: tall, slick side-parted hair, a perfect sweater vest, arms crossed. A frame on his collar pin reads '0 LIES'.",
       "camera": "Low-angle MS of Derek in the doorway",
