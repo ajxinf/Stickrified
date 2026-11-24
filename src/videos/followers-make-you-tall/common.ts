@@ -1,4 +1,5 @@
-import { CanvasTexture, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SRGBColorSpace, Vector3 } from "three";
+import { CanvasTexture, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, SRGBColorSpace, Texture, Vector3 } from "three";
+import { continueRender, delayRender, staticFile } from "remotion";
 import { M } from "../../../kit/toon/build/kit";
 import { photo } from "../../../kit/toon/build/photo";
 import { toonMaterial } from "../../../kit/toon/shade";
@@ -103,3 +104,19 @@ export const MATS = {
 };
 export const glassMat = () => M("fmt-glass", () => toonMaterial({ color: "#3a4a62", spec: 0.7, gloss: 0.8, rough: 0.1 }));
 export const glowMat = (c: string, k: number) => M(`fmt-glow-${c}-${k}`, () => toonMaterial({ color: c, emissive: [c, k] }));
+
+const pngCache = new Map<string, Texture>();
+/** A transparent PNG from public/tex (a cut-out photo: the bread slice); the frame waits for it. */
+export const pngTex = (file: string) => {
+  const hit = pngCache.get(file);
+  if (hit) return hit;
+  const t = new Texture();
+  t.colorSpace = SRGBColorSpace;
+  t.anisotropy = 8;
+  const h = delayRender(`texture ${file}`);
+  const img = new Image();
+  img.onload = () => { t.image = img; t.needsUpdate = true; continueRender(h); };
+  img.src = staticFile(`tex/${file}.png`);
+  pngCache.set(file, t);
+  return t;
+};
